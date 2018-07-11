@@ -1,0 +1,4 @@
+Version=0.4;String
+PName=imageview;String
+POptions=-Wall -O5;String
+PNW=1;int

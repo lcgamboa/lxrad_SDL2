@@ -1,0 +1,59 @@
+CWindow7::CWindow7(void)
+{
+  SetFOwner(this);
+  SetName("window7");
+  SetX(364);
+  SetY(174);
+  SetWidth(173);
+  SetHeight(202);
+  SetTitle("List");
+  SetVisible(false);
+  //button1
+  button1.SetFOwner(this);
+  button1.SetName("button1");
+  button1.SetX(14);
+  button1.SetY(142);
+  button1.SetWidth(60);
+  button1.SetHeight(20);
+  button1.EvMouseButtonRelease=EVMOUSEBUTTONRELEASE & CWindow7::button1_MouseButtonRelease;
+  button1.SetText("Add");
+  CreateChild(&button1);
+  //button2
+  button2.SetFOwner(this);
+  button2.SetName("button2");
+  button2.SetX(83);
+  button2.SetY(142);
+  button2.SetWidth(60);
+  button2.SetHeight(20);
+  button2.EvMouseButtonRelease=EVMOUSEBUTTONRELEASE & CWindow7::button2_MouseButtonRelease;
+  button2.SetText("Remove");
+  CreateChild(&button2);
+  //list1
+  list1.SetFOwner(this);
+  list1.SetName("list1");
+  list1.SetX(7);
+  list1.SetY(6);
+  list1.SetWidth(160);
+  list1.SetHeight(130);
+  CreateChild(&list1);
+  //button3
+  button3.SetFOwner(this);
+  button3.SetName("button3");
+  button3.SetX(14);
+  button3.SetY(169);
+  button3.SetWidth(60);
+  button3.SetHeight(20);
+  button3.EvMouseButtonRelease=EVMOUSEBUTTONRELEASE & CWindow7::button3_MouseButtonRelease;
+  button3.SetText("Clear");
+  CreateChild(&button3);
+  //button4
+  button4.SetFOwner(this);
+  button4.SetName("button4");
+  button4.SetX(84);
+  button4.SetY(169);
+  button4.SetWidth(60);
+  button4.SetHeight(20);
+  button4.EvMouseButtonRelease=EVMOUSEBUTTONRELEASE & CWindow7::button4_MouseButtonRelease;
+  button4.SetText("Apply");
+  CreateChild(&button4);
+};

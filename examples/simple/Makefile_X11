@@ -1,0 +1,19 @@
+CC = g++
+FLAGS = -Wall -O2 -I../../include/  -D_REENTRANT
+
+OBJS = psimple.o simple1.o  
+
+
+all: $(OBJS)
+	$(CC) $(FLAGS) $(OBJS) -osimple ../../lib/liblxrad.a -lX11
+
+%.o: %.cc
+	$(CC) -c $(FLAGS) $< 
+
+run: all
+	./simple
+
+install:
+
+clean:
+	rm -f simple *.o core

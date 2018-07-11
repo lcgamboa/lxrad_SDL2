@@ -1,0 +1,15 @@
+include ../Makefile.Conf
+
+all:
+
+static:
+
+install:
+	chmod 755 lxrad-config
+	${CP} -v lxrad-config ${bindir}
+
+uninstall:
+	${RM} ${bindir}/lxrad-config
+
+clean:
+

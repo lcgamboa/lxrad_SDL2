@@ -1,0 +1,4 @@
+Version=0.4;String
+PName=getlinks;String
+POptions=-Wall -ggdb3;String
+PNW=1;int

@@ -1,0 +1,44 @@
+Change Log:
+02/10/2000 LXRAD begin
+05/10/2000 layout begin
+05/20/2001 CText don't work :(
+06/14/2001 Menus don't work
+08/20/2001 CEdit work's more or less
+VERSION 1.0
+09/02/2001 layout improved
+10/02/2001 layout format create
+10/20/2001 CToolButton create
+10/22/2001 CXpmButton create
+11/10/2001 CStrings improved
+11/15/2001 layout update
+11/27/2001 Menus fixed
+11/28/2001 color management create 
+12/03/2001 CTimer implemented with thread 
+12/07/2001 fix some layout bugs
+12/09/2001 layout menus and file format improved
+VERSION 2.0
+12/10/2001 CInput create
+12/17/2001 Tab key implemented
+12/18/2001 CScroll CList CFileList
+03/04/2002 Draw functions Optimized
+03/08/2002 cscroll bugs fixed
+03/21/2002 layout bugs fixed
+VERSION 3.0
+04/01/2002 String class create
+04/03/2002 CStringClass recreate
+04/07/2002 all memory leaks fixed
+04/21/2002 CDialog class create
+04/21/2002 CFileDialog class create
+04/30/2002 CList and CFileList bugs fixed
+06/20/2002 Control.SetEnable() implemented
+06/21/2002 Window.ShowExclusive() implemented
+06/22/2002 layout upgrade
+08/06/2002 CCombo class create
+10/07/2002 Speed Up CScroll and CWindow classes draw routines
+10/25/2002 CScroll bugs fixed
+11/25/2002 CString bugs fixed
+12/11/2002 Draw functions modiefied and optmized for fast draw
+07/01/2003 Layout generation of files optmized
+29/03/2003 Layout support menu editing
+01/03/2003 CHint Class Create and Hint system implemented
+VERSION 0.4

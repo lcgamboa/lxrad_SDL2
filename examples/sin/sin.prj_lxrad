@@ -1,0 +1,4 @@
+Version=0.4;String
+PName=sin;String
+POptions=-Wall -O5 -lm;String
+PNW=1;int

@@ -1,0 +1,30 @@
+CWindow1::CWindow1(void)
+{
+  SetFOwner(this);
+  SetName("window1");
+  SetTag(0);
+  SetX(174);
+  SetY(53);
+  SetWidth(629);
+  SetHeight(508);
+  SetHint("(null)");
+  SetEnable(1);
+  SetVisible(1);
+  SetPopupMenu(NULL);
+  SetTitle("sin");
+  //draw1
+  draw1.SetFOwner(this);
+  draw1.SetName("draw1");
+  draw1.SetTag(0);
+  draw1.SetX(15);
+  draw1.SetY(14);
+  draw1.SetWidth(600);
+  draw1.SetHeight(480);
+  draw1.SetHint("");
+  draw1.SetEnable(1);
+  draw1.SetVisible(1);
+  draw1.SetPopupMenu(NULL);
+  draw1.EvMouseButtonPress=EVMOUSEBUTTONPRESS & CWindow1::draw1_MouseButtonPress;
+  draw1.SetImgFileName("");
+  CreateChild(& draw1);
+};
