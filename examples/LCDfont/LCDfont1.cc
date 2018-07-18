@@ -82,14 +82,15 @@ CPWindow1::button3_EvMouseButtonClick(CControl * control, uint button, uint x, u
 
 
 
+
 void
 CPWindow1::draw1_EvOnDraw(CControl * control)
 {
   //code here:)
   mprint(lxT("draw1_EvOnDraw\n"));
-
-  w= draw1.GetWidth();
-  h= draw1.GetHeight();
+  
+ w= draw1.GetWidth();
+ h= draw1.GetHeight();
   
   draw1.Canvas.Init();
   

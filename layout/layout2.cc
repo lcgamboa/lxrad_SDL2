@@ -387,7 +387,7 @@ CWindow2::MakeList (bool prompt)
       for (int c = 1; c <= PNW; c++)
 	fprintf(file," %s%i.o",PName.c_str(),c);
       fprintf(file,"\n\nall: $(OBJS)");
-      fprintf(file,"\n\t$(CC) $(FLAGS) $(OBJS) -o%s -llxrad\n\n",PName.c_str());
+      fprintf(file,"\n\t$(CC) $(FLAGS) $(OBJS) -o%s -llxrad_X11\n\n",PName.c_str());
       fprintf(file,"%%.o: %%.cc\n\t$(CC) -c $(FLAGS) $< \n\n");
       fprintf(file,"run: all\n\t./%s\n\n",PName.c_str());
       fprintf(file,"install:\n\nclean:\n\trm -f %s *.o core",PName.c_str());
@@ -398,7 +398,7 @@ CWindow2::MakeList (bool prompt)
 //      filename = dirname + "/p" + PName + ".cc";
       filename = dirname + "/p" + basename + ".cc";
       file=fopen (filename.c_str (),"w");
-      fprintf(file,"#include<lxrad/lxrad.h>\n");
+      fprintf(file,"#include<lxrad.h>\n");
       for (int c = 1; c <= PNW; c++)
 	fprintf(file,"#include\"%s%i.h\"\n",PName.c_str(),c);
       fprintf(file,"//Program____________________________________________________________\n");
@@ -416,7 +416,7 @@ CWindow2::MakeList (bool prompt)
 	{
 	  //new file              
 	  file=fopen (filename.c_str (),"w");
-	  fprintf(file, "#ifndef CWINDOW%i \n#define CWINDOW%i\n\n#include<lxrad/lxrad.h>\n\nclass CWindow%i:public CWindow\n{\n  public:\n",WN,WN,WN);
+	  fprintf(file, "#ifndef CWINDOW%i \n#define CWINDOW%i\n\n#include<lxrad.h>\n\nclass CWindow%i:public CWindow\n{\n  public:\n",WN,WN,WN);
 	  List = GetContext ();
 	  for (uint a = 0; a < List.GetLinesCount (); a++)
 	    {
@@ -540,7 +540,7 @@ CWindow2::MakeList (bool prompt)
 	{
 	  //new file              
 	  file=fopen (filename.c_str (),"w");
-	 // fprintf(file, "#ifndef CWINDOW%i \n#define CWINDOW%i\n\n#include<lxrad/lxrad.h>\n\nclass CWindow%i:public CWindow\n{\n  public:\n",WN,WN,WN);
+	 // fprintf(file, "#ifndef CWINDOW%i \n#define CWINDOW%i\n\n#include<lxrad.h>\n\nclass CWindow%i:public CWindow\n{\n  public:\n",WN,WN,WN);
 	  List = GetContext ();
 	  for (uint a = 0; a < List.GetLinesCount (); a++)
 	    {
