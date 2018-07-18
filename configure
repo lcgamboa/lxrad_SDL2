@@ -4102,6 +4102,7 @@ fi
 if test x"$no_x" != x; then
   as_fn_error $? "X Window System not found" "$LINENO" 5
 fi
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pthread_create in -lpthread" >&5
 $as_echo_n "checking for pthread_create in -lpthread... " >&6; }
 if ${ac_cv_lib_pthread_pthread_create+:} false; then :
@@ -4148,6 +4149,7 @@ else
   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: libpthread Not Found!" >&5
 $as_echo "$as_me: WARNING: libpthread Not Found!" >&2;}
 fi
+
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for imlib_load_image in -lImlib2" >&5
 $as_echo_n "checking for imlib_load_image in -lImlib2... " >&6; }
@@ -4238,7 +4240,100 @@ else
 fi
 
 else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for XOpenDisplay in -lX11" >&5
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for imlib_context_set_image in -lImlib2" >&5
+$as_echo_n "checking for imlib_context_set_image in -lImlib2... " >&6; }
+if ${ac_cv_lib_Imlib2_imlib_context_set_image+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lImlib2 $X_LIBS $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char imlib_context_set_image ();
+int
+main ()
+{
+return imlib_context_set_image ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_Imlib2_imlib_context_set_image=yes
+else
+  ac_cv_lib_Imlib2_imlib_context_set_image=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_Imlib2_imlib_context_set_image" >&5
+$as_echo "$ac_cv_lib_Imlib2_imlib_context_set_image" >&6; }
+if test "x$ac_cv_lib_Imlib2_imlib_context_set_image" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBIMLIB2 1
+_ACEOF
+
+  LIBS="-lImlib2 $LIBS"
+
+else
+  as_fn_error $? "libImlib2 Not Found!" "$LINENO" 5
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: libImlib2 Not Found!" >&5
+$as_echo "$as_me: WARNING: libImlib2 Not Found!" >&2;}
+fi
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for XpmReadFileToPixmap in -lXpm" >&5
+$as_echo_n "checking for XpmReadFileToPixmap in -lXpm... " >&6; }
+if ${ac_cv_lib_Xpm_XpmReadFileToPixmap+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lXpm  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char XpmReadFileToPixmap ();
+int
+main ()
+{
+return XpmReadFileToPixmap ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_Xpm_XpmReadFileToPixmap=yes
+else
+  ac_cv_lib_Xpm_XpmReadFileToPixmap=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_Xpm_XpmReadFileToPixmap" >&5
+$as_echo "$ac_cv_lib_Xpm_XpmReadFileToPixmap" >&6; }
+if test "x$ac_cv_lib_Xpm_XpmReadFileToPixmap" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBXPM 1
+_ACEOF
+LIBS="-lXpm $LIBS"
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for XOpenDisplay in -lX11" >&5
 $as_echo_n "checking for XOpenDisplay in -lX11... " >&6; }
 if ${ac_cv_lib_X11_XOpenDisplay+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -4285,7 +4380,8 @@ else
   as_fn_error $? "libX11 Not Found!" "$LINENO" 5
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for XpmReadFileToPixmap in -lXpm" >&5
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for XpmReadFileToPixmap in -lXpm" >&5
 $as_echo_n "checking for XpmReadFileToPixmap in -lXpm... " >&6; }
 if ${ac_cv_lib_Xpm_XpmReadFileToPixmap+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -4333,8 +4429,8 @@ else
 $as_echo "$as_me: WARNING: libXpm Not Found!" >&2;}
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: libImlib2 Not Found!" >&5
-$as_echo "$as_me: WARNING: libImlib2 Not Found!" >&2;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: libXpm Not Found!" >&5
+$as_echo "$as_me: WARNING: libXpm Not Found!" >&2;}
 fi
 
 
