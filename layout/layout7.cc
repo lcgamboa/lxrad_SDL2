@@ -18,13 +18,13 @@ CWindow7::StringListMouseButtonRelease(CControl * control, uint button, uint x, 
   
   if(Window7.cl != NULL)
   {	  
-    Window7.list1.SetItens(Window7.cl->GetItens());
+    Window7.list1.SetItems(Window7.cl->GetItems());
     Window7.ShowExclusive(); 
   };
   
   if(Window7.cc != NULL)
   {	  
-    Window7.list1.SetItens(Window7.cc->GetItens());
+    Window7.list1.SetItems(Window7.cc->GetItems());
     Window7.ShowExclusive(); 
   };
 };
@@ -48,15 +48,15 @@ CWindow7::button2_MouseButtonRelease(CControl * control, uint button, uint x, ui
 void
 CWindow7::button3_MouseButtonRelease(CControl * control, uint button, uint x, uint y,uint state)
 {
-  list1.DeleteItens();
+  list1.DeleteItems();
 };
 
 void
 CWindow7::button4_MouseButtonRelease(CControl * control, uint button, uint x, uint y,uint state)
 {
   HideExclusive(); 
-  if(cl)cl->SetItens(list1.GetItens());
-  if(cc)cc->SetItens(list1.GetItens());
+  if(cl)cl->SetItems(list1.GetItems());
+  if(cc)cc->SetItems(list1.GetItems());
 };
 
 

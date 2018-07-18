@@ -47,6 +47,7 @@ public:
   bool SetPixmapData (char** data);
   String GetPixmapFileName (void);
   void WritePixmapToFile (String filename);
+  void WriteImgToFile (String filename);
   void Create (CControl * control);
   void Destroy (void);
   void SetWidth (uint Width);
@@ -55,7 +56,8 @@ public:
   void SetTransparent (bool);
   CStringList GetContext (void);
   void SetContext (CStringList context);
-  void SetImgFileName(String iname);
+  bool SetImgFileName(String iname);
+  bool SetImgFileName(String iname, float sx, float sy);
 };
 
 #endif

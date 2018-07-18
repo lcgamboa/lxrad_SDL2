@@ -35,9 +35,9 @@ CList::CList (void)
   Scroll->SetFOwner (this);
   Scroll->EvMouseButtonPress = EVMOUSEBUTTONPRESS & CList::ScrollOnButtonPress;
   Scroll->EvOnChangePosition = EVONCHANGEPOSITION & CList::ScrollOnChangePosition;
-  Itens = NULL;
-  ItensCount = -1;
-  ItensList.Clear ();
+  Items = NULL;
+  ItemsCount = -1;
+  ItemsList.Clear ();
   SetX (10);
   SetY (10);
   SetWidth (160);
@@ -52,12 +52,12 @@ CList::CList (void)
 
 CList::~CList (void)
 {
-  if (Itens)
+  if (Items)
     {
-      delete[]Itens;
-      Itens = NULL;
+      delete[]Items;
+      Items = NULL;
     };
-  ItensCount = -1;
+  ItemsCount = -1;
 };
 
 void
@@ -73,7 +73,7 @@ CList::Draw ()
 {
   if ((!Visible)||(Paint == NULL))
     return;
-  int lcount = ItensList.GetLinesCount ();
+  int lcount = ItemsList.GetLinesCount ();
   int ssize = Scroll->GetWidth ();
 
   Paint->InitDraw (this);
@@ -84,23 +84,23 @@ CList::Draw ()
 
   if(GChanges)
   {
-  DeleteItens (false);
-  if ((ItensCount == -1) && (Height > 20) && (lcount > 0))
+  DeleteItems (false);
+  if ((ItemsCount == -1) && (Height > 20) && (lcount > 0))
     {
       GChanges=false;	  
-      AddStringItem (ItensList.GetLine (0));
-      int h = Itens[0]->GetTextHeight ();
+      AddStringItem (ItemsList.GetLine (0));
+      int h = Items[0]->GetTextHeight ();
       int y = 0;
-      Itens[0]->SetVisible (false, false);
-      Itens[0]->SetY (y);
-      Itens[0]->SetVisible (true, false);
+      Items[0]->SetVisible (false, false);
+      Items[0]->SetY (y);
+      Items[0]->SetVisible (true, false);
       for (int c = 1; (h * c + h) < (int) Height; c++)
 	{
 	  AddStringItem ("");
 	  int y = h * c;
-	  Itens[c]->SetVisible (false, false);
-	  Itens[c]->SetY (y);
-	  Itens[c]->SetVisible (true, false);
+	  Items[c]->SetVisible (false, false);
+	  Items[c]->SetY (y);
+	  Items[c]->SetVisible (true, false);
 	};
       
       Scroll->SetVisible (false, false);
@@ -111,17 +111,17 @@ CList::Draw ()
   };
       
   Scroll->SetVisible (false, false);
-  Scroll->SetRange (lcount - ItensCount);
+  Scroll->SetRange (lcount - ItemsCount);
   Scroll->SetVisible (true, false);
   
-  for (int c = 0; c <= ItensCount; c++)
+  for (int c = 0; c <= ItemsCount; c++)
     {
-      Itens[c]->SetVisible (false, false);
+      Items[c]->SetVisible (false, false);
       if(c < lcount)
-        Itens[c]->SetText (ItensList.GetLine (c + Scroll->GetPosition ()));
+        Items[c]->SetText (ItemsList.GetLine (c + Scroll->GetPosition ()));
       else
-        Itens[c]->SetText ("");
-      Itens[c]->SetVisible (true, false);
+        Items[c]->SetText ("");
+      Items[c]->SetVisible (true, false);
     };
 
   CControl::Draw ();
@@ -129,15 +129,15 @@ CList::Draw ()
   if (ShowSelection)
     {
       if ((SelectedItem - Scroll->GetPosition () >= 0) &&
-	  (SelectedItem - Scroll->GetPosition () <= ItensCount))
+	  (SelectedItem - Scroll->GetPosition () <= ItemsCount))
 	{
 	  SetColor ("dark blue");
 	  XColor color =
-	    Itens[SelectedItem - Scroll->GetPosition ()]->GetColor ();
-	  Itens[SelectedItem - Scroll->GetPosition ()]->SetColor ("white");
-	  Itens[SelectedItem - Scroll->GetPosition ()]->Draw ();
+	    Items[SelectedItem - Scroll->GetPosition ()]->GetColor ();
+	  Items[SelectedItem - Scroll->GetPosition ()]->SetColor ("white");
+	  Items[SelectedItem - Scroll->GetPosition ()]->Draw ();
 	  SetColor ("white");
-	  Itens[SelectedItem - Scroll->GetPosition ()]->SetColor (color);
+	  Items[SelectedItem - Scroll->GetPosition ()]->SetColor (color);
 	};
       Update ();
     };
@@ -153,7 +153,7 @@ CStringList
 CList::GetContext (void)
 {
   CControl::GetContext ();
-  Context.AddLine ("Itens=" + GetItens () + ";StringList");
+  Context.AddLine ("Items=" + GetItems () + ";StringList");
   Context.AddLine ("OnChangeItem=" + btoa (GetEv ()) + ";event");
   return Context;
 };
@@ -168,8 +168,8 @@ CList::SetContext (CStringList context)
       String line = Context.GetLine (i);
       String arg;
       eqparse (line, arg);
-      if (line.compare ("Itens") == 0)
-	  SetItens (arg);
+      if (line.compare ("Items") == 0)
+	  SetItems (arg);
       if (line.compare ("OnChangeItem") == 0)
 	SetEv (atob (arg));
     };
@@ -180,26 +180,26 @@ CList::SetContext (CStringList context)
 //propriedades
 
 void
-CList::SetItens (String litens)
+CList::SetItems (String litens)
 {
   int f = 0;
-  ItensList.Clear ();
+  ItemsList.Clear ();
   while (f + 1 <= (int) litens.size ())
     {
       f = litens.find (",");
-      ItensList.AddLine (litens.substr (0, f));
+      ItemsList.AddLine (litens.substr (0, f));
       litens = litens.substr (f + 1, litens.size ());
     };
   Draw ();
 };
 
 String
-CList::GetItens (void)
+CList::GetItems (void)
 {
   String list = "";
-  for (uint c = 0; c < ItensList.GetLinesCount (); c++)
+  for (uint c = 0; c < ItemsList.GetLinesCount (); c++)
     {
-      list += ItensList.GetLine (c) + ",";
+      list += ItemsList.GetLine (c) + ",";
     };
   return list;
 };
@@ -213,33 +213,33 @@ CList::AddStringItem (String text)
   item->SetCanExecuteEvent (true);
   item->SetX (5);
   item->SetY (5);
-  item->SetTag (ItensCount + 1);
+  item->SetTag (ItemsCount + 1);
   item->SetWidth (Width - Scroll->GetWidth () - 10);
   item->SetVisible (false, false);
   item->SetFOwner (this);
   item->EvMouseButtonPress = EVMOUSEBUTTONPRESS & CList::ItemButtonPress;
   CreateChild (item);
-  ItensCount++;
-  CLabel **AItens = new CLabel *[ItensCount + 1];
-  for (int c = 0; c < ItensCount; c++)
-    AItens[c] = Itens[c];
-  AItens[ItensCount] = item;
-  if (Itens)
-    delete[]Itens;
-  Itens = AItens;
+  ItemsCount++;
+  CLabel **AItems = new CLabel *[ItemsCount + 1];
+  for (int c = 0; c < ItemsCount; c++)
+    AItems[c] = Items[c];
+  AItems[ItemsCount] = item;
+  if (Items)
+    delete[]Items;
+  Items = AItems;
 };
 
 void
 CList::AddItem (String text)
 {
-  ItensList.AddLine (text);
+  ItemsList.AddLine (text);
   Draw ();
 };
 
 String CList::GetItem (int item)
 {
-  if (item <= (int) ItensList.GetLinesCount ())
-    return ItensList.GetLine (item);
+  if (item <= (int) ItemsList.GetLinesCount ())
+    return ItemsList.GetLine (item);
   else
     return '\0';
 };
@@ -247,15 +247,15 @@ String CList::GetItem (int item)
 void
 CList::SetItem (int item,String sitem)
 {
-  if (item <= (int) ItensList.GetLinesCount ())
-    ItensList.SetLine (sitem,item);
+  if (item <= (int) ItemsList.GetLinesCount ())
+    ItemsList.SetLine (sitem,item);
 };
 
 void
 CList::SetSelectedItemN (int item)
 {
   SelectedItem = item;
-  if (ItensCount != -1)
+  if (ItemsCount != -1)
     {
       Draw ();
     };
@@ -266,12 +266,12 @@ void
 CList::SetSelectedItem (String item)
 {
 
-  for (uint c = 0; c < ItensList.GetLinesCount (); c++)
+  for (uint c = 0; c < ItemsList.GetLinesCount (); c++)
     {
-      if (ItensList.GetLine (c).compare (item) == 0)
+      if (ItemsList.GetLine (c).compare (item) == 0)
 	{
 	  SelectedItem = c;
-	  if (ItensCount != -1)
+	  if (ItemsCount != -1)
 	    {
 	      Draw ();
 	    };
@@ -285,7 +285,7 @@ CList::SetSelectedItem (String item)
 int
 CList::GetSelectedItemN (void)
 {
-  if (((uint) (SelectedItem) < ItensList.GetLinesCount ()))
+  if (((uint) (SelectedItem) < ItemsList.GetLinesCount ()))
     {
       return SelectedItem;
     }
@@ -297,9 +297,9 @@ CList::GetSelectedItemN (void)
 
 String CList::GetSelectedItem (void)
 {
-  if (((uint) (SelectedItem) < ItensList.GetLinesCount ()))
+  if (((uint) (SelectedItem) < ItemsList.GetLinesCount ()))
     {
-      return ItensList.GetLine (SelectedItem);
+      return ItemsList.GetLine (SelectedItem);
     }
   else
     {
@@ -308,9 +308,9 @@ String CList::GetSelectedItem (void)
 };
 
 int
-CList::GetItensCount (void)
+CList::GetItemsCount (void)
 {
-  return ItensList.GetLinesCount ();
+  return ItemsList.GetLinesCount ();
 };
 
 void
@@ -318,7 +318,7 @@ CList::DeleteItem (int item)
 {
   if (item >= 0)
     {
-      ItensList.DelLine (item);
+      ItemsList.DelLine (item);
       Scroll->SetVisible (false, false);
       Scroll->SetPosition (0);
       Scroll->SetVisible (true, false);
@@ -327,25 +327,25 @@ CList::DeleteItem (int item)
 };
 
 void
-CList::DeleteItens (bool clean)
+CList::DeleteItems (bool clean)
 {
   GChanges=true;	
-  if (Itens != NULL)
+  if (Items != NULL)
     {
-      for (int c = 0; c <= ItensCount; c++)
+      for (int c = 0; c <= ItemsCount; c++)
 	{
-	  Itens[c]->SetVisible (false, false);
-	  DestroyChild (Itens[c]);
-	  Itens[c] = NULL;
+	  Items[c]->SetVisible (false, false);
+	  DestroyChild (Items[c]);
+	  Items[c] = NULL;
 	};
-      delete[]Itens;
-      Itens = NULL;
-      ItensCount = -1;
+      delete[]Items;
+      Items = NULL;
+      ItemsCount = -1;
     };
   if (clean)
     {
       Scroll->SetPosition (0);
-      ItensList.Clear ();
+      ItemsList.Clear ();
       SelectedItem = -1;
       Draw ();
     };
@@ -368,10 +368,10 @@ CList::SetY (int y)
 void
 CList::SetWidth (uint width)
 {
-  if (ItensCount >= 0)
+  if (ItemsCount >= 0)
     {
-      for (int c = 0; c < ItensCount; c++)
-	Itens[c]->SetWidth (width - Scroll->GetWidth () - 10);
+      for (int c = 0; c < ItemsCount; c++)
+	Items[c]->SetWidth (width - Scroll->GetWidth () - 10);
     };
   Scroll->SetX (width - Scroll->GetWidth ());
   CControl::SetWidth (width);
@@ -385,17 +385,17 @@ CList::SetHeight (uint height)
 };
 
 void
-CList::LoadItensFromFile (String fname)
+CList::LoadItemsFromFile (String fname)
 {
-  DeleteItens ();
-  ItensList.LoadFromFile (fname);
+  DeleteItems ();
+  ItemsList.LoadFromFile (fname);
   Draw();
 };
 
 void
-CList::SaveItensToFile (String fname)
+CList::SaveItemsToFile (String fname)
 {
-  ItensList.SaveToFile (fname);
+  ItemsList.SaveToFile (fname);
 };
 
 void
@@ -433,10 +433,10 @@ CList::ItemButtonPress (CControl * control, uint button, uint x, uint y,
     {
       XColor color;
       if ((SelectedItem - Scroll->GetPosition () >= 0) &&
-	  (SelectedItem - Scroll->GetPosition () <= ItensCount))
+	  (SelectedItem - Scroll->GetPosition () <= ItemsCount))
 	{
 	  SetColor ("white");
-	  Itens[SelectedItem - Scroll->GetPosition ()]->Draw ();
+	  Items[SelectedItem - Scroll->GetPosition ()]->Draw ();
 	};
       SetColor ("dark blue");
       color = control->GetColor ();

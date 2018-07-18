@@ -1,0 +1,19 @@
+CC = g++
+FLAGS = -Wall -ggdb -I../../include/  -D_REENTRANT -fpermissive
+
+OBJS = peditor.o editor1.o  
+
+
+all: $(OBJS)
+	$(CC) $(FLAGS) $(OBJS) -oeditor ../../lib/liblxrad.a -lX11 -lXpm
+
+%.o: %.cc
+	$(CC) -c $(FLAGS) $< 
+
+run: all
+	./editor
+
+install:
+
+clean:
+	rm -f editor *.o core

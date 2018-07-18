@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -28,9 +28,9 @@
 #include"../include/cmessage.h"
 
 
-#ifdef HAVE_LIBIMLIB
-#include<Imlib.h>
-extern ImlibData* AID;
+#ifdef HAVE_LIBIMLIB2
+#include<Imlib2.h>
+//extern ImlibData* AID;
 #endif
 
 #ifdef HAVE_LIBXPM    
@@ -225,6 +225,9 @@ CDraw::SetPixmapFileName (String filename)
     {
       int rc = -1;
       
+#ifdef HAVE_LIBIMLIB2
+     Imlib_Image image;
+#else
 #ifdef HAVE_LIBXPM    
       XpmAttributes xpmAttributes;
       
@@ -232,6 +235,7 @@ CDraw::SetPixmapFileName (String filename)
       xpmAttributes.closeness = 65535;
       xpmAttributes.valuemask =
 	XpmSize | XpmReturnPixels | XpmColormap | XpmCloseness;
+#endif
 #endif
 
       CPixmap =
@@ -242,6 +246,19 @@ CDraw::SetPixmapFileName (String filename)
 	XCreatePixmap (Win->GetADisplay (), Win->GetWWindow (), Width, Height,
 		       1);
 
+#ifdef HAVE_LIBIMLIB2
+     image = imlib_load_image_immediately_without_cache ((char *) FileName.c_str ());
+     if (image)
+     { 
+       /* set the image we loaded as the current context image to work on */
+       imlib_context_set_image(image);
+       imlib_context_set_drawable(CPixmap);
+       imlib_context_set_mask(CMask);
+       imlib_render_image_on_drawable(0,0);
+       imlib_free_image();
+       rc=0;
+     }
+#else     
 #ifdef HAVE_LIBXPM    
       rc =
 	XpmReadFileToPixmap (Win->GetADisplay (), Win->GetWWindow (),
@@ -250,11 +267,7 @@ CDraw::SetPixmapFileName (String filename)
       if(rc == 0)
       XpmFreeAttributes (&xpmAttributes);
 #endif
-
-#ifdef HAVE_LIBIMLIB    
-      rc= Imlib_load_file_to_pixmap(AID, (char *) FileName.c_str (), &CPixmap, &CMask); 
-      rc-=1;
-#endif      
+#endif
 
       Canvas.SetDrawIn(CPixmap);
       
@@ -273,7 +286,7 @@ CDraw::SetPixmapFileName (String filename)
 	};
     };
   return false;
-};
+}
 
 
 bool
@@ -308,11 +321,12 @@ CDraw::SetPixmapData (char **data)
 				 data, &CPixmap, &CMask, &xpmAttributes);
       if(rc == 0)XpmFreeAttributes (&xpmAttributes);
 #endif
+/*      
 #ifdef HAVE_LIBIMLIB    
       rc= Imlib_data_to_pixmap(AID, data, &CPixmap, &CMask); 
       rc-=1;
 #endif
-
+*/
       Canvas.SetDrawIn(CPixmap);
       if (rc == 0)
 	{
@@ -351,8 +365,90 @@ CDraw::WritePixmapToFile (String filename)
 };
 
 
-void 
+bool 
 CDraw::SetImgFileName(String iname)
 {
-   SetPixmapFileName (iname);
+  return SetPixmapFileName (iname);
+}
+  
+bool 
+CDraw::SetImgFileName(String filename, float sx, float sy)
+{
+  FileName = filename;
+  if (CPixmap != 0)
+    XFreePixmap (Win->GetADisplay (), CPixmap);
+  CPixmap=0;
+ 
+  if ((Win) && (FileName.size () > 0))
+    {
+      int rc = -1;
+      
+#ifdef HAVE_LIBIMLIB2
+     Imlib_Image image;
+#else
+#ifdef HAVE_LIBXPM    
+      XpmAttributes xpmAttributes;
+      
+      xpmAttributes.colormap = XDefaultColormap (Win->GetADisplay (), 0);
+      xpmAttributes.closeness = 65535;
+      xpmAttributes.valuemask =
+	XpmSize | XpmReturnPixels | XpmColormap | XpmCloseness;
+#endif
+#endif
+
+      CPixmap =
+	XCreatePixmap (Win->GetADisplay (), Win->GetWWindow (), Width, Height, *(Win->GetADepth()));
+      if (CMask != 0)
+	XFreePixmap (Win->GetADisplay (), CMask);
+      CMask =
+	XCreatePixmap (Win->GetADisplay (), Win->GetWWindow (), Width, Height,
+		       1);
+
+#ifdef HAVE_LIBIMLIB2
+     image = imlib_load_image_immediately_without_cache ((char *) FileName.c_str ());
+     if (image)
+     { 
+       /* set the image we loaded as the current context image to work on */
+       imlib_context_set_image(image);
+       imlib_context_set_drawable(CPixmap);
+       imlib_context_set_mask(CMask);
+       imlib_render_image_on_drawable_at_size(0,0,Width,Height);
+       imlib_free_image();
+       rc=0;
+     }
+#else     
+#ifdef HAVE_LIBXPM    
+      rc =
+	XpmReadFileToPixmap (Win->GetADisplay (), Win->GetWWindow (),
+			     (char *) FileName.c_str (), &CPixmap, &CMask,
+			     &xpmAttributes);
+      if(rc == 0)
+      XpmFreeAttributes (&xpmAttributes);
+#endif
+#endif
+
+      Canvas.SetDrawIn(CPixmap);
+      
+      if (rc == 0)
+	{
+	  Draw ();
+	  return true;
+	}
+      else
+	{
+	  Message ("Warning: Load pixmap " + FileName + " failed");
+	  FileName = "";
+          Canvas.SetDrawIn(0);
+
+	  return false;
+	};
+    };
+  return false;
+}
+
+void 
+CDraw::WriteImgToFile (String filename)
+{
+//FIXME
+  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
 }

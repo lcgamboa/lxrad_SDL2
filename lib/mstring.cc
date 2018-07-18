@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2000  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2000-2018  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -25,11 +25,12 @@
 
 #include"../include/mstring.h"
 
-#include"../include/cutils.h"
+#include"../include/lxutils.h"
 
 String
 eqparse (String & str, String & arg)
 {
+  //FIXME substr	
   String temp = str;
   int pos1 = str.find ("=");
   str = temp.substr (0, pos1);
@@ -54,6 +55,7 @@ strndel (const String & str, uint n)
 String
 strnadd (const String & str, char c, uint n)
 {
+  //FIXME substr	
   String temp;
   temp = str.substr (0, n) + c + str.substr (n, str.size ());
   return temp;
@@ -172,7 +174,6 @@ fgetline (FILE* file, String & str)
   };
 };
 
-
 #ifdef NO_STL
 //String _____________________________________________________________
 
@@ -184,7 +185,8 @@ String::String (void)
 
 String::String (const String & str)
 {
-  if (str.Str != NULL)
+  
+   if (str.Str != NULL)
     {
       Str = new char[strlen (str.Str) + 1];
       
@@ -219,6 +221,7 @@ String::String (const char *str)
     Str = NULL;
 };
 
+
 String::String (const char *str, int size)
 {
   if (str)
@@ -230,6 +233,7 @@ String::String (const char *str, int size)
   else
     Str = NULL;
 };
+
 
 String::~String (void)
 {
@@ -247,6 +251,24 @@ String::c_str (void) const
     return Str;
   else
     return NULL;
+}
+
+const char *
+String::char_str (void) const
+{
+  if (Str)
+    return Str;
+  else
+    return NULL;
+}
+
+int
+String::Cmp (const char *str) const
+{
+  if ((Str) && (str))
+    return strcmp (Str, str);
+  else
+    return -1;
 };
 
 int
@@ -304,17 +326,17 @@ String::erase (uint start, int num = 1)
 };
 
 String
-String::substr (uint start, uint end) const
+String::substr (uint start, uint len) const
 {
-  if ((start < length ()) && (start < end))
+  if (start < length ())
     {
       String temp;
       char *tmp;
-      if (end > length ())
-	end = length ();
-      tmp = new char[end - start + 1];
-      strncpy (tmp, Str + start, end - start);
-      tmp[end - start] = '\0';
+      if (start+len > length ())
+	len = length ()-start;
+      tmp = new char[len + 1];
+      strncpy (tmp, Str + start, len);
+      tmp[len] = '\0';
       temp = tmp;
       delete[]tmp;
       return temp;
@@ -357,7 +379,13 @@ String::find (const String & str) const
     }
   else
     return 0;
-};
+}
+
+int
+String::Contains (const String & str) const
+{
+  return find(str);	
+}
 
 char *
 strrstr (const char *str1, const char *str2)
@@ -461,6 +489,56 @@ String & String::operator = (const char *str)
     Str = NULL;
   return *this;
 };
+  
+String 
+String::Format(const char *fmt, ...)
+{
+  va_list arg;
+  char tmp[256];	
+  if (Str != NULL)
+    delete[]Str;
+  
+  if (fmt != NULL)
+    {
+      va_start(arg, fmt);
+      vsprintf(tmp, fmt, arg);
+      va_end(arg);
+      Str = new char[strlen (tmp) + 1];
+      strcpy (Str, tmp);
+    }
+  else
+    Str = NULL;
+  return *this;
+};
+  
+
+String 
+String::Printf(const char *fmt, ...) 
+{
+  va_list arg;
+  char tmp[256];	
+  if (Str != NULL)
+    delete[]Str;
+  
+  if (fmt != NULL)
+    {
+      va_start(arg, fmt);
+      vsprintf(tmp, fmt, arg);
+      va_end(arg);
+      Str = new char[strlen (tmp) + 1];
+      strcpy (Str, tmp);
+    }
+  else
+    Str = NULL;
+  return *this;
+}
+
+String
+String::FromAscii(char * str)
+{
+  String temp(str); 	
+  return temp;
+}
 
 String String::operator + (const String & str)
 {
@@ -703,7 +781,21 @@ operator + (const char &str1, const String & str2)
 	return str2;
     };
   return '\0';
-};
+}
+
+
+String::operator const char*() const
+{
+  return Str;
+}
+  
+bool  String::operator == (const String & str)
+{
+  if(strcmp(Str,str))
+   return false;
+  else
+   return true;	  
+}
 
 /*
 ostream & operator << (ostream & os, const String & str)
@@ -749,7 +841,10 @@ CStringList::Create ()
 String
 CStringList::GetLine (uint linen) const
 {
-  return Lines[linen];
+  if((int)linen <= LinesCount)	
+    return Lines[linen];
+  else
+    return "";
 };
 
 void
@@ -832,6 +927,7 @@ bool CStringList::LoadFromFile (String fname)
       while (fgetline (file, line))
 	AddLine (line);
       fclose(file);
+      return true;
     }
   else
     eprint( "File not found!\n");

@@ -989,7 +989,7 @@ CWindow2::ListPropierties (CControl * control)
   Window3.DestroyChilds ();
   Window4.DestroyChilds ();
  
-  Window6.combo1.DeleteItens();
+  Window6.combo1.DeleteItems();
   for(int i=0;i <= GetChildCount();i++)
      Window6.combo1.AddItem(GetChild(i)->GetName());
   Window6.combo1.AddItem(GetName());

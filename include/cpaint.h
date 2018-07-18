@@ -41,6 +41,8 @@ private:
   CControl *Owner;
   int RX,RY;
   bool DoCalcRXY;
+  float Scalex;
+  float Scaley;
 public:
     GC Agc;
     CPen Pen;
@@ -52,6 +54,7 @@ public:
   void InitDraw (CControl * control);
   void DrawControl (CControl * control);
   void Create (CControl * control);
+  void Create (lxBitmap *bitmap);
   void Destroy (void);
   void SetFont (CControl * control);
   void SetPen (int function);
@@ -63,16 +66,29 @@ public:
   void Frame (int x, int y, int w, int h, uint wb = 1);
   void LowerFrame (int x, int y, int w, int h, uint wb = 1);
   void RaiserFrame (int x, int y, int w, int h, uint wb = 1);
-  void Text (int x, int y, String text);
+  void Text (String text, int x, int y);
+  void RotatedText (String str, int x, int y, int angle);
   void ImgText (int x, int y, String text);
   void PutPixmap (int x,int y, int w, int h,Pixmap pixmap);
+  void PutBitmap (lxBitmap* bitmap,int x,int y);
+  void SetBitmap(lxBitmap * bitmap,double xs, double ys);
+  void SetFont (lxFont font);
 
   void SetLineWidth(int w);
   void Init(void);
+  void Init(float sx, float sy);
+  void ChangeScale(float sx, float sy);
   void End(void);
+  void SetColor(unsigned char r,unsigned char g, unsigned char b); 
   void SetFgColor(unsigned char r,unsigned char g, unsigned char b); 
   void SetBgColor(unsigned char r,unsigned char g, unsigned char b); 
+  void SetFgColor(String cname); 
+  void SetBgColor(String cname); 
+  void SetFgColor(lxColor c); 
+  void SetBgColor(lxColor c); 
   void Rectangle (bool filled, int x, int y, int w, int h);
+  void Circle (bool filled, int x, int y, int radius);
+  void Polygon(bool filed, lxPoint * points, int npoints);
 };
 
 #endif

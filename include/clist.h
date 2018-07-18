@@ -37,9 +37,9 @@ class CList:public CControl
 {
 protected:
   CScroll * Scroll;
-  CLabel **Itens;
-  int ItensCount;
-  CStringList ItensList;
+  CLabel **Items;
+  int ItemsCount;
+  CStringList ItemsList;
   int SelectedItem;
   bool ShowSelection;
   void change_item (void);
@@ -53,20 +53,20 @@ public:
   CStringList GetContext (void);
   void SetContext (CStringList context);
   //propiedades
-  void SetItens (String litens);
-  String GetItens (void);
+  void SetItems (String litens);
+  String GetItems (void);
   void AddItem (String text);
-  void LoadItensFromFile (String fname);
-  void SaveItensToFile (String fname);
+  void LoadItemsFromFile (String fname);
+  void SaveItemsToFile (String fname);
   String GetItem (int item);
   void SetItem(int item,String sitem);
   void SetSelectedItemN (int item);
   void SetSelectedItem (String item);
   int GetSelectedItemN (void);
   String GetSelectedItem (void);
-  int GetItensCount (void);
+  int GetItemsCount (void);
   void DeleteItem (int item);
-  void DeleteItens (bool clean=true);
+  void DeleteItems (bool clean=true);
   void SetX (int x);
   void SetY (int y);
   void SetWidth (uint width);

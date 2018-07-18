@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 
 #include"../config.h"
 #include"../include/ctimer.h"
-
+#include <sys/time.h>
 
 #ifdef HAVE_LIBPTHREAD	
 #include<pthread.h>
@@ -117,14 +117,18 @@ extern pthread_mutex_t Display_Lock;
 void *
 thread1 (void *arg)
 {
+  struct timeval  tv1, tv2;
   pthread_setcanceltype (PTHREAD_CANCEL_ASYNCHRONOUS,NULL);  
   CTimer *timer = (CTimer *) arg;
+  usleep (timer->GetTime ()*1000);
   for (;;)
     {
-      usleep (timer->GetTime ()*1000);
       pthread_mutex_lock (&Display_Lock);                   
+      gettimeofday(&tv1, NULL);
       timer->on_time ();
+      gettimeofday(&tv2, NULL);	
       pthread_mutex_unlock (&Display_Lock);                   
+      usleep ((timer->GetTime ()*1000) -((tv2.tv_usec - tv1.tv_usec) + 1000000L*(tv2.tv_sec - tv1.tv_sec)));
     };
 };
 #endif

@@ -28,7 +28,7 @@
 
 //Pixmap____________________________________________________________
 
-static char *darrow[] = {
+static const char *darrow[] = {
   "16 16 3 1",
   " 	c None",
   ".	c #FFFFFF",
@@ -62,7 +62,7 @@ CCombo::CCombo (void)
   edit1.SetFOwner (this);
   edit1.EvKeyboardPress = EVKEYBOARDPRESS & CCombo::EditKeyPress;
 
-  tbutton1.SetPixmapData (darrow);
+  tbutton1.SetPixmapData ((char **)darrow);
   tbutton1.SetFOwner (this);
   tbutton1.EvMouseButtonPress = EVMOUSEBUTTONPRESS & CCombo::TButtonPress;
 
@@ -76,6 +76,7 @@ CCombo::CCombo (void)
   CreateChild (&edit1);
   CreateChild (&tbutton1);
   //CreateChild (&dlist1);
+  EvOnComboChange=NULL;
 };
 
 
@@ -131,15 +132,15 @@ CCombo::AddItem (String text)
 };
 
 void
-CCombo::LoadItensFromFile (String fname)
+CCombo::LoadItemsFromFile (String fname)
 {
-  dlist1.list1.LoadItensFromFile (fname);
+  dlist1.list1.LoadItemsFromFile (fname);
 };
 
 void
-CCombo::SaveItensToFile (String fname)
+CCombo::SaveItemsToFile (String fname)
 {
-  dlist1.list1.SaveItensToFile (fname);
+  dlist1.list1.SaveItemsToFile (fname);
 };
 
 String
@@ -163,9 +164,9 @@ CCombo::GetSelectedItem (void)
 };
 
 int
-CCombo::GetItensCount (void)
+CCombo::GetItemsCount (void)
 {
-  return dlist1.list1.GetItensCount ();
+  return dlist1.list1.GetItemsCount ();
 };
 
 void
@@ -175,9 +176,9 @@ CCombo::DeleteItem (int item)
 };
 
 void
-CCombo::DeleteItens (void)
+CCombo::DeleteItems (void)
 {
-  dlist1.list1.DeleteItens ();
+  dlist1.list1.DeleteItems ();
 };
 
 CStringList 
@@ -185,7 +186,7 @@ CCombo::GetContext (void)
 {
   CControl::GetContext ();
   Context.AddLine ("Text=" + GetText () + ";String");
-  Context.AddLine ("Itens=" + GetItens () + ";StringList");
+  Context.AddLine ("Items=" + GetItems () + ";StringList");
   Context.AddLine ("OnComboChange=" + btoa (GetEv ()) + ";event");
   return Context;
 };
@@ -202,8 +203,8 @@ CCombo::SetContext (CStringList context)
       eqparse (line, arg);
       if (line.compare ("Text") == 0)
 	SetText (arg);
-      if (line.compare ("Itens") == 0)
-	SetItens (arg);
+      if (line.compare ("Items") == 0)
+	SetItems (arg);
       if (line.compare ("OnComboChange") == 0)
 	SetEv (atob (arg));
     };
@@ -223,15 +224,15 @@ CCombo::GetText(void)
 };
   
 void 
-CCombo::SetItens (String litens)
+CCombo::SetItems (String litens)
 {
-  dlist1.SetItens(litens);
+  dlist1.SetItems(litens);
 };
 
 String 
-CCombo::GetItens (void)
+CCombo::GetItems (void)
 {
-  return dlist1.GetItens();
+  return dlist1.GetItems();
 };
 
 
@@ -283,6 +284,12 @@ CCombo::TButtonPress (CControl * control, uint button, uint x, uint y,
 void
 CCombo::combo_change (void)
 {
-  if ((FOwner) && (OnComboChange))
-    (FOwner->*OnComboChange) (this);
+  if ((FOwner) && (EvOnComboChange))
+    (FOwner->*EvOnComboChange) (this);
 };
+  
+void 
+CCombo::SetReadOnly (bool r)
+{
+  edit1.SetReadOnly (r);
+}

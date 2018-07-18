@@ -15,7 +15,7 @@ CWindow9::SubMenuMouseButtonRelease(CControl * control, uint button, uint x, uin
   CControl *ctrl;	
   if(Window2.GetControlOnFocus () != NULL)
   {	
-    Window9.list1.DeleteItens();
+    Window9.list1.DeleteItems();
     Window9.list1.AddItem("NULL");
     for(int c=0;c <= Window2.GetChildCount();c++)
     {

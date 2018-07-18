@@ -2,54 +2,49 @@
 #include"imageview1.h"
 #include"imageview1_d.cc"
 
-CWindow1 Window1;
+CPWindow1 Window1;
 
 //Implementation
 
 
-
 void
-CWindow1::menu1_About_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
-{
-  Message("Create By LCGambôa");
-};
-
-void
-CWindow1::filelist1_OnFileSelected(CControl * control)
+CPWindow1::filelist1_EvFileListSelectFile(CControl * control)
 { 
   String file=filelist1.GetSelectedFile();
-
-  if((file.find(".gif") >0)||
-     (file.find(".jpg") >0)||
-     (file.find(".png") >0)||
-     (file.find(".tiff")>0)||
-     (file.find(".ps")  >0)||
-     (file.find(".bmp") >0)||
-     (file.find(".xpm") >0)||
-     (file.find(".ppm") >0)||
-     (file.find(".GIF") >0)||
-     (file.find(".JPG") >0)||
-     (file.find(".PNG") >0)||
-     (file.find(".TIFF")>0)||
-     (file.find(".PS")  >0)||
-     (file.find(".BMP") >0)||
-     (file.find(".XPM") >0)||
-     (file.find(".PPM") >0))
-     {
-        draw1.Eraser();
-        draw1.SetPixmapFileName(filelist1.GetSelectedFile());
-     };
+	
+  if((file.find(lxT(".gif")) >0)||
+     (file.find(lxT(".jpg")) >0)||
+     (file.find(lxT(".png")) >0)||
+     (file.find(lxT(".tiff"))>0)||
+     (file.find(lxT(".ps"))  >0)||
+     (file.find(lxT(".bmp")) >0)||
+     (file.find(lxT(".xpm")) >0)||
+     (file.find(lxT(".ppm")) >0)||
+     (file.find(lxT(".GIF")) >0)||
+     (file.find(lxT(".JPG")) >0)||
+     (file.find(lxT(".PNG")) >0)||
+     (file.find(lxT(".TIFF"))>0)||
+     (file.find(lxT(".PS"))  >0)||
+     (file.find(lxT(".BMP")) >0)||
+     (file.find(lxT(".XPM")) >0)||
+     (file.find(lxT(".PPM")) >0))
+       draw1.SetImgFileName(filelist1.GetSelectedFile());
 };
 
 void
-CWindow1::pmenu1_Exit_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::menu1_File_Exit_EvMenuActive(CControl * control)
 {
   WDestroy();
 };
 
 void
-CWindow1::_OnCreate(CControl * control)
+CPWindow1::menu1_Help_About_EvMenuActive(CControl * control)
 {
-  draw1.SetTransparent(true);
+  Message(lxT("Create By LCGamboa"));
 };
+
+
+
+
+
 

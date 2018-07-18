@@ -1,0 +1,19 @@
+CC = g++
+FLAGS = -Wall -ggdb -I../../include/  -D_REENTRANT -fpermissive
+
+OBJS = pLCDfont.o LCDfont1.o  
+
+
+all: $(OBJS)
+	$(CC) $(FLAGS) $(OBJS) -oLCDfont ../../lib/liblxrad.a -lX11 -lXpm -lpthread
+
+%.o: %.cc
+	$(CC) -c $(FLAGS) $< 
+
+run: all
+	./LCDfont
+
+install:
+
+clean:
+	rm -f LCDfont *.o core

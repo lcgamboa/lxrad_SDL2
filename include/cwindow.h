@@ -29,12 +29,12 @@
 #include"ccontrol.h"
 #include"cpaint.h"
 
-#define ONCREATE        (void(CControl::*)(CWindow*))
-#define ONDESTROY       (void(CControl::*)(CWindow*))
-#define ONSHOW          (void(CControl::*)(CWindow*))
-#define ONHIDE          (void(CControl::*)(CWindow*))
-#define ONENTER         (void(CControl::*)(CWindow*))
-#define ONLEAVE         (void(CControl::*)(CWindow*))
+#define EVONCREATE        (void(CControl::*)(CWindow*))
+#define EVONDESTROY       (void(CControl::*)(CWindow*))
+#define EVONSHOW          (void(CControl::*)(CWindow*))
+#define EVONHIDE          (void(CControl::*)(CWindow*))
+#define EVONENTER         (void(CControl::*)(CWindow*))
+#define EVONLEAVE         (void(CControl::*)(CWindow*))
 
 class CWindow:public CControl
 {
@@ -71,6 +71,7 @@ protected:
   void DestroyPixmap(void);
   bool PixmapBuffer;
 public:
+  bool HasMenu;//FIXME tornar privado
     CWindow (void);
    ~CWindow (void);
   void Draw (void);
@@ -92,8 +93,11 @@ public:
   XIC GetIC (void);
   void SetPixmapBuffer(bool pbuffer);
   bool GetPixmapBuffer(void);
+  bool LoadXMLContextAndCreateChilds(String fname);
+  bool GetCanExitExclusive(void);
 //propiedades
   Window GetWWindow (void);
+  CWindow* GetWWidget (void);
   Display *GetADisplay (void);
   int *GetADepth (void);
   void SetCanDestroy (bool candestroy);
@@ -126,12 +130,12 @@ public:
   virtual void on_enter (void);
   virtual void on_leave (void);
 
-  void (CControl::*OnCreate) (CWindow * win);
-  void (CControl::*OnDestroy) (CWindow * win);
-  void (CControl::*OnShow) (CWindow * win);
-  void (CControl::*OnHide) (CWindow * win);
-  void (CControl::*OnEnter) (CWindow * win);
-  void (CControl::*OnLeave) (CWindow * win);
+  void (CControl::*EvOnCreate) (CWindow * win);
+  void (CControl::*EvOnDestroy) (CWindow * win);
+  void (CControl::*EvOnShow) (CWindow * win);
+  void (CControl::*EvOnHide) (CWindow * win);
+  void (CControl::*EvOnEnter) (CWindow * win);
+  void (CControl::*EvOnLeave) (CWindow * win);
 };
 
 void XFreeTextProperty (XTextProperty & textp);

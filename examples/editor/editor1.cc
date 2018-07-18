@@ -2,42 +2,105 @@
 #include"editor1.h"
 #include"editor1_d.cc"
 
-CWindow1 Window1;
+CPWindow1 Window1;
 
 //Implementation
+
+/* XPM */
+static const char * blue_xpm[] = {
+"24 24 2 1",
+" 	c None",
+".	c #1500FF",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................"};
+
+/* XPM */
+static const char * red_xpm[] = {
+"24 24 2 1",
+" 	c None",
+".	c #FF0000",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................",
+"........................"};
+
 
 bool fig[100];
 
 
 void
-CWindow1::toolbuttonMouseButtonPress(CControl* control,uint button,uint x,uint y,uint mask)
+CPWindow1::toolbuttonMouseButtonPress(CControl* control,uint button,uint x,uint y,uint mask)
 {
+
   if(button == 1)
   {
     CToolButton* tbutton;
     tbutton=dynamic_cast<CToolButton*>(control);
     if(fig[tbutton->GetTag()])
     {	  
-      tbutton->SetColor("red");
+      tbutton->SetImgData((char**)red_xpm);
       fig[tbutton->GetTag()]=false;
     }  
     else 
     {	    
-      tbutton->SetColor("blue");
+      tbutton->SetImgData((char**)blue_xpm);
       fig[tbutton->GetTag()]=true;
     };
   };
+
 };
 
 
 void
-CWindow1::_OnCreate(CControl * control)
+CPWindow1::_EvOnCreate(CControl * control)
 {
   CToolButton* tbutton;
   for(int i=1;i<=100;i++)
   {
-    tbutton=dynamic_cast<CToolButton*>(Window1.GetChild(i));
-    tbutton->SetColor("red");
+    tbutton=dynamic_cast<CToolButton*>(Window1.GetChildByName(lxT("toolbutton")+itoa(i)));
+    tbutton->SetImgData((char**)red_xpm);
     tbutton->SetBorder(0);
     fig[tbutton->GetTag()]=false;
     tbutton->Draw();
@@ -45,51 +108,54 @@ CWindow1::_OnCreate(CControl * control)
 };
 
 void
-CWindow1::menu1_Limpar_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::menu1_Editar_Limpar_EvMenuActive(CControl * control)
 {
   CToolButton* tbutton;
   for(int i=1;i<=100;i++)
   {
-    tbutton=dynamic_cast<CToolButton*>(Window1.GetChild(i));
-    tbutton->SetColor("red");
+    tbutton=dynamic_cast<CToolButton*>(Window1.GetChildByName(lxT("toolbutton")+itoa(i)));
+    tbutton->SetImgData((char**)red_xpm);
     fig[tbutton->GetTag()]=false;
     tbutton->Draw();
   };
 };
 
 void
-CWindow1::menu1_Sobre_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::menu1_Ajuda_Sobre_EvMenuActive(CControl * control)
 {
-  Message("Desenvolvido por LCGambôa");	
+  Message(lxT("Desenvolvido por LCGamboa"));	
 };
 
 void
-CWindow1::pmenu1_Abrir_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::menu1_Arquivo_Abrir_EvMenuActive(CControl * control)
 {
   char ch;
   FILE* file;
   int c,d,g;
   CToolButton* tbutton;
-  if(Window1.abrirdialog.Run())
+  if(Window1.filedialog1.Run())
     {	
-    Window1.salvardialog.SetFileName(Window1.abrirdialog.GetFileName());	    
-    file=fopen(Window1.abrirdialog.GetFileName().c_str(),"r");
+    Window1.filedialog2.SetFileName(Window1.filedialog1.GetFileName());	    
+    file=fopen((char*)Window1.filedialog1.GetFileName().char_str(),"r");
+     
+    if(file)
+    { 
       for(c=0;c<=9;c++)
         {      
         for(d=0;d<=9;d++)
 	  {	
           g=(c*10)+d;
           ch=fgetc(file);
-          tbutton=dynamic_cast<CToolButton*>(Window1.GetChild(g+1));
+          tbutton=dynamic_cast<CToolButton*>(Window1.GetChildByName(lxT("toolbutton")+itoa(g+1)));
           if(ch == '-')
 	    {	  
-            tbutton->SetColor("blue");
+            tbutton->SetImgData((char**)blue_xpm);
             tbutton->Draw();
             fig[g]=true;
 	    }
           else 
 	    {	  
-            tbutton->SetColor("red");
+            tbutton->SetImgData((char**)red_xpm);
             tbutton->Draw();
             fig[g]=false;
 	    };
@@ -99,17 +165,20 @@ CWindow1::pmenu1_Abrir_MouseButtonPress(CControl * control, uint button, uint x,
        ch=fgetc(file);
        };
     fclose(file);
+    }
+    else
+     Message(lxT("Error Open File!"));
   };
 };
 
 void
-CWindow1::pmenu1_Salvar_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::menu1_Arquivo_Salvar_EvMenuActive(CControl * control)
 {
   int c,d,g;
   FILE* file;
-  if(Window1.salvardialog.Run())
+  if(Window1.filedialog2.Run())
     {	  
-    file = fopen(Window1.salvardialog.GetFileName().c_str(),"w");
+    file = fopen((char *)Window1.filedialog2.GetFileName().char_str(),"w");
       for(c=0;c<= 9;c++)
         {
         for(d=0;d<=9;d++)
@@ -127,608 +196,615 @@ CWindow1::pmenu1_Salvar_MouseButtonPress(CControl * control, uint button, uint x
 };
 
 void
-CWindow1::pmenu1_Sair_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::menu1_Arquivo_Sair_EvMenuActive(CControl * control)
 {
   Window1.WDestroy();
 };
 
+
 void
-CWindow1::toolbutton1_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton1_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton2_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton2_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton3_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton3_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton4_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton4_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton5_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton5_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton6_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton6_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton7_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton7_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton8_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton8_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton9_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton9_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton10_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton10_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton11_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton11_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton12_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton12_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton13_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton13_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton14_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton14_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton15_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton15_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton16_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton16_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton17_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton17_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton18_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton18_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton19_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton19_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton20_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton20_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton21_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton21_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton22_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton22_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton23_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton23_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton24_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton24_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton25_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton25_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton26_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton26_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton27_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton27_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton28_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton28_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton29_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton29_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton30_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton30_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton31_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton31_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton32_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton32_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton33_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton33_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton34_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton34_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton35_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton35_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton36_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton36_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton37_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton37_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton38_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton38_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton39_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton39_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton40_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton40_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton41_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton41_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton42_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton42_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton43_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton43_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton44_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton44_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton45_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton45_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton46_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton46_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton47_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton47_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton48_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton48_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton49_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton49_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton50_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton50_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton51_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton51_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton52_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton52_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton53_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton53_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton54_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton54_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton55_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton55_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton56_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton56_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton57_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton57_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton58_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton58_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton59_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton59_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton60_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton60_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton61_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton61_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton62_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton62_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton63_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton63_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton64_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton64_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton65_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton65_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton66_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton66_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton67_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton67_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton68_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton68_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton69_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton69_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton70_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton70_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton71_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton71_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton72_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton72_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton73_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton73_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton74_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton74_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton75_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton75_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton76_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton76_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton77_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton77_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton78_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton78_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton79_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton79_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton80_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton80_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton81_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton81_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton82_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton82_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton83_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton83_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton84_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton84_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton85_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton85_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton86_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton86_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton87_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton87_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton88_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton88_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton89_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton89_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton90_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton90_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton91_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton91_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton92_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton92_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton93_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton93_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton94_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton94_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton95_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton95_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton96_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton96_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton97_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton97_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton98_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton98_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton99_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton99_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
 
 void
-CWindow1::toolbutton100_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::toolbutton100_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   toolbuttonMouseButtonPress(control,button,x,y,state);
 };
+
+
+
+
+
+
 

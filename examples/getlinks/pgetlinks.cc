@@ -3,7 +3,17 @@
 //Program____________________________________________________________
 Initialize
 {
-  Application.Start (argc, argv);
-  Application.ACreateWindow (&Window1);
-  Application.Load ();
+  Application->Start ();
+  Application->ACreateWindow (&Window1);
+  Application->Load ();
+
+  return 0;
 };
+
+
+
+
+
+
+
+

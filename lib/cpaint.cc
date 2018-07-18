@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
 
 #include"../include/cpaint.h"
 #include"../include/cwindow.h"
+#include"../include/capplication.h"
 
 // CPaint________________________________________________________________
 
@@ -37,6 +38,8 @@ CPaint::CPaint (void)
   DrawIn=0;
   DrawOut=0;
   DoCalcRXY=true;
+  Scalex=1.0;
+  Scaley=1.0;
 };
   
 void 
@@ -72,6 +75,21 @@ CPaint::Create (CControl * control)
   XSetGraphicsExposures(Win->GetADisplay (), Agc, false);
   Pen.Create (control, &Agc);
 };
+  
+void 
+CPaint::Create (lxBitmap *bitmap)
+{
+  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+
+  Win = NULL;
+  Owner = NULL;
+  DrawIn = *bitmap;
+  DrawOut = *bitmap;
+  Agc = XCreateGC (Application->GetADisplay (), DrawIn, 0, NULL);
+  XSetGraphicsExposures(Application->GetADisplay (), Agc, false);
+  Pen.Create (NULL, &Agc);
+
+}
 
 void
 CPaint::Destroy (void)
@@ -179,15 +197,15 @@ CPaint::Lines (XPoint * points, int npoints)
 void
 CPaint::Rectangle (int x, int y, int w, int h)
 {
-  XFillRectangle (Win->GetADisplay (), DrawIn, Agc, RX+x, RY+y, w, h);
+  XFillRectangle (Win->GetADisplay (), DrawIn, Agc, (RX+x)*Scalex, (RY+y)*Scaley, w*Scalex, h*Scaley);
 };
 
 void
 CPaint::Frame (int x, int y, int w, int h, uint wb)
 {
   for (uint c = 0; c < wb; c++)
-    XDrawRectangle (Win->GetADisplay (), DrawIn, Agc, RX+x + c,
-		    RY+y + c, w - (c * 2), h - (c * 2));
+    XDrawRectangle (Win->GetADisplay (), DrawIn, Agc, (RX+x + c)*Scalex,
+		    (RY+y + c)*Scaley, (w - (c * 2))*Scalex, (h - (c * 2))*Scaley);
 };
 
 void
@@ -238,7 +256,7 @@ CPaint::RaiserFrame (int x, int y, int w, int h, uint wb)
 };
 
 void
-CPaint::Text ( int x1, int y1, String text)
+CPaint::Text (String text,  int x1, int y1)
 {
   XDrawString (Win->GetADisplay (), DrawIn, Agc, RX+x1, RY+y1,
 	       text.c_str (), text.size ());
@@ -267,6 +285,16 @@ CPaint::SetLineWidth(int w)
 void 
 CPaint::Init(void)
 {
+  Scalex=1.0;
+  Scaley=1.0;  
+}
+  
+
+void 
+CPaint::Init(float sx, float sy)
+{
+  Scalex=sx;
+  Scaley=sy;  
 }
 
 void 
@@ -282,9 +310,23 @@ CPaint::SetFgColor(unsigned char r,unsigned char g, unsigned char b)
 }
 
 void 
+CPaint::SetFgColor(String cname)
+{
+   Pen.SetColor (ColorByName(cname));
+}
+
+
+void 
 CPaint::SetBgColor(unsigned char r,unsigned char g, unsigned char b)
 {
-   Pen.SetColor (ColorByRGB(r,g,b));
+   Pen.SetBGColor (ColorByRGB(r,g,b));
+}
+
+	
+void 
+CPaint::SetBgColor(String cname)
+{
+   Pen.SetBGColor (ColorByName(cname));
 }
 
 void 
@@ -295,5 +337,74 @@ CPaint::Rectangle (bool filled, int x, int y, int w, int h)
   else
     Frame ( x, y, w, h,1);
 
+}
+
+//FIXME
+void 
+CPaint::RotatedText (String str, int x, int y, int angle)
+{
+  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+}
+
+void 
+CPaint::PutBitmap (lxBitmap* bitmap,int x,int y)
+{
+  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+}
+
+void 
+CPaint::SetBitmap(lxBitmap * bitmap,double xs, double ys)
+{
+  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+}
+
+void 
+CPaint::SetFont (lxFont font)
+{
+  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+}
+
+void 
+CPaint::ChangeScale(float sx, float sy)
+{
+  Scalex=sx;
+  Scaley=sy;	  
+}
+
+void 
+CPaint::Circle (bool filled, int x, int y, int radius)
+{
+  int off=radius;	
+  if(filled)	
+    XFillArc (Win->GetADisplay (), DrawIn, Agc, (RX+x-off)*Scalex, (RY+y-off)*Scaley, 2*radius*Scalex, 2*radius*Scaley,0,360*64);
+  else
+    XDrawArc (Win->GetADisplay (), DrawIn, Agc, (RX+x-off)*Scalex, (RY+y-off)*Scaley, 2*radius*Scalex, 2*radius*Scaley,0,360*64);
+}
+  
+
+void 
+CPaint::Polygon(bool filed, lxPoint * points, int npoints)
+{
+  points[0].x+=RX;
+  points[0].y+=RY;
+
+  XFillPolygon(Win->GetADisplay(), DrawIn, Agc, points, npoints,  Complex , CoordModeOrigin);
+}
+
+void 
+CPaint::SetColor(unsigned char r,unsigned char g, unsigned char b)
+{
+  Pen.SetColor (ColorByRGB(r,g,b));
+  Pen.SetBGColor (ColorByRGB(r,g,b));
+}
+
+void CPaint::SetFgColor(lxColor c)
+{
+  Pen.SetColor (c);
+}
+
+void CPaint::SetBgColor(lxColor c)
+{
+  Pen.SetBGColor (c);
 }
 

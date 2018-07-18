@@ -25,6 +25,7 @@
 
 #include"../include/ccontrol.h"
 #include"../include/cwindow.h"
+#include"../include/cmenu.h"
 #include"../include/cpmenu.h"
 #include"../include/capplication.h"
 
@@ -74,7 +75,7 @@ CControl::CControl (void)
   EvKeyboardKey = NULL;
   PointerIn = NULL;
   PointerOut = NULL;
-  OnDraw = NULL;
+  EvOnDraw = NULL;
   CFocusIn = NULL;
   CFocusOut = NULL;
 
@@ -104,7 +105,7 @@ CControl::~CControl ()
 void
 CControl::Create (CControl * control)
 {
-  printf("Created :(%s)\t%s - %s\n",control->GetName().c_str(),Class.c_str(),Name.c_str());	
+  //printf("Created :(%s)\t%s - %s\n",control->GetName().c_str(),Class.c_str(),Name.c_str());	
   SetOwner (control);
   Win = control->Win;
   Paint = control->Paint;
@@ -663,20 +664,25 @@ CControl::CalcRXY(void)
   o = dynamic_cast < CWindow * >(Owner);
   t = dynamic_cast < CWindow * >(this);
   
-  if(o)
+  if(o) //owner == CWindow
   {
-    if(t)
+    if(t) //this == CWindow 
     {
       RX=0;	  
       RY=0;
     }
-    else
+    else //this != CWindow
     {
+      CMenu  *m = dynamic_cast < CMenu * >(this);
+      if((o->HasMenu)&&(!m))
+        RY=Y+25;
+      else
+        RY=Y;
+      
       RX=X;	  
-      RY=Y;
     };
   }
-  else
+  else //owner != CWindow
   {
     if(Owner != NULL)
     {
@@ -778,6 +784,9 @@ void
 CControl::SetColor (const String name)
 {
   ColorName = name;
+
+  if(name.compare("#000001") == 0)return;
+
   if (Win != NULL)
     Color = ColorByName (name);
   else
@@ -801,7 +810,7 @@ CControl::SetColor (uint r, uint g, uint b)
     };
 };
 
-XColor CControl::GetColor (void)
+lxColor CControl::GetColor (void)
 {
   return Color;
 };
@@ -1020,8 +1029,8 @@ CControl::button_press (XEvent event)
   BTimePress = event.xbutton.time;
 
   if ((FOwner) && (EvMouseButtonPress))
-    (FOwner->*EvMouseButtonPress) (this, event.xbutton.button, event.xbutton.x,
-				 event.xbutton.y, event.xbutton.state);
+    (FOwner->*EvMouseButtonPress) (this, event.xbutton.button, event.xbutton.x-RX,
+				 event.xbutton.y-RY, event.xbutton.state);
 
   if ((event.xbutton.button == 3) && (PopupMenu != NULL)&&((PopupMenu->GetChildCount ()) != -1))
     {
@@ -1062,7 +1071,7 @@ CControl::button_release (XEvent event)
 
   if ((FOwner) && (EvMouseButtonRelease))
     (FOwner->*EvMouseButtonRelease) (this, event.xbutton.button,
-				   event.xbutton.x, event.xbutton.y,
+				   event.xbutton.x-RX, event.xbutton.y-RY,
 				   event.xbutton.state);
 
 
@@ -1145,7 +1154,7 @@ CControl::pointer_out (void)
 void
 CControl::on_draw (void)
 {
-  if ((FOwner) && (OnDraw))
-    (FOwner->*OnDraw) (this);
+  if ((FOwner) && (EvOnDraw))
+    (FOwner->*EvOnDraw) (this);
 };
 

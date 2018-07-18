@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 #include"../include/cscroll.h"
 
 //Pixmaps____________________________________________________________
-static char *rarrow[] = {
+static const char *rarrow[] = {
   "16 16 2 1",
   " 	c None",
   ".	c #000000",
@@ -49,7 +49,7 @@ static char *rarrow[] = {
   "                "
 };
 
-static char *larrow[] = {
+static const char *larrow[] = {
   "16 16 3 1",
   " 	c None",
   ".	c #FFFFFF",
@@ -73,7 +73,7 @@ static char *larrow[] = {
 };
 
 
-static char *uarrow[] = {
+static const char *uarrow[] = {
   "16 16 3 1",
   " 	c None",
   ".	c #FFFFFF",
@@ -96,7 +96,7 @@ static char *uarrow[] = {
   "                "
 };
 
-static char *darrow[] = {
+static const char *darrow[] = {
   "16 16 3 1",
   " 	c None",
   ".	c #FFFFFF",
@@ -135,7 +135,7 @@ CScroll::CScroll (void)
   button2->SetFOwner (this);
   button2->EvMouseButtonPress = EVMOUSEBUTTONPRESS & CScroll::ScrollButtonPress;
   button2->EvMouseButtonRelease =EVMOUSEBUTTONRELEASE & CScroll::ScrollButtonRelease;
-  Type = st_vertical;
+  Type = 0;
   Size = 0;
   SetRange (7);
   SetPosition (3);
@@ -314,13 +314,13 @@ CScroll::SetType (scrolltype type)
       SetRange (Range);
       if (Type == st_vertical)
 	{
-	  button1->SetPixmapData (uarrow);
-	  button2->SetPixmapData (darrow);
+	  button1->SetPixmapData ((char **)uarrow);
+	  button2->SetPixmapData ((char **)darrow);
 	}
       else
 	{
-	  button1->SetPixmapData (larrow);
-	  button2->SetPixmapData (rarrow);
+	  button1->SetPixmapData ((char **)larrow);
+	  button2->SetPixmapData ((char **)rarrow);
 	};
       Draw ();
     }

@@ -21,13 +21,13 @@ CWindow8::MenuItensMouseButtonRelease(CControl * control, uint button, uint x, u
   String litens;
   
   if( Window8.menu)
-     litens=Window8.menu->GetMenuItens();
+     litens=Window8.menu->GetMenuItems();
   else
-     litens=Window8.pmenu->GetMenuItens();
+     litens=Window8.pmenu->GetMenuItems();
  
   printf("%s\n",litens.c_str());
   
-  Window8.list1.DeleteItens ();
+  Window8.list1.DeleteItems ();
   
   f = litens.find (",");
   while (f > 0)
@@ -99,7 +99,7 @@ CWindow8::button4_MouseButtonRelease(CControl * control, uint button, uint x, ui
   String item;
   
   ii=list1.GetSelectedItemN();
-  if(ii < (list1.GetItensCount()-1))
+  if(ii < (list1.GetItemsCount()-1))
   {
   item=list1.GetItem(ii+1);
   list1.SetItem(ii+1,list1.GetSelectedItem());
@@ -114,15 +114,15 @@ CWindow8::button5_MouseButtonRelease(CControl * control, uint button, uint x, ui
 {
   
   String itens = "";
-  for (int c = 0; c < list1.GetItensCount (); c++)
+  for (int c = 0; c < list1.GetItemsCount (); c++)
     {
       itens += list1.GetItem (c) + ",";
     };
   
   if(menu)
-    menu->SetMenuItens(itens);
+    menu->SetMenuItems(itens);
   else
-    pmenu->SetMenuItens(itens);
+    pmenu->SetMenuItems(itens);
   HideExclusive(); 
 
   Window2.ListPropierties(Window2.GetControlOnFocus ());

@@ -13,8 +13,8 @@
 /* Define to 1 if you have the `X11' library (-lX11). */
 #undef HAVE_LIBX11
 
-/* Define to 1 if you have the `Imlib' library (-lImlib). */
-#undef HAVE_LIBIMLIB
+/* Define to 1 if you have the `Imlib2' library (-lImlib2). */
+#undef HAVE_LIBIMLIB2
 
 /* Define to 1 if you have the `Xpm' library (-lXpm). */
 #undef HAVE_LIBXPM

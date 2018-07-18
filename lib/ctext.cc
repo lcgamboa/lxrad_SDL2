@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001 Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018 Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ CText::Draw (void)
   Paint->Rectangle ( 2, 2, Width - 3, Height - 3);
   Paint->Pen.SetColor (ColorByName ("black"));
   for (unsigned int q = 1; q < Lines.GetLinesCount (); q++)
-    Paint->Text ( 5, 15 + (13 * (q - 1)), Lines.GetLine (q));
+    Paint->Text (Lines.GetLine(q), 5, 15 + (13 * (q - 1)));
   Paint->LowerFrame ( 0, 0, Width, Height);
   int x =
     XTextWidth (CFont, Lines.GetLine (CursorLin).c_str (), GetCursorPos ());
@@ -77,13 +77,10 @@ CText::DrawLine (void)
   Paint->Rectangle ( 4, (13 * CursorLin - 1) - 21, Width, 39);
   Paint->Pen.SetColor (ColorByName ("black"));
   if (CursorLin > 1)
-    Paint->Text ( 5, 15 + (13 * (CursorLin - 2)),
-		      Lines.GetLine (CursorLin - 1));
-  Paint->Text ( 5, 15 + (13 * (CursorLin - 1)),
-		    Lines.GetLine (CursorLin));
+    Paint->Text(Lines.GetLine (CursorLin - 1), 5, 15 + (13 * (CursorLin - 2)));
+  Paint->Text (Lines.GetLine (CursorLin),  5, 15 + (13 * (CursorLin - 1)));
   if (CursorLin < Lines.GetLinesCount () - 1)
-    Paint->Text ( 5, 15 + (13 * (CursorLin)),
-		      Lines.GetLine (CursorLin + 1));
+    Paint->Text (Lines.GetLine (CursorLin + 1), 5, 15 + (13 * (CursorLin)));
   //cursor
   int x =
     XTextWidth (CFont, Lines.GetLine (CursorLin).c_str (), GetCursorPos ());
@@ -133,7 +130,14 @@ CText::AddLine (char *line)
 {
   Lines.AddLine (line);
   Draw ();
-};
+}
+
+void
+CText::AddLine (String line)
+{
+  Lines.AddLine (line.c_str());
+  Draw ();
+}
 
 void
 CText::InsertLine (char *line)
@@ -161,6 +165,13 @@ CText::SaveToFile (char *fname)
 {
   Lines.SaveToFile (fname);
 };
+
+void
+CText::SaveToFile (String fname)
+{
+  Lines.SaveToFile (fname.c_str());
+};
+
 
 //propiedades
 unsigned int

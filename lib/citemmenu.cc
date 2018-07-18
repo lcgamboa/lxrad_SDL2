@@ -150,7 +150,6 @@ CItemMenu::button_press (XEvent event)
       
       if ((FOwner) && (EvMenuActive))
       {
-         printf("Menu Actived\n"); 	  
          (FOwner->*EvMenuActive) (this);
       }
       return;

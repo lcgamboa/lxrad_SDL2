@@ -17,29 +17,31 @@
 
 Initialize
 {
-  Application.Start (argc, argv);
-  if (!Application.GetExit ())
+  Application->Start ();
+  if (!Application->GetExit ())
     {
       Splash.WCreate ();
       Splash.Draw ();
     };
   
-  Application.ACreateWindow (&Window1);
-  Application.ACreateWindow (&Window2);
-  Application.ACreateWindow (&Window4);
-  Application.ACreateWindow (&Window3);
-  Application.ACreateWindow (&Window5);
-  Application.ACreateWindow (&Window6);
-  Application.ACreateWindow (&Window7);
-  Application.ACreateWindow (&Window8);
-  Application.ACreateWindow (&Window9);
+  Application->ACreateWindow (&Window1);
+  Application->ACreateWindow (&Window2);
+  Application->ACreateWindow (&Window4);
+  Application->ACreateWindow (&Window3);
+  Application->ACreateWindow (&Window5);
+  Application->ACreateWindow (&Window6);
+  Application->ACreateWindow (&Window7);
+  Application->ACreateWindow (&Window8);
+  Application->ACreateWindow (&Window9);
 
-  if (!Application.GetExit ())
+  if (!Application->GetExit ())
     {
       sleep (1);
       Splash.WDestroy ();
     };
   
   Window5.ShowExclusive();
-  Application.Load ();
-};
+  Application->Load ();
+
+  return 0;
+}

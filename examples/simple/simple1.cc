@@ -1,10 +1,10 @@
 /* ########################################################################
 
-   XGRP -  GUI for X programing
+   LXRAD -  GUI for X programing
 
    ########################################################################
 
-   Copyright (c) : Luis Claudio Gambôa Lopes
+   Copyright (c) : Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -27,63 +27,73 @@
 #include"simple1.h"
 #include"simple1_d.cc"
 
-CWindow1 Window1;
+CPWindow1 Window1;
 
 //Implementation
-
 void
-CWindow1::button1_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::button1_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
 //Add
-  string1.SetText("+");
+  label1.SetText(lxT("+"));
   edit3.SetText(ftoa(atof(edit1.GetText())+atof((edit2.GetText()))));
 };
 
 void
-CWindow1::button2_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::button2_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
 //Sub
-  string1.SetText("-");
+  label1.SetText(lxT("-"));
   edit3.SetText(ftoa(atof(edit1.GetText())-atof((edit2.GetText()))));
 };
 
 void
-CWindow1::button3_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::button3_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
 //Mul
-  string1.SetText("*");
+  label1.SetText(lxT("*"));
   edit3.SetText(ftoa(atof(edit1.GetText())*atof((edit2.GetText()))));
 };
 
 void
-CWindow1::button4_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::button4_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
 //Div
-  string1.SetText("/");
+  label1.SetText(lxT("/"));
   edit3.SetText(ftoa(atof(edit1.GetText())/atof((edit2.GetText()))));
 };
 
 void
-CWindow1::button5_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::button5_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
   Window1.WDestroy();
 };
 
 void
-CWindow1::_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
 {
- Message("You clicked in the Window!");
+ Message(lxT("You clicked in the Window!"));
 };
 
-void
-CWindow1::menu1_About_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
-{
-   Message("LXRAD Simple Program by LCGambôa");
-};
 
 void
-CWindow1::pmenu1_Exit_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state)
+CPWindow1::menu1_File_Exit_EvMenuActive(CControl * control)
 {
   Window1.WDestroy();
 };
+
+void
+CPWindow1::menu1_Help_About_EvMenuActive(CControl * control)
+{
+   Message(lxT("LXRAD Simple Program by LCGamboa"));
+};
+
+
+
+
+
+
+
+
+
+
 

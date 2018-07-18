@@ -1,4 +1,4 @@
-SUBDIRS= simple sin getlinks editor imageview multthread
+SUBDIRS= clock  editor getlinks  imageview motor  simple  sin LCDfont geditor
 .PHONY: $(SUBDIRS)
 
 

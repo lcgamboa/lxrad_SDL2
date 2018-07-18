@@ -116,14 +116,28 @@ CToolButton::SetPixmapData (char **data)
 {
   Xpm->SetPixmapData (data);
   Draw ();
-};
+}
+
+void
+CToolButton::SetImgData (char **data)
+{
+  Xpm->SetPixmapData (data);
+  Draw ();
+}
 
 void
 CToolButton::SetPixmapFileName (String filename)
 {
   Xpm->SetPixmapFileName (filename);
   Draw ();
-};
+}
+
+void
+CToolButton::SetImgFileName (String filename)
+{
+  Xpm->SetPixmapFileName (filename);
+  Draw ();
+}
 
 String
 CToolButton::GetPixmapFileName (void)

@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(lxrad, 0.4, lcgamboa@yahoo.com)
+AC_INIT(lxrad_x11, 0.7, lcgamboa@yahoo.com)
 AC_PREREQ([2.50])
 AC_CONFIG_SRCDIR([lib/capplication.cc])
 AC_CONFIG_HEADER([config.h])
@@ -22,15 +22,15 @@ _ACEOF
 LIBS="-lpthread $LIBS"
 CFLAGS="$CFLAGS -D_REENTRANT",
 AC_MSG_WARN([libpthread Not Found!]))
-AC_CHECK_LIB([Imlib], [Imlib_init],
+AC_CHECK_LIB([Imlib2], [imlib_load_image],
 cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBIMLIB 1
+#define HAVE_LIBIMLIB2 1
 _ACEOF
-LIBS="-lImlib $LIBS"
+LIBS="-lImlib2 $LIBS"
 AC_CHECK_LIB([X11], [XOpenDisplay],, AC_MSG_ERROR([libX11 Not Found!]),$X_LIBS),
 AC_CHECK_LIB([X11], [XOpenDisplay],, AC_MSG_ERROR([libX11 Not Found!]),$X_LIBS)
 AC_CHECK_LIB([Xpm], [XpmReadFileToPixmap],, AC_MSG_WARN([libXpm Not Found!]),$X_LIBS)
-AC_MSG_WARN([libImlib Not Found!]))
+AC_MSG_WARN([libImlib2 Not Found!]))
 
 # Checks for header files.
 AC_PATH_X
@@ -71,5 +71,5 @@ AC_OUTPUT([Makefile
            lib/Makefile
            share/Makefile
            utils/Makefile
-           utils/lxrad-config])
+           utils/lxrad_X11-config])
 

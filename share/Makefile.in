@@ -5,12 +5,12 @@ all:
 static:
 
 install:
-	${MKDIR} ${datadir}/lxrad/icons
-	${CP} -v icons/* ${datadir}/lxrad/icons
-	${CP} -v ../README ../COPYING ../AUTHORS ../ChangeLog ${datadir}/lxrad/
-	chmod 644 -R ${datadir}/lxrad/*
-	chmod 644 -R ${datadir}/lxrad/icons/*
-	chmod 755 ${datadir}/lxrad/icons
+	${MKDIR} ${datadir}/lxrad_X11/icons
+	${CP} -v icons/* ${datadir}/lxrad_X11/icons
+	${CP} -v ../README ../COPYING ../AUTHORS ../ChangeLog ${datadir}/lxrad_X11/
+	chmod 644 -R ${datadir}/lxrad_X11/*
+	chmod 644 -R ${datadir}/lxrad_X11/icons/*
+	chmod 755 ${datadir}/lxrad_X11/icons
 
 uninstall:
 	${RM} -R ${datadir}/lxrad

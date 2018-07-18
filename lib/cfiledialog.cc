@@ -92,7 +92,7 @@ CFileDialog::CFileDialog (void)
   filelist1.SetX (20);
   filelist1.SetY (20);
   filelist1.SetFOwner (this);
-  filelist1.OnFileSelected = ONFILESELECTED & CFileDialog::ListOnFileSelected;
+  filelist1.EvFileListSelectFile = EVFILELISTSELECTFILE & CFileDialog::ListOnFileSelected;
   CreateChild (&filelist1);
 };
 
@@ -175,7 +175,7 @@ CFileDialog::ListOnFileSelected (CFileList * flist)
 String
 CFileDialog::GetFileName (void)
 {
-  return FileName;
+  return GetDir()+"/"+FileName;
 };
 
 String
@@ -234,3 +234,17 @@ CFileDialog::SetContext (CStringList context)
   */
   Draw ();
 };
+  
+void 
+CFileDialog::SetFilter(String filter)
+{
+  Filter=filter;
+  //TODO
+}
+
+void
+CFileDialog::SetType(int type)
+{
+  Type=type;
+  //TODO
+}

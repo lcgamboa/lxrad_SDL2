@@ -1,9 +1,9 @@
-#ifndef CWINDOW1 
-#define CWINDOW1
+#ifndef CPWINDOW1 
+#define CPWINDOW1
 
 #include<lxrad/lxrad.h>
 
-class CWindow1:public CWindow
+class CPWindow1:public CWindow
 {
   public:
   /*#Controls*/
@@ -12,18 +12,19 @@ class CWindow1:public CWindow
   CButton button1;
   CButton button2;
   CEdit edit1;
-  CString string2;
+  CLabel string2;
   CButton button3;
   CButton button4;
   /*#Events*/
-  void button1_MouseButtonClick(CControl * control, uint button, uint x, uint y,uint state);
-  void button2_MouseButtonClick(CControl * control, uint button, uint x, uint y,uint state);
-  void button3_MouseButtonClick(CControl * control, uint button, uint x, uint y,uint state);
-  void button4_MouseButtonClick(CControl * control, uint button, uint x, uint y,uint state);
-  /*#Others*/
-  CWindow1(void);
-};
- extern CWindow1 Window1 ;
+  void button1_EvMouseButtonClick(CControl * control, uint button, uint x, uint y,uint state);
+  void button2_EvMouseButtonClick(CControl * control, uint button, uint x, uint y,uint state);
+  void button3_EvMouseButtonClick(CControl * control, uint button, uint x, uint y,uint state);
+  void button4_EvMouseButtonClick(CControl * control, uint button, uint x, uint y,uint state);
 
-#endif /*#CWINDOW1*/
+  /*#Others*/
+  CPWindow1(void);
+};
+ extern CPWindow1 Window1 ;
+
+#endif /*#CPWINDOW1*/
 

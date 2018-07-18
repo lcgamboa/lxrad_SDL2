@@ -53,7 +53,7 @@ CPMenu::Create (CControl * control)
     
   CWindow::Create (control);
   
-  if(IMenu.GetSubMenu() != this)
+  if((IMenu.GetSubMenu() != this)&& Menu)
   {
     IMenu.SetFOwner(FOwner);
     IMenu.SetName(Name);

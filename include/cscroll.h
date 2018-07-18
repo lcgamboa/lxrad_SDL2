@@ -30,8 +30,9 @@
 #include"cwindow.h"
 #include"ctoolbutton.h"
 
-enum scrolltype
-{ st_horizontal, st_vertical };
+#define  scrolltype int
+#define  st_vertical 0x03
+#define  st_horizontal 0x04
 
 #define EVONCHANGEPOSITION   (void(CControl::*)(CScroll*,bool))
 

@@ -58,16 +58,13 @@ using namespace std;
 #include<X11/Xutil.h>
 #include<X11/keysym.h>
 
-#include"cutils.h"
+#include"lxutils.h"
 
 #define Initialize int pmain(void); CApplication application; CApplication *Application=&application;\
 	int main(int argc,char **argv){\
 	application.Aargc=argc;application.Aargv=argv; pmain();}\
         int pmain(void)
 
-//Compatibillity 
-#define CPWindow CWindow
-#define wxT
 
 #define AllEventMask KeyPressMask | KeyReleaseMask |KeymapStateMask | ButtonPressMask | ButtonReleaseMask |\
                      ButtonMotionMask| EnterWindowMask | LeaveWindowMask | ExposureMask | \
@@ -92,6 +89,10 @@ using namespace std;
 #define EVCFOCUSOUT             (void(CControl::*)(CControl*))
 #define EVMENUACTIVE            (void(CControl::*)(CControl*))
 #define EVONTIME                (void(CControl::*)(CControl*))
+#define EVONTOGGLEBUTTON        (void(CControl::*)(CControl*))
+#define EVTHREADRUN     	(void(CControl::*)(CControl*))
+#define EVTHREADEND	        (void(CControl::*)(CControl*))
+#define EVONCHANGESPINDOUBLE    (void(CControl::*)(CControl*))
 
 typedef unsigned int uint;
 

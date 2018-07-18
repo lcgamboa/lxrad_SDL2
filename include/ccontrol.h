@@ -104,7 +104,7 @@ public:
   void SetColor (XColor c);
   void SetColor (const String name);
   void SetColor (unsigned r, unsigned g, unsigned b);
-  XColor GetColor (void);
+  lxColor GetColor (void);
   bool GetCanExecuteEvent (void);
   void SetCanExecuteEvent (bool cee);
   virtual void SetEnable (bool enable);
@@ -163,7 +163,7 @@ public:
 				 uint mask);
   void (CControl::*PointerIn) (CControl * control);
   void (CControl::*PointerOut) (CControl * control);
-  void (CControl::*OnDraw) (CControl * control);
+  void (CControl::*EvOnDraw) (CControl * control);
   void (CControl::*CFocusIn) (CControl * control);
   void (CControl::*CFocusOut) (CControl * control);
 };

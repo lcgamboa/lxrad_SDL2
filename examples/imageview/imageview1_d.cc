@@ -1,93 +1,91 @@
-CWindow1::CWindow1(void)
+CPWindow1::CPWindow1(void)
 {
   SetFOwner(this);
-  SetName("window1");
+  SetClass(lxT("CPWindow"));
+  SetName(lxT("window1"));
   SetTag(0);
-  SetX(5);
-  SetY(51);
-  SetWidth(798);
-  SetHeight(553);
-  SetHint("(null)");
+  SetX(259);
+  SetY(138);
+  SetWidth(954);
+  SetHeight(629);
+  SetHint(lxT(""));
   SetEnable(1);
   SetVisible(1);
-  SetPoupMenu(NULL);
-  SetTitle("imageview");
-  OnCreate=ONCREATE & CWindow1::_OnCreate;
-  //pmenu1
-  pmenu1.SetFOwner(this);
-  pmenu1.SetName("pmenu1");
-  pmenu1.SetTag(0);
-  pmenu1.SetX(171);
-  pmenu1.SetY(74);
-  pmenu1.SetWidth(10);
-  pmenu1.SetHeight(1);
-  pmenu1.SetHint("");
-  pmenu1.SetEnable(1);
-  pmenu1.SetVisible(1);
-  pmenu1.SetMenuItens("Exit,");
-  CreateChild(& pmenu1);
+  SetPopupMenu(NULL);
+  SetTitle(lxT("imageview"));
+  SetOverrideRedirect(0);
   //draw1
   draw1.SetFOwner(this);
-  draw1.SetName("draw1");
+  draw1.SetClass(lxT("CImage"));
+  draw1.SetName(lxT("draw1"));
   draw1.SetTag(0);
-  draw1.SetX(175);
-  draw1.SetY(33);
-  draw1.SetWidth(615);
-  draw1.SetHeight(511);
-  draw1.SetHint("");
+  draw1.SetX(292);
+  draw1.SetY(25);
+  draw1.SetWidth(645);
+  draw1.SetHeight(510);
+  draw1.SetHint(lxT(""));
   draw1.SetEnable(1);
   draw1.SetVisible(1);
-  draw1.SetPoupMenu(NULL);
-  draw1.SetPixmapFileName("");
-  CreateChild(& draw1);
-  //menu1
-  menu1.SetFOwner(this);
-  menu1.SetName("menu1");
-  menu1.SetTag(0);
-  menu1.SetX(0);
-  menu1.SetY(0);
-  menu1.SetWidth(798);
-  menu1.SetHeight(25);
-  menu1.SetHint("");
-  menu1.SetEnable(1);
-  menu1.SetVisible(1);
-  menu1.SetMenuItens("File,About,");
-  CreateChild(& menu1);
-  //menu1_File
-  menu1_File.SetFOwner(this);
-  menu1_File.SetName("menu1_File");
-  menu1_File.SetTag(0);
-  menu1_File.SetText("File");
-  menu1_File.SetSubMenu(&pmenu1);
-  menu1.CreateChild(& menu1_File);
-  //menu1_About
-  menu1_About.SetFOwner(this);
-  menu1_About.SetName("menu1_About");
-  menu1_About.SetTag(0);
-  menu1_About.SetText("About");
-  menu1_About.SetSubMenu(NULL);
-  menu1_About.MouseButtonPress=MOUSEBUTTONPRESS & CWindow1::menu1_About_MouseButtonPress;
-  menu1.CreateChild(& menu1_About);
+  draw1.SetPopupMenu(NULL);
+  draw1.SetTransparent(1);
+  draw1.SetImgFileName(lxT(""));
+  CreateChild(&draw1);
   //filelist1
   filelist1.SetFOwner(this);
-  filelist1.SetName("filelist1");
+  filelist1.SetClass(lxT("CFileList"));
+  filelist1.SetName(lxT("filelist1"));
   filelist1.SetTag(0);
-  filelist1.SetX(6);
-  filelist1.SetY(33);
-  filelist1.SetWidth(160);
-  filelist1.SetHeight(508);
-  filelist1.SetHint("");
+  filelist1.SetX(25);
+  filelist1.SetY(24);
+  filelist1.SetWidth(250);
+  filelist1.SetHeight(516);
+  filelist1.SetHint(lxT(""));
   filelist1.SetEnable(1);
   filelist1.SetVisible(1);
-  filelist1.SetPoupMenu(NULL);
-  filelist1.OnFileSelected=ONFILESELECTED & CWindow1::filelist1_OnFileSelected;
-  CreateChild(& filelist1);
-  //pmenu1_Exit
-  pmenu1_Exit.SetFOwner(this);
-  pmenu1_Exit.SetName("pmenu1_Exit");
-  pmenu1_Exit.SetTag(0);
-  pmenu1_Exit.SetText("Exit");
-  pmenu1_Exit.SetSubMenu(NULL);
-  pmenu1_Exit.MouseButtonPress=MOUSEBUTTONPRESS & CWindow1::pmenu1_Exit_MouseButtonPress;
-  pmenu1.CreateChild(& pmenu1_Exit);
-};
+  filelist1.SetPopupMenu(NULL);
+  filelist1.SetDir(lxT(""));
+  filelist1.EvFileListSelectFile=EVFILELISTSELECTFILE & CPWindow1::filelist1_EvFileListSelectFile;
+  CreateChild(&filelist1);
+  //menu1
+  menu1.SetFOwner(this);
+  menu1.SetClass(lxT("CMenu"));
+  menu1.SetName(lxT("menu1"));
+  menu1.SetTag(0);
+  menu1.SetMenuItems(lxT("File,Help,"));
+  CreateChild(&menu1);
+  //menu1_File
+  menu1_File.SetFOwner(this);
+  menu1_File.SetClass(lxT("CPMenu"));
+  menu1_File.SetName(lxT("menu1_File"));
+  menu1_File.SetTag(0);
+  menu1_File.SetText(lxT("File"));
+  menu1_File.SetMenuItems(lxT("Exit,"));
+  menu1.CreateChild(&menu1_File);
+  //menu1_Help
+  menu1_Help.SetFOwner(this);
+  menu1_Help.SetClass(lxT("CPMenu"));
+  menu1_Help.SetName(lxT("menu1_Help"));
+  menu1_Help.SetTag(0);
+  menu1_Help.SetText(lxT("Help"));
+  menu1_Help.SetMenuItems(lxT("About,"));
+  menu1.CreateChild(&menu1_Help);
+  //menu1_File_Exit
+  menu1_File_Exit.SetFOwner(this);
+  menu1_File_Exit.SetClass(lxT("CItemMenu"));
+  menu1_File_Exit.SetName(lxT("menu1_File_Exit"));
+  menu1_File_Exit.SetTag(0);
+  menu1_File_Exit.SetText(lxT("Exit"));
+  menu1_File_Exit.SetSubMenu(NULL);
+  menu1_File_Exit.EvMenuActive=EVMENUACTIVE & CPWindow1::menu1_File_Exit_EvMenuActive;
+  menu1_File.CreateChild(&menu1_File_Exit);
+  //menu1_Help_About
+  menu1_Help_About.SetFOwner(this);
+  menu1_Help_About.SetClass(lxT("CItemMenu"));
+  menu1_Help_About.SetName(lxT("menu1_Help_About"));
+  menu1_Help_About.SetTag(0);
+  menu1_Help_About.SetText(lxT("About"));
+  menu1_Help_About.SetSubMenu(NULL);
+  menu1_Help_About.EvMenuActive=EVMENUACTIVE & CPWindow1::menu1_Help_About_EvMenuActive;
+  menu1_Help.CreateChild(&menu1_Help_About);
+  /*#Others*/
+}

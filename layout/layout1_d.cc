@@ -8,7 +8,7 @@ CWindow1::CWindow1 (void)
   SetTitle ("LXRAD Layout");
   SetFOwner(this);
   SetVisible(true);
-  OnCreate=ONCREATE & CWindow1::_OnCreate;
+  EvOnCreate=EVONCREATE & CWindow1::_OnCreate;
 
 //pmenu1
   pmenu1.SetName ("pmenu1");

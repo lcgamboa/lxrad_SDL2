@@ -32,7 +32,7 @@
 #include"ctoolbutton.h"
 #include"ccombodialog.h"
 
-#define ONCOMBOCHANGE   (void(CControl::*)(CCombo*))
+#define EVONCOMBOCHANGE   (void(CControl::*)(CCombo*))
 
 class CCombo:public CControl
 {
@@ -47,28 +47,29 @@ public:
   void Create (CControl * control);
   void SetWidth(unsigned width);
   void SetHeight(unsigned height );
-  void SetItens (String litens);
-  String GetItens (void);
+  void SetItems (String litens);
+  String GetItems (void);
   void AddItem (String text);
-  void LoadItensFromFile (String fname);
-  void SaveItensToFile (String fname);
+  void LoadItemsFromFile (String fname);
+  void SaveItemsToFile (String fname);
   String GetItem (int item);
   void SetSelectedItem (String item);
   String GetSelectedItem (void);
-  int GetItensCount (void);
+  int GetItemsCount (void);
   void DeleteItem (int item);
-  void DeleteItens (void);
+  void DeleteItems (void);
   CStringList GetContext (void);
   void SetContext (CStringList context);
   void SetText(String text);
   String GetText(void);
+  void SetReadOnly (bool r);
   //eventos
   void EditKeyPress (CControl * control, uint key, uint x, uint y,uint mask);
   void TButtonPress (CControl * control, uint button, uint x, uint y,uint state);
   
   void combo_change (void);
   
-  void (CControl::*OnComboChange) (CCombo * combo);
+  void (CControl::*EvOnComboChange) (CCombo * combo);
 };
 
 #endif

@@ -1,4 +1,4 @@
-#include<lxrad/lxrad.h>
+#include<lxrad.h>
 #include"simple1.h"
 //Program____________________________________________________________
 Initialize
@@ -6,6 +6,23 @@ Initialize
   Application->Start ();
   Application->ACreateWindow (&Window1);
   Application->Load ();
-  
-  return 0;
-}
+
+  return 1;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -70,6 +70,7 @@ public:
   void ACreateWindow (CWindow * AWindow,CWindow* window=NULL);
   void ADestroyWindow (CWindow * AWindow);
   bool ProcessEvents (CWindow * AWindow);
+  bool ProcessEvents (void);
   void Draw (void);
   void Update (void);
   void Load (void);

@@ -15,7 +15,7 @@ CWindow9::CWindow9(void)
   list1.SetY(13);
   list1.SetWidth(160);
   list1.SetHeight(130);
-  list1.SetItens("");
+  list1.SetItems("");
   CreateChild(& list1);
   //button1
   button1.SetFOwner(this);

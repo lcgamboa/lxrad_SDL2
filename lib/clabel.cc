@@ -181,7 +181,7 @@ CLabel::CalcVirtual (void)
   if (Win == NULL)
     return;
 
-  uint TextWidth, TextWidth2;
+  uint TextWidth2;
   int xo = 0;
   bool mux=false;
 
@@ -231,7 +231,7 @@ CLabel::CalcVirtual (void)
   
   TextMaxDisplay = VText.size ();
   
-  TextWidth = GetTextWidth ();
+  //TextWidth = GetTextWidth ();
   
   TextPosition = XTextWidth (CFont, Text.c_str (), TextPointer)-xo+1;
 

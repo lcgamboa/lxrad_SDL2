@@ -33,18 +33,18 @@ CFileList::CFileList (void)
   char *temp = get_current_dir_name ();
   Dir = temp;
   delete[]temp;
-  OnDirSelected = NULL;
-  OnFileSelected = NULL;
-  ItensType = NULL;
+  EvFileListSelectDir = NULL;
+  EvFileListSelectFile = NULL;
+  ItemsType = NULL;
 };
 
 
 CFileList::~CFileList (void)
 {
-  if (ItensType)
+  if (ItemsType)
     {
-      delete[]ItensType;
-      ItensType = NULL;
+      delete[]ItemsType;
+      ItemsType = NULL;
     };
 };
 
@@ -88,7 +88,7 @@ CFileList::SetDir (String dir)
   Dir = dir;
   
   Scroll->SetPosition (0);
-  ItensList.Clear ();
+  ItemsList.Clear ();
   SelectedItem = -1;
 
   n = scandir (Dir.c_str (), &dirs, dir_filter, alphasort);
@@ -133,7 +133,7 @@ CFileList::Draw ()
 {
   if((!Visible)||(Paint == NULL))
     return;
-  int lcount = ItensList.GetLinesCount ();
+  int lcount = ItemsList.GetLinesCount ();
   int ssize = Scroll->GetWidth ();
 
   Paint->InitDraw (this);
@@ -144,23 +144,23 @@ CFileList::Draw ()
 
   if(GChanges)
   {
-  DeleteItens (false);
-  if ((ItensCount == -1) && (Height > 20) && (lcount > 0))
+  DeleteItems (false);
+  if ((ItemsCount == -1) && (Height > 20) && (lcount > 0))
     {
       GChanges=false;	  
-      AddStringItem (ItensList.GetLine (0));
-      int h = Itens[0]->GetTextHeight ();
+      AddStringItem (ItemsList.GetLine (0));
+      int h = Items[0]->GetTextHeight ();
       int y = 0;
-      Itens[0]->SetVisible (false, false);
-      Itens[0]->SetY (y);
-      Itens[0]->SetVisible (true, false);
+      Items[0]->SetVisible (false, false);
+      Items[0]->SetY (y);
+      Items[0]->SetVisible (true, false);
       for (int c = 1;(h * c + h) < (int) Height; c++)
 	{
 	  AddStringItem ("");
 	  int y = h * c;
-	  Itens[c]->SetVisible (false, false);
-	  Itens[c]->SetY (y);
-	  Itens[c]->SetVisible (true, false);
+	  Items[c]->SetVisible (false, false);
+	  Items[c]->SetY (y);
+	  Items[c]->SetVisible (true, false);
 	};
       Scroll->SetVisible (false, false);
       Scroll->SetX (Width - Scroll->GetWidth ());
@@ -170,52 +170,52 @@ CFileList::Draw ()
   }; 
   
   Scroll->SetVisible (false, false);
-  Scroll->SetRange (lcount - ItensCount);
+  Scroll->SetRange (lcount - ItemsCount);
   Scroll->SetVisible (true, false);
   
-  for (int c = 0; c <= ItensCount; c++)
+  for (int c = 0; c <= ItemsCount; c++)
     {
-      Itens[c]->SetVisible (false, false);
+      Items[c]->SetVisible (false, false);
       if(c < lcount)
       {
-         Itens[c]->SetText (ItensList.GetLine (c + Scroll->GetPosition ()));
-      if (ItensType[c + Scroll->GetPosition ()] == DT_REG)
+         Items[c]->SetText (ItemsList.GetLine (c + Scroll->GetPosition ()));
+      if (ItemsType[c + Scroll->GetPosition ()] == DT_REG)
 	{
-	  Itens[c]->EvMouseButtonRelease =
+	  Items[c]->EvMouseButtonRelease =
 	    EVMOUSEBUTTONRELEASE & CFileList::FileButtonRelease;
-	  Itens[c]->EvMouseButtonClick = NULL;
-	  Itens[c]->SetColor ("black");
+	  Items[c]->EvMouseButtonClick = NULL;
+	  Items[c]->SetColor ("black");
 	};
-      if (ItensType[c + Scroll->GetPosition ()] == DT_DIR)
+      if (ItemsType[c + Scroll->GetPosition ()] == DT_DIR)
 	{
-	  Itens[c]->EvMouseButtonRelease = NULL;
-	  Itens[c]->EvMouseButtonClick =
+	  Items[c]->EvMouseButtonRelease = NULL;
+	  Items[c]->EvMouseButtonClick =
 	    EVMOUSEBUTTONCLICK & CFileList::DirButtonClick;
-	  Itens[c]->SetColor ("blue");
-	  Itens[c]->SetText ("/" + Itens[c]->GetText ());
+	  Items[c]->SetColor ("blue");
+	  Items[c]->SetText ("/" + Items[c]->GetText ());
 	};
        }
       else
       {
-        Itens[c]->SetText(""); 
-	Itens[c]->EvMouseButtonRelease = NULL;
-	Itens[c]->EvMouseButtonClick = NULL;
-	Itens[c]->SetColor ("black");
+        Items[c]->SetText(""); 
+	Items[c]->EvMouseButtonRelease = NULL;
+	Items[c]->EvMouseButtonClick = NULL;
+	Items[c]->SetColor ("black");
       };
-      Itens[c]->SetVisible (true, false);
+      Items[c]->SetVisible (true, false);
     };
   CControl::Draw ();
 
   if ((SelectedItem - Scroll->GetPosition () >= 0) &&
-      (SelectedItem - Scroll->GetPosition () <= ItensCount))
+      (SelectedItem - Scroll->GetPosition () <= ItemsCount))
     {
       SetColor ("dark blue");
       XColor color =
-	Itens[SelectedItem - Scroll->GetPosition ()]->GetColor ();
-      Itens[SelectedItem - Scroll->GetPosition ()]->SetColor ("white");
-      Itens[SelectedItem - Scroll->GetPosition ()]->Draw ();
+	Items[SelectedItem - Scroll->GetPosition ()]->GetColor ();
+      Items[SelectedItem - Scroll->GetPosition ()]->SetColor ("white");
+      Items[SelectedItem - Scroll->GetPosition ()]->Draw ();
       SetColor ("white");
-      Itens[SelectedItem - Scroll->GetPosition ()]->SetColor (color);
+      Items[SelectedItem - Scroll->GetPosition ()]->SetColor (color);
     };
   Update ();
 };
@@ -264,44 +264,44 @@ CFileList::AddStringItem (String text)
   item->SetX (5);
   item->SetY (5);
   item->SetWidth (Width - Scroll->GetWidth () - 10);
-  item->SetTag (ItensCount + 1);
+  item->SetTag (ItemsCount + 1);
   item->SetVisible (false, false);
   item->SetFOwner (this);
   item->EvMouseButtonPress = EVMOUSEBUTTONPRESS & CFileList::ItemButtonPress;
   CreateChild (item);
-  ItensCount++;
-  CLabel **AItens = new CLabel *[ItensCount + 1];
-  for (int c = 0; c < ItensCount; c++)
-    AItens[c] = Itens[c];
-  AItens[ItensCount] = item;
-  if (Itens)
-    delete[]Itens;
-  Itens = AItens;
+  ItemsCount++;
+  CLabel **AItems = new CLabel *[ItemsCount + 1];
+  for (int c = 0; c < ItemsCount; c++)
+    AItems[c] = Items[c];
+  AItems[ItemsCount] = item;
+  if (Items)
+    delete[]Items;
+  Items = AItems;
 };
 
 void
 CFileList::AddItem (char *name, unsigned char dtype)
 {
-  int ICount = ItensList.GetLinesCount ();
-  unsigned char *AItensType = new unsigned char[ICount + 1];
+  int ICount = ItemsList.GetLinesCount ();
+  unsigned char *AItemsType = new unsigned char[ICount + 1];
   for (int c = 0; c < ICount; c++)
-    AItensType[c] = ItensType[c];
-  AItensType[ICount] = dtype;
-  if (ItensType)
-    delete[]ItensType;
-  ItensType = AItensType;
+    AItemsType[c] = ItemsType[c];
+  AItemsType[ICount] = dtype;
+  if (ItemsType)
+    delete[]ItemsType;
+  ItemsType = AItemsType;
   
-  ItensList.AddLine (name);
+  ItemsList.AddLine (name);
 };
 
 void
-CFileList::DeleteItens (bool clean)
+CFileList::DeleteItems (bool clean)
 {
-  CList::DeleteItens (clean);
-  if ((ItensType) && (clean))
+  CList::DeleteItems (clean);
+  if ((ItemsType) && (clean))
     {
-      delete[]ItensType;
-      ItensType = NULL;
+      delete[]ItemsType;
+      ItemsType = NULL;
     };
 };
 
@@ -315,7 +315,7 @@ CFileList::GetSelectedDir (void)
 String
 CFileList::GetSelectedFile (void)
 {
-  return (Dir +"/"+ ItensList.GetLine(SelectedItem));
+  return (Dir +"/"+ ItemsList.GetLine(SelectedItem));
 };
 
 void
@@ -352,8 +352,8 @@ CFileList::DirButtonClick (CControl * control, uint button, uint x,
 void
 CFileList::dir_selected (void)
 {
-  if ((FOwner) && (OnDirSelected))
-    (FOwner->*OnDirSelected) (this);
+  if ((FOwner) && (EvFileListSelectDir))
+    (FOwner->*EvFileListSelectDir) (this);
 };
 
 void
@@ -367,6 +367,6 @@ CFileList::FileButtonRelease (CControl * control, uint button, uint x, uint y,
 void
 CFileList::file_selected (void)
 {
-  if ((FOwner) && (OnFileSelected))
-    (FOwner->*OnFileSelected) (this);
+  if ((FOwner) && (EvFileListSelectFile))
+    (FOwner->*EvFileListSelectFile) (this);
 };

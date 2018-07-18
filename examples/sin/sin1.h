@@ -1,19 +1,22 @@
-#ifndef CWINDOW1 
-#define CWINDOW1
+#ifndef CPWINDOW1 
+#define CPWINDOW1
 
 #include<lxrad/lxrad.h>
 
-class CWindow1:public CWindow
+class CPWindow1:public CPWindow
 {
   public:
   /*#Controls*/
   CDraw draw1;
+  CTimer timer1;
   /*#Events*/
-  void draw1_MouseButtonPress(CControl * control, uint button, uint x, uint y,uint state);
-  /*#Others*/
-  CWindow1(void);
-};
- extern CWindow1 Window1 ;
+  void draw1_EvMouseButtonPress(CControl * control, uint button, uint x, uint y,uint state);
+  void timer1_EvOnTime(CControl * control);
 
-#endif /*#CWINDOW1*/
+  /*#Others*/
+  CPWindow1(void);
+};
+ extern CPWindow1 Window1 ;
+
+#endif /*#CPWINDOW1*/
 

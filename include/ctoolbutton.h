@@ -43,9 +43,12 @@ public:
   //propiedades
   void SetPixmapData (char** data);
   void SetPixmapFileName (String filename);
+  void SetImgData(char** data);
+  void SetImgFileName(String filename);
   String GetPixmapFileName (void);
   void SetWidth (uint width);
   void SetHeight (uint height);
+
 };
 
 #endif

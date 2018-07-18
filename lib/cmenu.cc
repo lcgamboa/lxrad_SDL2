@@ -66,6 +66,7 @@ CMenu::Update (void)
 void
 CMenu::Create (CControl * control)
 {
+  ((CWindow *) control)->HasMenu=1;
   CControl::Create (control);
 };
 

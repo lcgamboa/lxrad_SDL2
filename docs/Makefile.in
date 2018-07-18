@@ -3,12 +3,12 @@ include ../Makefile.Conf
 all:
 static:
 install:
-	mkdir -p ${datadir}/lxrad/docs
-	cp -v *.* ${datadir}/lxrad/docs
-	cp -v README ${datadir}/lxrad/docs
-	chmod 644 -R ${datadir}/lxrad/docs/*
-	chmod 755 ${datadir}/lxrad/docs
+	mkdir -p ${datadir}/lxrad_X11/docs
+	cp -v *.* ${datadir}/lxrad_X11/docs
+	cp -v README ${datadir}/lxrad_X11/docs
+	chmod 644 -R ${datadir}/lxrad_X11/docs/*
+	chmod 755 ${datadir}/lxrad_X11/docs
 
 clean:
 uninstall:
-	rm -f -R ${datadir}/lxrad/docs
+	rm -f -R ${datadir}/lxrad_X11/docs

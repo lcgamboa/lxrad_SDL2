@@ -5,7 +5,7 @@ OBJS = psin.o sin1.o
 
 
 all: $(OBJS)
-	$(CC) $(FLAGS) $(OBJS) -osin ../../lib/liblxrad.a -lXpm -lX11
+	$(CC) $(FLAGS) $(OBJS) -osin ../../lib/liblxrad.a -lXpm -lX11 -lpthread
 
 %.o: %.cc
 	$(CC) -c $(FLAGS) $< 

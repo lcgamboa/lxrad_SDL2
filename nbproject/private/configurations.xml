@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="100">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="." name="0">
+      <df name="autom4te.cache">
+      </df>
+      <df name="docs">
+        <in>classtree.txt</in>
+      </df>
+      <df name="examples">
+        <df name="clock">
+          <in>clock1.cc</in>
+          <in>clock1.h</in>
+          <in>clock1_d.cc</in>
+          <in>pclock.cc</in>
+        </df>
+        <df name="editor">
+          <df name="data">
+          </df>
+          <in>editor1.cc</in>
+          <in>editor1.h</in>
+          <in>editor1_d.cc</in>
+          <in>peditor.cc</in>
+        </df>
+        <df name="geditor">
+          <df name="data">
+          </df>
+          <in>geditor1.cc</in>
+          <in>geditor1.h</in>
+          <in>geditor1_d.cc</in>
+          <in>pgeditor.cc</in>
+        </df>
+        <df name="getlinks">
+          <in>getlinks1.cc</in>
+          <in>getlinks1.h</in>
+          <in>getlinks1_d.cc</in>
+          <in>pgetlinks.cc</in>
+        </df>
+        <df name="imageview">
+          <in>imageview1.cc</in>
+          <in>imageview1.h</in>
+          <in>imageview1_d.cc</in>
+          <in>pimageview.cc</in>
+        </df>
+        <df name="LCDfont">
+          <in>LCDfont1.cc</in>
+          <in>LCDfont1.h</in>
+          <in>LCDfont1_d.cc</in>
+          <in>pLCDfont.cc</in>
+          <in>saida.txt</in>
+          <in>saida46.txt</in>
+          <in>saida_1234.txt</in>
+          <in>saida_1e2.txt</in>
+        </df>
+        <df name="motor">
+          <in>motor1.cc</in>
+          <in>motor1.h</in>
+          <in>motor1_d.cc</in>
+          <in>pmotor.cc</in>
+        </df>
+        <df name="simple">
+          <in>psimple.cc</in>
+          <in>simple1.cc</in>
+          <in>simple1.h</in>
+          <in>simple1_d.cc</in>
+        </df>
+        <df name="sin">
+          <in>psin.cc</in>
+          <in>sin1.cc</in>
+          <in>sin1.h</in>
+          <in>sin1_d.cc</in>
+        </df>
+      </df>
+      <df name="include">
+        <in>capplication.h</in>
+        <in>cbox.h</in>
+        <in>cbutton.h</in>
+        <in>ccheckbox.h</in>
+        <in>ccolordialog.h</in>
+        <in>ccombo.h</in>
+        <in>ccombodialog.h</in>
+        <in>ccontrol.h</in>
+        <in>cdialog.h</in>
+        <in>cdraw.h</in>
+        <in>cedit.h</in>
+        <in>cfiledialog.h</in>
+        <in>cfilelist.h</in>
+        <in>cgauge.h</in>
+        <in>chint.h</in>
+        <in>chtml.h</in>
+        <in>cinput.h</in>
+        <in>citemmenu.h</in>
+        <in>clabel.h</in>
+        <in>clist.h</in>
+        <in>clxrad.h</in>
+        <in>cmenu.h</in>
+        <in>cmessage.h</in>
+        <in>cobject.h</in>
+        <in>cpaint.h</in>
+        <in>cpen.h</in>
+        <in>cpmenu.h</in>
+        <in>cscroll.h</in>
+        <in>cspind.h</in>
+        <in>cstatusbar.h</in>
+        <in>ctext.h</in>
+        <in>cthread.h</in>
+        <in>ctimer.h</in>
+        <in>ctogglebutton.h</in>
+        <in>ctoolbutton.h</in>
+        <in>cwindow.h</in>
+        <in>cxpmbutton.h</in>
+        <in>lxrad.h</in>
+        <in>lxutils.h</in>
+        <in>medit.h</in>
+        <in>mstring.h</in>
+      </df>
+      <df name="layout">
+        <in>controlsdef.cc</in>
+        <in>controlsdef.h</in>
+        <in>layout1.cc</in>
+        <in>layout1.h</in>
+        <in>layout10.cc</in>
+        <in>layout10.h</in>
+        <in>layout10_d.cc</in>
+        <in>layout1_d.cc</in>
+        <in>layout2.cc</in>
+        <in>layout2.h</in>
+        <in>layout2_d.cc</in>
+        <in>layout3.cc</in>
+        <in>layout3.h</in>
+        <in>layout3_d.cc</in>
+        <in>layout4.cc</in>
+        <in>layout4.h</in>
+        <in>layout4_d.cc</in>
+        <in>layout5.cc</in>
+        <in>layout5.h</in>
+        <in>layout5_d.cc</in>
+        <in>layout6.cc</in>
+        <in>layout6.h</in>
+        <in>layout6_d.cc</in>
+        <in>layout7.cc</in>
+        <in>layout7.h</in>
+        <in>layout7_d.cc</in>
+        <in>layout8.cc</in>
+        <in>layout8.h</in>
+        <in>layout8_d.cc</in>
+        <in>layout9.cc</in>
+        <in>layout9.h</in>
+        <in>layout9_d.cc</in>
+        <in>playout.cc</in>
+        <in>playout.h</in>
+      </df>
+      <df name="lib">
+        <in>capplication.cc</in>
+        <in>cbox.cc</in>
+        <in>cbutton.cc</in>
+        <in>ccheckbox.cc</in>
+        <in>ccolordialog.cc</in>
+        <in>ccombo.cc</in>
+        <in>ccombodialog.cc</in>
+        <in>ccontrol.cc</in>
+        <in>cdialog.cc</in>
+        <in>cdraw.cc</in>
+        <in>cedit.cc</in>
+        <in>cfiledialog.cc</in>
+        <in>cfilelist.cc</in>
+        <in>cgauge.cc</in>
+        <in>chint.cc</in>
+        <in>chtml.cc</in>
+        <in>cinput.cc</in>
+        <in>citemmenu.cc</in>
+        <in>clabel.cc</in>
+        <in>clist.cc</in>
+        <in>cmenu.cc</in>
+        <in>cmessage.cc</in>
+        <in>cobject.cc</in>
+        <in>cpaint.cc</in>
+        <in>cpen.cc</in>
+        <in>cpmenu.cc</in>
+        <in>cscroll.cc</in>
+        <in>cspind.cc</in>
+        <in>cstatusbar.cc</in>
+        <in>ctext.cc</in>
+        <in>cthread.cc</in>
+        <in>ctimer.cc</in>
+        <in>ctogglebutton.cc</in>
+        <in>ctoolbutton.cc</in>
+        <in>cwindow.cc</in>
+        <in>cxpmbutton.cc</in>
+        <in>lxutils.cc</in>
+        <in>medit.cc</in>
+        <in>mstring.cc</in>
+      </df>
+      <df name="share">
+        <df name="icons">
+          <df name=".xvpics">
+          </df>
+        </df>
+      </df>
+      <df name="utils">
+      </df>
+      <in>config.h</in>
+      <in>licensa.txt</in>
+    </df>
+  </logicalFolder>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <platform>2</platform>
+      </toolsSet>
+      <compile>
+        <compiledirpicklist>
+          <compiledirpicklistitem>.</compiledirpicklistitem>
+          <compiledirpicklistitem>${AUTO_FOLDER}</compiledirpicklistitem>
+        </compiledirpicklist>
+        <compiledir>${AUTO_FOLDER}</compiledir>
+        <compilecommandpicklist>
+          <compilecommandpicklistitem>${MAKE} ${ITEM_NAME}.o</compilecommandpicklistitem>
+          <compilecommandpicklistitem>${AUTO_COMPILE}</compilecommandpicklistitem>
+        </compilecommandpicklist>
+        <compilecommand>${AUTO_COMPILE}</compilecommand>
+      </compile>
+      <dbx_gdbdebugger version="1">
+        <gdb_pathmaps>
+        </gdb_pathmaps>
+        <gdb_interceptlist>
+          <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
+        </gdb_interceptlist>
+        <gdb_options>
+          <DebugOptions>
+          </DebugOptions>
+        </gdb_options>
+        <gdb_buildfirst gdb_buildfirst_overriden="false" gdb_buildfirst_old="false"/>
+      </dbx_gdbdebugger>
+      <nativedebugger version="1">
+        <engine>gdb</engine>
+      </nativedebugger>
+      <runprofile version="9">
+        <runcommandpicklist>
+          <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
+        </runcommandpicklist>
+        <runcommand>"${OUTPUT_PATH}"</runcommand>
+        <rundir>.</rundir>
+        <buildfirst>false</buildfirst>
+        <terminal-type>0</terminal-type>
+        <remove-instrumentation>0</remove-instrumentation>
+        <environment>
+        </environment>
+      </runprofile>
+    </conf>
+  </confs>
+</configurationDescriptor>

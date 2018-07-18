@@ -1,26 +1,26 @@
 include ../Makefile.Conf
 
-FLAGS = $(CFLAGS) -D_SHARE=\"${datadir}/lxrad/icons\" 
+FLAGS = $(CFLAGS) -D_SHARE=\"${datadir}/lxrad_X11/icons\" 
 
 OBJS = playout.o controlsdef.o layout1.o layout2.o layout3.o layout4.o layout5.o layout6.o layout7.o layout8.o layout9.o layout10.o
 
-LINK= -L../lib -llxrad -lX11
-SLINK= -static -L../lib -llxrad @LIBS@ @X_LIBS@
+LINK= -L../lib -llxrad_X11 -lX11 -lXpm
+SLINK= -static -L../lib -llxrad_X11 @LIBS@ @X_LIBS@
 
 all: $(OBJS) 
-	$(CC) $(FLAGS) $(OBJS) -olayout $(LINK)
+	$(CC) $(FLAGS) $(OBJS) -olayout_X11 $(LINK)
 
 static: $(OBJS)
-	$(CC) $(FLAGS) $(OBJS) -olayout $(SLINK)
+	$(CC) $(FLAGS) $(OBJS) -olayout_X11 $(SLINK)
 	
 install: all
-	$(CP) -dvf layout ${bindir}
+	$(CP) -dvf layout_X11 ${bindir}
 
 %.o: %.cc
 	$(CC) -c $(FLAGS) $< 
 
 uninstall:
-	$(RM) ${bindir}/layout 
+	$(RM) ${bindir}/layout_X11 
 
 clean:
-	rm -f layout *.o core
+	rm -f layout_X11 *.o core

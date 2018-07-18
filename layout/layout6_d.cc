@@ -16,6 +16,6 @@ CWindow6::CWindow6 (void)
   combo1.AddItem("window1");
   combo1.SetSelectedItem("window1");
   combo1.SetFOwner(this);
-  combo1.OnComboChange= ONCOMBOCHANGE &CWindow6::oncombochange6;
+  combo1.EvOnComboChange= EVONCOMBOCHANGE &CWindow6::oncombochange6;
   CreateChild(&combo1);
 };

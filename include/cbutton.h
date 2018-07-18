@@ -51,9 +51,9 @@ public:
   void SetWidth (uint width);
   void SetHeight (uint height);
   //eventos
-  void key_press (XEvent event);
+  virtual void key_press (XEvent event);
   void key_release (XEvent event);
-  void button_press (XEvent event);
+  virtual void button_press (XEvent event);
   void button_release (XEvent event);
   void pointer_in (void);
   void pointer_out (void);

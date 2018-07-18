@@ -30,18 +30,14 @@
 #include<stdlib.h>
 #include<string.h>
 #include<ctype.h>
+#include<stdarg.h>
 
 #define NO_STL
 
 #ifdef NO_STL
 
 #define string String
-/*
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include<ctype.h>
-*/
+
 class String
 {
 private:
@@ -54,24 +50,32 @@ public:
     String (const char *str, int size);
    ~String (void);
   const char *c_str (void) const;
+  const char *char_str (void) const;
+  int Cmp (const char *str) const;
   int compare (const char *str) const;
   int compare (const String & str) const;
+  String Format(const char *fmt, ...) __attribute__((format (printf, 2, 3)));
+  String Printf(const char *fmt, ...) __attribute__((format (printf, 2, 3)));
   uint size (void) const;
   uint length (void) const;
-  String substr (uint start, uint end) const;
+  String substr (uint start, uint len) const;
   int find (const String & str) const;
+  int Contains(const String & str) const;
   int rfind (const String & str) const;
   int erase (uint start, int num);
+  static String FromAscii(char * str);
   int copy (char *str, uint sz) const;
-    String & operator = (const String & str);
-    String & operator = (const char *str);
+  bool  operator == (const String & str);
+  String & operator = (const String & str);
+  String & operator = (const char *str);
   String operator + (const String & str);
   String operator + (const char *str);
   String operator + (const char &str);
-    String & operator += (const String & str);
-    String & operator += (const char *str);
-    String & operator += (const char &str);
+  String & operator += (const String & str);
+  String & operator += (const char *str);
+  String & operator += (const char &str);
   char &operator[] (const uint & index);
+  operator const char*() const;
   friend String operator + (const char *str1, const String & str2);
   friend String operator + (const char &str1, const String & str2);
 //  friend ostream & operator << (ostream & os, const String & str);

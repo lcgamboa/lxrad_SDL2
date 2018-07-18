@@ -1,5 +1,5 @@
 CC = g++
-FLAGS = -Wall -O2 -I../../include/  -D_REENTRANT
+FLAGS = -Wall -ggdb -I../../include/  -D_REENTRANT -fpermissive
 
 OBJS = psimple.o simple1.o  
 

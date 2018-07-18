@@ -1,0 +1,19 @@
+CC = g++
+FLAGS = -Wall -ggdb -I../../include/  -D_REENTRANT -fpermissive
+
+OBJS = pmotor.o motor1.o  
+
+
+all: $(OBJS)
+	$(CC) $(FLAGS) $(OBJS) -omotor ../../lib/liblxrad.a -lX11 -lXpm
+
+%.o: %.cc
+	$(CC) -c $(FLAGS) $< 
+
+run: all
+	./motor
+
+install:
+
+clean:
+	rm -f motor *.o core

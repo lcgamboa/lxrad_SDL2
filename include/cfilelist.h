@@ -31,8 +31,8 @@
 #include<unistd.h>
 #include<dirent.h>
 
-#define ONFILESELECTED   (void(CControl::*)(CFileList*))
-#define ONDIRSELECTED   (void(CControl::*)(CFileList*))
+#define EVFILELISTSELECTFILE   (void(CControl::*)(CFileList*))
+#define EVFILELISTSELECTDIR   (void(CControl::*)(CFileList*))
 
 class CFileList:public CList
 {
@@ -40,7 +40,7 @@ protected:
   String Dir;
   void dir_selected (void);
   void file_selected (void);
-  unsigned char *ItensType;
+  unsigned char *ItemsType;
 public:
     CFileList (void);
    ~CFileList (void);
@@ -51,7 +51,7 @@ public:
   //propiedades
   void AddItem (char *name, unsigned char dtype);
   void AddStringItem (String text);
-  void DeleteItens (bool clean=true);
+  void DeleteItems (bool clean=true);
   void SetDir (String dir);
   String GetSelectedDir (void);
   String GetSelectedFile (void);
@@ -60,8 +60,8 @@ public:
 			     uint state);
   void FileButtonRelease (CControl * control, uint button, uint x, uint y,
 			  uint state);
-  void (CControl::*OnFileSelected) (CFileList * flist);
-  void (CControl::*OnDirSelected) (CFileList * flist);
+  void (CControl::*EvFileListSelectFile) (CFileList * flist);
+  void (CControl::*EvFileListSelectDir) (CFileList * flist);
 };
 
 #endif

@@ -49,7 +49,8 @@ CWindow::CWindow (void)
   SetClass ("CWindow");
   Win = NULL;
   PixmapBuffer=true;
-//  PixmapBuffer=false;
+  HasMenu=False;
+  //  PixmapBuffer=false;
   XMouse = 0;
   YMouse = 0;
   IC = 0;
@@ -74,8 +75,7 @@ CWindow::CWindow (void)
   WWMHints.initial_state = NormalState;
   WWMHints.input = True;
   WWMHints.flags = StateHint | InputHint;
-  WClassHints.res_class = "LXRAD";
-  //strcpy(WClassHints.res_class,"LXRAD");
+  WClassHints.res_class = (char *)"LXRAD";
   WAttributes.event_mask = AllEventMask;
   WAttributes.save_under = false;
   WAttributes.override_redirect = false;	//With WM 
@@ -86,12 +86,12 @@ CWindow::CWindow (void)
   ControlOnFocus = NULL;
   LastControl = NULL;
 //events
-  OnCreate = NULL;
-  OnDestroy = NULL;
-  OnShow = NULL;
-  OnHide = NULL;
-  OnEnter = NULL;
-  OnLeave = NULL;
+  EvOnCreate = NULL;
+  EvOnDestroy = NULL;
+  EvOnShow = NULL;
+  EvOnHide = NULL;
+  EvOnEnter = NULL;
+  EvOnLeave = NULL;
 
   char *title;
   title = new char[Title.size () + 1];
@@ -823,43 +823,64 @@ new (size_t sz)
 void
 CWindow::on_create (void)
 {
-  if ((FOwner) && (OnCreate))
-    (FOwner->*OnCreate) (this);
+  if ((FOwner) && (EvOnCreate))
+    (FOwner->*EvOnCreate) (this);
 };
 
 void
 CWindow::on_destroy (void)
 {
-  if ((FOwner) && (OnDestroy))
-    (FOwner->*OnDestroy) (this);
+  if ((FOwner) && (EvOnDestroy))
+    (FOwner->*EvOnDestroy) (this);
 };
 
 void
 CWindow::on_show (void)
 {
-  if ((FOwner) && (OnShow))
-    (FOwner->*OnShow) (this);
+  if ((FOwner) && (EvOnShow))
+    (FOwner->*EvOnShow) (this);
 };
 
 void
 CWindow::on_hide (void)
 {
-  if ((FOwner) && (OnHide))
-    (FOwner->*OnHide) (this);
+  if ((FOwner) && (EvOnHide))
+    (FOwner->*EvOnHide) (this);
 };
 
 void
 CWindow::on_enter (void)
 {
-  if ((FOwner) && (OnEnter))
-    (FOwner->*OnEnter) (this);
+  if ((FOwner) && (EvOnEnter))
+    (FOwner->*EvOnEnter) (this);
 };
 
 void
 CWindow::on_leave (void)
 {
-  if ((FOwner) && (OnLeave))
-    (FOwner->*OnLeave) (this);
+  if ((FOwner) && (EvOnLeave))
+    (FOwner->*EvOnLeave) (this);
 };
 
 
+bool 
+CWindow::LoadXMLContextAndCreateChilds(String fname)
+{
+//FIXME
+  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+return 0;
+}
+
+bool 
+CWindow::GetCanExitExclusive(void)
+{
+  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+  return 0;
+}
+  
+CWindow* 
+CWindow::GetWWidget (void)
+{
+  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+  return this; 
+}

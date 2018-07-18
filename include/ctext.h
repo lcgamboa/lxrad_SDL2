@@ -46,10 +46,12 @@ public:
   void Create (CControl * control);
   void Clear ();
   void AddLine (char *line);
+  void AddLine (String line);
   void InsertLine (char *line);
   void DelLine (void);
   void LoadFromFile (char *fname);
   void SaveToFile (char *fname);
+  void SaveToFile (String fname);
   //propiedades
   void SetText (String t);
   String GetText (void);

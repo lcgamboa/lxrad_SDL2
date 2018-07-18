@@ -38,11 +38,9 @@
   pthread_mutex_t Display_Lock;
 #endif
 
-#ifdef HAVE_LIBIMLIB
-#include<Imlib.h>
-  ImlibData* AID;
+#ifdef HAVE_LIBIMLIB2
+#include<Imlib2.h>
 #endif
-
 
 // CApplication__________________________________________________________
 
@@ -139,20 +137,14 @@ CApplication::Start (void)
     };
 #endif
 
-#ifdef HAVE_LIBIMLIB
-  ImlibInitParams  p;
-  p.flags =  PARAMS_SHAREDMEM | PARAMS_SHAREDPIXMAPS | PARAMS_FASTRENDER | PARAMS_HIQUALITY | 
-	     PARAMS_DITHER | PARAMS_IMAGECACHESIZE | PARAMS_PIXMAPCACHESIZE;
-  p.sharedmem=0;
-  p.sharedpixmaps=0;
-  p.fastrender=1;
-  p.hiquality=0;
-  p.dither=0;
-  p.imagecachesize=0;
-  p.pixmapcachesize=0;
 
-  AID=Imlib_init_with_params(ADisplay,&p);
+#ifdef HAVE_LIBIMLIB2
+   imlib_set_cache_size(2048 * 1024);
+   imlib_context_set_display(ADisplay);
+   imlib_context_set_visual(DefaultVisual(ADisplay, DefaultScreen(ADisplay)));
+   imlib_context_set_colormap(DefaultColormap(ADisplay, DefaultScreen(ADisplay)));
 #endif
+
 };
 
 void
@@ -605,3 +597,9 @@ bool CApplication::XSearchInColorTable (XColor * color)
   return false;
 };
 
+bool
+CApplication::ProcessEvents (void)
+{
+//FIXME
+return 0;
+}

@@ -71,15 +71,15 @@ CComboDialog::SetHeight (unsigned height)
 };
   
 void 
-CComboDialog::SetItens (String litens)
+CComboDialog::SetItems (String litems)
 {
-  list1.SetItens(litens);
+  list1.SetItems(litems);
 };
 
 String 
-CComboDialog::GetItens (void)
+CComboDialog::GetItems (void)
 {
-  return list1.GetItens();
+  return list1.GetItems();
 };
 
 void

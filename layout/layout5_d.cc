@@ -8,7 +8,7 @@ CWindow5::CWindow5(void)
   SetHeight(222);
   SetTitle("LXRAD Layout");
   SetVisible(false);
-  OnCreate= ONCREATE & CWindow5::_OnCreate;
+  EvOnCreate= EVONCREATE & CWindow5::_OnCreate;
   //checkbox1
   checkbox1.SetFOwner(this);
   checkbox1.SetName("checkbox1");

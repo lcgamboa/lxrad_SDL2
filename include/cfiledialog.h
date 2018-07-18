@@ -40,6 +40,8 @@ class CFileDialog:public CWindow
 private:
   bool CanDestroyChilds;
   bool Result;
+  String Filter;
+  int Type;
   String FileName;
   CButton button1, button2, button3, button4;
   CEdit edit1;
@@ -57,6 +59,8 @@ public:
   void DestroyChilds (void);
   CStringList GetContext (void);
   void SetContext (CStringList context);
+  void SetFilter(String filter);
+  void SetType(int type);
   //eventos
   void ButtonRelease1 (CControl * control, uint button, uint x, uint y,
 		       uint state);
