@@ -421,7 +421,8 @@ Bool predicate (Display *display,XEvent *event,XPointer arg)
 bool
 CWindow::WEvents (XEvent WEvent)
 {
-  //XEvent NWEvent;		//Next Window Event      
+  int ret=0;
+
   switch (WEvent.type)
     {
     case ClientMessage:
@@ -432,99 +433,94 @@ CWindow::WEvents (XEvent WEvent)
       if (((Atom) WEvent.xclient.data.l[0] == *AWMDeleteWindow)
 	  && (!CanExitExclusive))
 	WDestroy ();
-      return 1;
+      ret=1;
       break;
     case DestroyNotify:
       on_destroy ();
-      return 1;
+      ret=1;
       break;
     case CirculateNotify:
       eprint( "CirculateNotify\n");
-      return 1;
+      ret=1;
       break;
     case ConfigureNotify:
-      X = WEvent.xconfigure.x;
-      Y = WEvent.xconfigure.y;
-      Width=WEvent.xconfigure.width;
-      Height=WEvent.xconfigure.height;
-      Border = WEvent.xconfigure.border_width;
-      CreatePixmap(true);
-      return 1;
+      //look in the end of function for the last
+      ret=1;
       break;
 //    case GravityNotify:
-//      return 1;
+//      ret=1;
 //      break;
     case MapNotify:
       on_show ();
-      return 1;
+      ret=1;
       break;
 //  case ReparentNotify:                
-//  return 1;break;
+//  ret= 1;break;
     case UnmapNotify:
       on_hide ();
-      return 1;
+      ret=1;
       break;
-//  return 1;break;
+//  ret=1 1;break;
 //  case MotionNotify:          
-//  return 1;break;
+//  ret=1 1;break;
 //  case KeyPress:              
-//  return 1;break;
+//  ret= 1;break;
 //  case KeyRelease:            
-//  return 1;break;
+//  ret= 1;break;
 //  case ButtonPress:           
-//  return 1;break;
+//  ret= 1;break;
 //  case ButtonRelease:
-//  return 1;break;
+//  ret= 1;break;
     case EnterNotify:
       on_enter ();
-      return 1;
+      ret= 1;
       break;
     case LeaveNotify:
       on_leave ();
-      return 1;
+      ret=1;
       break;
 //  case ColormapNotify:                
-//  return 1;break;
+//  ret=1 1;break;
 //  case GraphicsExpose:                
-//  return 1;break;
+//  ret=1 1;break;
 //  case NoExpose:              
-//  return 1;break;
+//  ret=1 1;break;
     case FocusIn:
       if (IC)
 	XSetICFocus (IC);
-      return 1;
+      ret= 1;
       break;
     case FocusOut:
       if (IC)
 	XUnsetICFocus (IC);
-      return 1;
+      ret= 1;
       break;
 //  case KeymapNotify:          
-//  return 1;break;
+//  ret=1 1;break;
 //  case PropertyNotify:                
-//  return 1;break;
+//  ret=1 1;break;
 //  case ResizeRequest:         
-//  return 1;
+//  ret= 1;
 //  break;
     case MappingNotify:
       XRefreshKeyboardMapping (&WEvent.xmapping);
-      return 1;
+      ret= 1;
       break;
 //  case SelectionClear:                
-//  return 1;break;
+//  ret= 1;break;
 //  case SelectionNotify:               
-//  return 1;break;
+//  ret= 1;break;
 //  case SelectionRequest:      
-//  return 1;break;
+//  ret= 1;break;
 //  case VisibilityNotify:      
 //      eprint("visibilityNotify\n");
-//                      return 1;
+//                      ret= 1;
 //                      break;
 //  case LASTEvent:             
-//  return 1;break;
+//  ret= 1;break;
     default:
       CControl::Event (WEvent);
-      return 1;
+      ret= 1;
     case Expose:
       XRectangle rec;
       Region Reg=XCreateRegion();
@@ -544,9 +540,26 @@ CWindow::WEvents (XEvent WEvent)
       XUnionRectWithRegion(&rec,Reg,Reg);
       };
       Update (Reg);
-      return 1;
+      ret= 1;
       break;
     };
+
+
+  if ((LEvent.type != WEvent.type)&&(LEvent.type == ConfigureNotify))
+  {
+      X = LEvent.xconfigure.x;
+      Y = LEvent.xconfigure.y;
+      Width=LEvent.xconfigure.width;
+      Height=LEvent.xconfigure.height;
+      Border = LEvent.xconfigure.border_width;
+      CreatePixmap(true);
+      on_show ();
+  }
+
+
+  LEvent=WEvent;
+
+  return ret;
 };
 
 

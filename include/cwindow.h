@@ -55,7 +55,7 @@ protected:
   Window WWindow;
   int *ADepth;
   Display *ADisplay;
-  XEvent WEvent;
+  XEvent LEvent;//last event
   unsigned long BorderColor;
   XTextProperty WTextProperty;
   XSizeHints WSizeHints;
