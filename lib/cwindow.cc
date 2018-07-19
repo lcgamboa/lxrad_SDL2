@@ -547,6 +547,7 @@ CWindow::WEvents (XEvent WEvent)
 
   if ((LEvent.type != WEvent.type)&&(LEvent.type == ConfigureNotify))
   {
+      XLockDisplay(Application->GetADisplay());
       X = LEvent.xconfigure.x;
       Y = LEvent.xconfigure.y;
       Width=LEvent.xconfigure.width;
@@ -554,6 +555,7 @@ CWindow::WEvents (XEvent WEvent)
       Border = LEvent.xconfigure.border_width;
       CreatePixmap(true);
       on_show ();
+      XUnlockDisplay(Application->GetADisplay());
   }
 
 

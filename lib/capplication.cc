@@ -35,7 +35,6 @@
 
 #ifdef HAVE_LIBPTHREAD
 #include<pthread.h>
-  pthread_mutex_t Display_Lock;
 #endif
 
 #ifdef HAVE_LIBIMLIB2
@@ -59,9 +58,6 @@ CApplication::CApplication (void)
   HintTime=time(NULL);
   HintX=0;
   HintY=0;
-#ifdef HAVE_LIBPTHREAD
-  pthread_mutex_lock (&Display_Lock);
-#endif
 };
 
 CApplication::~CApplication (void)
@@ -70,16 +66,12 @@ CApplication::~CApplication (void)
   if (ColorTable)
     delete[]ColorTable;
   ColorTable = NULL;
-
-#ifdef HAVE_LIBPTHREAD
-  pthread_mutex_unlock (&Display_Lock);
-#endif
 };
 
 void
 CApplication::Start (void)
 {
-
+  XInitThreads(); 
   eprint("Application init ...\n");
   for (int i = 0; i != Aargc; i++)
     {
@@ -249,11 +241,7 @@ CApplication::ProcessEvents (CWindow * AWindow)
      ec=XEventsQueued(ADisplay,QueuedAlready );
      while(ec ==  0 )
      {
-#ifdef HAVE_LIBPTHREAD
-        pthread_mutex_unlock (&Display_Lock);
-        pthread_mutex_lock (&Display_Lock);
-#endif
-	usleep(5);
+	usleep(50000);
 	ec=XEventsQueued(ADisplay,QueuedAfterFlush );
 	if((HintControl)&&(time(NULL)-HintTime > 1))
 	{
@@ -355,11 +343,7 @@ CApplication::Load (void)
      ec=XEventsQueued(ADisplay,QueuedAlready );
      while(ec ==  0 )
      {
-#ifdef HAVE_LIBPTHREAD
-        pthread_mutex_unlock (&Display_Lock);
-        pthread_mutex_lock (&Display_Lock);
-#endif
-	usleep(5);
+	usleep(50000);
 	ec=XEventsQueued(ADisplay,QueuedAfterFlush );
 	if((HintControl)&&(time(NULL)-HintTime > 1))
 	{

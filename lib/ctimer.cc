@@ -26,6 +26,7 @@
 
 #include"../config.h"
 #include"../include/ctimer.h"
+#include"../include/capplication.h"
 #include <sys/time.h>
 
 #ifdef HAVE_LIBPTHREAD	
@@ -112,23 +113,24 @@ CTimer::SetContext (CStringList context)
 };
 
 #ifdef HAVE_LIBPTHREAD	
-extern pthread_mutex_t Display_Lock;
 
 void *
 thread1 (void *arg)
 {
   struct timeval  tv1, tv2;
+  unsigned long tused;
   pthread_setcanceltype (PTHREAD_CANCEL_ASYNCHRONOUS,NULL);  
   CTimer *timer = (CTimer *) arg;
   usleep (timer->GetTime ()*1000);
   for (;;)
     {
-      pthread_mutex_lock (&Display_Lock);                   
+      XLockDisplay(Application->GetADisplay());
       gettimeofday(&tv1, NULL);
       timer->on_time ();
       gettimeofday(&tv2, NULL);	
-      pthread_mutex_unlock (&Display_Lock);                   
-      usleep ((timer->GetTime ()*1000) -((tv2.tv_usec - tv1.tv_usec) + 1000000L*(tv2.tv_sec - tv1.tv_sec)));
+      XUnlockDisplay(Application->GetADisplay());   
+      tused=((tv2.tv_usec - tv1.tv_usec) + 1000000L*(tv2.tv_sec - tv1.tv_sec));
+      usleep ((timer->GetTime ()*1000) - tused);
     };
 };
 #endif

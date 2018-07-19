@@ -778,6 +778,7 @@ void
 CControl::SetColor (XColor c)
 {
   Color = c;
+  Update ();
 };
 
 void
@@ -791,6 +792,7 @@ CControl::SetColor (const String name)
     Color = ColorByName (name);
   else
     ColorSet = true;
+  Update ();
 };
 
 void
@@ -808,6 +810,7 @@ CControl::SetColor (uint r, uint g, uint b)
       ColorSet = true;
       ColorName = "";
     };
+  Update ();
 };
 
 lxColor CControl::GetColor (void)
