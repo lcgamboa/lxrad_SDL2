@@ -26,6 +26,7 @@
 #include"../config.h"
 #include"../include/cdraw.h"
 #include"../include/cmessage.h"
+#include"../include/capplication.h"
 
 
 #ifdef HAVE_LIBIMLIB2
@@ -94,9 +95,15 @@ CDraw::SetWidth (uint width)
 {
   if(Paint != NULL)
   {
-    if (CPixmap != 0) XFreePixmap (Win->GetADisplay (), CPixmap);
-    CPixmap =XCreatePixmap (Win->GetADisplay (), Win->GetWWindow (), width, Height, *(Win->GetADepth()));
-    Canvas.SetDrawIn(CPixmap);
+    Display *disp=Application->GetADisplay();
+    if(disp)
+    {
+      XLockDisplay(disp);
+      if (CPixmap != 0) XFreePixmap (Win->GetADisplay (), CPixmap);
+      CPixmap =XCreatePixmap (Win->GetADisplay (), Win->GetWWindow (), width, Height, *(Win->GetADepth()));
+      Canvas.SetDrawIn(CPixmap);
+      if(disp)XUnlockDisplay(disp);
+    }
   };
   CControl::SetWidth(width);
 };
@@ -106,9 +113,15 @@ CDraw::SetHeight (uint height)
 {
   if(Paint != NULL)
   {
-    if (CPixmap != 0)XFreePixmap (Win->GetADisplay (), CPixmap);
-    CPixmap =XCreatePixmap (Win->GetADisplay (), Win->GetWWindow (), Width, height, *(Win->GetADepth()));
-    Canvas.SetDrawIn(CPixmap);
+    Display *disp=Application->GetADisplay();
+    if(disp)
+    {
+      XLockDisplay(disp);
+      if (CPixmap != 0)XFreePixmap (Win->GetADisplay (), CPixmap);
+      CPixmap =XCreatePixmap (Win->GetADisplay (), Win->GetWWindow (), Width, height, *(Win->GetADepth()));
+      Canvas.SetDrawIn(CPixmap);
+      if(disp)XUnlockDisplay(disp);
+    }
   };
   CControl::SetHeight(height);
 };
