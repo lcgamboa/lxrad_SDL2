@@ -28,6 +28,9 @@
 #include"../include/cwindow.h"
 #include"../include/capplication.h"
 
+#include<pthread.h>
+//extern pthread_mutex_t Display_Lock;
+
 void
 XFreeTextProperty (XTextProperty & textp)
 {
@@ -551,6 +554,7 @@ CWindow::WEvents (XEvent WEvent)
 
       if(disp)
       {
+        //pthread_mutex_lock (&Display_Lock);
         XLockDisplay(disp);
         X = LEvent.xconfigure.x;
         Y = LEvent.xconfigure.y;
@@ -560,7 +564,8 @@ CWindow::WEvents (XEvent WEvent)
         CreatePixmap(true);
         on_show ();
 	Draw();
-        if(disp)XUnlockDisplay(disp);
+        XUnlockDisplay(disp);
+        //pthread_mutex_unlock (&Display_Lock);
       }
   }
 

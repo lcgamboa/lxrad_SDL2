@@ -29,10 +29,9 @@
 #include"../include/capplication.h"
 #include <sys/time.h>
 
-#ifdef HAVE_LIBPTHREAD	
 #include<pthread.h>
 #include<unistd.h>
-#endif
+//extern pthread_mutex_t Display_Lock;
 
 // CTimer___________________________________________________________
 
@@ -124,21 +123,27 @@ thread1 (void *arg)
  
   //wait for display
   
-  Display * disp=Application->GetADisplay();
+  Display * disp;
  
   usleep (timer->GetTime ()*1000);
   for (;;)
   {
+      disp=Application->GetADisplay();
       if(disp)
       {
-        XLockDisplay(disp);
         gettimeofday(&tv1, NULL);
+        //pthread_mutex_lock (&Display_Lock);
+        XLockDisplay(disp);
         timer->on_time ();
-        gettimeofday(&tv2, NULL);	
-        if(disp) 
        	XUnlockDisplay(disp);   
+        //pthread_mutex_unlock (&Display_Lock);
+        gettimeofday(&tv2, NULL);	
         tused=((tv2.tv_usec - tv1.tv_usec) + 1000000L*(tv2.tv_sec - tv1.tv_sec));
-        usleep ((timer->GetTime ()*1000) - tused);
+        
+        if((timer->GetTime ()*1000) > tused)
+          usleep((timer->GetTime ()*1000) - tused);
+	else
+          usleep((timer->GetTime ()*1000));
       }
       else
       {

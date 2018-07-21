@@ -28,6 +28,8 @@
 #include"../include/cmessage.h"
 #include"../include/capplication.h"
 
+#include<pthread.h>
+//extern pthread_mutex_t Display_Lock;
 
 #ifdef HAVE_LIBIMLIB2
 #include<Imlib2.h>
@@ -98,11 +100,16 @@ CDraw::SetWidth (uint width)
     Display *disp=Application->GetADisplay();
     if(disp)
     {
+      //pthread_mutex_lock (&Display_Lock);
       XLockDisplay(disp);
+      int en=XPending(disp);
+      XEvent ev;
+      for(int i=0; i< en; i++)XNextEvent(disp,&ev); 
       if (CPixmap != 0) XFreePixmap (Win->GetADisplay (), CPixmap);
       CPixmap =XCreatePixmap (Win->GetADisplay (), Win->GetWWindow (), width, Height, *(Win->GetADepth()));
       Canvas.SetDrawIn(CPixmap);
-      if(disp)XUnlockDisplay(disp);
+      XUnlockDisplay(disp);
+      //pthread_mutex_unlock (&Display_Lock);
     }
   };
   CControl::SetWidth(width);
@@ -116,11 +123,17 @@ CDraw::SetHeight (uint height)
     Display *disp=Application->GetADisplay();
     if(disp)
     {
+      //pthread_mutex_lock (&Display_Lock);
       XLockDisplay(disp);
+      int en=XPending(disp);
+      XEvent ev;
+      for(int i=0; i< en; i++)XNextEvent(disp,&ev); 
+
       if (CPixmap != 0)XFreePixmap (Win->GetADisplay (), CPixmap);
       CPixmap =XCreatePixmap (Win->GetADisplay (), Win->GetWWindow (), Width, height, *(Win->GetADepth()));
       Canvas.SetDrawIn(CPixmap);
-      if(disp)XUnlockDisplay(disp);
+      XUnlockDisplay(disp);
+      //pthread_mutex_unlock (&Display_Lock);
     }
   };
   CControl::SetHeight(height);

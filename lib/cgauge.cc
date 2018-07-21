@@ -53,7 +53,9 @@ CGauge::Draw (void)
       Paint->Pen.SetColor (Color);
       Paint->Rectangle ( 0, 0, Width, Height);
       Paint->Pen.SetColor (ColorByRGB(0,0,200));
-      Paint->Rectangle ( 0, 0, Width*Value/Range , Height);
+      unsigned int wg= Width*Value/Range;
+      if(wg > Width)wg=Width;
+      Paint->Rectangle ( 0, 0, wg , Height);
       Paint->LowerFrame ( 0, 0, Width, Height, Border);
       CControl::Draw ();		
       
