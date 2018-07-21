@@ -35,6 +35,7 @@ class CWindow;
 class CPaint:public CObject
 {
 private:
+  Display * Disp;	
   CWindow * Win;
   Drawable DrawIn;
   Drawable DrawOut;

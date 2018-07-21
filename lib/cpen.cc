@@ -26,17 +26,14 @@
 #include"../include/cpen.h"
 #include"../include/cpen.h"
 #include"../include/cpaint.h"
-#include"../include/cwindow.h"
+#include"../include/capplication.h"
 
 // CPen________________________________________________________________
 
 void
 CPen::Create (CControl * control, GC * gc)
 {
-  if(control)
-    Win = control->GetWin ();
-  else
-   Win=NULL;
+  Disp = Application->GetADisplay();
   Agc = gc;
 };
 
@@ -44,14 +41,14 @@ void
 CPen::SetColor (XColor color)
 {
   Color = color;
-  XSetForeground (Win->GetADisplay (), *Agc, color.pixel);
+  XSetForeground (Disp, *Agc, color.pixel);
 };
 
 void
 CPen::SetBGColor (XColor color)
 {
   Color = color;
-  XSetBackground (Win->GetADisplay (), *Agc, color.pixel);
+  XSetBackground (Disp, *Agc, color.pixel);
 };
 
 XColor CPen::GetColor ()
@@ -62,12 +59,12 @@ XColor CPen::GetColor ()
 void
 CPen::SetWidth (unsigned long width)
 {
-  XSetLineAttributes(Win->GetADisplay(), *Agc, width, LineSolid, CapNotLast,JoinMiter);
+  XSetLineAttributes(Disp, *Agc, width, LineSolid, CapNotLast,JoinMiter);
 };
 
 void
 CPen::SetPen (int function)
 {
-  XSetFunction (Win->GetADisplay (), *Agc, function);
+  XSetFunction (Disp, *Agc, function);
 };
 

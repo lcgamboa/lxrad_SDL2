@@ -347,12 +347,6 @@ CDraw::SetPixmapData (char **data)
 				 data, &CPixmap, &CMask, &xpmAttributes);
       if(rc == 0)XpmFreeAttributes (&xpmAttributes);
 #endif
-/*      
-#ifdef HAVE_LIBIMLIB    
-      rc= Imlib_data_to_pixmap(AID, data, &CPixmap, &CMask); 
-      rc-=1;
-#endif
-*/
       Canvas.SetDrawIn(CPixmap);
       if (rc == 0)
 	{

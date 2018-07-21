@@ -97,6 +97,7 @@ lxImage::~lxImage()
   {
    imlib_context_set_image(Image);
    imlib_free_image();
+   Image=NULL;
   }
 }
 
@@ -120,6 +121,7 @@ lxImage::Destroy(void)
   {
    imlib_context_set_image(Image);
    imlib_free_image();
+   Image=NULL;
   }
 }
 
@@ -288,7 +290,9 @@ lxFont::lxFont()
 
 lxFont::lxFont(int size,int family,int style,int weight)
 {
+#ifdef _DEBUG	
   printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+#endif
 }
 //-------------------------------------------------------------------------
 void lxMilliSleep(unsigned int time)
@@ -334,8 +338,14 @@ String lxGetCwd(void)
 //-------------------------------------------------------------------------
 bool lxUnzipDir(const String &in_filename, const String &out_dirname)
 {
+  char cmd[1024];	
   printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
-/*	
+  //FIXME use library
+  
+  sprintf(cmd,"unzip %s -d%s\n",in_filename.c_str(),out_dirname.c_str()); 
+  
+  system(cmd);
+ /*	
     bool ret = true;
 
         wxFileSystem::AddHandler(new wxZipFSHandler);

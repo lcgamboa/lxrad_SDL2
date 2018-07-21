@@ -28,6 +28,8 @@
   
 CHtml::CHtml (void)
 {
+  SetClass ("CHtml");
+  SetReadOnly (true);
   EvOnLinkClicked=NULL;
 }
 

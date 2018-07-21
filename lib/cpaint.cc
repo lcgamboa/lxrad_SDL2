@@ -35,11 +35,13 @@ CPaint::CPaint (void)
   SetClass ("CPaint");
   RX=0;
   RY=0;
+  Disp=NULL;
   DrawIn=0;
   DrawOut=0;
   DoCalcRXY=true;
   Scalex=1.0;
   Scaley=1.0;
+  Agc=0;
 };
   
 void 
@@ -71,31 +73,30 @@ CPaint::Create (CControl * control)
   Owner = control;
   DrawIn = Win->GetPixmap();
   DrawOut = Win->GetWWindow();
-  Agc = XCreateGC (Win->GetADisplay (), Win->GetWWindow (), 0, NULL);
-  XSetGraphicsExposures(Win->GetADisplay (), Agc, false);
+  Disp = Win->GetADisplay();
+  Agc = XCreateGC (Disp, Win->GetWWindow (), 0, NULL);
+  XSetGraphicsExposures(Disp, Agc, false);
   Pen.Create (control, &Agc);
 };
   
 void 
 CPaint::Create (lxBitmap *bitmap)
 {
-  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
-
   Win = NULL;
   Owner = NULL;
   DrawIn = *bitmap;
   DrawOut = *bitmap;
-  Agc = XCreateGC (Application->GetADisplay (), DrawIn, 0, NULL);
-  XSetGraphicsExposures(Application->GetADisplay (), Agc, false);
+  Disp = Application->GetADisplay();
+  Agc = XCreateGC (Disp, DrawIn, 0, NULL);
+  XSetGraphicsExposures(Disp, Agc, false);
   Pen.Create (NULL, &Agc);
-
 }
 
 void
 CPaint::Destroy (void)
 {
-  if (Win)
-    XFreeGC (Win->GetADisplay (), Agc);
+  if (Agc != 0)
+    XFreeGC (Disp, Agc);
 };
 
 void
@@ -105,7 +106,7 @@ CPaint::SetFont (CControl * control)
   Gcv = new XGCValues;
   XFontStruct *PFont = control->GetFont ();
   Gcv->font = PFont->fid;
-  XChangeGC (Win->GetADisplay (), Agc, GCFont, Gcv);
+  XChangeGC (Disp, Agc, GCFont, Gcv);
   delete Gcv;
 };
 
@@ -138,7 +139,7 @@ CPaint::DrawControl (CControl * control)
       RX=control->GetRX();
       RY=control->GetRY();
       Pen.SetPen (control->GetPen ());
-      XCopyArea (Win->GetADisplay (), DrawIn, DrawOut,
+      XCopyArea (Disp, DrawIn, DrawOut,
 		 Agc, RX, RY, control->GetWidth (), control->GetHeight (),RX, RY);
       Pen.SetPen (GXcopy);
       }
@@ -147,7 +148,7 @@ CPaint::DrawControl (CControl * control)
       RX=control->GetRX()-1;
       RY=control->GetRY()-1;
       Pen.SetPen (control->GetPen ());
-      XCopyArea (Win->GetADisplay (), DrawIn, DrawOut,
+      XCopyArea (Disp, DrawIn, DrawOut,
 		 Agc, RX, RY, control->GetWidth ()+2, control->GetHeight ()+2,RX, RY);
       Pen.SetPen (GXcopy);
       }
@@ -160,7 +161,7 @@ CPaint::DrawControl (CControl * control)
 void
 CPaint::Point (int x, int y)
 {
-  XDrawPoint (Win->GetADisplay (), DrawIn, Agc, RX+x, RY+y);
+  XDrawPoint (Disp, DrawIn, Agc, RX+x, RY+y);
 };
 
 void
@@ -171,14 +172,14 @@ CPaint::FillPolygon (XPoint * points, int npoints)
     points[c].x+=RX;	  
     points[c].y+=RY;	  
   }	
-  XFillPolygon (Win->GetADisplay (), DrawIn, Agc, points,
+  XFillPolygon (Disp, DrawIn, Agc, points,
 		npoints, Nonconvex, CoordModeOrigin);
 };
 
 void
 CPaint::Line (int x1, int y1, int x2, int y2)
 {
-  XDrawLine (Win->GetADisplay (), DrawIn, Agc, RX+x1, RY+y1, RX+x2, RY+y2);
+  XDrawLine (Disp, DrawIn, Agc, RX+x1, RY+y1, RX+x2, RY+y2);
 };
 
 void
@@ -189,7 +190,7 @@ CPaint::Lines (XPoint * points, int npoints)
     points[c].x+=RX;	  
     points[c].y+=RY;	  
   }	
-  XDrawLines (Win->GetADisplay (), DrawIn, Agc, points,
+  XDrawLines (Disp, DrawIn, Agc, points,
 	      npoints, CoordModeOrigin);
 };
 
@@ -197,14 +198,14 @@ CPaint::Lines (XPoint * points, int npoints)
 void
 CPaint::Rectangle (int x, int y, int w, int h)
 {
-  XFillRectangle (Win->GetADisplay (), DrawIn, Agc, (RX+x)*Scalex, (RY+y)*Scaley, w*Scalex, h*Scaley);
+  XFillRectangle (Disp, DrawIn, Agc, (RX+x)*Scalex, (RY+y)*Scaley, w*Scalex, h*Scaley);
 };
 
 void
 CPaint::Frame (int x, int y, int w, int h, uint wb)
 {
   for (uint c = 0; c < wb; c++)
-    XDrawRectangle (Win->GetADisplay (), DrawIn, Agc, (RX+x + c)*Scalex,
+    XDrawRectangle (Disp, DrawIn, Agc, (RX+x + c)*Scalex,
 		    (RY+y + c)*Scaley, (w - (c * 2))*Scalex, (h - (c * 2))*Scaley);
 };
 
@@ -258,7 +259,7 @@ CPaint::RaiserFrame (int x, int y, int w, int h, uint wb)
 void
 CPaint::Text (String text,  int x1, int y1)
 {
-  XDrawString (Win->GetADisplay (), DrawIn, Agc, RX+x1, RY+y1,
+  XDrawString (Disp, DrawIn, Agc, RX+x1, RY+y1,
 	       text.c_str (), text.size ());
 };
 
@@ -266,14 +267,14 @@ CPaint::Text (String text,  int x1, int y1)
 void
 CPaint::ImgText ( int x1, int y1, String text)
 {
-  XDrawImageString (Win->GetADisplay (), DrawIn, Agc, RX+x1, RY+y1,
+  XDrawImageString (Disp, DrawIn, Agc, RX+x1, RY+y1,
 	       text.c_str (), text.size ());
 };
   
 void 
 CPaint::PutPixmap (int x,int y, int w, int h,Pixmap pixmap)
 {
-   XCopyArea (Win->GetADisplay (), pixmap, DrawIn ,Agc, 0, 0, w, h, RX+x, RY+y);
+   XCopyArea (Disp, pixmap, DrawIn ,Agc, 0, 0, w, h, RX+x, RY+y);
 };
   
 void 
@@ -300,7 +301,8 @@ CPaint::Init(float sx, float sy)
 void 
 CPaint::End(void)
 {
-  Owner->Draw();	
+  if(Owner)  
+    Owner->Draw();	
 }
 
 void 
@@ -349,7 +351,12 @@ CPaint::RotatedText (String str, int x, int y, int angle)
 void 
 CPaint::PutBitmap (lxBitmap* bitmap,int x,int y)
 {
-  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+  Window root;
+  int rx,ry;
+  unsigned int rw,rh,rb,rd;
+  XGetGeometry(Disp, *bitmap,&root,&rx,&ry,&rw,&rh,&rb,&rd);
+  
+  XCopyArea (Disp, *bitmap, DrawIn,  Agc, 0, 0, rw, rh ,RX+x, RY+y);
 }
 
 void 
@@ -361,7 +368,9 @@ CPaint::SetBitmap(lxBitmap * bitmap,double xs, double ys)
 void 
 CPaint::SetFont (lxFont font)
 {
+#ifdef _DEBUG	
   printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+#endif
 }
 
 void 
@@ -376,9 +385,9 @@ CPaint::Circle (bool filled, int x, int y, int radius)
 {
   int off=radius;	
   if(filled)	
-    XFillArc (Win->GetADisplay (), DrawIn, Agc, (RX+x-off)*Scalex, (RY+y-off)*Scaley, 2*radius*Scalex, 2*radius*Scaley,0,360*64);
+    XFillArc (Disp, DrawIn, Agc, (RX+x-off)*Scalex, (RY+y-off)*Scaley, 2*radius*Scalex, 2*radius*Scaley,0,360*64);
   else
-    XDrawArc (Win->GetADisplay (), DrawIn, Agc, (RX+x-off)*Scalex, (RY+y-off)*Scaley, 2*radius*Scalex, 2*radius*Scaley,0,360*64);
+    XDrawArc (Disp, DrawIn, Agc, (RX+x-off)*Scalex, (RY+y-off)*Scaley, 2*radius*Scalex, 2*radius*Scaley,0,360*64);
 }
   
 
@@ -388,7 +397,7 @@ CPaint::Polygon(bool filed, lxPoint * points, int npoints)
   points[0].x+=RX;
   points[0].y+=RY;
 
-  XFillPolygon(Win->GetADisplay(), DrawIn, Agc, points, npoints,  Complex , CoordModeOrigin);
+  XFillPolygon(Disp, DrawIn, Agc, points, npoints,  Complex , CoordModeOrigin);
 }
 
 void 

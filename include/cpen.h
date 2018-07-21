@@ -29,14 +29,13 @@
 #include"cobject.h"
 
 class CControl;
-class CWindow;
 
 class CPen:public CObject
 {
 private:
   XColor Color;
   int Width;
-  CWindow *Win;
+  Display * Disp;
   GC *Agc;
 public:
     CPen (void)
