@@ -32,7 +32,7 @@ CFileList::CFileList (void)
   SetClass ("CFileList");
   char *temp = get_current_dir_name ();
   Dir = temp;
-  delete[]temp;
+  free(temp);
   EvFileListSelectDir = NULL;
   EvFileListSelectFile = NULL;
   ItemsType = NULL;

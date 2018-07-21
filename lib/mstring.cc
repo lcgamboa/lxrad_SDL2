@@ -148,6 +148,7 @@ bool
 fgetline (FILE* file, String & str)
 {	
   char line[5000];
+  line[0]=0; 
 
   if(file)
   {
@@ -189,8 +190,6 @@ String::String (const String & str)
    if (str.Str != NULL)
     {
       Str = new char[strlen (str.Str) + 1];
-      
-      if(strcmp(Str,"gray82")==0)printf("Erro fatal !!!!!!!!!!!\n");
       
       strcpy (Str, str.Str);
     }
@@ -768,19 +767,12 @@ operator + (const char &str1, const String & str2)
   char temp[2];
   temp[0] = str1;
   temp[1] = '\0';
-  if (temp)
-    {
-      if (str2.Str)
-	return string (temp) + str2;
-      else
-	return temp;
-    }
+
+  if (str2.Str)
+     return string (temp) + str2;
   else
-    {
-      if (str2.Str)
-	return str2;
-    };
-  return '\0';
+     return temp;
+
 }
 
 

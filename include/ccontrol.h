@@ -132,6 +132,7 @@ public:
 //operators
   void *operator new (size_t sz);
   void *operator new[] (size_t sz);
+  void operator delete(void *p);
 //events
   void SetFOwner (CControl * control);
   CControl *GetFOwner (void);

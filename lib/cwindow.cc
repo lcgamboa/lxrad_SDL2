@@ -32,7 +32,7 @@ void
 XFreeTextProperty (XTextProperty & textp)
 {
   if (textp.nitems > 0)
-    delete[]textp.value;
+    XFree(textp.value);
   textp.value = NULL;
   textp.encoding = 0;
   textp.format = 0;
@@ -235,7 +235,7 @@ CWindow::GetPixmapBuffer(void)
   return PixmapBuffer;
 };
 
-Pixmap
+Pixmap 
 CWindow::GetPixmap(void)
 {
   return WPixmap;
@@ -547,15 +547,21 @@ CWindow::WEvents (XEvent WEvent)
 
   if ((LEvent.type != WEvent.type)&&(LEvent.type == ConfigureNotify))
   {
-      XLockDisplay(Application->GetADisplay());
-      X = LEvent.xconfigure.x;
-      Y = LEvent.xconfigure.y;
-      Width=LEvent.xconfigure.width;
-      Height=LEvent.xconfigure.height;
-      Border = LEvent.xconfigure.border_width;
-      CreatePixmap(true);
-      on_show ();
-      XUnlockDisplay(Application->GetADisplay());
+      Display *disp=Application->GetADisplay();
+
+      if(disp)
+      {
+        XLockDisplay(disp);
+        X = LEvent.xconfigure.x;
+        Y = LEvent.xconfigure.y;
+        Width=LEvent.xconfigure.width;
+        Height=LEvent.xconfigure.height;
+        Border = LEvent.xconfigure.border_width;
+        CreatePixmap(true);
+        on_show ();
+	Draw();
+        if(disp)XUnlockDisplay(disp);
+      }
   }
 
 
@@ -673,7 +679,7 @@ CWindow::GetIC (void)
 
 
 //propiedades
-Window
+Window 
 CWindow::GetWWindow (void)
 {
   return WWindow;

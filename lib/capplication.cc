@@ -29,10 +29,6 @@
 #include<time.h>
 #include<unistd.h>
 
-#ifdef _DEBUG
-#include "xevents.cc"
-#endif
-
 #ifdef HAVE_LIBPTHREAD
 #include<pthread.h>
 #endif
@@ -54,6 +50,7 @@ CApplication::CApplication (void)
   ColorTable = NULL;
   Exit = false;
 
+  ADisplay=NULL;
   HintControl=NULL;
   HintTime=time(NULL);
   HintX=0;
@@ -71,14 +68,16 @@ CApplication::~CApplication (void)
 void
 CApplication::Start (void)
 {
-  XInitThreads(); 
+  Display *adisplay=NULL;	
+  XInitThreads();
+   
   eprint("Application init ...\n");
   for (int i = 0; i != Aargc; i++)
     {
       if ((!strcmp (Aargv[i], "-display")) && ((i + 1) < Aargc))
 	{
-	  ADisplay = XOpenDisplay (Aargv[i + 1]);
-	  if (ADisplay)
+	  adisplay = XOpenDisplay (Aargv[i + 1]);
+	  if (adisplay)
 	    break;
 	  else
 	    {
@@ -90,11 +89,11 @@ CApplication::Start (void)
 	    };
 	};
     };
-  if (ADisplay == NULL)
+  if (adisplay == NULL)
     {
-      ADisplay = XOpenDisplay (NULL);
+      adisplay = XOpenDisplay (NULL);
     };
-  if (ADisplay == NULL)
+  if (adisplay == NULL)
     {
       eprint("Error!: Can't open  Display \n");
       eprint("...Application Finished\n");
@@ -102,7 +101,9 @@ CApplication::Start (void)
       return;
     };
 
+  XLockDisplay(adisplay);
 
+  ADisplay=adisplay;
   AScreen = XDefaultScreenOfDisplay (ADisplay);
   ADepth = XDefaultDepthOfScreen (AScreen);
   ABlackColor = BlackPixel (ADisplay, DefaultScreen (ADisplay));
@@ -206,7 +207,10 @@ CApplication::ADestroyWindow (CWindow * AWindow)
 	  eprint("synchronize\n");
 	  XSynchronize (ADisplay, false);
 #endif
+          XFlush (ADisplay);
+          XSetCloseDownMode (ADisplay, DestroyAll);
 	  XCloseDisplay (ADisplay);
+	  ADisplay=NULL;
 	  Exit = true;
 	  return;
 	}
@@ -259,9 +263,6 @@ CApplication::ProcessEvents (CWindow * AWindow)
       
       XNextEvent (ADisplay, &AEvent);
 
-#ifdef _DEBUG
-      xevents(AEvent.type);
-#endif
       if (IM)
 	if (XFilterEvent (&AEvent, 0) == true)
 	  return false;
@@ -315,6 +316,8 @@ CApplication::Load (void)
 {
   if (Exit)
     return;
+  
+  XUnlockDisplay(ADisplay);
 
   if (AWindowCount == -1)
     {
@@ -361,9 +364,6 @@ CApplication::Load (void)
 
       XNextEvent (ADisplay, &AEvent);
       
-#ifdef _DEBUG
-      xevents(AEvent.type);
-#endif 
       
       if (IM)
 	if (XFilterEvent (&AEvent, 0) == true)  continue;

@@ -998,8 +998,7 @@ CControl::GetFOwner (void)
 //operators
 
 void *
-  CControl::operator
-new (size_t sz)
+CControl::operator new (size_t sz)
 {
 /*The use of calloc instead malloc preserve Dynamic=false in controls owned */
   CControl *m = (CControl *) calloc (sz, 1);
@@ -1010,12 +1009,17 @@ new (size_t sz)
 };
 
 void *
-  CControl::operator
-new[] (size_t sz)
+CControl::operator new[] (size_t sz)
 {
   printf ("operator new[]: %ld Bytes\n", sz);
   return::new char[sz];
 };
+  
+void 
+CControl::operator delete(void *p)
+{
+  free(p);
+}
 
 //events
 

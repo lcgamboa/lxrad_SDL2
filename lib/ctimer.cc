@@ -121,16 +121,29 @@ thread1 (void *arg)
   unsigned long tused;
   pthread_setcanceltype (PTHREAD_CANCEL_ASYNCHRONOUS,NULL);  
   CTimer *timer = (CTimer *) arg;
+ 
+  //wait for display
+  
+  Display * disp=Application->GetADisplay();
+ 
   usleep (timer->GetTime ()*1000);
   for (;;)
-    {
-      XLockDisplay(Application->GetADisplay());
-      gettimeofday(&tv1, NULL);
-      timer->on_time ();
-      gettimeofday(&tv2, NULL);	
-      XUnlockDisplay(Application->GetADisplay());   
-      tused=((tv2.tv_usec - tv1.tv_usec) + 1000000L*(tv2.tv_sec - tv1.tv_sec));
-      usleep ((timer->GetTime ()*1000) - tused);
+  {
+      if(disp)
+      {
+        XLockDisplay(disp);
+        gettimeofday(&tv1, NULL);
+        timer->on_time ();
+        gettimeofday(&tv2, NULL);	
+        if(disp) 
+       	XUnlockDisplay(disp);   
+        tused=((tv2.tv_usec - tv1.tv_usec) + 1000000L*(tv2.tv_sec - tv1.tv_sec));
+        usleep ((timer->GetTime ()*1000) - tused);
+      }
+      else
+      {
+        usleep(10000);
+      }
     };
 };
 #endif

@@ -94,9 +94,9 @@ CDraw::SetWidth (uint width)
 {
   if(Paint != NULL)
   {
-  if (CPixmap != 0)
-    XFreePixmap (Win->GetADisplay (), CPixmap);
-  CPixmap =XCreatePixmap (Win->GetADisplay (), Win->GetWWindow (), width, Height, *(Win->GetADepth()));
+    if (CPixmap != 0) XFreePixmap (Win->GetADisplay (), CPixmap);
+    CPixmap =XCreatePixmap (Win->GetADisplay (), Win->GetWWindow (), width, Height, *(Win->GetADepth()));
+    Canvas.SetDrawIn(CPixmap);
   };
   CControl::SetWidth(width);
 };
@@ -106,9 +106,9 @@ CDraw::SetHeight (uint height)
 {
   if(Paint != NULL)
   {
-  if (CPixmap != 0)
-    XFreePixmap (Win->GetADisplay (), CPixmap);
-  CPixmap =XCreatePixmap (Win->GetADisplay (), Win->GetWWindow (), Width, height, *(Win->GetADepth()));
+    if (CPixmap != 0)XFreePixmap (Win->GetADisplay (), CPixmap);
+    CPixmap =XCreatePixmap (Win->GetADisplay (), Win->GetWWindow (), Width, height, *(Win->GetADepth()));
+    Canvas.SetDrawIn(CPixmap);
   };
   CControl::SetHeight(height);
 };

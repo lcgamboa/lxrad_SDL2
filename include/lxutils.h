@@ -93,6 +93,7 @@ public:
 lxBitmap();
 ~lxBitmap();
 lxBitmap(lxImage img);
+Pixmap  GetPixmap(void);
 operator Pixmap() const;
 };
 

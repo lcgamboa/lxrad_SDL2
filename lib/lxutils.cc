@@ -161,6 +161,13 @@ lxBitmap::operator Pixmap() const
   return CPixmap; 
 }
 
+Pixmap  
+lxBitmap::GetPixmap(void)
+{
+  return CPixmap;
+}
+
+
 //-------------------------------------------------------------------------
 
 bool
@@ -298,6 +305,8 @@ bool lxFileExists(String fname)
 {
   struct stat sb;
   
+  sb.st_mode=0; 
+
   stat(fname.c_str(), &sb);
           
   if(S_ISREG(sb.st_mode))
