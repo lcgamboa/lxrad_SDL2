@@ -35,7 +35,6 @@ CPaint::CPaint (void)
   SetClass ("CPaint");
   RX=0;
   RY=0;
-  Disp=NULL;
   DrawIn=0;
   DrawOut=0;
   DoCalcRXY=true;
@@ -51,13 +50,13 @@ CPaint::SetDoCalcRXY(bool docalcrxy)
 };
 
 void 
-CPaint::SetDrawIn(Drawable drawin)
+CPaint::SetDrawIn(SDL_Surface* drawin)
 {
   DrawIn=drawin;
 };
 
 void 
-CPaint::SetDrawOut(Drawable drawout)
+CPaint::SetDrawOut(SDL_Surface* drawout)
 {
   DrawOut=drawout;
 };
@@ -72,42 +71,47 @@ CPaint::Create (CControl * control)
   Win = control->GetWin ();
   Owner = control;
   DrawIn = Win->GetPixmap();
-  DrawOut = Win->GetWWindow();
-  Disp = Win->GetADisplay();
+  DrawOut = SDL_GetWindowSurface(Win->GetWWindow());
+  /*
   Agc = XCreateGC (Disp, Win->GetWWindow (), 0, NULL);
   XSetGraphicsExposures(Disp, Agc, false);
   Pen.Create (control, &Agc);
-};
+*/
+ };
   
 void 
-CPaint::Create (lxBitmap *bitmap)
+CPaint::Create (SDL_Surface *bitmap)
 {
   Win = NULL;
   Owner = NULL;
-  DrawIn = *bitmap;
-  DrawOut = *bitmap;
-  Disp = Application->GetADisplay();
+  DrawIn = bitmap;
+  DrawOut = bitmap;
+ /* 
   Agc = XCreateGC (Disp, DrawIn, 0, NULL);
   XSetGraphicsExposures(Disp, Agc, false);
   Pen.Create (NULL, &Agc);
+  */ 
 }
 
 void
 CPaint::Destroy (void)
 {
-  if (Agc != 0)
-    XFreeGC (Disp, Agc);
+ //if (Agc != 0)
+ //   XFreeGC (Disp, Agc);
 };
 
 void
 CPaint::SetFont (CControl * control)
 {
+/*    
   XGCValues *Gcv;
   Gcv = new XGCValues;
   XFontStruct *PFont = control->GetFont ();
   Gcv->font = PFont->fid;
   XChangeGC (Disp, Agc, GCFont, Gcv);
   delete Gcv;
+
+ */ 
 };
 
 void
@@ -139,8 +143,8 @@ CPaint::DrawControl (CControl * control)
       RX=control->GetRX();
       RY=control->GetRY();
       Pen.SetPen (control->GetPen ());
-      XCopyArea (Disp, DrawIn, DrawOut,
-		 Agc, RX, RY, control->GetWidth (), control->GetHeight (),RX, RY);
+//      XCopyArea (Disp, DrawIn, DrawOut,
+//		 Agc, RX, RY, control->GetWidth (), control->GetHeight (),RX, RY);
       Pen.SetPen (GXcopy);
       }
       else
@@ -148,8 +152,8 @@ CPaint::DrawControl (CControl * control)
       RX=control->GetRX()-1;
       RY=control->GetRY()-1;
       Pen.SetPen (control->GetPen ());
-      XCopyArea (Disp, DrawIn, DrawOut,
-		 Agc, RX, RY, control->GetWidth ()+2, control->GetHeight ()+2,RX, RY);
+//      XCopyArea (Disp, DrawIn, DrawOut,
+//		 Agc, RX, RY, control->GetWidth ()+2, control->GetHeight ()+2,RX, RY);
       Pen.SetPen (GXcopy);
       }
     };
@@ -161,7 +165,7 @@ CPaint::DrawControl (CControl * control)
 void
 CPaint::Point (int x, int y)
 {
-  XDrawPoint (Disp, DrawIn, Agc, RX+x, RY+y);
+ //   SDL_RenderDrawPoint( DrawIn, RX+x, RY+y );
 };
 
 void
@@ -172,14 +176,14 @@ CPaint::FillPolygon (XPoint * points, int npoints)
     points[c].x+=RX;	  
     points[c].y+=RY;	  
   }	
-  XFillPolygon (Disp, DrawIn, Agc, points,
-		npoints, Nonconvex, CoordModeOrigin);
+//  XFillPolygon (Disp, DrawIn, Agc, points,
+//		npoints, Nonconvex, CoordModeOrigin);
 };
 
 void
 CPaint::Line (int x1, int y1, int x2, int y2)
 {
-  XDrawLine (Disp, DrawIn, Agc, RX+x1, RY+y1, RX+x2, RY+y2);
+//  XDrawLine (Disp, DrawIn, Agc, RX+x1, RY+y1, RX+x2, RY+y2);
 };
 
 void
@@ -190,29 +194,29 @@ CPaint::Lines (XPoint * points, int npoints)
     points[c].x+=RX;	  
     points[c].y+=RY;	  
   }	
-  XDrawLines (Disp, DrawIn, Agc, points,
-	      npoints, CoordModeOrigin);
+ // XDrawLines (Disp, DrawIn, Agc, points,
+//	      npoints, CoordModeOrigin);
 };
 
 
 void
 CPaint::Rectangle (int x, int y, int w, int h)
 {
-  XFillRectangle (Disp, DrawIn, Agc, (RX+x)*Scalex, (RY+y)*Scaley, w*Scalex, h*Scaley);
+ // XFillRectangle (Disp, DrawIn, Agc, (RX+x)*Scalex, (RY+y)*Scaley, w*Scalex, h*Scaley);
 };
 
 void
 CPaint::Frame (int x, int y, int w, int h, uint wb)
 {
-  for (uint c = 0; c < wb; c++)
-    XDrawRectangle (Disp, DrawIn, Agc, (RX+x + c)*Scalex,
-		    (RY+y + c)*Scaley, (w - (c * 2))*Scalex, (h - (c * 2))*Scaley);
+//  for (uint c = 0; c < wb; c++)
+//    XDrawRectangle (Disp, DrawIn, Agc, (RX+x + c)*Scalex,
+//		    (RY+y + c)*Scaley, (w - (c * 2))*Scalex, (h - (c * 2))*Scaley);
 };
 
 void
 CPaint::LowerFrame (int x, int y, int w, int h, uint wb)
 {
-  XColor OldPen;
+  SDL_Color OldPen;
   for (uint c = 0; c < wb; c++)
     {
       OldPen = Pen.GetColor ();
@@ -236,7 +240,7 @@ CPaint::LowerFrame (int x, int y, int w, int h, uint wb)
 void
 CPaint::RaiserFrame (int x, int y, int w, int h, uint wb)
 {
-  XColor OldPen;
+  SDL_Color OldPen;
   for (uint c = 0; c < wb; c++)
     {
       OldPen = Pen.GetColor ();
@@ -259,28 +263,28 @@ CPaint::RaiserFrame (int x, int y, int w, int h, uint wb)
 void
 CPaint::Text (String text,  int x1, int y1)
 {
-  XDrawString (Disp, DrawIn, Agc, RX+x1, RY+y1,
-	       text.c_str (), text.size ());
+//  XDrawString (Disp, DrawIn, Agc, RX+x1, RY+y1,
+//	       text.c_str (), text.size ());
 };
 
 
 void
 CPaint::ImgText ( int x1, int y1, String text)
 {
-  XDrawImageString (Disp, DrawIn, Agc, RX+x1, RY+y1,
-	       text.c_str (), text.size ());
+//  XDrawImageString (Disp, DrawIn, Agc, RX+x1, RY+y1,
+//	       text.c_str (), text.size ());
 };
   
 void 
-CPaint::PutPixmap (int x,int y, int w, int h,Pixmap pixmap)
+CPaint::PutPixmap (int x,int y, int w, int h,SDL_Surface *  pixmap)
 {
-   XCopyArea (Disp, pixmap, DrawIn ,Agc, 0, 0, w, h, RX+x, RY+y);
+//   XCopyArea (Disp, pixmap, DrawIn ,Agc, 0, 0, w, h, RX+x, RY+y);
 };
   
 void 
 CPaint::SetLineWidth(int w)
 {
-  Pen.SetWidth (w);
+//  Pen.SetWidth (w);
 }
 
 void 
@@ -349,18 +353,20 @@ CPaint::RotatedText (String str, int x, int y, int angle)
 }
 
 void 
-CPaint::PutBitmap (lxBitmap* bitmap,int x,int y)
+CPaint::PutBitmap (SDL_Surface * bitmap,int x,int y)
 {
+ /*   
   Window root;
   int rx,ry;
   unsigned int rw,rh,rb,rd;
   XGetGeometry(Disp, *bitmap,&root,&rx,&ry,&rw,&rh,&rb,&rd);
   
   XCopyArea (Disp, *bitmap, DrawIn,  Agc, 0, 0, rw, rh ,RX+x, RY+y);
+  */
 }
 
 void 
-CPaint::SetBitmap(lxBitmap * bitmap,double xs, double ys)
+CPaint::SetBitmap(SDL_Surface * bitmap,double xs, double ys)
 {
   printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
 }
@@ -383,21 +389,29 @@ CPaint::ChangeScale(float sx, float sy)
 void 
 CPaint::Circle (bool filled, int x, int y, int radius)
 {
+      printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+      /*
   int off=radius;	
   if(filled)	
     XFillArc (Disp, DrawIn, Agc, (RX+x-off)*Scalex, (RY+y-off)*Scaley, 2*radius*Scalex, 2*radius*Scaley,0,360*64);
   else
     XDrawArc (Disp, DrawIn, Agc, (RX+x-off)*Scalex, (RY+y-off)*Scaley, 2*radius*Scalex, 2*radius*Scaley,0,360*64);
+
+       */
 }
   
 
 void 
 CPaint::Polygon(bool filed, lxPoint * points, int npoints)
 {
+      printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+      /*
   points[0].x+=RX;
   points[0].y+=RY;
 
   XFillPolygon(Disp, DrawIn, Agc, points, npoints,  Complex , CoordModeOrigin);
+
+       */
 }
 
 void 

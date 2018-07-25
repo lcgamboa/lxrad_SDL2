@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -39,33 +39,19 @@
 class CWindow:public CControl
 {
 protected:
-  Window * ADefaultRootWindow;
-  Screen *AScreen;
-  uint *AWhiteColor;
-  uint *ABlackColor;
-  Pixmap WPixmap;
+  SDL_Surface* WPixmap;
   uint PWidth,PHeight;
   String Title;
-  Atom *AWMProtocols;
-  Atom *AWMDeleteWindow;
-  Atom *AWMTakeFocus;
   unsigned int XMouse, YMouse;
   CControl *ControlOnFocus;
   CControl *LastControl;
-  Window WWindow;
-  int *ADepth;
-  Display *ADisplay;
-  XEvent LEvent;//last event
+  SDL_Window* WWindow;
+  SDL_Renderer* Renderer;
+  SDL_Event LEvent;//last event
   unsigned long BorderColor;
-  XTextProperty WTextProperty;
-  XSizeHints WSizeHints;
-  XWMHints WWMHints;
-  XClassHint WClassHints;
-  XSetWindowAttributes WAttributes;
   CPaint WPaint;
   bool CanDestroy;
   CWindow* WParent;
-  XIC IC;
   bool CanExitExclusive;
   void CreatePixmap(bool draw=false);
   void DestroyPixmap(void);
@@ -85,8 +71,8 @@ public:
   void Hide (void);
   void HideExclusive (void);
   void Update (void);
-  void Update (Region Reg);
-  virtual bool WEvents (XEvent WEvent);
+  void Update (SDL_Rect Reg);
+  virtual bool WEvents (SDL_Event WEvent);
   CStringList GetContext (void);
   void SetContext (CStringList context);
   void SetFocus (void);
@@ -96,10 +82,8 @@ public:
   bool LoadXMLContextAndCreateChilds(String fname);
   bool GetCanExitExclusive(void);
 //propiedades
-  Window GetWWindow (void);
+  SDL_Window * GetWWindow (void);
   CWindow* GetWWidget (void);
-  Display *GetADisplay (void);
-  int *GetADepth (void);
   void SetCanDestroy (bool candestroy);
   bool GetCanDestroy (void);
   void SetOverrideRedirect (bool redirect);
@@ -117,7 +101,7 @@ public:
   CControl *GetControlOnFocus (void);
   void SetControlOnFocus (CControl * controlonfocus);
   CControl *GetLastControl (void);
-  Pixmap GetPixmap(void);
+  SDL_Surface* GetPixmap(void);
   void SetLastControl (CControl * lastcontrol);
   void CirculateFocus (bool asc);
   //operator
@@ -138,6 +122,6 @@ public:
   void (CControl::*EvOnLeave) (CWindow * win);
 };
 
-void XFreeTextProperty (XTextProperty & textp);
+//void XFreeTextProperty (XTextProperty & textp);
 
 #endif

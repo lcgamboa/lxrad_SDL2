@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -132,7 +132,7 @@ CList::Draw ()
 	  (SelectedItem - Scroll->GetPosition () <= ItemsCount))
 	{
 	  SetColor ("dark blue");
-	  XColor color =
+	  SDL_Color color =
 	    Items[SelectedItem - Scroll->GetPosition ()]->GetColor ();
 	  Items[SelectedItem - Scroll->GetPosition ()]->SetColor ("white");
 	  Items[SelectedItem - Scroll->GetPosition ()]->Draw ();
@@ -431,7 +431,7 @@ CList::ItemButtonPress (CControl * control, uint button, uint x, uint y,
 {
   if (ShowSelection)
     {
-      XColor color;
+      SDL_Color color;
       if ((SelectedItem - Scroll->GetPosition () >= 0) &&
 	  (SelectedItem - Scroll->GetPosition () <= ItemsCount))
 	{
@@ -458,13 +458,13 @@ CList::change_item (void)
 };
 
 void
-CList::button_press (XEvent event)
+CList::button_press (SDL_Event event)
 {
   CControl::button_press (event);
 };
 
 void
-CList::key_press (XEvent event)
+CList::key_press (SDL_Event event)
 {
   CControl::key_press (event);
 };

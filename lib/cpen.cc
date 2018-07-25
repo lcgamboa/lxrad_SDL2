@@ -33,25 +33,24 @@
 void
 CPen::Create (CControl * control, GC * gc)
 {
-  Disp = Application->GetADisplay();
   Agc = gc;
 };
 
 void
-CPen::SetColor (XColor color)
+CPen::SetColor (SDL_Color color)
 {
   Color = color;
-  XSetForeground (Disp, *Agc, color.pixel);
+//  XSetForeground (Disp, *Agc, color.pixel);
 };
 
 void
-CPen::SetBGColor (XColor color)
+CPen::SetBGColor (SDL_Color color)
 {
   Color = color;
-  XSetBackground (Disp, *Agc, color.pixel);
+//  XSetBackground (Disp, *Agc, color.pixel);
 };
 
-XColor CPen::GetColor ()
+SDL_Color CPen::GetColor ()
 {
   return Color;
 };
@@ -59,12 +58,12 @@ XColor CPen::GetColor ()
 void
 CPen::SetWidth (unsigned long width)
 {
-  XSetLineAttributes(Disp, *Agc, width, LineSolid, CapNotLast,JoinMiter);
+//  XSetLineAttributes(Disp, *Agc, width, LineSolid, CapNotLast,JoinMiter);
 };
 
 void
 CPen::SetPen (int function)
 {
-  XSetFunction (Disp, *Agc, function);
+//  XSetFunction (Disp, *Agc, function);
 };
 

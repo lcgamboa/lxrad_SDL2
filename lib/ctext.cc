@@ -56,8 +56,8 @@ CText::Draw (void)
   for (unsigned int q = 1; q < Lines.GetLinesCount (); q++)
     Paint->Text (Lines.GetLine(q), 5, 15 + (13 * (q - 1)));
   Paint->LowerFrame ( 0, 0, Width, Height);
-  int x =
-    XTextWidth (CFont, Lines.GetLine (CursorLin).c_str (), GetCursorPos ());
+  int x;// = XTextWidth (CFont, Lines.GetLine (CursorLin).c_str (), GetCursorPos ());
+  TTF_SizeText(CFont, Lines.GetLine (CursorLin).c_str (), &x,NULL); 
   int y = 12;
   Paint->Pen.SetColor (Color);
   Paint->Pen.SetPen (GXxor);
@@ -82,8 +82,8 @@ CText::DrawLine (void)
   if (CursorLin < Lines.GetLinesCount () - 1)
     Paint->Text (Lines.GetLine (CursorLin + 1), 5, 15 + (13 * (CursorLin)));
   //cursor
-  int x =
-    XTextWidth (CFont, Lines.GetLine (CursorLin).c_str (), GetCursorPos ());
+  int x;// =  XTextWidth (CFont, Lines.GetLine (CursorLin).c_str (), GetCursorPos ());
+  TTF_SizeText(CFont, Lines.GetLine (CursorLin).c_str (), &x,NULL); 
   int y = 12;
   Paint->Pen.SetColor (Color);
   Paint->Pen.SetPen (GXxor);
@@ -207,38 +207,36 @@ CText::SetCursorPos (uint cursorpos)
 //eventos
 
 void
-CText::key_press (XEvent event)
+CText::key_press (SDL_Event event)
 {
   if (ReadOnly)
     return;
-  KeySym key;
-  char text[10];
-  XLookupString (&event.xkey, text, 10, &key, NULL);
-  switch (key)
+
+  switch (event.key.keysym.sym)
     {
-    case XK_BackSpace:
+    case SDLK_BACKSPACE:
       if (GetCursorPos () == 0)
 	{
 	  eprint( "del preturn\n");
 	};
       break;
-    case XK_Delete:
+    case SDLK_DELETE:
       if (GetCursorPos () == Lines.GetLine (CursorLin).size ())
 	{
 	  //code
 	};
       break;
-    case XK_Left:
+    case SDLK_LEFT:
       //code
       break;
-    case XK_Right:
+    case SDLK_RIGHT:
       //code
       break;
     };
-  key = MEdit (this, event);
-  switch (key)
+  SDL_Keysym key = MEdit (this, event);
+  switch (key.sym)
     {
-    case XK_Up:
+    case SDLK_UP:
       if (CursorLin > 1)
 	{
 	  DrawCursor ();
@@ -254,7 +252,7 @@ CText::key_press (XEvent event)
 	    };
 	};
       break;
-    case XK_Down:
+    case SDLK_DOWN:
       if (CursorLin < Lines.GetLinesCount () - 1)
 	{
 	  DrawCursor ();
@@ -270,7 +268,7 @@ CText::key_press (XEvent event)
 	    };
 	};
       break;
-    case XK_Return:
+    case SDLK_RETURN:
       char *str;
       str = new char[GetCursorPos () + 1];
       strncpy (str, Lines.GetLine (CursorLin).c_str (), GetCursorPos ());

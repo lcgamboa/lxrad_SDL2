@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -29,53 +29,48 @@
 
 
 //Manipulating Text---------------------------------------------------------------
-KeySym
-MEdit (CEdit * control, XEvent event)
+SDL_Keysym
+MEdit (CEdit * control, SDL_Event event)
 {
   //buffers 
   uint cursorpos;
-  KeySym key;
-  char text[10];
-  int status;
-  XXLookupString (control->GetWin ()->GetIC (), &event.xkey,
-		  text, 10, &key, &status);
+  SDL_Keysym key=event.key.keysym;
 
-  if (key == XK_Right)
+
+  if (key.sym == SDLK_RIGHT)
     {
       if (control->GetCursorPos () < control->GetText ().size ())
 	control->SetCursorPos (control->GetCursorPos () + 1);
       return key;
     };
-  if (key == XK_Left)
+  if (key.sym == SDLK_LEFT)
     {
       if (control->GetCursorPos () > 0)
 	control->SetCursorPos (control->GetCursorPos () - 1);
       return key;
     };
 
-  if (status == XLookupBoth)
-    {
-      switch (key)
+      switch (key.sym)
 	{
-	case XK_Return:
+	case SDLK_RETURN:
 	  return key;
 	  break;
-	case XK_Caps_Lock:
+	case SDLK_CAPSLOCK:
 	  return key;
 	  break;
-	case XK_Shift_L:
+	case SDLK_LSHIFT:
 	  return key;
 	  break;
-	case XK_Shift_R:
+	case SDLK_RSHIFT:
 	  return key;
 	  break;
-	case XK_Down:
+	case SDLK_DOWN:
 	  return key;
 	  break;
-	case XK_Up:
+	case SDLK_UP:
 	  return key;
 	  break;
-	case XK_BackSpace:
+	case SDLK_BACKSPACE:
 	  if (control->GetText ().size () > 0)
 	    {
 	      uint cursorpos;
@@ -89,7 +84,7 @@ MEdit (CEdit * control, XEvent event)
 	    };
 	  return key;
 	  break;
-	case XK_Delete:
+	case SDLK_DELETE:
 	  if (control->GetText ().size () > 0)
 	    {
 	      cursorpos = control->GetCursorPos ();
@@ -101,21 +96,16 @@ MEdit (CEdit * control, XEvent event)
 	  return key;
 	  break;
 	default:
-	  if (status == XLookupChars || status == XLookupBoth)
-	    {
-
-	      if (control->GetText ().size () ==
+	     if (control->GetText ().size () ==
 		  (uint) (control->GetMaxLenght ()))
 		return key;
 	      cursorpos = control->GetCursorPos ();
-	      String nstr = strnadd (control->GetText (), text[0], cursorpos);
+	      String nstr = strnadd (control->GetText (), SDL_GetKeyName(key.sym)[0], cursorpos);
 	      control->SetText (nstr);
 	      control->SetCursorPos (cursorpos + 1);
 	      control->CControl::key_press (event);
 	      return key;
-	    };
 	  break;
 	};
-    };
   return key;
 };

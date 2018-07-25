@@ -66,8 +66,8 @@ public:
   uint GetTextMaxDisplay (void);
   uint GetTextPointer (void);
   void SetTextPointer (uint pointer);
-//  void button_press (XEvent event);
-//  void button_release (XEvent event);
+//  void button_press (SDL_Event event);
+//  void button_release (SDL_Event event);
 };
 
 #endif

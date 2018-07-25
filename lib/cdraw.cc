@@ -28,6 +28,8 @@
 #include"../include/cmessage.h"
 #include"../include/capplication.h"
 
+#include"xevents.cc"
+
 #include<pthread.h>
 //extern pthread_mutex_t Display_Lock;
 
@@ -52,12 +54,13 @@ CDraw::CDraw (void)
   SetHeight (100);
   SetClass ("CDraw");
   SetTransparent (false);
-  CMask = 0;
-  CPixmap = 0;
+  CPixmap = NULL;
 };
 
 CDraw::~CDraw (void)
 {
+   if (CPixmap != NULL) SDL_FreeSurface( CPixmap);
+   CPixmap=NULL;
 };
 
 void
@@ -74,7 +77,7 @@ CDraw::Create (CControl * control)
   Visible=true;	    
   if(!CPixmap)
   {
-    CPixmap =XCreatePixmap (Win->GetADisplay (), Win->GetWWindow (), Width, Height, *(Win->GetADepth()));
+    CPixmap = SDL_CreateRGBSurfaceWithFormat(0, Width, Height, 32, SDL_PIXELFORMAT_RGBA32);
     Canvas.SetDrawIn(CPixmap);
     Canvas.Pen.SetColor (Color);
     Canvas.Rectangle ( 0, 0, Width, Height);
@@ -85,9 +88,10 @@ void
 CDraw::Destroy (void)
 {
   if (CPixmap != 0)
-    XFreePixmap (Win->GetADisplay (), CPixmap);
-  if (CMask != 0)
-    XFreePixmap (Win->GetADisplay (), CMask);
+  {
+    SDL_FreeSurface( CPixmap);
+    CPixmap=NULL;
+  }
   Canvas.Destroy();
   CControl::Destroy ();
 };
@@ -97,20 +101,15 @@ CDraw::SetWidth (uint width)
 {
   if(Paint != NULL)
   {
-    Display *disp=Application->GetADisplay();
-    if(disp)
-    {
-      //pthread_mutex_lock (&Display_Lock);
-      XLockDisplay(disp);
-      int en=XPending(disp);
-      XEvent ev;
-      for(int i=0; i< en; i++)XNextEvent(disp,&ev); 
-      if (CPixmap != 0) XFreePixmap (Win->GetADisplay (), CPixmap);
-      CPixmap =XCreatePixmap (Win->GetADisplay (), Win->GetWWindow (), width, Height, *(Win->GetADepth()));
+      if (CPixmap != NULL) SDL_FreeSurface( CPixmap);
+      CPixmap = SDL_CreateRGBSurfaceWithFormat(0, width, Height, 32, SDL_PIXELFORMAT_RGBA32);
+      if (CPixmap == NULL) {
+        SDL_Log("SDL_CreateRGBSurfaceWithFormat() failed: %s", SDL_GetError());
+        exit(1);
+      }
+
       Canvas.SetDrawIn(CPixmap);
-      XUnlockDisplay(disp);
       //pthread_mutex_unlock (&Display_Lock);
-    }
   };
   CControl::SetWidth(width);
 };
@@ -120,21 +119,14 @@ CDraw::SetHeight (uint height)
 {
   if(Paint != NULL)
   {
-    Display *disp=Application->GetADisplay();
-    if(disp)
-    {
-      //pthread_mutex_lock (&Display_Lock);
-      XLockDisplay(disp);
-      int en=XPending(disp);
-      XEvent ev;
-      for(int i=0; i< en; i++)XNextEvent(disp,&ev); 
-
-      if (CPixmap != 0)XFreePixmap (Win->GetADisplay (), CPixmap);
-      CPixmap =XCreatePixmap (Win->GetADisplay (), Win->GetWWindow (), Width, height, *(Win->GetADepth()));
+      if (CPixmap != NULL) SDL_FreeSurface( CPixmap);
+      CPixmap = SDL_CreateRGBSurfaceWithFormat(0, Width, height, 32, SDL_PIXELFORMAT_RGBA32);
+      if (CPixmap == NULL) {
+        SDL_Log("SDL_CreateRGBSurfaceWithFormat() failed: %s", SDL_GetError());
+        exit(1);
+      }
       Canvas.SetDrawIn(CPixmap);
-      XUnlockDisplay(disp);
       //pthread_mutex_unlock (&Display_Lock);
-    }
   };
   CControl::SetHeight(height);
 };
@@ -146,12 +138,12 @@ CDraw::Draw ()
   if ((!Visible)||(Paint == NULL))return;
   Paint->InitDraw (this);
  
-  if(Color.pixel != BColor.pixel)
+  if(Color.r != BColor.r)
   {
     if(CPixmap != 0)
     {	  
-      XFreePixmap (Win->GetADisplay (), CPixmap);
-      CPixmap=0;
+      SDL_FreeSurface(CPixmap);
+      CPixmap=NULL;
     };
     BColor=Color;
   };
@@ -165,15 +157,16 @@ CDraw::Draw ()
       Canvas.SetDrawIn(CPixmap);
       if(!CPixmap)
       {
-        CPixmap =XCreatePixmap (Win->GetADisplay (), Win->GetWWindow (), Width, Height, *(Win->GetADepth()));
+        CPixmap=SDL_CreateRGBSurfaceWithFormat(0, Width, Height, 32, SDL_PIXELFORMAT_RGBA32);
         Canvas.SetDrawIn(CPixmap);
         Canvas.Pen.SetColor (Color);
 	Canvas.Rectangle ( 0, 0, Width, Height);
       };
     };
   
-  if (CPixmap != 0)
+  if (CPixmap != NULL)
     {
+     /* 
       if ((Transparent) && (CMask != 0))
       {
         XGCValues gcvalues;
@@ -182,11 +175,12 @@ CDraw::Draw ()
         gcvalues.clip_mask = CMask;
         XChangeGC (Win->GetADisplay (), Paint->Agc, GCClipXOrigin | GCClipYOrigin | GCClipMask, &gcvalues);
       };
+      * */
       Paint->Rectangle(0, 0, Width, Height);
       Paint->PutPixmap(0,0,Width,Height,CPixmap);
-      XSetClipMask (Win->GetADisplay (), Paint->Agc, None);
+      //XSetClipMask (Win->GetADisplay (), Paint->Agc, None);
     };
-  
+ 
   Paint->LowerFrame ( 0, 0, Width, Height, Border);
   CControl::Draw ();
 
@@ -243,58 +237,17 @@ bool
 CDraw::SetPixmapFileName (String filename)
 {
   FileName = filename;
-  if (CPixmap != 0)
-    XFreePixmap (Win->GetADisplay (), CPixmap);
-  CPixmap=0;
+  if (CPixmap != NULL)
+    SDL_FreeSurface(CPixmap);
+  CPixmap=NULL;
  
   if ((Win) && (FileName.size () > 0))
     {
       int rc = -1;
       
-#ifdef HAVE_LIBIMLIB2
-     Imlib_Image image;
-#else
-#ifdef HAVE_LIBXPM    
-      XpmAttributes xpmAttributes;
-      
-      xpmAttributes.colormap = XDefaultColormap (Win->GetADisplay (), 0);
-      xpmAttributes.closeness = 65535;
-      xpmAttributes.valuemask =
-	XpmSize | XpmReturnPixels | XpmColormap | XpmCloseness;
-#endif
-#endif
-
-      CPixmap =
-	XCreatePixmap (Win->GetADisplay (), Win->GetWWindow (), Width, Height, *(Win->GetADepth()));
-      if (CMask != 0)
-	XFreePixmap (Win->GetADisplay (), CMask);
-      CMask =
-	XCreatePixmap (Win->GetADisplay (), Win->GetWWindow (), Width, Height,
-		       1);
-
-#ifdef HAVE_LIBIMLIB2
-     image = imlib_load_image_immediately_without_cache ((char *) FileName.c_str ());
-     if (image)
-     { 
-       /* set the image we loaded as the current context image to work on */
-       imlib_context_set_image(image);
-       imlib_context_set_drawable(CPixmap);
-       imlib_context_set_mask(CMask);
-       imlib_render_image_on_drawable(0,0);
-       imlib_free_image();
-       rc=0;
-     }
-#else     
-#ifdef HAVE_LIBXPM    
-      rc =
-	XpmReadFileToPixmap (Win->GetADisplay (), Win->GetWWindow (),
-			     (char *) FileName.c_str (), &CPixmap, &CMask,
-			     &xpmAttributes);
-      if(rc == 0)
-      XpmFreeAttributes (&xpmAttributes);
-#endif
-#endif
-
+      SDL_Surface* simg=IMG_Load(FileName.c_str());
+      CPixmap=SDL_ConvertSurface( simg, SDL_GetWindowSurface(Win->GetWWindow())->format, 0);
+      SDL_FreeSurface(simg);
       Canvas.SetDrawIn(CPixmap);
       
       if (rc == 0)
@@ -318,49 +271,7 @@ CDraw::SetPixmapFileName (String filename)
 bool
 CDraw::SetPixmapData (char **data)
 {
-  Data = data;
-  if ((Win) && (data != NULL))
-    {
-      int rc = -1;
-#ifdef HAVE_LIBXPM    
-      XpmAttributes xpmAttributes;
-      xpmAttributes.colormap = XDefaultColormap (Win->GetADisplay (), 0);
-      xpmAttributes.closeness = 65535;
-      xpmAttributes.valuemask =
-	XpmSize | XpmReturnPixels | XpmColormap | XpmCloseness;
-#endif  
-
-      if (CPixmap != 0)
-	XFreePixmap (Win->GetADisplay (), CPixmap);
-      CPixmap =
-	XCreatePixmap (Win->GetADisplay (), Win->GetWWindow (), Width, Height,
-		       *(Win->GetADepth()));
-      if (CMask != 0)
-	XFreePixmap (Win->GetADisplay (), CMask);
-      CMask =
-	XCreatePixmap (Win->GetADisplay (), Win->GetWWindow (), Width, Height,
-		       1);
-
-#ifdef HAVE_LIBXPM    
-      rc =
-	XpmCreatePixmapFromData (Win->GetADisplay (), Win->GetWWindow (),
-				 data, &CPixmap, &CMask, &xpmAttributes);
-      if(rc == 0)XpmFreeAttributes (&xpmAttributes);
-#endif
-      Canvas.SetDrawIn(CPixmap);
-      if (rc == 0)
-	{
-	  Draw ();
-	  return true;
-	}
-      else
-	{
-	  eprint("Warning: Load pixmap data failed with rc=" + itoa(rc)+"\n");
-	  Message ("Warning: Load pixmap data failed");
-	  Data = NULL;
-	  return false;
-	};
-    };
+  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
   return false;
 };
 
@@ -395,58 +306,30 @@ bool
 CDraw::SetImgFileName(String filename, float sx, float sy)
 {
   FileName = filename;
-  if (CPixmap != 0)
-    XFreePixmap (Win->GetADisplay (), CPixmap);
-  CPixmap=0;
+  if (CPixmap != NULL)
+    SDL_FreeSurface(CPixmap);
+  CPixmap=NULL;
  
   if ((Win) && (FileName.size () > 0))
     {
       int rc = -1;
       
-#ifdef HAVE_LIBIMLIB2
-     Imlib_Image image;
-#else
-#ifdef HAVE_LIBXPM    
-      XpmAttributes xpmAttributes;
+      CPixmap=IMG_Load(FileName.c_str());
+      SDL_Surface* simg=SDL_ConvertSurface( simg, SDL_GetWindowSurface(Win->GetWWindow())->format, 0);
+      SDL_FreeSurface(CPixmap);
       
-      xpmAttributes.colormap = XDefaultColormap (Win->GetADisplay (), 0);
-      xpmAttributes.closeness = 65535;
-      xpmAttributes.valuemask =
-	XpmSize | XpmReturnPixels | XpmColormap | XpmCloseness;
-#endif
-#endif
-
-      CPixmap =
-	XCreatePixmap (Win->GetADisplay (), Win->GetWWindow (), Width, Height, *(Win->GetADepth()));
-      if (CMask != 0)
-	XFreePixmap (Win->GetADisplay (), CMask);
-      CMask =
-	XCreatePixmap (Win->GetADisplay (), Win->GetWWindow (), Width, Height,
-		       1);
-
-#ifdef HAVE_LIBIMLIB2
-     image = imlib_load_image_immediately_without_cache ((char *) FileName.c_str ());
-     if (image)
-     { 
-       /* set the image we loaded as the current context image to work on */
-       imlib_context_set_image(image);
-       imlib_context_set_drawable(CPixmap);
-       imlib_context_set_mask(CMask);
-       imlib_render_image_on_drawable_at_size(0,0,Width,Height);
-       imlib_free_image();
-       rc=0;
-     }
-#else     
-#ifdef HAVE_LIBXPM    
-      rc =
-	XpmReadFileToPixmap (Win->GetADisplay (), Win->GetWWindow (),
-			     (char *) FileName.c_str (), &CPixmap, &CMask,
-			     &xpmAttributes);
-      if(rc == 0)
-      XpmFreeAttributes (&xpmAttributes);
-#endif
-#endif
-
+      CPixmap=SDL_CreateRGBSurfaceWithFormat(0, Width, Height, 32, SDL_PIXELFORMAT_RGBA32);
+      
+              
+      SDL_Rect stretchRect; 
+      stretchRect.x = 0; 
+      stretchRect.y = 0; 
+      stretchRect.w = simg->w*sx;
+      stretchRect.h = simg->h*sy;
+      SDL_BlitScaled( simg, NULL, CPixmap, &stretchRect );
+      
+      SDL_FreeSurface(simg);
+        
       Canvas.SetDrawIn(CPixmap);
       
       if (rc == 0)

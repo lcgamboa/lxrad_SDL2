@@ -401,32 +401,27 @@ CScroll::pointer_out (void)
 };
 
 void
-CScroll::key_press (XEvent event)
+CScroll::key_press (SDL_Event event)
 {
-  KeySym key;
-  char text[10];
-  Status status;
-
-  XXLookupString (Win->GetIC (), &event.xkey, text, 10, &key, &status);
-
-  switch (key)
+ 
+  switch (event.key.keysym.sym)
     {
-    case XK_Left:
+    case SDLK_LEFT:
       SetPosition (GetPosition () - 1);
       break;
-    case XK_Up:
+    case SDLK_UP:
       SetPosition (GetPosition () - 1);
       break;
-    case XK_Right:
+    case SDLK_RIGHT:
       SetPosition (GetPosition () + 1);
       break;
-    case XK_Down:
+    case SDLK_DOWN:
       SetPosition (GetPosition () + 1);
       break;
-    case XK_Page_Up:
+    case SDLK_PAGEUP:
       SetPosition (GetPosition () - ((Range / 10) + 1));
       break;
-    case XK_Page_Down:
+    case SDLK_PAGEDOWN:
       SetPosition (GetPosition () + ((Range / 10) + 1));
       break;
     default:
@@ -435,14 +430,14 @@ CScroll::key_press (XEvent event)
 };
 
 void
-CScroll::key_release (XEvent event)
+CScroll::key_release (SDL_Event event)
 {
 };
 
 void
-CScroll::button_press (XEvent event)
+CScroll::button_press (SDL_Event event)
 {
-  if (event.xbutton.button == 1)
+  if (event.button.button == 1)
     {
       if (Type == st_vertical)
 	{
@@ -459,7 +454,7 @@ CScroll::button_press (XEvent event)
 	      else
 		h1 = (((Height - (2 * hb) - Size) * Position) / Range);
 	    };
-	  int y = event.xbutton.y - hb - GetRY();
+	  int y = event.button.y - hb - GetRY();
 	  if ((y >= h1) && (y <= int (h1 + Size)))
 	    Move = true;
 	}
@@ -478,7 +473,7 @@ CScroll::button_press (XEvent event)
 	      else
 		w1 = (((Width - (2 * wb) - Size) * Position) / Range);
 	    };
-	  int w = event.xbutton.x - wb - GetRX ();
+	  int w = event.button.x - wb - GetRX ();
 	  if ((w >= w1) && (w <= int (w1 + Size)))
 	    Move = true;
 	};
@@ -487,7 +482,7 @@ CScroll::button_press (XEvent event)
 };
 
 void
-CScroll::button_release (XEvent event)
+CScroll::button_release (SDL_Event event)
 {
   Move = false;
   CControl::button_release (event);
@@ -495,10 +490,10 @@ CScroll::button_release (XEvent event)
 
 
 void
-CScroll::mouse_move (XEvent event)
+CScroll::mouse_move (SDL_Event event)
 {
-  XEvent Nevent = event;
-
+  SDL_Event Nevent = event;
+/*
   while (XEventsQueued (Win->GetADisplay (), QueuedAfterReading) > 0)
     {
       XPeekEvent (Win->GetADisplay (), &Nevent);
@@ -514,13 +509,13 @@ CScroll::mouse_move (XEvent event)
 	  break;
 	};
     };
-
+*/
   if (Move)
     {
       if (Type == st_vertical)
 	{
 	  int h1, hb = button1->GetHeight ();
-	  int y = event.xbutton.y - hb - GetRY ();
+	  int y = event.button.y - hb - GetRY ();
 	  int s;
 	  if(Range != 1)
 	    s = (Range / (Height - 2 * hb - Size));
@@ -554,7 +549,7 @@ CScroll::mouse_move (XEvent event)
       else
 	{
 	  int w1, wb = button1->GetWidth ();
-	  int w = event.xbutton.x - wb - GetRX ();
+	  int w = event.button.x - wb - GetRX ();
 	  int s;
 	  if(Range != 1)
 	    s= (Range / (Width - 2 * wb - Size));

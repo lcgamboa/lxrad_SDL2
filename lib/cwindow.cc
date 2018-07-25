@@ -31,24 +31,13 @@
 #include<pthread.h>
 //extern pthread_mutex_t Display_Lock;
 
-void
-XFreeTextProperty (XTextProperty & textp)
-{
-  if (textp.nitems > 0)
-    XFree(textp.value);
-  textp.value = NULL;
-  textp.encoding = 0;
-  textp.format = 0;
-  textp.nitems = 0;
-};
 
 //CWindow _______________________________________________________________
 
 CWindow::CWindow (void)
 {
-  WWindow = 0;
-  ADisplay = NULL;
-  AScreen = NULL;
+  WWindow = NULL;
+  Renderer=NULL;
   SetClass ("CWindow");
   Win = NULL;
   PixmapBuffer=true;
@@ -56,7 +45,6 @@ CWindow::CWindow (void)
   //  PixmapBuffer=false;
   XMouse = 0;
   YMouse = 0;
-  IC = 0;
   SetX (0);
   SetY (0);
   SetWidth (300);
@@ -67,25 +55,7 @@ CWindow::CWindow (void)
   Visible = 1;
   Title = "LXRAD Window";
   WParent=NULL;
-  WPixmap = 0;
-  WSizeHints.flags = PPosition | PSize | PMinSize | PMaxSize;
-  WSizeHints.x = GetX ();
-  WSizeHints.y = GetY ();
-  WSizeHints.width = GetWidth ();
-  WSizeHints.height = GetHeight ();
-  WSizeHints.min_width = 10;
-  WSizeHints.min_height = 10;
-  WWMHints.initial_state = NormalState;
-  WWMHints.input = True;
-  WWMHints.flags = StateHint | InputHint;
-  WClassHints.res_class = (char *)"LXRAD";
-  WAttributes.event_mask = AllEventMask;
-  WAttributes.save_under = false;
-  WAttributes.override_redirect = false;	//With WM 
-  WAttributes.colormap = CopyFromParent;
-
-  WAttributes.backing_store = NotUseful;  //WhenMapped,NotUseful,Always
-
+  WPixmap = NULL;
   ControlOnFocus = NULL;
   LastControl = NULL;
 //events
@@ -95,51 +65,51 @@ CWindow::CWindow (void)
   EvOnHide = NULL;
   EvOnEnter = NULL;
   EvOnLeave = NULL;
-
-  char *title;
-  title = new char[Title.size () + 1];
-  strcpy (title, Title.c_str ());
-  if (XStringListToTextProperty (&title, 1, &WTextProperty) == 0)
-    eprint( "erro\n");
-  delete[]title;
 };
 
 CWindow::~CWindow (void)
 {
-  XFreeTextProperty (WTextProperty);
+
 };
 
 void
 CWindow::WCreate (CWindow* window)
 {
-  ADisplay = Application->GetADisplay ();
-  AScreen = Application->GetAScreen ();
-  ADepth = Application->GetADepth ();
-  ADefaultRootWindow = Application->GetADefaultRootWindow ();
-  ABlackColor = Application->GetABlackColor ();
-  AWhiteColor = Application->GetAWhiteColor ();
-  AWMProtocols = Application->GetAWMProtocols ();
-  AWMDeleteWindow = Application->GetAWMDeleteWindow ();
-  AWMTakeFocus = Application->GetAWMTakeFocus ();
-
-  WSizeHints.max_width = AScreen->width;
-  WSizeHints.max_height = AScreen->height;
-  
+ 
   //Window parent 
-  Window parent; 
+  SDL_Window *parent; 
   if(window != NULL)
   {
     parent=window->GetWWindow();
     WParent=window;
   }
   else
-    parent=*ADefaultRootWindow;
+    parent=NULL;
   
-  //window colors
-  Color.pixel = *AWhiteColor;
-  BorderColor = *ABlackColor;
-  WAttributes.background_pixel = ColorByName ("light gray").pixel;
 
+WWindow= SDL_CreateWindow(Title.c_str(), X, Y, Width, Height, SDL_WINDOW_SHOWN |SDL_WINDOW_RESIZABLE); 
+if( WWindow == NULL ) 
+{ 
+    printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() ); 
+    exit(-1);
+}
+
+Renderer = SDL_CreateRenderer( WWindow, -1, SDL_RENDERER_ACCELERATED ); 
+if( Renderer == NULL ) 
+{
+    printf( "Hardware renderer could not be created! SDL Error: %s\n", SDL_GetError() );
+    printf( "Swithing to software renderer...\n");
+    Renderer = SDL_CreateRenderer( WWindow, -1, SDL_RENDERER_SOFTWARE ); 
+} 
+if( Renderer == NULL ) 
+{
+    printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
+    exit(-1);
+} 
+//Initialize renderer color 
+SDL_SetRenderDrawColor( Renderer, 0xFF, 0xFF, 0xFF, 0xFF ); 
+
+/*
   WWindow = XCreateWindow (ADisplay,	//display
 			   parent,	//parent
 			   X,	//x
@@ -153,41 +123,10 @@ CWindow::WCreate (CWindow* window)
 			   (CWBackPixel | CWEventMask | CWSaveUnder | CWOverrideRedirect |CWColormap |CWBackingStore),	//value_mask
 			   &WAttributes);	//attributes
   
-  
+  */
   uint FEvent = 0;
-  if (Application->GetIM () != NULL)
-    {
-      IC = XCreateIC (Application->GetIM (), XNInputStyle,
-		      XIMPreeditNothing | XIMStatusNothing, XNClientWindow,
-		      WWindow, NULL);
-      if (IC == NULL)
-	{
-	  eprint( "Error : XCreateIC() !\n");
-	  exit (0);
-	}
-      else
-	XGetICValues (IC, XNFilterEvents, &FEvent, NULL);
-    };
-
-  WAttributes.event_mask = AllEventMask | FEvent;
-
-  char *title;
-  title = new char[Title.size () + 1];
-  strcpy (title, Title.c_str ());
-  WClassHints.res_name = title;
-
-  XSetWMProperties (ADisplay,	//display
-		    WWindow,	//window
-		    &WTextProperty,	//window_name
-		    &WTextProperty,	//icon-name
-		    Application->Aargv,	//valor dos argumentos
-		    Application->Aargc,	//numero de argumentos
-		    &WSizeHints,	//normal_hints
-		    &WWMHints,	//wm_hints
-		    &WClassHints);	//class_hints
-
+  
   Win = this;
-  CreatePixmap(); 
   WPaint.Create (this);
   Paint = &WPaint;
   
@@ -196,16 +135,9 @@ CWindow::WCreate (CWindow* window)
   
   if(Visible) Show ();
   
-  XMoveWindow (ADisplay, WWindow, X, Y);
-  
-  Atom AWMWindowProtocol[2];
-  AWMWindowProtocol[0] = *AWMDeleteWindow;
-  AWMWindowProtocol[1] = *AWMTakeFocus;
-  XSetWMProtocols (ADisplay, WWindow, AWMWindowProtocol, 2);
-  //XFlush (ADisplay);
+  //XMoveWindow (ADisplay, WWindow, X, Y);
+
   on_create ();
-  
-  delete[]WClassHints.res_name;
 };
 
 void
@@ -220,10 +152,13 @@ void
 CWindow::Draw(void)
 {
   if(Paint == NULL)return;
+  SDL_RenderClear( Renderer );
   Paint->InitDraw(this);
   Paint->Pen.SetColor(Color);
   Paint->Rectangle ( 0, 0, Width, Height);
   CControl::Draw ();
+  
+  SDL_RenderPresent( Renderer );
 };
 
 void
@@ -238,7 +173,7 @@ CWindow::GetPixmapBuffer(void)
   return PixmapBuffer;
 };
 
-Pixmap 
+SDL_Surface* 
 CWindow::GetPixmap(void)
 {
   return WPixmap;
@@ -247,16 +182,19 @@ CWindow::GetPixmap(void)
 void
 CWindow::DestroyPixmap (void)
 {
+    /*
   if ((WPixmap != 0)&&(WPixmap != WWindow))
     {
       XFreePixmap (ADisplay , WPixmap);
       WPixmap=0;
     };
+    */
 };
 
 void
 CWindow::CreatePixmap(bool draw)
 {
+    /*
   if(PixmapBuffer)
   {
   if((Width > PWidth) || ( Height > PHeight))
@@ -271,6 +209,7 @@ CWindow::CreatePixmap(bool draw)
   }
   else
    WPixmap=WWindow;
+     */
 };
 
 
@@ -302,10 +241,8 @@ CWindow::WDestroy (void)
       WPaint.Destroy ();
       if(WParent != NULL)
       {
-        XDestroyWindow (ADisplay, GetWWindow ());
+//        XDestroyWindow (ADisplay, GetWWindow ());
       };
-      if (IC)
-	XDestroyIC (IC);
       Win = NULL;
       Application->ADestroyWindow (this);
       WWindow = 0;
@@ -319,8 +256,8 @@ CWindow::Show (void)
     {
       SetVisible (true);
       Draw();
-      XMapWindow (ADisplay, GetWWindow ());
-      XFlush(ADisplay);  
+    //  XMapWindow (ADisplay, GetWWindow ());
+    //  XFlush(ADisplay);  
       Update ();
     };
 };
@@ -339,7 +276,7 @@ CWindow::Hide (void)
 {
   if (Win != NULL)
     {
-      XUnmapWindow (ADisplay, GetWWindow ());
+      //XUnmapWindow (ADisplay, GetWWindow ());
       SetVisible (false);
     };
 };
@@ -370,10 +307,11 @@ CWindow::Update (void)
 };
 
 void
-CWindow::Update (Region Reg)
+CWindow::Update (SDL_Rect Reg)
 {
   if (ChildCount == -1)
     return;
+  /*
   else
     {
       
@@ -397,18 +335,19 @@ CWindow::Update (Region Reg)
       XSetClipMask (GetADisplay (), WPaint.Agc, None);
       XDestroyRegion (Reg);
     };
+   */ 
 };
 
 void
 CWindow::SetOverrideRedirect (bool redirect)
 {
-  WAttributes.override_redirect = redirect;
+
 };
 
 void
 CWindow::SetSaveUnder (bool saveunder)
 {
-  WAttributes.save_under = saveunder;
+
 };
 
 
@@ -422,22 +361,96 @@ Bool predicate (Display *display,XEvent *event,XPointer arg)
 
 
 bool
-CWindow::WEvents (XEvent WEvent)
+CWindow::WEvents (SDL_Event WEvent)
 {
   int ret=0;
 
   switch (WEvent.type)
     {
+    case SDL_WINDOWEVENT:
+        switch (WEvent.window.event) {
+        case SDL_WINDOWEVENT_SHOWN:
+            SDL_Log("Window %d shown", WEvent.window.windowID);
+            Draw();
+            break;
+        case SDL_WINDOWEVENT_HIDDEN:
+            SDL_Log("Window %d hidden", WEvent.window.windowID);
+            break;
+        case SDL_WINDOWEVENT_EXPOSED:
+            SDL_Log("Window %d exposed", WEvent.window.windowID);
+            Draw();
+            break;
+        case SDL_WINDOWEVENT_MOVED:
+            SDL_Log("Window %d moved to %d,%d",
+                    WEvent.window.windowID, WEvent.window.data1,
+                    WEvent.window.data2);
+            break;
+        case SDL_WINDOWEVENT_RESIZED:
+            SDL_Log("Window %d resized to %dx%d",
+                    WEvent.window.windowID, WEvent.window.data1,
+                    WEvent.window.data2);
+            Draw();
+            break;
+        case SDL_WINDOWEVENT_SIZE_CHANGED:
+            SDL_Log("Window %d size changed to %dx%d",
+                    WEvent.window.windowID, WEvent.window.data1,
+                    WEvent.window.data2);
+            Draw();
+            break;
+        case SDL_WINDOWEVENT_MINIMIZED:
+            SDL_Log("Window %d minimized", WEvent.window.windowID);
+            break;
+        case SDL_WINDOWEVENT_MAXIMIZED:
+            SDL_Log("Window %d maximized", WEvent.window.windowID);
+            Draw();
+            break;
+        case SDL_WINDOWEVENT_RESTORED:
+            SDL_Log("Window %d restored", WEvent.window.windowID);
+            Draw();
+            break;
+        case SDL_WINDOWEVENT_ENTER:
+            SDL_Log("Mouse entered window %d",
+                    WEvent.window.windowID);
+            break;
+        case SDL_WINDOWEVENT_LEAVE:
+            SDL_Log("Mouse left window %d", WEvent.window.windowID);
+            break;
+        case SDL_WINDOWEVENT_FOCUS_GAINED:
+            SDL_Log("Window %d gained keyboard focus",
+                    WEvent.window.windowID);
+            break;
+        case SDL_WINDOWEVENT_FOCUS_LOST:
+            SDL_Log("Window %d lost keyboard focus",
+                    WEvent.window.windowID);
+            break;
+        case SDL_WINDOWEVENT_CLOSE:
+            SDL_Log("Window %d closed", WEvent.window.windowID);
+            WDestroy ();
+            ret=1;
+            break;
+#if SDL_VERSION_ATLEAST(2, 0, 5)
+        case SDL_WINDOWEVENT_TAKE_FOCUS:
+            SDL_Log("Window %d is offered a focus", WEvent.window.windowID);
+            break;
+        case SDL_WINDOWEVENT_HIT_TEST:
+            SDL_Log("Window %d has a special hit test", WEvent.window.windowID);
+            break;
+#endif
+        default:
+            SDL_Log("Window %d got unknown event %d",
+                    WEvent.window.windowID, WEvent.window.event);
+            break;
+        }
+
+      break;     
+    /*  
     case ClientMessage:
-      if ((Atom) WEvent.xclient.data.l[0] == *AWMTakeFocus)
-	{
-	  //code
-	};
       if (((Atom) WEvent.xclient.data.l[0] == *AWMDeleteWindow)
 	  && (!CanExitExclusive))
 	WDestroy ();
       ret=1;
       break;
+  
     case DestroyNotify:
       on_destroy ();
       ret=1;
@@ -545,30 +558,37 @@ CWindow::WEvents (XEvent WEvent)
       Update (Reg);
       ret= 1;
       break;
+     */ 
     };
 
-
+/*
   if ((LEvent.type != WEvent.type)&&(LEvent.type == ConfigureNotify))
   {
       Display *disp=Application->GetADisplay();
 
       if(disp)
       {
-        //pthread_mutex_lock (&Display_Lock);
+        int se=0;
+	if(Width != (uint)LEvent.xconfigure.width)se=1;
+        if(Height != (uint)LEvent.xconfigure.height)se=1;
+	//pthread_mutex_lock (&Display_Lock);
         XLockDisplay(disp);
         X = LEvent.xconfigure.x;
         Y = LEvent.xconfigure.y;
         Width=LEvent.xconfigure.width;
         Height=LEvent.xconfigure.height;
         Border = LEvent.xconfigure.border_width;
-        CreatePixmap(true);
-        on_show ();
-	Draw();
+	if(se)
+	{
+          CreatePixmap(true);
+          on_show ();
+	  Draw();
+	}
         XUnlockDisplay(disp);
         //pthread_mutex_unlock (&Display_Lock);
       }
   }
-
+*/
 
   LEvent=WEvent;
 
@@ -673,34 +693,20 @@ CWindow::CirculateFocus (bool asc)
 void
 CWindow::SetFocus (void)
 {
-  XSetInputFocus (ADisplay, WWindow, RevertToParent, CurrentTime);
+//  XSetInputFocus (ADisplay, WWindow, RevertToParent, CurrentTime);
 };
 
-XIC
-CWindow::GetIC (void)
-{
-  return IC;
-};
 
 
 //propiedades
-Window 
+SDL_Window* 
 CWindow::GetWWindow (void)
 {
   return WWindow;
 };
 
-Display *
-CWindow::GetADisplay (void)
-{
-  return ADisplay;
-};
 
-int *
-CWindow::GetADepth (void)
-{
-  return ADepth;
-};
+
 
 void
 CWindow::SetCanDestroy (bool candestroy)
@@ -741,6 +747,7 @@ CWindow::GetYMouse (void)
 void
 CWindow::SetTitle (const String & title)
 {
+/*    
   Title = title;
   XFreeTextProperty (WTextProperty);
   char *cstr;
@@ -754,6 +761,7 @@ CWindow::SetTitle (const String & title)
       XStoreName (ADisplay, WWindow, Title.c_str ());
       XSetIconName (ADisplay, WWindow, Title.c_str ());
     };
+ */ 
 };
 
 String CWindow::GetTitle (void)
@@ -802,32 +810,32 @@ void
 CWindow::SetX (int x)
 {
   CControl::SetX (x);
-  if (WWindow)
-    XMoveWindow (ADisplay, WWindow, x, Y);
+//  if (WWindow)
+//    XMoveWindow (ADisplay, WWindow, x, Y);
 };
 
 void
 CWindow::SetY (int y)
 {
   CControl::SetY (y);
-  if (WWindow)
-    XMoveWindow (ADisplay, WWindow, X, y);
+//  if (WWindow)
+//    XMoveWindow (ADisplay, WWindow, X, y);
 };
 
 void
 CWindow::SetWidth (uint width)
 {
   CControl::SetWidth (width);
-  if (WWindow)
-    XResizeWindow (ADisplay, WWindow, width, Height);
+//  if (WWindow)
+//    XResizeWindow (ADisplay, WWindow, width, Height);
 };
 
 void
 CWindow::SetHeight (uint height)
 {
   CControl::SetHeight (height);
-  if (WWindow)
-    XResizeWindow (ADisplay, WWindow, Width, height);
+//  if (WWindow)
+//    XResizeWindow (ADisplay, WWindow, Width, height);
 };
 
 //operators

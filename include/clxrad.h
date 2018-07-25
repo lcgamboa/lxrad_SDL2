@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -52,11 +52,10 @@ using namespace std;
 #include<string.h>
 #include<ctype.h>
 
-//X11 headers
-#include<X11/Xlib.h>
-#include<X11/Xatom.h>
-#include<X11/Xutil.h>
-#include<X11/keysym.h>
+//SDL2 headers
+#include<SDL2/SDL.h>
+#include<SDL2/SDL_image.h>
+#include<SDL2/SDL_ttf.h>
 
 #include"lxutils.h"
 
@@ -65,10 +64,11 @@ using namespace std;
 	application.Aargc=argc;application.Aargv=argv; pmain();}\
         int pmain(void)
 
-
+/*
 #define AllEventMask KeyPressMask | KeyReleaseMask |KeymapStateMask | ButtonPressMask | ButtonReleaseMask |\
                      ButtonMotionMask| EnterWindowMask | LeaveWindowMask | ExposureMask | \
 		     StructureNotifyMask | FocusChangeMask | PointerMotionMask
+*/
 
 #define Parent 99999
 #define EVMAX 100

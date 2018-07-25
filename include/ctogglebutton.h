@@ -52,8 +52,8 @@ public:
   void SetCheck (bool check);
   bool GetCheck (void);
   //Events
-  void key_press (XEvent event);
-  void button_press (XEvent event);
+  void key_press (SDL_Event event);
+  void button_press (SDL_Event event);
   void (CControl::*EvOnToggleButton) (CControl * control);
 };
 

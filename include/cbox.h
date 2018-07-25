@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -33,20 +33,20 @@ class CCbox:public CControl
 {
 private:
   bool Check;
-  XColor PressColor;
+  SDL_Color PressColor;
 public:
     CCbox (void);
    ~CCbox (void);
   void Draw (void);
   void Create (CControl * control);
-  void Event (XEvent event);
+  void Event (SDL_Event event);
   CStringList GetContext (void);
   void SetContext (CStringList context);
   //propiedades
   void SetCheck (bool check);
   bool GetCheck (void);
   //eventos
-  void button_press (XEvent event);
+  void button_press (SDL_Event event);
 };
 
 #endif

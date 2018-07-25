@@ -42,22 +42,23 @@
 struct TXColor
 {
   String name;
-  XColor color;
-  XColor displaycolor;
+  SDL_Color color;
+  SDL_Color displaycolor;
 };
 
 void mprint(String message);
 
 void eprint(String error);
 
-XColor ColorByRGB (unsigned short r, unsigned short g, unsigned short b);
+SDL_Color ColorByRGB (unsigned short r, unsigned short g, unsigned short b);
 
-XColor ColorByName (String name);
+SDL_Color ColorByName (String name);
 
+/*
 int XXLookupString (XIC ic, XKeyPressedEvent * event, char *buffer_return,
 		    int bytes_buffer, KeySym * keysym_return,
 		    Status * status_return);
-
+*/
 class lxTextFile
 {
   private:	
@@ -116,18 +117,18 @@ public:
   String GetFullPath(void);
 };
 
-#define lxPoint XPoint
+#define lxPoint SDL_Point
 
 class lxColor
 {
 private:	
-  XColor Color;
+  SDL_Color Color;
 public:
   lxColor();
-  lxColor(XColor color);
+  lxColor(SDL_Color color);
   lxColor(const char * name);
   String GetAsString(int flags =0);
-  operator XColor() const;
+  operator SDL_Color() const;
 };
 
 class lxCursor

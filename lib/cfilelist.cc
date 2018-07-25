@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -210,7 +210,7 @@ CFileList::Draw ()
       (SelectedItem - Scroll->GetPosition () <= ItemsCount))
     {
       SetColor ("dark blue");
-      XColor color =
+      SDL_Color color =
 	Items[SelectedItem - Scroll->GetPosition ()]->GetColor ();
       Items[SelectedItem - Scroll->GetPosition ()]->SetColor ("white");
       Items[SelectedItem - Scroll->GetPosition ()]->Draw ();

@@ -181,26 +181,28 @@ CLabel::CalcVirtual (void)
   if (Win == NULL)
     return;
 
-  uint TextWidth2;
+  int TextWidth2;
   int xo = 0;
   bool mux=false;
 
   VText = Text.substr (TextPointer, Text.size ());
-  TextWidth2 = XTextWidth (CFont, VText.c_str (), VText.size ());
+  TTF_SizeText (CFont, VText.c_str (),&TextWidth2,NULL);
   
   //align
   switch (Align)
     {
     case ca_right:
-      while (TextWidth2 >= Width)
+      while ((unsigned int)TextWidth2 >= Width)
 	{
 	  VText = strndel (VText, 1);
-	  TextWidth2 = XTextWidth (CFont, VText.c_str (), VText.size ());
+          TTF_SizeText (CFont, VText.c_str (),&TextWidth2,NULL);
+	  //TextWidth2 = XTextWidth (CFont, VText.c_str (), VText.size ());
+          
 	};
       xo = Width - TextWidth2 - 5;
       break;
     case ca_center:
-      while (TextWidth2 >= Width)
+      while ((unsigned int)TextWidth2 >= Width)
 	{
 	  if(mux)
 	  {
@@ -212,15 +214,17 @@ CLabel::CalcVirtual (void)
 	  VText = strndel (VText,1);
 	  mux=true;
 	  };
-	  TextWidth2 = XTextWidth (CFont, VText.c_str (), VText.size ());
+	  //TextWidth2 = XTextWidth (CFont, VText.c_str (), VText.size ());
+          TTF_SizeText (CFont, VText.c_str (),&TextWidth2,NULL);
 	};
       xo = (((Width - TextWidth2)) / 2);
       break;
     case ca_left:
-      while (TextWidth2 >= Width)
+      while ((unsigned int)TextWidth2 >= Width)
 	{
 	  VText = strndel (VText, VText.size ());
-	  TextWidth2 = XTextWidth (CFont, VText.c_str (), VText.size ());
+	  //TextWidth2 = XTextWidth (CFont, VText.c_str (), VText.size ());
+          TTF_SizeText (CFont, VText.c_str (),&TextWidth2,NULL);
 	};
       xo = 5 ;
       break;
@@ -233,8 +237,10 @@ CLabel::CalcVirtual (void)
   
   //TextWidth = GetTextWidth ();
   
-  TextPosition = XTextWidth (CFont, Text.c_str (), TextPointer)-xo+1;
-
+  //TextPosition = XTextWidth (CFont, Text.c_str (), TextPointer)-xo+1;
+  TTF_SizeText (CFont, VText.c_str (),(int *)&TextPosition,NULL);
+  TextPosition-=xo-1;
+  
   VX = X + xo;
   
   VY = Y + ((Height - GetTextHeight ()) / 2);
@@ -327,19 +333,21 @@ CAlign CLabel::GetAlign (void)
 uint
 CLabel::GetTextWidth (void)
 {
-  return XTextWidth (CFont, Text.c_str (), Text.size ());
+  int width;  
+  TTF_SizeText(CFont, Text.c_str(), &width,NULL);
+  return width;
 };
 
 uint
 CLabel::GetTextAsc (void)
-{
-  return CFont->max_bounds.ascent;
+{  
+  return TTF_FontAscent(CFont);
 };
 
 uint
 CLabel::GetTextDes (void)
 {
-  return CFont->max_bounds.descent;
+  return TTF_FontDescent(CFont);
 };
 
 uint

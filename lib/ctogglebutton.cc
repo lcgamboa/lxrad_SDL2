@@ -38,7 +38,7 @@ CToggleButton::CToggleButton (void)
 void
 CToggleButton::Draw (void)
 {
-  XColor TColor;
+  SDL_Color TColor;
 	
   if((!Visible)||(Paint == NULL))return;
   
@@ -81,14 +81,10 @@ CToggleButton::GetCheck (void)
 //eventos
 
 void
-CToggleButton::key_press (XEvent event)
+CToggleButton::key_press (SDL_Event event)
 {
-  KeySym key = 0;
-  char text[10];
-  Status status;
 
-  XXLookupString (NULL, &event.xkey, text, 10, &key, &status);
-  if (key == XK_Return)
+  if (event.key.keysym.sym == SDLK_RETURN)
     {
       Check = !Check;
       Draw ();
@@ -101,9 +97,9 @@ CToggleButton::key_press (XEvent event)
 };
 
 void
-CToggleButton::button_press (XEvent event)
+CToggleButton::button_press (SDL_Event event)
 {
-  if (event.xbutton.button == 1)
+  if (event.button.button == 1)
     {
       Check = !Check;
       Draw ();

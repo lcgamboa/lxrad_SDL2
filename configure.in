@@ -8,39 +8,27 @@ AC_CONFIG_HEADER([config.h])
 # Checks for programs.
 AC_PROG_CC()
 AC_PROG_CXX()
-CFLAGS="-Wall -O3"
+CFLAGS="-Wall -O2"
+LIBS=""
 
 # Checks for libraries.
-AC_PATH_XTRA
-if test x"$no_x" != x; then
-  AC_MSG_ERROR([X Window System not found])
-fi
-
-AC_CHECK_LIB([pthread], [pthread_create],
+AC_CHECK_LIB([SDL2], [SDL_CreateWindow],, AC_MSG_ERROR([SDL2 Not Found!]),$X_LIBS)
 cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBPTHREAD 1
+#define HAVE_LIBSDL2 1
 _ACEOF
-LIBS="-lpthread $LIBS"
-CFLAGS="$CFLAGS -D_REENTRANT",
-AC_MSG_WARN([libpthread Not Found!]))
+LIBS+=" -lSDL2"
 
-AC_CHECK_LIB([Imlib2], [imlib_load_image],
+AC_CHECK_LIB([SDL2_image], [IMG_Init],, AC_MSG_ERROR([SDL2 image Not Found!]),$X_LIBS)
 cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBIMLIB2 1
+#define HAVE_LIBSDL2_IMAGE 1
 _ACEOF
-LIBS="-lImlib2 $LIBS"
-AC_CHECK_LIB([X11], [XOpenDisplay],, AC_MSG_ERROR([libX11 Not Found!]),$X_LIBS),
-AC_CHECK_LIB([Imlib2], [imlib_context_set_image],, AC_MSG_ERROR([libImlib2 Not Found!]),$X_LIBS)
-AC_MSG_WARN([libImlib2 Not Found!]))
+LIBS+=" -lSDL2_image"
 
-AC_CHECK_LIB([Xpm], [XpmReadFileToPixmap],
+AC_CHECK_LIB([SDL2_ttf], [TTF_Init],, AC_MSG_ERROR([SDL2 ttf Not Found!]),$X_LIBS)
 cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBXPM 1
+#define HAVE_LIBSDL2_TTF 1
 _ACEOF
-LIBS="-lXpm $LIBS"
-AC_CHECK_LIB([X11], [XOpenDisplay],, AC_MSG_ERROR([libX11 Not Found!]),$X_LIBS),
-AC_CHECK_LIB([Xpm], [XpmReadFileToPixmap],, AC_MSG_WARN([libXpm Not Found!]),$X_LIBS)
-AC_MSG_WARN([libXpm Not Found!]))
+LIBS+=" -lSDL2_ttf"
 
 # Checks for header files.
 AC_PATH_X
@@ -81,5 +69,5 @@ AC_OUTPUT([Makefile
            lib/Makefile
            share/Makefile
            utils/Makefile
-           utils/lxrad_X11-config])
+           utils/lxrad_SDL2-config])
 

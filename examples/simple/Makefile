@@ -1,11 +1,11 @@
 CC = g++
-FLAGS = -Wall -O2 `lxrad_X11-config --cxxflags`
+FLAGS = -Wall -O0 -ggdb `lxrad_SDL2-config --cxxflags`
 
 OBJS = psimple.o simple1.o  
 
 
 all: $(OBJS)
-	$(CC) $(FLAGS) $(OBJS) -osimple `lxrad_X11-config --libs`
+	$(CC) $(FLAGS) $(OBJS) -osimple `lxrad_SDL2-config --libs`
 
 %.o: %.cc
 	$(CC) -c $(FLAGS) $< 

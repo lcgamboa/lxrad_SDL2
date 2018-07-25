@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -149,21 +149,17 @@ CAlign CCheckBox::GetAlign (void)
 
 //events
 void
-CCheckBox::button_press (XEvent event)
+CCheckBox::button_press (SDL_Event event)
 {
   Update ();
   CControl::button_press (event);
 };
 
 void
-CCheckBox::key_press (XEvent event)
+CCheckBox::key_press (SDL_Event event)
 {
-  KeySym key;
-  char text[10];
-  Status status;
-
-  XXLookupString (NULL, &event.xkey, text, 10, &key, &status);
-  if (key == XK_space)
+ 
+  if (event.key.keysym.sym == SDLK_SPACE)
     {
       if (CBox->GetCheck ())
 	CBox->SetCheck (false);

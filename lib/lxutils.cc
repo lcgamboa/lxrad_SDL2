@@ -93,36 +93,24 @@ lxImage::lxImage()
 
 lxImage::~lxImage()
 {
-  if(Image)
-  {
-   imlib_context_set_image(Image);
-   imlib_free_image();
-   Image=NULL;
-  }
+//FIXME	
+  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
 }
 
 
 bool
 lxImage::LoadFile(String fname)
 {
-  Destroy();
-	
-  Image = imlib_load_image_immediately_without_cache ((char *) fname.c_str ());
-  if(Image)
-    return 0;
-  else
-    return 1;  
+//FIXME	
+  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+  return 0;
 }
 
 void
 lxImage::Destroy(void)
 {
-  if(Image)
-  {
-   imlib_context_set_image(Image);
-   imlib_free_image();
-   Image=NULL;
-  }
+//FIXME	
+  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
 }
 
 lxImage::operator Imlib_Image() const
@@ -134,27 +122,18 @@ lxBitmap::lxBitmap()
 {
  
     CPixmap =0;
-    }
+}
 
 lxBitmap::~lxBitmap()
 {
-  if (CPixmap != 0)
-    XFreePixmap (Application->GetADisplay (), CPixmap);
+//  if (CPixmap != 0)
+//    XFreePixmap (Application->GetADisplay (), CPixmap);
 }
 
 lxBitmap::lxBitmap(lxImage img)
 {
-
-   imlib_context_set_image(img);
-   int w = imlib_image_get_width();
-   int h = imlib_image_get_height();
-                  
-   CPixmap=XCreatePixmap (Application->GetADisplay (), *Application->GetADefaultRootWindow (), w, h, *(Application->GetADepth()));
-
-   imlib_context_set_image(img);
-   imlib_context_set_drawable(CPixmap);
-   //imlib_context_set_mask(CMask);
-   imlib_render_image_on_drawable(0,0);
+//FIXME	
+  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
 
 }
 
@@ -217,7 +196,7 @@ lxColor::lxColor()
 {
 }
 
-lxColor::lxColor(XColor color)
+lxColor::lxColor(SDL_Color color)
 {
   Color=color;
 }
@@ -250,6 +229,9 @@ lxColor::lxColor(const char * name)
 String
 lxColor::GetAsString(int flags)
 {
+    //FIXME	
+  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+  /*
    char cname[20];
    XQueryColor(Application->GetADisplay (), Application->GetAScreen ()->cmap, &Color);
 
@@ -263,9 +245,12 @@ lxColor::GetAsString(int flags)
    }
 
    return cname;	
+
+   */
+  return "";
 }
 
-lxColor::operator XColor() const 
+lxColor::operator SDL_Color() const 
 { 
   return Color; 
 }
@@ -564,12 +549,15 @@ void eprint(String error)
   fprintf(stderr,"%s",error.c_str());
 };
 
-XColor
+SDL_Color
 ColorByRGB (unsigned short r, unsigned short g, unsigned short b)
 {
-  XColor
+
+  SDL_Color
     colorA,
     colorB;
+    printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+      /*
   colorA.red = r * 256;
   colorA.green = g * 256;
   colorA.blue = b * 256;
@@ -582,21 +570,27 @@ ColorByRGB (unsigned short r, unsigned short g, unsigned short b)
 	       &colorB);
   Application->AddToColorTable ("RGB", colorA, colorB);
   return colorB;
+     */
+    
+    return colorA;
 };
 
-XColor
+SDL_Color
 ColorByName (String name)
-{
-  XColor
+{        
+  SDL_Color
     colorA,
     colorB;
+   printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+ /* 
   if (Application->XSearchInColorTable (name, &colorA))
     return colorA;
   XAllocNamedColor (Application->GetADisplay (),
 		    Application->GetAScreen ()->cmap, name.c_str (), &colorA,
 		    &colorB);
   Application->AddToColorTable (name, colorA, colorB);
-  return colorB;
+  */
+  return colorB;    
 };
 
 int
@@ -604,34 +598,6 @@ XXLookupString (XIC ic, XKeyPressedEvent * event, char *buffer_return,
 		int bytes_buffer, KeySym * keysym_return,
 		Status * status_return)
 {
-#ifdef _DEBUG
-  *status_return = XLookupBoth;
-  switch ((event->state & ShiftMask) + (event->state & LockMask))
-    {
-    case ShiftMask:
-      *keysym_return = XLookupKeysym (event, 1);
-      break;
-    case LockMask:
-      *keysym_return = XLookupKeysym (event, 1);
-      break;
-    default:
-      *keysym_return = XLookupKeysym (event, 0);
-    };
-
-  strcpy (buffer_return, XKeysymToString (*keysym_return));
-  return 1;
-
-#else
-  if (ic)
-    {
-      return XmbLookupString (ic, event, buffer_return, bytes_buffer,
-			      keysym_return, status_return);
-    }
-  else
-    {
-      return XLookupString (event, buffer_return, bytes_buffer, keysym_return,
-			    NULL);
-    };
-
-#endif
+  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+  return 0;
 }

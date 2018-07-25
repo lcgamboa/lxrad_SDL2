@@ -5,11 +5,11 @@ all:
 static:
 
 install:
-	chmod 755 lxrad_X11-config
-	${CP} -v lxrad_X11-config ${bindir}
+	chmod 755 lxrad_SDL2-config
+	${CP} -v lxrad_SDL2-config ${bindir}
 
 uninstall:
-	${RM} ${bindir}/lxrad_X11-config
+	${RM} ${bindir}/lxrad_SDL2-config
 
 clean:
 

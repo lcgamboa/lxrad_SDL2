@@ -73,8 +73,8 @@ public:
   void SetPrevKey (char prevkey);
   char GetPrevKey (void);
   //eventos
-  void button_press (XEvent event);
-  void key_press (XEvent event);
+  void button_press (SDL_Event event);
+  void key_press (SDL_Event event);
   void focus_in (void);
   void focus_out (void);
 };

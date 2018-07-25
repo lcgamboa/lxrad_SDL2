@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -49,15 +49,15 @@ protected:
   int RX, RY;
   uint Width, Height;
   uint Border;
-  XColor Color;
-  XColor DisableColor;
+  SDL_Color Color;
+  SDL_Color DisableColor;
   String ColorName;
   bool ColorSet;
   CControl **Child;
   int ChildCount;
   int Pen;
   String FontName;
-  XFontStruct *CFont;
+  TTF_Font *CFont;
   uint FontSize;
   CControl *Owner;
   bool GChanges;
@@ -72,7 +72,7 @@ public:
   bool OwnerEvent (int x, int y);
   CWindow *GetWin (void);
   void SetWin (CWindow * win);
-  virtual void Event (XEvent event);
+  virtual void Event (SDL_Event event);
   virtual void Create (CControl * control);
   virtual void Destroy (void);
   virtual void Eraser (void);
@@ -80,11 +80,11 @@ public:
   virtual void Update (void);
   CStringList GetContext (void);
   void SetContext (CStringList context);
-  XRectangle GetRectangle (void);
+  SDL_Rect GetRectangle (void);
 //propiedades
   void SetFont (const String font);
-  void SetFont (XFontStruct * font);
-  XFontStruct *GetFont (void);
+  void SetFont (TTF_Font * font);
+  TTF_Font *GetFont (void);
   String GetFontName (void);
   void SetFontSize (uint size);
   uint GetFontSize (void);
@@ -101,7 +101,7 @@ public:
   uint GetWidth (void);
   virtual void SetHeight (unsigned h);
   uint GetHeight (void);
-  void SetColor (XColor c);
+  void SetColor (SDL_Color c);
   void SetColor (const String name);
   void SetColor (unsigned r, unsigned g, unsigned b);
   lxColor GetColor (void);
@@ -136,11 +136,11 @@ public:
 //events
   void SetFOwner (CControl * control);
   CControl *GetFOwner (void);
-  virtual void mouse_move (XEvent event);
-  virtual void button_press (XEvent event);
-  virtual void button_release (XEvent event);
-  virtual void key_press (XEvent event);
-  virtual void key_release (XEvent event);
+  virtual void mouse_move (SDL_Event event);
+  virtual void button_press (SDL_Event event);
+  virtual void button_release (SDL_Event event);
+  virtual void key_press (SDL_Event event);
+  virtual void key_release (SDL_Event event);
   virtual void focus_in (void);
   virtual void focus_out (void);
   virtual void pointer_in (void);

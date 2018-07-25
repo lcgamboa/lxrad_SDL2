@@ -82,7 +82,7 @@ CPMenu::Draw (void)
   if (WWindow != 0)
     {
       Paint->InitDraw (this);
-      XResizeWindow (ADisplay, WWindow, Width, Height);
+      SDL_SetWindowSize( WWindow, Width, Height);
       CreatePixmap();
       Paint->Pen.SetColor (Color);
       Paint->Rectangle ( 2, 2, Width - 2, Height - 2);
@@ -147,7 +147,7 @@ CPMenu::SetContext (CStringList context)
 
 //events
 void
-CPMenu::button_press (XEvent event)
+CPMenu::button_press (SDL_Event event)
 {
   HideExclusive ();
   CControl::button_press (event);

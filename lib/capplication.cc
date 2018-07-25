@@ -45,11 +45,8 @@ CApplication::CApplication (void)
   AWindowCount = -1;
   AWindowList = NULL;
   Tag = 0;
-  PixelsCount = -1;
-  ColorTable = NULL;
   Exit = false;
 
-  ADisplay=NULL;
   HintControl=NULL;
   HintTime=time(NULL);
   HintX=0;
@@ -60,62 +57,42 @@ CApplication::CApplication (void)
 
 CApplication::~CApplication (void)
 {
-  PixelsCount = -1;
-  if (ColorTable)
-    delete[]ColorTable;
-  ColorTable = NULL;
   //pthread_mutex_destroy (&Display_Lock);  
 };
 
 void
 CApplication::Start (void)
 {
-  Display *adisplay=NULL;	
-  
-  XInitThreads();
+
    
   eprint("Application init ...\n");
-  for (int i = 0; i != Aargc; i++)
-    {
-      if ((!strcmp (Aargv[i], "-display")) && ((i + 1) < Aargc))
-	{
-	  adisplay = XOpenDisplay (Aargv[i + 1]);
-	  if (adisplay)
-	    break;
-	  else
-	    {
-	      eprint("Error!: Can't open  Display \n");
-	      eprint("...Application Finished\n");
-	      Exit = true;
-	      return;
-
-	    };
-	};
-    };
-  if (adisplay == NULL)
-    {
-      adisplay = XOpenDisplay (NULL);
-    };
-  if (adisplay == NULL)
-    {
+ if( SDL_Init( SDL_INIT_VIDEO ) < 0 ) 
+   { 
+      printf( "SDL could not initialize! SDL_Error: %s\n", SDL_GetError() ); 
       eprint("Error!: Can't open  Display \n");
       eprint("...Application Finished\n");
       Exit = true;
       return;
     };
 
-  XLockDisplay(adisplay);
+     //Initialize PNG loading 
+    int imgFlags = IMG_INIT_PNG; 
+    if( !( IMG_Init( imgFlags ) & imgFlags ) ) 
+    { 
+      printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
+      eprint("...Application Finished\n");
+      Exit = true;
+      return; 
+    }
 
-  ADisplay=adisplay;
-  AScreen = XDefaultScreenOfDisplay (ADisplay);
-  ADepth = XDefaultDepthOfScreen (AScreen);
-  ABlackColor = BlackPixel (ADisplay, DefaultScreen (ADisplay));
-  AWhiteColor = WhitePixel (ADisplay, DefaultScreen (ADisplay));
-  ADefaultRootWindow = DefaultRootWindow (ADisplay);
-  AWMDeleteWindow = XInternAtom (ADisplay, "WM_DELETE_WINDOW", false);
-  AWMTakeFocus = XInternAtom (ADisplay, "WM_TAKE_FOCUS", false);
-  AWMProtocols = XInternAtom (ADisplay, "WM_PROTOCOLS", false);
-
+    //Initialize SDL_ttf
+    if( TTF_Init() == -1 )
+    {
+      printf( "SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError() );
+      Exit = true;
+      return; 
+    }    
+    
 
 #ifdef _DEBUG
   eprint("synchronize\n");
@@ -127,18 +104,7 @@ CApplication::Start (void)
       Exit = true;
       return;
     };
-  if ((IM = XOpenIM (ADisplay, NULL, NULL, NULL)) == NULL)
-    {
-      eprint("Cannot use XOpenIM() !\n");
-    };
-#endif
 
-
-#ifdef HAVE_LIBIMLIB2
-   imlib_set_cache_size(2048 * 1024);
-   imlib_context_set_display(ADisplay);
-   imlib_context_set_visual(DefaultVisual(ADisplay, DefaultScreen(ADisplay)));
-   imlib_context_set_colormap(DefaultColormap(ADisplay, DefaultScreen(ADisplay)));
 #endif
 
 };
@@ -204,16 +170,13 @@ CApplication::ADestroyWindow (CWindow * AWindow)
 	  delete[]AWindowList;
 	  AWindowList = NULL;
 	  eprint("...Application Finished\n");
-	  if (IM)
-	    XCloseIM (IM);
 #ifdef _DEBUG
 	  eprint("synchronize\n");
 	  XSynchronize (ADisplay, false);
 #endif
-          XFlush (ADisplay);
-          XSetCloseDownMode (ADisplay, DestroyAll);
-	  XCloseDisplay (ADisplay);
-	  ADisplay=NULL;
+          TTF_Quit();
+	  IMG_Quit();
+          SDL_Quit();
 	  Exit = true;
 	  return;
 	}
@@ -245,11 +208,12 @@ CApplication::ProcessEvents (CWindow * AWindow)
       int ec;
       
      //wait hint loop	    
-     ec=XEventsQueued(ADisplay,QueuedAlready );
+
+     ec=SDL_PollEvent(&AEvent);
      while(ec ==  0 )
      {
 	usleep(50000);
-	ec=XEventsQueued(ADisplay,QueuedAfterFlush );
+        ec=SDL_PollEvent(&AEvent);
 	if((HintControl)&&(time(NULL)-HintTime > 1))
 	{
           if(HintControl->GetHint().size() >0)
@@ -264,42 +228,40 @@ CApplication::ProcessEvents (CWindow * AWindow)
       HintControl=NULL;
       
       
-      XNextEvent (ADisplay, &AEvent);
-
-      if (IM)
-	if (XFilterEvent (&AEvent, 0) == true)
-	  return false;
-      
-      FWindow = AEvent.xany.window;
+      FWindow = AEvent.window.windowID;
       for (int e = 0; e <= AWindowCount; e++)
 	{
-	  if (FWindow == AWindowList[e]->GetWWindow ())
+	  if (FWindow == SDL_GetWindowID(AWindowList[e]->GetWWindow ()) )
 	    {
 	      wn = e;
 	      break;
 	    };
+
 	};
 
-      if (((AEvent.type == EnterNotify) || (AEvent.type == Expose))
+
+      if (((AEvent.type == SDL_WINDOWEVENT) && ((AEvent.window.type == SDL_WINDOWEVENT_ENTER)||(AEvent.window.type == SDL_WINDOWEVENT_EXPOSED)))
 	  && (AWindowCount >= 0) && (wn >= 0))
 	{
 	  AWindowList[wn]->WEvents (AEvent);
 	}
       else
        {
-      if (AEvent.xany.window == AWindow->GetWWindow ())
+        if (AEvent.window.windowID == SDL_GetWindowID(AWindow->GetWWindow ()))
 	{
-           if (AEvent.type != DestroyNotify)
-	    {
-	      AWindow->WEvents (AEvent);
-	      return true;
+           if ((AEvent.type == SDL_WINDOWEVENT)&&(AEvent.window.type == SDL_WINDOWEVENT_CLOSE))
+            {
+	      return false;
 	    }
 	  else
-	    return false;
+          {
+            AWindow->WEvents (AEvent);   
+	    return true;
+          }
 	}
         else
 	{
-           if (AEvent.type == MotionNotify)
+           if (AEvent.type == SDL_MOUSEMOTION )
 	    {
 	      AWindow->WEvents (AEvent);
 	      return true;
@@ -320,38 +282,35 @@ CApplication::Load (void)
   if (Exit)
     return;
   
-  XUnlockDisplay(ADisplay);
   //pthread_mutex_unlock (&Display_Lock);
 
   if (AWindowCount == -1)
     {
       eprint("No Windows!\n");
       eprint("...Application Finished\n");
-      if (IM)
-	XCloseIM (IM);
 #ifdef _DEBUG
       eprint("synchronize\n");
       XSynchronize (ADisplay, false);
 #endif
-      XFlush (ADisplay);
-      XSetCloseDownMode (ADisplay, DestroyAll);
-      XCloseDisplay (ADisplay);
+      TTF_Quit();
+      IMG_Quit();
+      SDL_Quit();
       return;
     };
 
   int wn = 0;
   int ec;   //events in queue
 
-  FWindow = AWindowList[wn]->GetWWindow ();
+  FWindow = SDL_GetWindowID(AWindowList[wn]->GetWWindow ());
   for (; AWindowList != NULL;)
     {
 
      //wait hint loop	    
-     ec=XEventsQueued(ADisplay,QueuedAlready );
+     ec=SDL_PollEvent(&AEvent);
      while(ec ==  0 )
      {
 	usleep(50000);
-	ec=XEventsQueued(ADisplay,QueuedAfterFlush );
+	ec=SDL_PollEvent(&AEvent);
 	if((HintControl)&&(time(NULL)-HintTime > 1))
 	{
           if(HintControl->GetHint().size() >0)
@@ -366,18 +325,12 @@ CApplication::Load (void)
       HintControl=NULL;
       
 
-      XNextEvent (ADisplay, &AEvent);
       
-      
-      if (IM)
-	if (XFilterEvent (&AEvent, 0) == true)  continue;
-
-      
-      FWindow = AEvent.xany.window;
+      FWindow = AEvent.window.windowID;
 
       wn = -1;
       for (int e = 0; e <= AWindowCount; e++)
-	if (FWindow == AWindowList[e]->GetWWindow ())
+	if (FWindow == SDL_GetWindowID(AWindowList[e]->GetWWindow ()) )
 	  {
 	    wn = e;
 	    break;
@@ -385,9 +338,9 @@ CApplication::Load (void)
       if (wn >= 0)
 	AWindowList[wn]->WEvents (AEvent);
 
-      if (AEvent.type == DestroyNotify)
+      if ((AEvent.type == SDL_WINDOWEVENT)&&(AEvent.window.type == SDL_WINDOWEVENT_CLOSE))
 	for (int p = 0; p <= AWindowCount; p++)
-	  if (AEvent.xdestroywindow.window == AWindowList[p]->GetWWindow ())
+	  if (AEvent.window.windowID == SDL_GetWindowID(AWindowList[p]->GetWWindow ()))
 	    {
 	      ADestroyWindow (AWindowList[p]);
 	      wn = -1;
@@ -400,17 +353,8 @@ CApplication::Load (void)
     };
 };
 
-Display *
-CApplication::GetADisplay (void)
-{
-  return ADisplay;
-};
 
-Screen *
-CApplication::GetAScreen (void)
-{
-  return AScreen;
-};
+
 
 bool
 CApplication::GetExit (void)
@@ -449,52 +393,8 @@ String CApplication::GetTitle (void)
   return Title;
 };
 
-Window *
-CApplication::GetADefaultRootWindow (void)
-{
-  return &ADefaultRootWindow;
-};
 
-int *
-CApplication::GetADepth (void)
-{
-  return &ADepth;
-};
 
-unsigned int *
-CApplication::GetAWhiteColor (void)
-{
-  return &AWhiteColor;
-};
-
-unsigned int *
-CApplication::GetABlackColor (void)
-{
-  return &ABlackColor;
-};
-
-Atom *
-CApplication::GetAWMProtocols (void)
-{
-  return &AWMProtocols;
-};
-
-Atom *
-CApplication::GetAWMDeleteWindow (void)
-{
-  return &AWMDeleteWindow;
-};
-
-Atom *
-CApplication::GetAWMTakeFocus (void)
-{
-  return &AWMTakeFocus;
-};
-
-XIM CApplication::GetIM (void)
-{
-  return IM;
-};
 
 /*
 void
@@ -541,49 +441,6 @@ CApplication::SetHintControl(CControl* hcontrol,int x,int y)
   HintY=y;
 };
 
-void
-CApplication::AddToColorTable (String colorname, XColor color,
-			       XColor displaycolor)
-{
-  PixelsCount++;
-  TXColor *TempTable;
-  TempTable = new TXColor[PixelsCount + 1];
-
-  for (int c = 0; c < PixelsCount; c++)
-    TempTable[c] = ColorTable[c];
-
-  TempTable[PixelsCount].name = colorname;
-  TempTable[PixelsCount].color = color;
-  TempTable[PixelsCount].displaycolor = displaycolor;
-  if (ColorTable)
-    delete[]ColorTable;
-  ColorTable = TempTable;
-};
-
-bool CApplication::XSearchInColorTable (String name, XColor * color)
-{
-  for (int c = 0; c <= PixelsCount; c++)
-    if (ColorTable[c].name.compare (name) == 0)
-      {
-	*color = ColorTable[c].color;
-	return true;
-      };
-
-  return false;
-};
-
-bool CApplication::XSearchInColorTable (XColor * color)
-{
-  for (int c = 0; c <= PixelsCount; c++)
-    if ((ColorTable[c].color.red == color->red)
-	&& (ColorTable[c].color.green == color->green)
-	&& (ColorTable[c].color.blue == color->blue))
-      {
-	*color = ColorTable[c].displaycolor;
-	return true;
-      };
-  return false;
-};
 
 bool
 CApplication::ProcessEvents (void)

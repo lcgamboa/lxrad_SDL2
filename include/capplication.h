@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -37,35 +37,21 @@ class CWindow;
 class CApplication
 {
 private:
-  XEvent AEvent, LAEvent;
+  SDL_Event AEvent, LAEvent;
   CWindow **AWindowList;
   int AWindowCount;
   timeval LastDrawTime;
-  Display *ADisplay;
-  Screen *AScreen;
-  XIM IM;
-  int PixelsCount;
-  TXColor *ColorTable;
   bool Exit;
   Window FWindow;
   CControl* HintControl;
   Time HintTime;
   int HintX,HintY;
-  Window ADefaultRootWindow;
-  int ADepth;
-  unsigned int AWhiteColor;
-  unsigned int ABlackColor;
   int Tag;
   String Title;
-  Atom AWMProtocols;
-  Atom AWMDeleteWindow;
-  Atom AWMTakeFocus;
 public:
     CApplication (void);
    ~CApplication (void);
-  Display *GetADisplay (void);
   Screen *GetAScreen (void);
-  XIM GetIM (void);
   void Start (void);
   void ACreateWindow (CWindow * AWindow,CWindow* window=NULL);
   void ADestroyWindow (CWindow * AWindow);
@@ -91,9 +77,9 @@ public:
   Atom *GetAWMDeleteWindow (void);
   Atom *GetAWMTakeFocus (void);
   void SetHintControl(CControl* hcontrol,int x,int y);
-  void AddToColorTable (String colorname, XColor color, XColor displaycolor);
-  bool XSearchInColorTable (String name, XColor * color);
-  bool XSearchInColorTable (XColor * color);
+  void AddToColorTable (String colorname, SDL_Color color, SDL_Color displaycolor);
+  bool XSearchInColorTable (String name, SDL_Color * color);
+  bool XSearchInColorTable (SDL_Color * color);
 };
 
 

@@ -104,7 +104,10 @@ CEdit::DrawCursor (void)
     return;
   int x = 0;
 
-  x = XTextWidth (CFont, Text->GetText ().c_str (),  GetCursorPos ()) - Text->GetTextPosition ();
+  //x = TTF_SizeText(CFont, Text->GetText ().c_str (),  GetCursorPos ()) - Text->GetTextPosition ();
+
+  TTF_SizeText(CFont, Text->GetText ().c_str (), &x,NULL); 
+  x-= Text->GetTextPosition ();
 
 /*
   cout << "x              =" << x << endl;
@@ -283,38 +286,39 @@ CEdit::SetHeight (uint height)
 //eventos
 
 void
-CEdit::button_press (XEvent event)
+CEdit::button_press (SDL_Event event)
 {
   int n;
   String buffer;
-  switch (event.xbutton.button)
+  switch (event.button.button)
     {
     case 1:
       n = GetText ().size ();
       if (n)
-	XStoreBuffer (Win->GetADisplay (), GetText ().c_str (), n, 0);
+	//XStoreBuffer (Win->GetADisplay (), GetText ().c_str (), n, 0);
       break;
     case 2:
+        /*
       char *buf = XFetchBuffer (Win->GetADisplay (), &n, 0);
       buffer = buf;
       if (buf)
 	delete[]buf;
       if (n)
 	SetText (buffer);
+         */ 
       break;
     };
   CControl::button_press (event);
 };
 
 void
-CEdit::key_press (XEvent event)
+CEdit::key_press (SDL_Event event)
 {
-  int key;
   if (ReadOnly)
     return;
-  key = MEdit (this, event);
+  SDL_Keysym key = MEdit (this, event);
   CControl::key_press (event);
-  if (key == XK_Return)
+  if (key.sym == SDLK_RETURN)
     focus_out ();
 };
 

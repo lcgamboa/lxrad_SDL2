@@ -68,11 +68,11 @@ public:
   void SetType (scrolltype type);
   //eventos
   void pointer_out (void);
-  void key_press (XEvent event);
-  void key_release (XEvent event);
-  void button_press (XEvent event);
-  void button_release (XEvent event);
-  void mouse_move (XEvent event);
+  void key_press (SDL_Event event);
+  void key_release (SDL_Event event);
+  void button_press (SDL_Event event);
+  void button_release (SDL_Event event);
+  void mouse_move (SDL_Event event);
   void (CControl::*EvOnChangePosition) (CScroll * scroll, bool status);
 };
 

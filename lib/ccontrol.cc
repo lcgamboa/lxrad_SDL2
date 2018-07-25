@@ -60,7 +60,8 @@ CControl::CControl (void)
   Pen = GXcopy;
   FOwner = NULL;
   PointerOn = false;
-  FontName = "-misc-fixed-medium-r-normal--10-100-75-75-c-60-iso8859-1";
+  FontName = "lazy.ttf";
+  FontSize = 10;
   SetClass ("CControl");
   PopupMenu = NULL;
   SetHint(""); 
@@ -110,8 +111,13 @@ CControl::Create (CControl * control)
   Win = control->Win;
   Paint = control->Paint;
   if (!CFont)
-    CFont = XLoadQueryFont (Win->GetADisplay (), FontName.c_str ());
-
+    CFont = TTF_OpenFont((String(_SHARE)+"fonts/"+FontName).c_str (), FontSize );
+   if( CFont == NULL )
+   {
+       printf( "Failed to load font! SDL_ttf Error: %s\n", TTF_GetError() );
+       exit(-1);
+   }
+  /*
   if (!CFont)
     {
       eprint( FontName +" font not found!, Try to use default font.\n");
@@ -134,7 +140,8 @@ CControl::Create (CControl * control)
     }
   else
     Color = ColorByName ("light gray");
-
+*/
+  
   if (ChildCount > -1)
     for (int i = 0; i <= ChildCount; i++)
       {
@@ -162,7 +169,7 @@ CControl::Destroy (void)
     {
       if (CFont)
 	{
-	  XFreeFont (Win->GetADisplay (), CFont);
+	//  XFreeFont (Win->GetADisplay (), CFont);
 	  CFont = NULL;
 	};
       if (Win->GetLastControl () == this)
@@ -243,23 +250,20 @@ CControl::Eraser (void)
 
 
 void
-CControl::Event (XEvent event)
+CControl::Event (SDL_Event event)
 {
   CControl *control = 0;
-  KeySym key;
-  char text[10];
-  Status status;
 
   if (Win == NULL)
     return;
   
   //mouse position
-  if ((event.type == MotionNotify) && (Win != NULL))
+  if ((event.type == SDL_MOUSEMOTION) && (Win != NULL))
   {
       if(Owner==this)
       {
-      Win->SetXMouse (event.xmotion.x);
-      Win->SetYMouse (event.xmotion.y);
+      Win->SetXMouse (event.motion.x);
+      Win->SetYMouse (event.motion.y);
       control=NULL;
       for (int j = 0; j <= ChildCount; j++)
       {
@@ -269,7 +273,7 @@ CControl::Event (XEvent event)
        };
 
       if(control)
-         Application->SetHintControl(control,event.xmotion.x,event.xmotion.y);
+         Application->SetHintControl(control,event.motion.x,event.motion.y);
       else
          Application->SetHintControl(NULL,0,0);
       };
@@ -277,8 +281,8 @@ CControl::Event (XEvent event)
   
    if ((event.type == ButtonPress) && (Win != NULL))
     {
-      Win->SetXMouse (event.xbutton.x);
-      Win->SetYMouse (event.xbutton.y);
+      Win->SetXMouse (event.button.x);
+      Win->SetYMouse (event.button.y);
     };
   //verify Owner of event  
   for (int j = 0; j <= ChildCount; j++)
@@ -316,7 +320,7 @@ CControl::Event (XEvent event)
     {
       if ((event.type == ButtonPress)
 	  && (control != control->Win->GetControlOnFocus ())
-	  && (event.xbutton.button == 1))
+	  && (event.button.button == 1))
 	{
 	  control->SetFocus (true);
 	}
@@ -328,29 +332,12 @@ CControl::Event (XEvent event)
 //activate event in control
   switch (event.type)
     {
-//  case ClientMessage:         
-//  return 1;break;
-//  case DestroyNotify:           
-//  return 1;break;
-//  case CirculateNotify:         
-//  return 1;break;
-//  case ConfigureNotify:         
-//  return 1;break;
-//  case GravityNotify:         
-//  return 1;break;
-//  case MapNotify:             
-//  return 1;break;
-//  case ReparentNotify:                
-//  return 1;break;
-//  case UnmapNotify:           
-//  return 1;break;
-    case MotionNotify:
+    case SDL_MOUSEMOTION:
       control->mouse_move (event);
       return;
       break;
-    case KeyPress:
-      XXLookupString (NULL, &event.xkey, text, 10, &key, &status);
-      if (key == XK_Tab)
+    case SDL_KEYDOWN:
+      if (event.key.keysym.sym == SDLK_TAB)
 	{
 //look status        
 	  Win->CirculateFocus (true);
@@ -363,18 +350,18 @@ CControl::Event (XEvent event)
 	control->key_press (event);
       return;
       break;
-    case KeyRelease:
+      case SDL_KEYUP:
       if (Win->GetControlOnFocus ())
 	Win->GetControlOnFocus ()->key_release (event);
       else
 	control->key_release (event);
       return;
       break;
-    case ButtonPress:
+    case SDL_MOUSEBUTTONDOWN:
       control->button_press (event);
       return;
       break;
-    case ButtonRelease:
+    case SDL_MOUSEBUTTONUP:
       control->button_release (event);
       return;
       break;
@@ -589,14 +576,14 @@ CControl::SetContext (CStringList context)
     };
 };
 
-XRectangle
+SDL_Rect
 CControl::GetRectangle (void)
 {
-  XRectangle rec;
+  SDL_Rect rec;
   rec.x = X;
   rec.y = Y;
-  rec.width = Width;
-  rec.height = Height;
+  rec.w = Width;
+  rec.h = Height;
   return rec;
 };
 
@@ -610,19 +597,19 @@ CControl::SetFont (const String font)
   FontName = font;
   if (Win)
     {
-      if (CFont != NULL)
-	XFreeFont (Win->GetADisplay (), CFont);
-      CFont = XLoadQueryFont (Win->GetADisplay (), FontName.c_str ());
+//      if (CFont != NULL)
+//	XFreeFont (Win->GetADisplay (), CFont);
+//      CFont = XLoadQueryFont (Win->GetADisplay (), FontName.c_str ());
     };
 };
 
 void
-CControl::SetFont (XFontStruct * font)
+CControl::SetFont (TTF_Font * font)
 {
   CFont = font;
 };
 
-XFontStruct *
+TTF_Font *
 CControl::GetFont (void)
 {
   return CFont;
@@ -775,7 +762,7 @@ CControl::GetBorder (void)
 };
 
 void
-CControl::SetColor (XColor c)
+CControl::SetColor (SDL_Color c)
 {
   Color = c;
   Update ();
@@ -804,9 +791,9 @@ CControl::SetColor (uint r, uint g, uint b)
     }
   else
     {
-      Color.red = r;
-      Color.green = g;
-      Color.blue = b;
+      Color.r= r;
+      Color.g = g;
+      Color.b = b;
       ColorSet = true;
       ColorName = "";
     };
@@ -835,7 +822,7 @@ CControl::SetCanExecuteEvent (bool cee)
 void
 CControl::SetEnable (bool enable)
 {
-  XColor temp;
+  SDL_Color temp;
   
   if (Enable != enable)
     {
@@ -1024,23 +1011,23 @@ CControl::operator delete(void *p)
 //events
 
 void
-CControl::mouse_move (XEvent event)
+CControl::mouse_move (SDL_Event event)
 {
 	//FIXME inverted coords
   if ((FOwner) && (EvMouseMove))
-    (FOwner->*EvMouseMove) (this, event.xmotion.y, event.xmotion.x);
+    (FOwner->*EvMouseMove) (this, event.motion.y, event.motion.x);
 };
 
 void
-CControl::button_press (XEvent event)
+CControl::button_press (SDL_Event event)
 {
-  BTimePress = event.xbutton.time;
+  BTimePress = event.button.timestamp;
 
   if ((FOwner) && (EvMouseButtonPress))
-    (FOwner->*EvMouseButtonPress) (this, event.xbutton.button, event.xbutton.x-RX,
-				 event.xbutton.y-RY, event.xbutton.state);
+    (FOwner->*EvMouseButtonPress) (this, event.button.button, event.button.x-RX,
+				 event.button.y-RY, event.button.state);
 
-  if ((event.xbutton.button == 3) && (PopupMenu != NULL)&&((PopupMenu->GetChildCount ()) != -1))
+  if ((event.button.button == 3) && (PopupMenu != NULL)&&((PopupMenu->GetChildCount ()) != -1))
     {
       int x, y;
       Window child;
@@ -1053,11 +1040,11 @@ CControl::button_press (XEvent event)
       PopupMenu->SetX (0);
       PopupMenu->SetY (0);
       */
-      XMoveWindow (Win->GetADisplay (),PopupMenu->GetWWindow () , 0, 0);
+//      XMoveWindow (Win->GetADisplay (),PopupMenu->GetWWindow () , 0, 0);
       
       
-      XTranslateCoordinates (Win->GetADisplay (), Win->GetWWindow (),
-       			     PopupMenu->GetWWindow (), event.xbutton.x, event.xbutton.y, &x, &y, &child);
+//      XTranslateCoordinates (Win->GetADisplay (), Win->GetWWindow (),
+//       			     PopupMenu->GetWWindow (), event.button.x, event.button.y, &x, &y, &child);
       
       PopupMenu->SetX (x);
       PopupMenu->SetY (y);
@@ -1073,37 +1060,37 @@ CControl::button_press (XEvent event)
 };
 
 void
-CControl::button_release (XEvent event)
+CControl::button_release (SDL_Event event)
 {
-  BTimeRelease = event.xbutton.time;
+  BTimeRelease = event.button.timestamp;
 
   if ((FOwner) && (EvMouseButtonRelease))
-    (FOwner->*EvMouseButtonRelease) (this, event.xbutton.button,
-				   event.xbutton.x-RX, event.xbutton.y-RY,
-				   event.xbutton.state);
+    (FOwner->*EvMouseButtonRelease) (this, event.button.button,
+				   event.button.x-RX, event.button.y-RY,
+				   event.button.state);
 
 
   if ((BTimeRelease - BTimeClick) < DOUBLECLICKTIME)
     {
       if ((FOwner) && (EvMouseButtonDoubleClick))
 	{
-	  (FOwner->*EvMouseButtonDoubleClick) (this, event.xbutton.button,
-					     event.xbutton.x, event.xbutton.y,
-					     event.xbutton.state);
+	  (FOwner->*EvMouseButtonDoubleClick) (this, event.button.button,
+					     event.button.x, event.button.y,
+					     event.button.state);
 	};
     }
   else
     {
       if ((FOwner) && (EvMouseButtonClick))
 	{
-	  (FOwner->*EvMouseButtonClick) (this, event.xbutton.button,
-				       event.xbutton.x, event.xbutton.y,
-				       event.xbutton.state);
+	  (FOwner->*EvMouseButtonClick) (this, event.button.button,
+				       event.button.x, event.button.y,
+				       event.button.state);
 	}
       BTimeClick = BTimePress;
     };
 
-  if ((event.xbutton.button == 3) && (PopupMenu != NULL))
+  if ((event.button.button == 3) && (PopupMenu != NULL))
     {
       PopupMenu->SetVisible (false);
       Win->Draw ();
@@ -1111,19 +1098,19 @@ CControl::button_release (XEvent event)
 };
 
 void
-CControl::key_press (XEvent event)
+CControl::key_press (SDL_Event event)
 {
   if ((FOwner) && (EvKeyboardPress))
-    (FOwner->*EvKeyboardPress) (this, event.xkey.keycode, event.xkey.x,
-			      event.xkey.y, event.xkey.state);
+    (FOwner->*EvKeyboardPress) (this, event.key.keysym.sym, 0,
+			      0, event.key.state);
 };
 
 void
-CControl::key_release (XEvent event)
+CControl::key_release (SDL_Event event)
 {
   if ((FOwner) && (EvKeyboardRelease))
-    (FOwner->*EvKeyboardRelease) (this, event.xkey.keycode, event.xkey.x,
-				event.xkey.y, event.xkey.state);
+    (FOwner->*EvKeyboardRelease) (this, event.key.keysym.sym, 0,
+				0, event.key.state);
 };
 
 

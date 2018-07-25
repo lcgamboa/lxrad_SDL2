@@ -54,8 +54,8 @@ public:
   void SetAlign (CAlign align);
   CAlign GetAlign (void);
   //events
-  void key_press (XEvent event);
-  void button_press (XEvent event);
+  void key_press (SDL_Event event);
+  void button_press (SDL_Event event);
 };
 
 #endif

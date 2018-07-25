@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -35,9 +35,8 @@ private:
   String FileName;
   char ** Data;
   bool Transparent;
-  Pixmap CPixmap;
-  Pixmap CMask;
-  XColor BColor;
+  SDL_Surface* CPixmap;
+  SDL_Color BColor;
 public:
   CPaint Canvas;
     CDraw (void);

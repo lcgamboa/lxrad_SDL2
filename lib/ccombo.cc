@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -261,9 +261,9 @@ CCombo::TButtonPress (CControl * control, uint button, uint x, uint y,
       Application->ACreateWindow (&dlist1);
     };
 
-  XTranslateCoordinates (Win->GetADisplay (), Win->GetWWindow (),
-			 dlist1.GetWWindow (), GetX (), GetY (), &wx, &wy,
-			 &child);
+//  XTranslateCoordinates (Win->GetADisplay (), Win->GetWWindow (),
+//			 dlist1.GetWWindow (), GetX (), GetY (), &wx, &wy,
+//			 &child);
   dlist1.SetX (wx);
   dlist1.SetY (wy + GetHeight () + 1);
 

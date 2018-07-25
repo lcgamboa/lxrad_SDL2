@@ -138,14 +138,14 @@ CItemMenu::SetContext (CStringList context)
 //eventos
 
 void
-CItemMenu::button_press (XEvent event)
+CItemMenu::button_press (SDL_Event event)
 {
   CPMenu *PMenu = dynamic_cast < CPMenu * >(Owner);
   if (PMenu != NULL)
     {
       PMenu->HideExclusive ();
       //XSync(GetWin()->GetADisplay(),false);
-      XFlush(GetWin()->GetADisplay());
+//      XFlush(GetWin()->GetADisplay());
       CControl::button_press (event);
       
       if ((FOwner) && (EvMenuActive))
@@ -164,8 +164,8 @@ CItemMenu::button_press (XEvent event)
 	  //Application.ACreateWindow (SubMenu,Win);
 	  Application->ACreateWindow (SubMenu);
 	};
-      XTranslateCoordinates (Win->GetADisplay (), Win->GetWWindow (),
-			     SubMenu->GetWWindow (), X, Y, &x, &y, &child);
+//      XTranslateCoordinates (Win->GetADisplay (), Win->GetWWindow (),
+//			     SubMenu->GetWWindow (), X, Y, &x, &y, &child);
       SubMenu->SetX (SubMenu->GetX () + x);
       SubMenu->SetY (SubMenu->GetY () + y + Height);
       SubMenu->Show ();
@@ -181,7 +181,7 @@ CItemMenu::button_press (XEvent event)
 };
 
 void
-CItemMenu::button_release (XEvent event)
+CItemMenu::button_release (SDL_Event event)
 {
   if (SubMenu != NULL)
     {

@@ -61,7 +61,7 @@ CXpmButton::Create (CControl * control)
 void
 CXpmButton::Draw (void)
 {
-  XColor TColor;
+  SDL_Color TColor;
 	
   if ((!Visible)||(Paint == NULL))return;
   Paint->InitDraw (this);

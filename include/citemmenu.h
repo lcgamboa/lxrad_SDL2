@@ -47,8 +47,8 @@ public:
   void SetSubMenu (CPMenu * submenu);
   CPMenu * GetSubMenu (void);
 //eventos
-  void button_press (XEvent event);
-  void button_release (XEvent event);
+  void button_press (SDL_Event event);
+  void button_release (SDL_Event event);
   void focus_out (void);
   void (CControl::*EvMenuActive) (CControl * control);
 };

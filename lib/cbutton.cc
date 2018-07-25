@@ -58,7 +58,7 @@ CButton::Create (CControl * control)
 void
 CButton::Draw (void)
 {
-  XColor TColor;
+  SDL_Color TColor;
 	
   if((!Visible)||(Paint == NULL))return;
   
@@ -150,14 +150,10 @@ CButton::SetHeight (uint height)
 //eventos
 
 void
-CButton::key_press (XEvent event)
+CButton::key_press (SDL_Event event)
 {
-  KeySym key = 0;
-  char text[10];
-  Status status;
-
-  XXLookupString (NULL, &event.xkey, text, 10, &key, &status);
-  if (key == XK_Return)
+  
+  if (event.key.keysym.sym == SDLK_RETURN)
     {
       Press = true;
       Draw ();
@@ -168,14 +164,10 @@ CButton::key_press (XEvent event)
 };
 
 void
-CButton::key_release (XEvent event)
+CButton::key_release (SDL_Event event)
 {
-  KeySym key = 0;
-  char text[10];
-  Status status;
 
-  XXLookupString (NULL, &event.xkey, text, 10, &key, &status);
-  if (key == XK_Return)
+  if (event.key.keysym.sym == SDLK_RETURN)
     {
       Press = false;
       Draw ();
@@ -186,9 +178,9 @@ CButton::key_release (XEvent event)
 };
 
 void
-CButton::button_press (XEvent event)
+CButton::button_press (SDL_Event event)
 {
-  if (event.xbutton.button == 1)
+  if (event.button.button == 1)
     {
       Press = true;
       Draw ();
@@ -197,9 +189,9 @@ CButton::button_press (XEvent event)
 };
 
 void
-CButton::button_release (XEvent event)
+CButton::button_release (SDL_Event event)
 {
-  if (event.xbutton.button == 1)
+  if (event.button.button == 1)
     {
       Press = false;
       Draw ();

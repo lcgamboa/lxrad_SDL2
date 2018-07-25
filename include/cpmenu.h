@@ -48,7 +48,7 @@ public:
   void SetContext (CStringList context);
   void SetText (String text);
 //events
-  void button_press (XEvent event);
+  void button_press (SDL_Event event);
   void on_leave (void);
 };
 

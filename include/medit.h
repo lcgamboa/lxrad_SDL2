@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018  Luis Claudio Gambï¿½a Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,6 +30,6 @@
 
 class CEdit;
 
-KeySym MEdit (CEdit * control, XEvent event);
+SDL_Keysym MEdit (CEdit * control, SDL_Event event);
 
 #endif

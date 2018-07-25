@@ -35,7 +35,7 @@ class CButton:public CControl
 protected:
   bool Press;
   CLabel *Text;
-  XColor PressColor;
+  SDL_Color PressColor;
 public:
     CButton (void);
    ~CButton (void);
@@ -51,10 +51,10 @@ public:
   void SetWidth (uint width);
   void SetHeight (uint height);
   //eventos
-  virtual void key_press (XEvent event);
-  void key_release (XEvent event);
-  virtual void button_press (XEvent event);
-  void button_release (XEvent event);
+  virtual void key_press (SDL_Event event);
+  void key_release (SDL_Event event);
+  virtual void button_press (SDL_Event event);
+  void button_release (SDL_Event event);
   void pointer_in (void);
   void pointer_out (void);
   void SetAlign (CAlign align);

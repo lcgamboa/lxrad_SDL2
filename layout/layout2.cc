@@ -58,11 +58,12 @@ CWindow2::Draw(void)
 };
 
 bool
-CWindow2::WEvents (XEvent WEvent)
+CWindow2::WEvents (SDL_Event WEvent)
 {
   //XEvent NWEvent;		//Next Window Event      
   switch (WEvent.type)
     {
+      /*
     case ClientMessage:
       if ((Atom) WEvent.xclient.data.l[0] == *AWMTakeFocus)
 	{
@@ -72,6 +73,7 @@ CWindow2::WEvents (XEvent WEvent)
 	WDestroy ();
       return 1;
       break;
+       */ 
     case DestroyNotify:
       on_destroy ();
       return 1;
@@ -113,13 +115,9 @@ CWindow2::WEvents (XEvent WEvent)
       return 1;
       break;
     case FocusIn:
-      if (IC)
-	XSetICFocus (IC);
       return 1;
       break;
     case FocusOut:
-      if (IC)
-	XUnsetICFocus (IC);
       return 1;
       break;
     case MappingNotify:

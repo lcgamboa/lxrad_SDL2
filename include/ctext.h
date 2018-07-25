@@ -62,7 +62,7 @@ public:
   //CAlign GetAlign(void);
   unsigned int GetCountLines (void);
   //eventos
-  void key_press (XEvent event);
+  void key_press (SDL_Event event);
 };
 
 #endif

@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -35,10 +35,9 @@ class CWindow;
 class CPaint:public CObject
 {
 private:
-  Display * Disp;	
   CWindow * Win;
-  Drawable DrawIn;
-  Drawable DrawOut;
+  SDL_Surface* DrawIn;
+  SDL_Surface* DrawOut;
   CControl *Owner;
   int RX,RY;
   bool DoCalcRXY;
@@ -50,12 +49,12 @@ public:
     CPaint (void);
    ~CPaint (void);
   void SetDoCalcRXY(bool docalcrxy); 
-  void SetDrawIn(Drawable drawin);
-  void SetDrawOut(Drawable drawout);
+  void SetDrawIn(SDL_Surface* drawin);
+  void SetDrawOut(SDL_Surface* drawout);
   void InitDraw (CControl * control);
   void DrawControl (CControl * control);
   void Create (CControl * control);
-  void Create (lxBitmap *bitmap);
+  void Create (SDL_Surface* bitmap);
   void Destroy (void);
   void SetFont (CControl * control);
   void SetPen (int function);
@@ -70,9 +69,9 @@ public:
   void Text (String text, int x, int y);
   void RotatedText (String str, int x, int y, int angle);
   void ImgText (int x, int y, String text);
-  void PutPixmap (int x,int y, int w, int h,Pixmap pixmap);
-  void PutBitmap (lxBitmap* bitmap,int x,int y);
-  void SetBitmap(lxBitmap * bitmap,double xs, double ys);
+  void PutPixmap (int x,int y, int w, int h,SDL_Surface* pixmap);
+  void PutBitmap (SDL_Surface* bitmap,int x,int y);
+  void SetBitmap(SDL_Surface* bitmap,double xs, double ys);
   void SetFont (lxFont font);
 
   void SetLineWidth(int w);

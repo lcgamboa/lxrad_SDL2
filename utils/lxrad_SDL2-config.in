@@ -5,7 +5,7 @@ exec_prefix=${prefix}
 exec_prefix_set=no
 
 usage="\
-Usage: lxrad_X11-config [--prefix[=DIR]] [--exec-prefix[=DIR]] [--version] [--cflags] [--libs] [--static-libs]"
+Usage: lxrad_SDL2-config [--prefix[=DIR]] [--exec-prefix[=DIR]] [--version] [--cflags] [--libs] [--static-libs]"
 
 if test $# -eq 0; then
       echo "${usage}" 1>&2
@@ -45,7 +45,7 @@ while test $# -gt 0; do
 
           includes=-I${prefix}/include
       fi
-      echo $includes -I${prefix}/include/lxrad_X11/ @CFLAGS@
+      echo $includes -I${prefix}/include/lxrad_SDL2/ @CFLAGS@
       ;;
     --cxxflags)
       if test ${prefix}/include != /usr/include ; then
@@ -54,16 +54,16 @@ while test $# -gt 0; do
 
           includes=-I${prefix}/include
       fi
-      echo $includes -I${prefix}/include/lxrad_X11/ @CFLAGS@
+      echo $includes -I${prefix}/include/lxrad_SDL2/ @CFLAGS@
       ;;
     --libs|--plugin-libs|--library-libs)
       libdirs="-L${exec_prefix}/lib "
-      echo $libdirs -llxrad_X11 @LIBS@ 
+      echo $libdirs -llxrad_SDL2 @LIBS@ 
       ;;
     --static-libs)
 #    --libs|--static-libs)
       libdirs="-L${exec_prefix}/lib "
-      echo $libdirs -llxrad_X11 @LIBS@
+      echo $libdirs -llxrad_SDL2 @LIBS@
       ;;
     *)
       echo "${usage}" 1>&2
