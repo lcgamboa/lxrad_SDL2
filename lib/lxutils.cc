@@ -121,13 +121,13 @@ lxImage::operator Imlib_Image() const
 lxBitmap::lxBitmap()
 {
  
-    CPixmap =0;
+    Texture =NULL;
 }
 
 lxBitmap::~lxBitmap()
 {
-//  if (CPixmap != 0)
-//    XFreePixmap (Application->GetADisplay (), CPixmap);
+  if (Texture)
+    SDL_DestroyTexture (Texture);
 }
 
 lxBitmap::lxBitmap(lxImage img)
@@ -137,15 +137,16 @@ lxBitmap::lxBitmap(lxImage img)
 
 }
 
-lxBitmap::operator Pixmap() const 
-{ 
-  return CPixmap; 
+lxBitmap::lxBitmap(SDL_Texture * text)
+{
+    Texture=text;
 }
 
-Pixmap  
+
+SDL_Texture *  
 lxBitmap::GetPixmap(void)
 {
-  return CPixmap;
+  return Texture;
 }
 
 

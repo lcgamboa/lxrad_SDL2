@@ -76,12 +76,12 @@ CPaint::Create (CControl * control)
  };
   
 void 
-CPaint::Create (CControl * control ,SDL_Texture *bitmap)
+CPaint::Create (CControl * control ,lxBitmap *bitmap)
 {
   Win = control->GetWin ();
   Owner = control;
-  DrawIn = bitmap;
-  DrawOut = bitmap;
+  DrawIn = bitmap->GetPixmap();
+  DrawOut = bitmap->GetPixmap();
   Pen.Create (control);
 }
 
@@ -126,6 +126,8 @@ CPaint::InitDraw (CControl * control)
 void
 CPaint::DrawControl (CControl * control)
 {
+     SDL_RenderPresent( Win->GetRenderer() );
+    /*
   if ((control->GetVisible ())&&
       (DrawIn !=0 )&& 
       (DrawIn != DrawOut))
@@ -149,6 +151,7 @@ CPaint::DrawControl (CControl * control)
       Pen.SetPen (GXcopy);
       }
     };
+     */
 };
 
 
@@ -258,14 +261,44 @@ CPaint::RaiserFrame (int x, int y, int w, int h, uint wb)
 void
 CPaint::Text (String text,  int x1, int y1)
 {
-//  XDrawString (Disp, DrawIn, Agc, RX+x1, RY+y1,
-//	       text.c_str (), text.size ());
+        if(text.size()==0)return;
+        //Render text surface
+        SDL_Color textColor = { 0, 0, 0 };
+	SDL_Surface* textSurface = TTF_RenderText_Solid( Owner->GetFont(), text.c_str(), textColor );
+	if( textSurface == NULL )
+	{
+		printf( "Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError() );
+	}
+	else
+	{
+        //Create texture from surface pixels
+        SDL_Texture* mTexture = SDL_CreateTextureFromSurface( Win->GetRenderer(), textSurface );
+		if( mTexture == NULL )
+		{
+			printf( "Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError() );
+		}
+		else
+		{   
+                   SDL_Rect DestR;
+
+                   DestR.w = textSurface->w;
+                   DestR.h = textSurface->h;
+                   DestR.x = RX+x1;
+                   DestR.y = RY+y1-DestR.h ;
+                        SDL_RenderCopy(Win->GetRenderer(), mTexture,NULL,&DestR );
+                        SDL_DestroyTexture(mTexture );
+		}
+
+		//Get rid of old surface
+		SDL_FreeSurface( textSurface );
+	}
 };
 
 
 void
 CPaint::ImgText ( int x1, int y1, String text)
 {
+    Text (text,  x1, y1);
 //  XDrawImageString (Disp, DrawIn, Agc, RX+x1, RY+y1,
 //	       text.c_str (), text.size ());
 };
@@ -357,8 +390,9 @@ CPaint::RotatedText (String str, int x, int y, int angle)
 }
 
 void 
-CPaint::PutBitmap (SDL_Texture * bitmap,int x,int y)
+CPaint::PutBitmap (lxBitmap* bitmap,int x,int y)
 {
+  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
  /*   
   Window root;
   int rx,ry;
@@ -370,7 +404,7 @@ CPaint::PutBitmap (SDL_Texture * bitmap,int x,int y)
 }
 
 void 
-CPaint::SetBitmap(SDL_Texture * bitmap,double xs, double ys)
+CPaint::SetBitmap(lxBitmap* bitmap,double xs, double ys)
 {
   printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
 }

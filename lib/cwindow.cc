@@ -363,14 +363,19 @@ CWindow::WEvents (SDL_Event WEvent)
         switch (WEvent.window.event) {
         case SDL_WINDOWEVENT_SHOWN:
             SDL_Log("Window %d shown", WEvent.window.windowID);
+            on_show ();
             Draw();
+            ret=1;
             break;
         case SDL_WINDOWEVENT_HIDDEN:
             SDL_Log("Window %d hidden", WEvent.window.windowID);
+            on_hide ();
+            ret=1;
             break;
         case SDL_WINDOWEVENT_EXPOSED:
             SDL_Log("Window %d exposed", WEvent.window.windowID);
             Draw();
+            ret=1;
             break;
         case SDL_WINDOWEVENT_MOVED:
             SDL_Log("Window %d moved to %d,%d",
@@ -403,9 +408,13 @@ CWindow::WEvents (SDL_Event WEvent)
         case SDL_WINDOWEVENT_ENTER:
             SDL_Log("Mouse entered window %d",
                     WEvent.window.windowID);
+            on_enter ();
+            ret= 1;
             break;
         case SDL_WINDOWEVENT_LEAVE:
             SDL_Log("Mouse left window %d", WEvent.window.windowID);
+            on_leave ();
+            ret=1;
             break;
         case SDL_WINDOWEVENT_FOCUS_GAINED:
             SDL_Log("Window %d gained keyboard focus",
@@ -417,6 +426,7 @@ CWindow::WEvents (SDL_Event WEvent)
             break;
         case SDL_WINDOWEVENT_CLOSE:
             SDL_Log("Window %d closed", WEvent.window.windowID);
+            on_destroy ();
             WDestroy ();
             ret=1;
             break;
@@ -434,101 +444,12 @@ CWindow::WEvents (SDL_Event WEvent)
             break;
         }
 
-      break;     
+      break;    
+      default:
+       CControl::Event (WEvent);
+       ret= 1;
+       break;
     /*  
-    case ClientMessage:
-      if (((Atom) WEvent.xclient.data.l[0] == *AWMDeleteWindow)
-	  && (!CanExitExclusive))
-	WDestroy ();
-      ret=1;
-      break;
-  
-    case DestroyNotify:
-      on_destroy ();
-      ret=1;
-      break;
-    case CirculateNotify:
-      eprint( "CirculateNotify\n");
-      ret=1;
-      break;
-    case ConfigureNotify:
-      //look in the end of function for the last
-      ret=1;
-      break;
-//    case GravityNotify:
-//      ret=1;
-//      break;
-    case MapNotify:
-      on_show ();
-      ret=1;
-      break;
-//  case ReparentNotify:                
-//  ret= 1;break;
-    case UnmapNotify:
-      on_hide ();
-      ret=1;
-      break;
-//  ret=1 1;break;
-//  case MotionNotify:          
-//  ret=1 1;break;
-//  case KeyPress:              
-//  ret= 1;break;
-//  case KeyRelease:            
-//  ret= 1;break;
-//  case ButtonPress:           
-//  ret= 1;break;
-//  case ButtonRelease:
-//  ret= 1;break;
-    case EnterNotify:
-      on_enter ();
-      ret= 1;
-      break;
-    case LeaveNotify:
-      on_leave ();
-      ret=1;
-      break;
-//  case ColormapNotify:                
-//  ret=1 1;break;
-//  case GraphicsExpose:                
-//  ret=1 1;break;
-//  case NoExpose:              
-//  ret=1 1;break;
-    case FocusIn:
-      if (IC)
-	XSetICFocus (IC);
-      ret= 1;
-      break;
-    case FocusOut:
-      if (IC)
-	XUnsetICFocus (IC);
-      ret= 1;
-      break;
-//  case KeymapNotify:          
-//  ret=1 1;break;
-//  case PropertyNotify:                
-//  ret=1 1;break;
-//  case ResizeRequest:         
-//  ret= 1;
-//  break;
-    case MappingNotify:
-      XRefreshKeyboardMapping (&WEvent.xmapping);
-      ret= 1;
-      break;
-//  case SelectionClear:                
-//  ret= 1;break;
-//  case SelectionNotify:               
-//  ret= 1;break;
-//  case SelectionRequest:      
-//  ret= 1;break;
-//  case VisibilityNotify:      
-//      eprint("visibilityNotify\n");
-//                      ret= 1;
-//                      break;
-//  case LASTEvent:             
-//  ret= 1;break;
-    default:
-      CControl::Event (WEvent);
-      ret= 1;
     case Expose:
       XRectangle rec;
       Region Reg=XCreateRegion();

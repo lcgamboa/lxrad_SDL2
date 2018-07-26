@@ -89,13 +89,13 @@ operator Imlib_Image() const;
 class lxBitmap
 {
 private:
-Pixmap CPixmap;
+SDL_Texture* Texture;
 public:
 lxBitmap();
 ~lxBitmap();
 lxBitmap(lxImage img);
-Pixmap  GetPixmap(void);
-operator Pixmap() const;
+lxBitmap(SDL_Texture * text);
+SDL_Texture* GetPixmap(void);
 };
 
 class lxSound

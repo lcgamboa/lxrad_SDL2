@@ -60,8 +60,8 @@ CControl::CControl (void)
   Pen = GXcopy;
   FOwner = NULL;
   PointerOn = false;
-  FontName = "lazy.ttf";
-  FontSize = 10;
+  FontName = "FreeSans.ttf";
+  FontSize = 12;
   SetClass ("CControl");
   PopupMenu = NULL;
   SetHint(""); 

@@ -54,7 +54,7 @@ public:
   void InitDraw (CControl * control);
   void DrawControl (CControl * control);
   void Create (CControl * control);
-  void Create (CControl * control, SDL_Texture* bitmap);
+  void Create (CControl * control, lxBitmap* bitmap);
   void Destroy (void);
   void SetFont (CControl * control);
   void SetPen (int function);
@@ -70,8 +70,8 @@ public:
   void RotatedText (String str, int x, int y, int angle);
   void ImgText (int x, int y, String text);
   void PutPixmap (int x,int y, int w, int h,SDL_Texture* pixmap);
-  void PutBitmap (SDL_Texture* bitmap,int x,int y);
-  void SetBitmap(SDL_Texture* bitmap,double xs, double ys);
+  void PutBitmap (lxBitmap* bitmap,int x,int y);
+  void SetBitmap(lxBitmap* bitmap,double xs, double ys);
   void SetFont (lxFont font);
 
   void SetLineWidth(int w);
