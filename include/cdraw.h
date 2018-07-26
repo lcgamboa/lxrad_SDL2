@@ -35,7 +35,7 @@ private:
   String FileName;
   char ** Data;
   bool Transparent;
-  SDL_Surface* CPixmap;
+  SDL_Texture* CPixmap;
   SDL_Color BColor;
 public:
   CPaint Canvas;

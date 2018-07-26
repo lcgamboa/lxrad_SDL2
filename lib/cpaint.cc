@@ -35,8 +35,8 @@ CPaint::CPaint (void)
   SetClass ("CPaint");
   RX=0;
   RY=0;
-  DrawIn=0;
-  DrawOut=0;
+  DrawIn=NULL;
+  DrawOut=NULL;
   DoCalcRXY=true;
   Scalex=1.0;
   Scaley=1.0;
@@ -50,13 +50,13 @@ CPaint::SetDoCalcRXY(bool docalcrxy)
 };
 
 void 
-CPaint::SetDrawIn(SDL_Surface* drawin)
+CPaint::SetDrawIn(SDL_Texture* drawin)
 {
   DrawIn=drawin;
 };
 
 void 
-CPaint::SetDrawOut(SDL_Surface* drawout)
+CPaint::SetDrawOut(SDL_Texture* drawout)
 {
   DrawOut=drawout;
 };
@@ -70,27 +70,19 @@ CPaint::Create (CControl * control)
 {
   Win = control->GetWin ();
   Owner = control;
-  DrawIn = Win->GetPixmap();
-  DrawOut = SDL_GetWindowSurface(Win->GetWWindow());
-  /*
-  Agc = XCreateGC (Disp, Win->GetWWindow (), 0, NULL);
-  XSetGraphicsExposures(Disp, Agc, false);
-  Pen.Create (control, &Agc);
-*/
+  DrawIn = NULL;
+  DrawOut = NULL;
+  Pen.Create (control);
  };
   
 void 
-CPaint::Create (SDL_Surface *bitmap)
+CPaint::Create (CControl * control ,SDL_Texture *bitmap)
 {
-  Win = NULL;
-  Owner = NULL;
+  Win = control->GetWin ();
+  Owner = control;
   DrawIn = bitmap;
   DrawOut = bitmap;
- /* 
-  Agc = XCreateGC (Disp, DrawIn, 0, NULL);
-  XSetGraphicsExposures(Disp, Agc, false);
-  Pen.Create (NULL, &Agc);
-  */ 
+  Pen.Create (control);
 }
 
 void
@@ -165,11 +157,11 @@ CPaint::DrawControl (CControl * control)
 void
 CPaint::Point (int x, int y)
 {
- //   SDL_RenderDrawPoint( DrawIn, RX+x, RY+y );
+    SDL_RenderDrawPoint( Win->GetRenderer(), RX+x, RY+y );
 };
 
 void
-CPaint::FillPolygon (XPoint * points, int npoints)
+CPaint::FillPolygon (SDL_Point * points, int npoints)
 {
   for(int c=0;c<npoints;c++)
   {
@@ -178,39 +170,42 @@ CPaint::FillPolygon (XPoint * points, int npoints)
   }	
 //  XFillPolygon (Disp, DrawIn, Agc, points,
 //		npoints, Nonconvex, CoordModeOrigin);
+    printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
 };
 
 void
 CPaint::Line (int x1, int y1, int x2, int y2)
 {
-//  XDrawLine (Disp, DrawIn, Agc, RX+x1, RY+y1, RX+x2, RY+y2);
+  SDL_RenderDrawLine(Win->GetRenderer(), RX+x1, RY+y1, RX+x2, RY+y2);
 };
 
 void
-CPaint::Lines (XPoint * points, int npoints)
+CPaint::Lines (SDL_Point * points, int npoints)
 {
   for(int c=0;c<npoints;c++)
   {
     points[c].x+=RX;	  
     points[c].y+=RY;	  
   }	
- // XDrawLines (Disp, DrawIn, Agc, points,
-//	      npoints, CoordModeOrigin);
+ SDL_RenderDrawLines (Win->GetRenderer(), points, npoints);
 };
 
 
 void
 CPaint::Rectangle (int x, int y, int w, int h)
 {
- // XFillRectangle (Disp, DrawIn, Agc, (RX+x)*Scalex, (RY+y)*Scaley, w*Scalex, h*Scaley);
+   SDL_Rect fillRect = { (RX+x)*Scalex, (RY+y)*Scaley, w*Scalex, h*Scaley };
+   SDL_RenderFillRect( Win->GetRenderer(), &fillRect );
 };
 
 void
 CPaint::Frame (int x, int y, int w, int h, uint wb)
 {
-//  for (uint c = 0; c < wb; c++)
-//    XDrawRectangle (Disp, DrawIn, Agc, (RX+x + c)*Scalex,
-//		    (RY+y + c)*Scaley, (w - (c * 2))*Scalex, (h - (c * 2))*Scaley);
+  for (uint c = 0; c < wb; c++)
+  {
+     SDL_Rect fillRect = {(RX+x + c)*Scalex,(RY+y + c)*Scaley, (w - (c * 2))*Scalex, (h - (c * 2))*Scaley};
+     SDL_RenderDrawRect( Win->GetRenderer(), &fillRect );
+  }
 };
 
 void
@@ -276,9 +271,15 @@ CPaint::ImgText ( int x1, int y1, String text)
 };
   
 void 
-CPaint::PutPixmap (int x,int y, int w, int h,SDL_Surface *  pixmap)
+CPaint::PutPixmap (int x,int y, int w, int h, SDL_Texture *  pixmap)
 {
-//   XCopyArea (Disp, pixmap, DrawIn ,Agc, 0, 0, w, h, RX+x, RY+y);
+    SDL_Rect DestR;
+
+    DestR.x = RX+x;
+    DestR.y = RY+y;
+    DestR.w = w;
+    DestR.h = h;
+    SDL_RenderCopy( Win->GetRenderer(), pixmap, NULL, &DestR);
 };
   
 void 
@@ -292,6 +293,7 @@ CPaint::Init(void)
 {
   Scalex=1.0;
   Scaley=1.0;  
+  SDL_SetRenderTarget(Win->GetRenderer(),DrawIn);
 }
   
 
@@ -300,6 +302,7 @@ CPaint::Init(float sx, float sy)
 {
   Scalex=sx;
   Scaley=sy;  
+  SDL_SetRenderTarget(Win->GetRenderer(),DrawIn);
 }
 
 void 
@@ -307,6 +310,7 @@ CPaint::End(void)
 {
   if(Owner)  
     Owner->Draw();	
+  SDL_SetRenderTarget(Win->GetRenderer(),NULL);
 }
 
 void 
@@ -353,7 +357,7 @@ CPaint::RotatedText (String str, int x, int y, int angle)
 }
 
 void 
-CPaint::PutBitmap (SDL_Surface * bitmap,int x,int y)
+CPaint::PutBitmap (SDL_Texture * bitmap,int x,int y)
 {
  /*   
   Window root;
@@ -366,7 +370,7 @@ CPaint::PutBitmap (SDL_Surface * bitmap,int x,int y)
 }
 
 void 
-CPaint::SetBitmap(SDL_Surface * bitmap,double xs, double ys)
+CPaint::SetBitmap(SDL_Texture * bitmap,double xs, double ys)
 {
   printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
 }
@@ -417,17 +421,16 @@ CPaint::Polygon(bool filed, lxPoint * points, int npoints)
 void 
 CPaint::SetColor(unsigned char r,unsigned char g, unsigned char b)
 {
-  Pen.SetColor (ColorByRGB(r,g,b));
-  Pen.SetBGColor (ColorByRGB(r,g,b));
+  SDL_SetRenderDrawColor(Win->GetRenderer(),r,g,b,0xFF);
 }
 
 void CPaint::SetFgColor(lxColor c)
-{
-  Pen.SetColor (c);
+{ 
+  SDL_SetRenderDrawColor(Win->GetRenderer(),c.GetR(),c.GetG(),c.GetB(),0xFF);
 }
 
 void CPaint::SetBgColor(lxColor c)
 {
-  Pen.SetBGColor (c);
+  SDL_SetRenderDrawColor(Win->GetRenderer(),c.GetR(),c.GetG(),c.GetB(),0xFF);
 }
 

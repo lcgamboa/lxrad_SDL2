@@ -109,21 +109,7 @@ if( Renderer == NULL )
 //Initialize renderer color 
 SDL_SetRenderDrawColor( Renderer, 0xFF, 0xFF, 0xFF, 0xFF ); 
 
-/*
-  WWindow = XCreateWindow (ADisplay,	//display
-			   parent,	//parent
-			   X,	//x
-			   Y,	//y
-			   Width,	//width
-			   Height,	//height
-			   GetBorder (),	//border_width
-			   CopyFromParent,	//depth
-			   InputOutput,	//class
-			   CopyFromParent,	//visual
-			   (CWBackPixel | CWEventMask | CWSaveUnder | CWOverrideRedirect |CWColormap |CWBackingStore),	//value_mask
-			   &WAttributes);	//attributes
-  
-  */
+
   uint FEvent = 0;
   
   Win = this;
@@ -145,6 +131,12 @@ CWindow::Destroy (void)
 {
   CControl::Destroy ();
   DestroyPixmap();
+  if(Renderer)
+    SDL_DestroyRenderer( Renderer );
+  if(WWindow )
+    SDL_DestroyWindow( WWindow );
+  WWindow = NULL;
+  Renderer = NULL;
 };
 
 
@@ -917,4 +909,10 @@ CWindow::GetWWidget (void)
 {
   printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
   return this; 
+}
+
+SDL_Renderer * 
+CWindow::GetRenderer (void)
+{
+    return Renderer;
 }

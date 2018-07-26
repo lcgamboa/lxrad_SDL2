@@ -203,27 +203,7 @@ lxColor::lxColor(SDL_Color color)
 
 lxColor::lxColor(const char * name)
 {
-  if(name[0] == '#' )
-  {
-    unsigned int r,g,b;
-    char tmp[3];
-    tmp[2]=0;
-    tmp[0]=name[1];
-    tmp[1]=name[2];
-    sscanf(tmp,"%02X",&r);
-    tmp[0]=name[3];
-    tmp[1]=name[4];
-    sscanf(tmp,"%02X",&g);
-    tmp[0]=name[5];
-    tmp[1]=name[6];
-    sscanf(tmp,"%02X",&b);
-    
-    Color=ColorByRGB(r,g,b);
-  }	  
-  else
-  { 	  
     Color=ColorByName(name);
-  }
 }
 
 String
@@ -553,46 +533,132 @@ SDL_Color
 ColorByRGB (unsigned short r, unsigned short g, unsigned short b)
 {
 
-  SDL_Color
-    colorA,
-    colorB;
-    printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
-      /*
-  colorA.red = r * 256;
-  colorA.green = g * 256;
-  colorA.blue = b * 256;
-  colorA.flags = DoRed | DoGreen | DoBlue;
-  colorA.pad = '@';
-  colorB = colorA;
-  if (Application->XSearchInColorTable (&colorA))
-    return colorA;
-  XAllocColor (Application->GetADisplay (), Application->GetAScreen ()->cmap,
-	       &colorB);
-  Application->AddToColorTable ("RGB", colorA, colorB);
-  return colorB;
-     */
-    
-    return colorA;
+  SDL_Color colorA;
+
+  colorA.r=r;
+  colorA.g=g;
+  colorA.b=b;
+  
+  return colorA;
 };
 
 SDL_Color
 ColorByName (String name)
 {        
-  SDL_Color
-    colorA,
-    colorB;
-   printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
- /* 
-  if (Application->XSearchInColorTable (name, &colorA))
-    return colorA;
-  XAllocNamedColor (Application->GetADisplay (),
-		    Application->GetAScreen ()->cmap, name.c_str (), &colorA,
-		    &colorB);
-  Application->AddToColorTable (name, colorA, colorB);
-  */
-  return colorB;    
+  SDL_Color  colorA;
+  if(name[0] == '#' )
+  {
+    char tmp[3];
+    tmp[2]=0;
+    tmp[0]=name[1];
+    tmp[1]=name[2];
+    sscanf(tmp,"%02hhX",&colorA.r);
+    tmp[0]=name[3];
+    tmp[1]=name[4];
+    sscanf(tmp,"%02hhX",&colorA.g);
+    tmp[0]=name[5];
+    tmp[1]=name[6];
+    sscanf(tmp,"%02hhX",&colorA.b);
+  }	  
+  else
+  { 
+     if(!name.Cmp("gray35"))
+     {
+         colorA.r=0x59;
+         colorA.g=0x59;
+         colorA.b=0x59;
+         return colorA;
+     }
+     if(!name.Cmp("gray59"))
+     {
+         colorA.r=0x96;
+         colorA.g=0x96;
+         colorA.b=0x96;
+         return colorA;
+     }
+     if(!name.Cmp("gray96"))
+     {
+         colorA.r=0x60;
+         colorA.g=0x60;
+         colorA.b=0x60;
+         return colorA;
+     }
+     if(!name.Cmp("gray86"))
+     {
+         colorA.r=0xdb;
+         colorA.g=0xdb;
+         colorA.b=0xdb;
+         return colorA;
+     }
+     if(!name.Cmp("gray82"))
+     {
+         colorA.r=0xd1;
+         colorA.g=0xd1;
+         colorA.b=0xd1;
+         return colorA;
+     }
+     if(!name.Cmp("gray"))
+     {
+         colorA.r=0xbe;
+         colorA.g=0xbe;
+         colorA.b=0xbe;
+         return colorA;
+     }
+     if(!name.Cmp("dark gray"))
+     {
+         colorA.r=0xa9;
+         colorA.g=0xa9;
+         colorA.b=0xa9;
+         return colorA;
+     }
+     if(!name.Cmp("light gray"))
+     {
+         colorA.r=0xd3;
+         colorA.g=0xd3;
+         colorA.b=0xd3;
+         return colorA;
+     }     
+     if(!name.Cmp("black"))
+     {
+         colorA.r=0x00;
+         colorA.g=0x00;
+         colorA.b=0x00;
+         return colorA;
+     } 
+     if(!name.Cmp("white"))
+     {
+         colorA.r=0xff;
+         colorA.g=0xff;
+         colorA.b=0xff;
+         return colorA;
+     } 
+     if(!name.Cmp("blue"))
+     {
+         colorA.r=0x00;
+         colorA.g=0x00;
+         colorA.b=0xff;
+         return colorA;
+     } 
+     if(!name.Cmp("red"))
+     {
+         colorA.r=0xff;
+         colorA.g=0x00;
+         colorA.b=0x00;
+         return colorA;
+     } 
+     if(!name.Cmp("green"))
+     {
+         colorA.r=0x00;
+         colorA.g=0xff;
+         colorA.b=0x00;
+         return colorA;
+     } 
+    printf("Color %s not found\n",name.c_str());  
+  }
+  return colorA;    
 };
 
+/*
 int
 XXLookupString (XIC ic, XKeyPressedEvent * event, char *buffer_return,
 		int bytes_buffer, KeySym * keysym_return,
@@ -601,3 +667,4 @@ XXLookupString (XIC ic, XKeyPressedEvent * event, char *buffer_return,
   printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
   return 0;
 }
+*/

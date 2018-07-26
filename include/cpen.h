@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -33,16 +33,15 @@ class CControl;
 class CPen:public CObject
 {
 private:
+  CControl *Owner;  
   SDL_Color Color;
   int Width;
-  Display * Disp;
-  GC *Agc;
 public:
     CPen (void)
   {
     SetClass ("CPen");
   };
-  void Create (CControl * control, GC * gc);
+  void Create (CControl * control);
   void SetColor (SDL_Color color);
   void SetBGColor (SDL_Color color);
   SDL_Color GetColor (void);

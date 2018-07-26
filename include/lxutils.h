@@ -128,6 +128,9 @@ public:
   lxColor(SDL_Color color);
   lxColor(const char * name);
   String GetAsString(int flags =0);
+  unsigned char GetR(void){return Color.r;};
+  unsigned char GetG(void){return Color.g;};
+  unsigned char GetB(void){return Color.b;};
   operator SDL_Color() const;
 };
 

@@ -36,8 +36,8 @@ class CPaint:public CObject
 {
 private:
   CWindow * Win;
-  SDL_Surface* DrawIn;
-  SDL_Surface* DrawOut;
+  SDL_Texture* DrawIn;
+  SDL_Texture* DrawOut;
   CControl *Owner;
   int RX,RY;
   bool DoCalcRXY;
@@ -49,19 +49,19 @@ public:
     CPaint (void);
    ~CPaint (void);
   void SetDoCalcRXY(bool docalcrxy); 
-  void SetDrawIn(SDL_Surface* drawin);
-  void SetDrawOut(SDL_Surface* drawout);
+  void SetDrawIn(SDL_Texture* drawin);
+  void SetDrawOut(SDL_Texture* drawout);
   void InitDraw (CControl * control);
   void DrawControl (CControl * control);
   void Create (CControl * control);
-  void Create (SDL_Surface* bitmap);
+  void Create (CControl * control, SDL_Texture* bitmap);
   void Destroy (void);
   void SetFont (CControl * control);
   void SetPen (int function);
   void Point (int x, int y);
-  void FillPolygon (XPoint * points, int npoints);
+  void FillPolygon (SDL_Point * points, int npoints);
   void Line (int x1, int y1, int x2, int y2);
-  void Lines (XPoint * points, int npoints);
+  void Lines (SDL_Point * points, int npoints);
   void Rectangle (int x, int y, int w, int h);
   void Frame (int x, int y, int w, int h, uint wb = 1);
   void LowerFrame (int x, int y, int w, int h, uint wb = 1);
@@ -69,9 +69,9 @@ public:
   void Text (String text, int x, int y);
   void RotatedText (String str, int x, int y, int angle);
   void ImgText (int x, int y, String text);
-  void PutPixmap (int x,int y, int w, int h,SDL_Surface* pixmap);
-  void PutBitmap (SDL_Surface* bitmap,int x,int y);
-  void SetBitmap(SDL_Surface* bitmap,double xs, double ys);
+  void PutPixmap (int x,int y, int w, int h,SDL_Texture* pixmap);
+  void PutBitmap (SDL_Texture* bitmap,int x,int y);
+  void SetBitmap(SDL_Texture* bitmap,double xs, double ys);
   void SetFont (lxFont font);
 
   void SetLineWidth(int w);

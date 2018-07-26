@@ -31,23 +31,25 @@
 // CPen________________________________________________________________
 
 void
-CPen::Create (CControl * control, GC * gc)
+CPen::Create (CControl * control)
 {
-  Agc = gc;
+    Owner=control;
 };
 
 void
 CPen::SetColor (SDL_Color color)
 {
   Color = color;
-//  XSetForeground (Disp, *Agc, color.pixel);
+  if((Owner)&&(Owner->GetWin()))
+    SDL_SetRenderDrawColor(Owner->GetWin()->GetRenderer(),color.r,color.g,color.b,0xFF);
 };
 
 void
 CPen::SetBGColor (SDL_Color color)
 {
   Color = color;
-//  XSetBackground (Disp, *Agc, color.pixel);
+  if((Owner)&&(Owner->GetWin()))
+    SDL_SetRenderDrawColor(Owner->GetWin()->GetRenderer(),color.r,color.g,color.b,0xFF);
 };
 
 SDL_Color CPen::GetColor ()

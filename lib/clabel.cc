@@ -224,7 +224,10 @@ CLabel::CalcVirtual (void)
 	{
 	  VText = strndel (VText, VText.size ());
 	  //TextWidth2 = XTextWidth (CFont, VText.c_str (), VText.size ());
-          TTF_SizeText (CFont, VText.c_str (),&TextWidth2,NULL);
+          if(VText.size() == 0)
+              TextWidth2=0;
+          else
+             TTF_SizeText (CFont, VText.c_str (),&TextWidth2,NULL);
 	};
       xo = 5 ;
       break;

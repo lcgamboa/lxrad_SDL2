@@ -83,6 +83,7 @@ public:
   bool GetCanExitExclusive(void);
 //propiedades
   SDL_Window * GetWWindow (void);
+  SDL_Renderer * GetRenderer (void);
   CWindow* GetWWidget (void);
   void SetCanDestroy (bool candestroy);
   bool GetCanDestroy (void);

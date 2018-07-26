@@ -59,7 +59,7 @@ CDraw::CDraw (void)
 
 CDraw::~CDraw (void)
 {
-   if (CPixmap != NULL) SDL_FreeSurface( CPixmap);
+   if (CPixmap != NULL) SDL_DestroyTexture(CPixmap);
    CPixmap=NULL;
 };
 
@@ -77,7 +77,8 @@ CDraw::Create (CControl * control)
   Visible=true;	    
   if(!CPixmap)
   {
-    CPixmap = SDL_CreateRGBSurfaceWithFormat(0, Width, Height, 32, SDL_PIXELFORMAT_RGBA32);
+    CPixmap = SDL_CreateTexture(GetWin()->GetRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Width, Height );
+    
     Canvas.SetDrawIn(CPixmap);
     Canvas.Pen.SetColor (Color);
     Canvas.Rectangle ( 0, 0, Width, Height);
@@ -89,7 +90,7 @@ CDraw::Destroy (void)
 {
   if (CPixmap != 0)
   {
-    SDL_FreeSurface( CPixmap);
+    SDL_DestroyTexture( CPixmap);
     CPixmap=NULL;
   }
   Canvas.Destroy();
@@ -101,8 +102,9 @@ CDraw::SetWidth (uint width)
 {
   if(Paint != NULL)
   {
-      if (CPixmap != NULL) SDL_FreeSurface( CPixmap);
-      CPixmap = SDL_CreateRGBSurfaceWithFormat(0, width, Height, 32, SDL_PIXELFORMAT_RGBA32);
+      if (CPixmap != NULL) SDL_DestroyTexture( CPixmap);
+      CPixmap = SDL_CreateTexture(GetWin()->GetRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, Height );
+    
       if (CPixmap == NULL) {
         SDL_Log("SDL_CreateRGBSurfaceWithFormat() failed: %s", SDL_GetError());
         exit(1);
@@ -119,8 +121,9 @@ CDraw::SetHeight (uint height)
 {
   if(Paint != NULL)
   {
-      if (CPixmap != NULL) SDL_FreeSurface( CPixmap);
-      CPixmap = SDL_CreateRGBSurfaceWithFormat(0, Width, height, 32, SDL_PIXELFORMAT_RGBA32);
+      if (CPixmap != NULL) SDL_DestroyTexture( CPixmap);
+      CPixmap = SDL_CreateTexture(GetWin()->GetRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Width, height );
+    
       if (CPixmap == NULL) {
         SDL_Log("SDL_CreateRGBSurfaceWithFormat() failed: %s", SDL_GetError());
         exit(1);
@@ -142,7 +145,7 @@ CDraw::Draw ()
   {
     if(CPixmap != 0)
     {	  
-      SDL_FreeSurface(CPixmap);
+      SDL_DestroyTexture(CPixmap);
       CPixmap=NULL;
     };
     BColor=Color;
@@ -157,7 +160,7 @@ CDraw::Draw ()
       Canvas.SetDrawIn(CPixmap);
       if(!CPixmap)
       {
-        CPixmap=SDL_CreateRGBSurfaceWithFormat(0, Width, Height, 32, SDL_PIXELFORMAT_RGBA32);
+        CPixmap = SDL_CreateTexture(GetWin()->GetRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Width, Height );
         Canvas.SetDrawIn(CPixmap);
         Canvas.Pen.SetColor (Color);
 	Canvas.Rectangle ( 0, 0, Width, Height);
@@ -236,35 +239,7 @@ CDraw::GetPixmapFileName (void)
 bool
 CDraw::SetPixmapFileName (String filename)
 {
-  FileName = filename;
-  if (CPixmap != NULL)
-    SDL_FreeSurface(CPixmap);
-  CPixmap=NULL;
- 
-  if ((Win) && (FileName.size () > 0))
-    {
-      int rc = -1;
-      
-      SDL_Surface* simg=IMG_Load(FileName.c_str());
-      CPixmap=SDL_ConvertSurface( simg, SDL_GetWindowSurface(Win->GetWWindow())->format, 0);
-      SDL_FreeSurface(simg);
-      Canvas.SetDrawIn(CPixmap);
-      
-      if (rc == 0)
-	{
-	  Draw ();
-	  return true;
-	}
-      else
-	{
-	  Message ("Warning: Load pixmap " + FileName + " failed");
-	  FileName = "";
-          Canvas.SetDrawIn(0);
-
-	  return false;
-	};
-    };
-  return false;
+    return SetImgFileName(filename,1.0,1.0);
 }
 
 
@@ -278,21 +253,7 @@ CDraw::SetPixmapData (char **data)
 void
 CDraw::WritePixmapToFile (String filename)
 {
-#ifdef HAVE_LIBXPM    
-  XpmWriteFileFromPixmap (Win->GetADisplay (), (char *) filename.c_str (),
-			  CPixmap, CMask, 0);
-#endif
-
-#ifdef HAVE_LIBIMLIB    
-  ImlibImage *im;
-  ImlibSaveInfo info;
-  im = Imlib_create_image_from_drawable(AID,CPixmap , CMask, 0, 0, Width, Height);
-  
-  if(filename.find(".xpm") > 0)
-    Imlib_save_image_to_ppm(AID,im,(char *) filename.c_str () );
-  else
-    Imlib_save_image(AID, im, (char *) filename.c_str (), &info);
-#endif
+  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
 };
 
 
@@ -306,31 +267,45 @@ bool
 CDraw::SetImgFileName(String filename, float sx, float sy)
 {
   FileName = filename;
-  if (CPixmap != NULL)
-    SDL_FreeSurface(CPixmap);
-  CPixmap=NULL;
- 
+  
   if ((Win) && (FileName.size () > 0))
     {
       int rc = -1;
       
-      CPixmap=IMG_Load(FileName.c_str());
-      SDL_Surface* simg=SDL_ConvertSurface( simg, SDL_GetWindowSurface(Win->GetWWindow())->format, 0);
-      SDL_FreeSurface(CPixmap);
-      
-      CPixmap=SDL_CreateRGBSurfaceWithFormat(0, Width, Height, 32, SDL_PIXELFORMAT_RGBA32);
-      
-              
-      SDL_Rect stretchRect; 
-      stretchRect.x = 0; 
-      stretchRect.y = 0; 
-      stretchRect.w = simg->w*sx;
-      stretchRect.h = simg->h*sy;
-      SDL_BlitScaled( simg, NULL, CPixmap, &stretchRect );
-      
-      SDL_FreeSurface(simg);
+      SDL_Surface* simg=IMG_Load(FileName.c_str());
+      if( simg == NULL )
+      {
+	 printf( "Unable to load image %s! SDL_image Error: %s\n", FileName.c_str(), IMG_GetError() );
+      }
+      else
+      {
+      	//Create texture from surface pixels
+        SDL_Texture * text = SDL_CreateTextureFromSurface( Win->GetRenderer(), simg );
+	if( text == NULL )
+	{
+	  printf( "Unable to create texture from %s! SDL Error: %s\n", FileName.c_str(), SDL_GetError() );
+	}
+        SDL_FreeSurface(simg);
+       
+        SDL_SetRenderTarget(Win->GetRenderer(),CPixmap); 
         
-      Canvas.SetDrawIn(CPixmap);
+        
+        SDL_Rect DestR;
+
+        DestR.x = 0;
+        DestR.y = 0;
+        SDL_QueryTexture(text, NULL, NULL, &DestR.w, &DestR.h);
+
+        DestR.w *= sx;
+        DestR.h *= sy;
+
+        
+        SDL_RenderCopy(Win->GetRenderer(), text, NULL, &DestR);
+        SDL_SetRenderTarget(Win->GetRenderer(),NULL);
+        SDL_DestroyTexture(text);
+
+        rc=0;
+      }
       
       if (rc == 0)
 	{
@@ -346,7 +321,7 @@ CDraw::SetImgFileName(String filename, float sx, float sy)
 	  return false;
 	};
     };
-  return false;
+  return false; 
 }
 
 void 

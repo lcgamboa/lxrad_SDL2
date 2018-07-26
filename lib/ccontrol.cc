@@ -131,16 +131,17 @@ CControl::Create (CControl * control)
       eprint( "...Application Finished\n");
       exit (-1);
     };
+   */
   if (ColorSet)
     {
       if (ColorName.size () > 0)
 	Color = ColorByName (ColorName);
       else
-	Color = ColorByRGB (Color.red, Color.green, Color.blue);
+	Color = ColorByRGB (Color.r, Color.g, Color.b);
     }
   else
     Color = ColorByName ("light gray");
-*/
+
   
   if (ChildCount > -1)
     for (int i = 0; i <= ChildCount; i++)
