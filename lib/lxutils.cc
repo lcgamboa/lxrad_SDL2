@@ -661,6 +661,13 @@ ColorByName (String name)
          colorA.b=0xe0;
          return colorA;
      }
+     if(!name.Cmp("dark blue"))
+     {
+         colorA.r=0x00;
+         colorA.g=0x00;
+         colorA.b=0x8b;
+         return colorA;
+     }
        
     printf("Color %s not found\n",name.c_str());  
   }

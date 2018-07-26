@@ -45,7 +45,7 @@ while test $# -gt 0; do
 
           includes=-I${prefix}/include
       fi
-      echo $includes -I${prefix}/include/lxrad_SDL2/ -Wall -ggdb
+      echo $includes -I${prefix}/include/lxrad_SDL2/ -Wall -ggdb -D_REENTRANT
       ;;
     --cxxflags)
       if test ${prefix}/include != /usr/include ; then
@@ -54,16 +54,16 @@ while test $# -gt 0; do
 
           includes=-I${prefix}/include
       fi
-      echo $includes -I${prefix}/include/lxrad_SDL2/ -Wall -ggdb
+      echo $includes -I${prefix}/include/lxrad_SDL2/ -Wall -ggdb -D_REENTRANT
       ;;
     --libs|--plugin-libs|--library-libs)
       libdirs="-L${exec_prefix}/lib "
-      echo $libdirs -llxrad_SDL2 -lSDL2_ttf -lSDL2_image -lSDL2  -lSDL2 -lSDL2_image -lSDL2_ttf 
+      echo $libdirs -llxrad_SDL2 -lpthread  -lSDL2_ttf  -lSDL2_image  -lSDL2 
       ;;
     --static-libs)
 #    --libs|--static-libs)
       libdirs="-L${exec_prefix}/lib "
-      echo $libdirs -llxrad_SDL2 -lSDL2_ttf -lSDL2_image -lSDL2  -lSDL2 -lSDL2_image -lSDL2_ttf
+      echo $libdirs -llxrad_SDL2 -lpthread  -lSDL2_ttf  -lSDL2_image  -lSDL2
       ;;
     *)
       echo "${usage}" 1>&2
