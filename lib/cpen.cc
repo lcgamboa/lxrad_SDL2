@@ -47,15 +47,21 @@ CPen::SetColor (SDL_Color color)
 void
 CPen::SetBGColor (SDL_Color color)
 {
-  Color = color;
-  if((Owner)&&(Owner->GetWin()))
-    SDL_SetRenderDrawColor(Owner->GetWin()->GetRenderer(),color.r,color.g,color.b,0xFF);
+  BGColor = color;
+ // if((Owner)&&(Owner->GetWin()))
+ //   SDL_SetRenderDrawColor(Owner->GetWin()->GetRenderer(),color.r,color.g,color.b,0xFF);
 };
 
 SDL_Color CPen::GetColor ()
 {
   return Color;
 };
+
+SDL_Color CPen::GetBGColor ()
+{
+  return BGColor;
+};
+
 
 void
 CPen::SetWidth (unsigned long width)

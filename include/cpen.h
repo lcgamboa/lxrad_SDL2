@@ -35,6 +35,7 @@ class CPen:public CObject
 private:
   CControl *Owner;  
   SDL_Color Color;
+  SDL_Color BGColor;
   int Width;
 public:
     CPen (void)
@@ -45,6 +46,7 @@ public:
   void SetColor (SDL_Color color);
   void SetBGColor (SDL_Color color);
   SDL_Color GetColor (void);
+  SDL_Color GetBGColor (void);
   void SetWidth (unsigned long width);
   void SetPen (int function);
 };

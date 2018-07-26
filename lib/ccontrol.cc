@@ -766,7 +766,6 @@ void
 CControl::SetColor (SDL_Color c)
 {
   Color = c;
-  Update ();
 };
 
 void
@@ -780,7 +779,6 @@ CControl::SetColor (const String name)
     Color = ColorByName (name);
   else
     ColorSet = true;
-  Update ();
 };
 
 void
@@ -798,7 +796,6 @@ CControl::SetColor (uint r, uint g, uint b)
       ColorSet = true;
       ColorName = "";
     };
-  Update ();
 };
 
 lxColor CControl::GetColor (void)
@@ -1037,18 +1034,10 @@ CControl::button_press (SDL_Event event)
 	  //Application.ACreateWindow (SubMenu,Win);
 	  Application->ACreateWindow (PopupMenu);
 	};
-      /*
-      PopupMenu->SetX (0);
-      PopupMenu->SetY (0);
-      */
-//      XMoveWindow (Win->GetADisplay (),PopupMenu->GetWWindow () , 0, 0);
+
       
-      
-//      XTranslateCoordinates (Win->GetADisplay (), Win->GetWWindow (),
-//       			     PopupMenu->GetWWindow (), event.button.x, event.button.y, &x, &y, &child);
-      
-      PopupMenu->SetX (x);
-      PopupMenu->SetY (y);
+      PopupMenu->SetX (Win->GetX()+x);
+      PopupMenu->SetY (Win->GetY()+y);
      
       PopupMenu->Show ();
       PopupMenu->Draw ();

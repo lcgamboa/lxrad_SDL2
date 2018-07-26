@@ -157,17 +157,15 @@ CItemMenu::button_press (SDL_Event event)
 
   if ((SubMenu != NULL) && ((SubMenu->GetChildCount ()) != -1))
     {
-      int x, y;
       Window child;
       if (!SubMenu->GetWWindow () != 0)
 	{
 	  //Application.ACreateWindow (SubMenu,Win);
 	  Application->ACreateWindow (SubMenu);
 	};
-//      XTranslateCoordinates (Win->GetADisplay (), Win->GetWWindow (),
-//			     SubMenu->GetWWindow (), X, Y, &x, &y, &child);
-      SubMenu->SetX (SubMenu->GetX () + x);
-      SubMenu->SetY (SubMenu->GetY () + y + Height);
+
+      SubMenu->SetX (Win->GetX ()+GetX()  );
+      SubMenu->SetY (Win->GetY ()+GetY() + Height);
       SubMenu->Show ();
       SubMenu->Draw ();
       while (SubMenu->GetVisible ())

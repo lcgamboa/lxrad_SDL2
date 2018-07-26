@@ -234,6 +234,7 @@ CEdit::SetCursorPos (uint cursorpos)
       Text->SetTextPointer (0);
     };
   Draw ();
+  Update();
 };
 
 uint CEdit::GetCursorPos (void)

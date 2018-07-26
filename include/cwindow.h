@@ -39,6 +39,7 @@
 class CWindow:public CControl
 {
 protected:
+  bool ORedirect;  
   SDL_Surface* WPixmap;
   uint PWidth,PHeight;
   String Title;

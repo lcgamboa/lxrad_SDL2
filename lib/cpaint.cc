@@ -126,8 +126,8 @@ CPaint::InitDraw (CControl * control)
 void
 CPaint::DrawControl (CControl * control)
 {
-     SDL_RenderPresent( Win->GetRenderer() );
-    /*
+  SDL_RenderPresent( Win->GetRenderer() );  
+  /*  
   if ((control->GetVisible ())&&
       (DrawIn !=0 )&& 
       (DrawIn != DrawOut))
@@ -151,7 +151,7 @@ CPaint::DrawControl (CControl * control)
       Pen.SetPen (GXcopy);
       }
     };
-     */
+    */
 };
 
 
@@ -263,8 +263,8 @@ CPaint::Text (String text,  int x1, int y1)
 {
         if(text.size()==0)return;
         //Render text surface
-        SDL_Color textColor = { 0, 0, 0 };
-	SDL_Surface* textSurface = TTF_RenderText_Solid( Owner->GetFont(), text.c_str(), textColor );
+        //SDL_Color textColor = { 0, 0, 0 };
+	SDL_Surface* textSurface = TTF_RenderText_Shaded( Owner->GetFont(), text.c_str(), Pen.GetColor(), Pen.GetBGColor() );
 	if( textSurface == NULL )
 	{
 		printf( "Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError() );
@@ -280,11 +280,10 @@ CPaint::Text (String text,  int x1, int y1)
 		else
 		{   
                    SDL_Rect DestR;
-
-                   DestR.w = textSurface->w;
-                   DestR.h = textSurface->h;
+                   
+                   SDL_QueryTexture(mTexture, NULL, NULL, &DestR.w, &DestR.h);
                    DestR.x = RX+x1;
-                   DestR.y = RY+y1-DestR.h ;
+                   DestR.y = RY+y1-DestR.h;
                         SDL_RenderCopy(Win->GetRenderer(), mTexture,NULL,&DestR );
                         SDL_DestroyTexture(mTexture );
 		}

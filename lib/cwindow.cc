@@ -58,6 +58,7 @@ CWindow::CWindow (void)
   WPixmap = NULL;
   ControlOnFocus = NULL;
   LastControl = NULL;
+  ORedirect=false;
 //events
   EvOnCreate = NULL;
   EvOnDestroy = NULL;
@@ -86,8 +87,11 @@ CWindow::WCreate (CWindow* window)
   else
     parent=NULL;
   
-
-WWindow= SDL_CreateWindow(Title.c_str(), X, Y, Width, Height, SDL_WINDOW_SHOWN |SDL_WINDOW_RESIZABLE); 
+  if(ORedirect)
+     WWindow= SDL_CreateWindow(Title.c_str(), X, Y, Width, Height, SDL_WINDOW_HIDDEN |SDL_WINDOW_BORDERLESS); 
+  else
+     WWindow= SDL_CreateWindow(Title.c_str(), X, Y, Width, Height, SDL_WINDOW_HIDDEN |SDL_WINDOW_RESIZABLE); 
+      
 if( WWindow == NULL ) 
 { 
     printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() ); 
@@ -121,7 +125,7 @@ SDL_SetRenderDrawColor( Renderer, 0xFF, 0xFF, 0xFF, 0xFF );
   
   if(Visible) Show ();
   
-  //XMoveWindow (ADisplay, WWindow, X, Y);
+  SDL_SetWindowPosition(WWindow,X,Y);
 
   on_create ();
 };
@@ -248,8 +252,8 @@ CWindow::Show (void)
     {
       SetVisible (true);
       Draw();
-    //  XMapWindow (ADisplay, GetWWindow ());
-    //  XFlush(ADisplay);  
+      SDL_ShowWindow(WWindow);
+      SDL_RaiseWindow(WWindow); 
       Update ();
     };
 };
@@ -268,7 +272,7 @@ CWindow::Hide (void)
 {
   if (Win != NULL)
     {
-      //XUnmapWindow (ADisplay, GetWWindow ());
+      SDL_HideWindow(WWindow);
       SetVisible (false);
     };
 };
@@ -283,7 +287,6 @@ CWindow::HideExclusive (void)
 void
 CWindow::Update (void)
 {
-  /*	
   for (int i = 0; i <= ChildCount; i++)
     {
       if (Child[i]->GetVisible ())
@@ -294,7 +297,6 @@ CWindow::Update (void)
 	    Child[i]->Draw ();
 	};
     };
-  */
   CControl::Update();
 };
 
@@ -303,6 +305,8 @@ CWindow::Update (SDL_Rect Reg)
 {
   if (ChildCount == -1)
     return;
+  else
+    Update();   
   /*
   else
     {
@@ -331,9 +335,16 @@ CWindow::Update (SDL_Rect Reg)
 };
 
 void
-CWindow::SetOverrideRedirect (bool redirect)
+CWindow::SetOverrideRedirect (bool oredirect)
 {
-
+    ORedirect=oredirect;
+    if(WWindow)
+    {
+        if(ORedirect)
+           SDL_SetWindowBordered(WWindow, SDL_TRUE);
+        else
+           SDL_SetWindowBordered(WWindow, SDL_FALSE);
+    }  
 };
 
 void
@@ -362,85 +373,87 @@ CWindow::WEvents (SDL_Event WEvent)
     case SDL_WINDOWEVENT:
         switch (WEvent.window.event) {
         case SDL_WINDOWEVENT_SHOWN:
-            SDL_Log("Window %d shown", WEvent.window.windowID);
+            //SDL_Log("Window %d shown", WEvent.window.windowID);
             on_show ();
             Draw();
             ret=1;
             break;
         case SDL_WINDOWEVENT_HIDDEN:
-            SDL_Log("Window %d hidden", WEvent.window.windowID);
+            //SDL_Log("Window %d hidden", WEvent.window.windowID);
             on_hide ();
             ret=1;
             break;
         case SDL_WINDOWEVENT_EXPOSED:
-            SDL_Log("Window %d exposed", WEvent.window.windowID);
+            //SDL_Log("Window %d exposed", WEvent.window.windowID);
             Draw();
             ret=1;
             break;
         case SDL_WINDOWEVENT_MOVED:
-            SDL_Log("Window %d moved to %d,%d",
-                    WEvent.window.windowID, WEvent.window.data1,
-                    WEvent.window.data2);
+            //SDL_Log("Window %d moved to %d,%d", WEvent.window.windowID, WEvent.window.data1, WEvent.window.data2);
+            X=WEvent.window.data1;
+            Y=WEvent.window.data2; 
+            ret= 1;
             break;
         case SDL_WINDOWEVENT_RESIZED:
-            SDL_Log("Window %d resized to %dx%d",
-                    WEvent.window.windowID, WEvent.window.data1,
-                    WEvent.window.data2);
+            //SDL_Log("Window %d resized to %dx%d", WEvent.window.windowID, WEvent.window.data1,WEvent.window.data2);    
+            Width=WEvent.window.data1;
+            Height=WEvent.window.data2; 
             Draw();
+            ret= 1;
             break;
         case SDL_WINDOWEVENT_SIZE_CHANGED:
-            SDL_Log("Window %d size changed to %dx%d",
-                    WEvent.window.windowID, WEvent.window.data1,
-                    WEvent.window.data2);
+            //SDL_Log("Window %d size changed to %dx%d", WEvent.window.windowID, WEvent.window.data1,WEvent.window.data2);
+            Width=WEvent.window.data1;
+            Height=WEvent.window.data2; 
             Draw();
+            ret= 1;
             break;
         case SDL_WINDOWEVENT_MINIMIZED:
-            SDL_Log("Window %d minimized", WEvent.window.windowID);
+            //SDL_Log("Window %d minimized", WEvent.window.windowID);
+            ret= 1;
             break;
         case SDL_WINDOWEVENT_MAXIMIZED:
-            SDL_Log("Window %d maximized", WEvent.window.windowID);
+            //SDL_Log("Window %d maximized", WEvent.window.windowID);
             Draw();
+            ret= 1;
             break;
         case SDL_WINDOWEVENT_RESTORED:
-            SDL_Log("Window %d restored", WEvent.window.windowID);
+            //SDL_Log("Window %d restored", WEvent.window.windowID);
             Draw();
+            ret= 1;
             break;
         case SDL_WINDOWEVENT_ENTER:
-            SDL_Log("Mouse entered window %d",
-                    WEvent.window.windowID);
+            //SDL_Log("Mouse entered window %d", WEvent.window.windowID);
             on_enter ();
             ret= 1;
             break;
         case SDL_WINDOWEVENT_LEAVE:
-            SDL_Log("Mouse left window %d", WEvent.window.windowID);
+            //SDL_Log("Mouse left window %d", WEvent.window.windowID);
             on_leave ();
             ret=1;
             break;
         case SDL_WINDOWEVENT_FOCUS_GAINED:
-            SDL_Log("Window %d gained keyboard focus",
-                    WEvent.window.windowID);
+            //SDL_Log("Window %d gained keyboard focus", WEvent.window.windowID);
             break;
         case SDL_WINDOWEVENT_FOCUS_LOST:
-            SDL_Log("Window %d lost keyboard focus",
-                    WEvent.window.windowID);
+            //SDL_Log("Window %d lost keyboard focus", WEvent.window.windowID);
             break;
         case SDL_WINDOWEVENT_CLOSE:
-            SDL_Log("Window %d closed", WEvent.window.windowID);
+            //SDL_Log("Window %d closed", WEvent.window.windowID);
             on_destroy ();
             WDestroy ();
             ret=1;
             break;
 #if SDL_VERSION_ATLEAST(2, 0, 5)
         case SDL_WINDOWEVENT_TAKE_FOCUS:
-            SDL_Log("Window %d is offered a focus", WEvent.window.windowID);
+            //SDL_Log("Window %d is offered a focus", WEvent.window.windowID);
             break;
         case SDL_WINDOWEVENT_HIT_TEST:
-            SDL_Log("Window %d has a special hit test", WEvent.window.windowID);
+            //SDL_Log("Window %d has a special hit test", WEvent.window.windowID);
             break;
 #endif
         default:
-            SDL_Log("Window %d got unknown event %d",
-                    WEvent.window.windowID, WEvent.window.event);
+            //SDL_Log("Window %d got unknown event %d", WEvent.window.windowID, WEvent.window.event);
             break;
         }
 
@@ -606,7 +619,7 @@ CWindow::CirculateFocus (bool asc)
 void
 CWindow::SetFocus (void)
 {
-//  XSetInputFocus (ADisplay, WWindow, RevertToParent, CurrentTime);
+    SDL_RaiseWindow(WWindow); 
 };
 
 
@@ -659,22 +672,14 @@ CWindow::GetYMouse (void)
 
 void
 CWindow::SetTitle (const String & title)
-{
-/*    
+{   
   Title = title;
-  XFreeTextProperty (WTextProperty);
-  char *cstr;
-  cstr = new char[title.size () + 1];
-  strcpy (cstr, title.c_str ());
-  if (XStringListToTextProperty (&cstr, 1, &WTextProperty) == 0)
-    eprint("erro\n");
-  delete[]cstr;
+
   if (WWindow)
     {
-      XStoreName (ADisplay, WWindow, Title.c_str ());
-      XSetIconName (ADisplay, WWindow, Title.c_str ());
+      SDL_SetWindowTitle(WWindow, Title.c_str ());
     };
- */ 
+
 };
 
 String CWindow::GetTitle (void)
@@ -723,32 +728,32 @@ void
 CWindow::SetX (int x)
 {
   CControl::SetX (x);
-//  if (WWindow)
-//    XMoveWindow (ADisplay, WWindow, x, Y);
+  if (WWindow)
+    SDL_SetWindowPosition(WWindow,X,Y);
 };
 
 void
 CWindow::SetY (int y)
 {
   CControl::SetY (y);
-//  if (WWindow)
-//    XMoveWindow (ADisplay, WWindow, X, y);
+  if (WWindow)
+    SDL_SetWindowPosition(WWindow,X,Y);
 };
 
 void
 CWindow::SetWidth (uint width)
 {
   CControl::SetWidth (width);
-//  if (WWindow)
-//    XResizeWindow (ADisplay, WWindow, width, Height);
+  if (WWindow)
+    SDL_SetWindowSize( WWindow, Width, Height);
 };
 
 void
 CWindow::SetHeight (uint height)
 {
   CControl::SetHeight (height);
-//  if (WWindow)
-//    XResizeWindow (ADisplay, WWindow, Width, height);
+  if (WWindow)
+    SDL_SetWindowSize( WWindow, Width, Height);
 };
 
 //operators
