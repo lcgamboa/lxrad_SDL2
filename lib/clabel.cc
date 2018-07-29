@@ -118,7 +118,7 @@ CLabel::Draw (void)
   Paint->InitDraw (this);
    
   Paint->Pen.SetColor (Owner->GetColor ());
-  //Paint->Pen.SetColor (ColorByName("yellow"));
+  //Paint->Pen.SetColor (ColorByName("red"));
   Paint->Rectangle ( 0, 0, Width, Height);
   /*
   Paint->Pen.SetColor (Color);
@@ -344,18 +344,20 @@ CLabel::GetTextWidth (void)
 uint
 CLabel::GetTextAsc (void)
 {  
-  return TTF_FontAscent(CFont);
+  return TTF_FontAscent(CFont)+4;
 };
 
 uint
 CLabel::GetTextDes (void)
 {
-  return TTF_FontDescent(CFont);
+  return TTF_FontDescent(CFont)+4;
 };
 
 uint
 CLabel::GetTextHeight (void)
 {
+  //return TTF_FontHeight(CFont);
+  //return TTF_FontLineSkip(CFont);
   return GetTextAsc () + GetTextDes ();
 };
 
