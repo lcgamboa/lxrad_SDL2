@@ -181,7 +181,7 @@ CLabel::CalcVirtual (void)
   if (Win == NULL)
     return;
 
-  int TextWidth2;
+  int TextWidth2=0;
   int xo = 0;
   bool mux=false;
 

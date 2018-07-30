@@ -199,7 +199,7 @@ CPaint::Rectangle (int x, int y, int w, int h)
 {
    SDL_Rect fillRect = { (RX+x)*Scalex, (RY+y)*Scaley, w*Scalex, h*Scaley };
    SDL_RenderFillRect( Win->GetRenderer(), &fillRect );
-};
+}
 
 void
 CPaint::Frame (int x, int y, int w, int h, uint wb)
@@ -312,6 +312,7 @@ CPaint::PutPixmap (int x,int y, int w, int h, SDL_Texture *  pixmap)
     DestR.w = w;
     DestR.h = h;
     SDL_RenderCopy( Win->GetRenderer(), pixmap, NULL, &DestR);
+    SDL_RenderPresent( Win->GetRenderer() );
 };
   
 void 
@@ -340,9 +341,9 @@ CPaint::Init(float sx, float sy)
 void 
 CPaint::End(void)
 {
+  SDL_SetRenderTarget(Win->GetRenderer(),NULL);
   if(Owner)  
     Owner->Draw();	
-  SDL_SetRenderTarget(Win->GetRenderer(),NULL);
 }
 
 void 
@@ -426,7 +427,8 @@ CPaint::ChangeScale(float sx, float sy)
 void 
 CPaint::Circle (bool filled, int x, int y, int radius)
 {
-      printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+      //printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+    Rectangle ( x-radius, y-radius,  2*radius, 2*radius);
       /*
   int off=radius;	
   if(filled)	

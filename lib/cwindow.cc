@@ -98,11 +98,11 @@ if( WWindow == NULL )
     exit(-1);
 }
 
-Renderer = SDL_CreateRenderer( WWindow, -1, SDL_RENDERER_ACCELERATED ); 
+//Renderer = SDL_CreateRenderer( WWindow, -1, SDL_RENDERER_ACCELERATED ); 
 if( Renderer == NULL ) 
 {
-    printf( "Hardware renderer could not be created! SDL Error: %s\n", SDL_GetError() );
-    printf( "Swithing to software renderer...\n");
+//    printf( "Hardware renderer could not be created! SDL Error: %s\n", SDL_GetError() );
+    printf( "Switching to software renderer...\n");
     Renderer = SDL_CreateRenderer( WWindow, -1, SDL_RENDERER_SOFTWARE ); 
 } 
 if( Renderer == NULL ) 

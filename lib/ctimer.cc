@@ -31,7 +31,7 @@
 
 #include<pthread.h>
 #include<unistd.h>
-//extern pthread_mutex_t Display_Lock;
+extern pthread_mutex_t Display_Lock;
 
 // CTimer___________________________________________________________
 
@@ -126,9 +126,9 @@ thread1 (void *arg)
   for (;;)
   {
         gettimeofday(&tv1, NULL);
-        //pthread_mutex_lock (&Display_Lock);
+        pthread_mutex_lock (&Display_Lock);
         timer->on_time ();
-        //pthread_mutex_unlock (&Display_Lock);
+        pthread_mutex_unlock (&Display_Lock);
         gettimeofday(&tv2, NULL);	
         tused=((tv2.tv_usec - tv1.tv_usec) + 1000000L*(tv2.tv_sec - tv1.tv_sec));
         

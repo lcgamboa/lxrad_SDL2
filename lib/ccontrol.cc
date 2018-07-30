@@ -280,7 +280,7 @@ CControl::Event (SDL_Event event)
       };
   };
   
-   if ((event.type == ButtonPress) && (Win != NULL))
+   if ((event.type == SDL_MOUSEBUTTONDOWN) && (Win != NULL))
     {
       Win->SetXMouse (event.button.x);
       Win->SetYMouse (event.button.y);
@@ -319,7 +319,7 @@ CControl::Event (SDL_Event event)
   Win->SetLastControl (control);
   if (control->Win != NULL)
     {
-      if ((event.type == ButtonPress)
+      if ((event.type == SDL_MOUSEBUTTONDOWN)
 	  && (control != control->Win->GetControlOnFocus ())
 	  && (event.button.button == 1))
 	{

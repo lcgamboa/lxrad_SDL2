@@ -30,7 +30,7 @@
 #include<unistd.h>
 
 #include<pthread.h>
-//pthread_mutex_t Display_Lock;
+pthread_mutex_t Display_Lock;
 
 #ifdef HAVE_LIBIMLIB2
 #include<Imlib2.h>
@@ -51,13 +51,13 @@ CApplication::CApplication (void)
   HintTime=time(NULL);
   HintX=0;
   HintY=0;
-  //pthread_mutex_init (&Display_Lock,NULL);
-  //pthread_mutex_lock (&Display_Lock);
+  pthread_mutex_init (&Display_Lock,NULL);
+  pthread_mutex_lock (&Display_Lock);
 };
 
 CApplication::~CApplication (void)
 {
-  //pthread_mutex_destroy (&Display_Lock);  
+  pthread_mutex_destroy (&Display_Lock);  
 };
 
 void
@@ -282,7 +282,7 @@ CApplication::Load (void)
   if (Exit)
     return;
   
-  //pthread_mutex_unlock (&Display_Lock);
+  pthread_mutex_unlock (&Display_Lock);
 
   if (AWindowCount == -1)
     {
@@ -446,5 +446,6 @@ bool
 CApplication::ProcessEvents (void)
 {
 //FIXME
+  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
 return 0;
 }
