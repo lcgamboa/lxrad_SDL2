@@ -248,7 +248,7 @@ CCombo::TButtonPress (CControl * control, uint button, uint x, uint y,
 		      uint state)
 {
   int wx, wy;
-  Window child;
+  //Window child;
 
   Update ();
 
@@ -264,6 +264,8 @@ CCombo::TButtonPress (CControl * control, uint button, uint x, uint y,
 //  XTranslateCoordinates (Win->GetADisplay (), Win->GetWWindow (),
 //			 dlist1.GetWWindow (), GetX (), GetY (), &wx, &wy,
 //			 &child);
+  wx=Win->GetX()+X;
+  wy=Win->GetY()+Y+Height;	  
   dlist1.SetX (wx);
   dlist1.SetY (wy + GetHeight () + 1);
 

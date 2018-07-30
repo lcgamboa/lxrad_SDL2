@@ -44,7 +44,7 @@ protected:
   bool PointerOn;
   bool Enable;
   timeval LastDrawTime;
-  Time BTimePress, BTimeRelease, BTimeClick;
+  long int BTimePress, BTimeRelease, BTimeClick;
   int X, Y;
   int RX, RY;
   uint Width, Height;

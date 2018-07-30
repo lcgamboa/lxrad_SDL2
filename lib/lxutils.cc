@@ -32,6 +32,9 @@
 #include<dirent.h>
 #include<sys/stat.h>
 
+#ifndef PATH_MAX
+#define PATH_MAX 1024
+#endif
 
 //-------------------------------------------------------------------------
 lxTextFile::lxTextFile()
@@ -88,7 +91,7 @@ lxTextFile::operator FILE*() const
 	
 lxImage::lxImage()
 {
-  Image=NULL;
+  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
 }
 
 lxImage::~lxImage()
@@ -113,10 +116,6 @@ lxImage::Destroy(void)
   printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
 }
 
-lxImage::operator Imlib_Image() const
-{
-  return Image;
-}
 //-------------------------------------------------------------------------
 lxBitmap::lxBitmap()
 {
@@ -546,19 +545,21 @@ ColorByRGB (unsigned short r, unsigned short g, unsigned short b)
 SDL_Color
 ColorByName (String name)
 {        
+  char cname[10];
+  strncpy(cname,name.c_str(),9);
   SDL_Color  colorA;
-  if(name[0] == '#' )
+  if(cname[0] == '#' )
   {
     char tmp[3];
     tmp[2]=0;
-    tmp[0]=name[1];
-    tmp[1]=name[2];
+    tmp[0]=cname[1];
+    tmp[1]=cname[2];
     sscanf(tmp,"%02hhX",&colorA.r);
-    tmp[0]=name[3];
-    tmp[1]=name[4];
+    tmp[0]=cname[3];
+    tmp[1]=cname[4];
     sscanf(tmp,"%02hhX",&colorA.g);
-    tmp[0]=name[5];
-    tmp[1]=name[6];
+    tmp[0]=cname[5];
+    tmp[1]=cname[6];
     sscanf(tmp,"%02hhX",&colorA.b);
   }	  
   else

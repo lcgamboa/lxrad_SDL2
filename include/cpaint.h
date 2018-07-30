@@ -44,7 +44,6 @@ private:
   float Scalex;
   float Scaley;
 public:
-    GC Agc;
     CPen Pen;
     CPaint (void);
    ~CPaint (void);

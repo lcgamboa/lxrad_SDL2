@@ -25,12 +25,14 @@
 
 #include<stdio.h>
 
+#include"../config.h"
 #include"../include/cwindow.h"
 #include"../include/capplication.h"
 
+#ifdef LIBPTHREAD
 #include<pthread.h>
 //extern pthread_mutex_t Display_Lock;
-
+#endif
 
 //CWindow _______________________________________________________________
 
@@ -41,7 +43,7 @@ CWindow::CWindow (void)
   SetClass ("CWindow");
   Win = NULL;
   PixmapBuffer=true;
-  HasMenu=False;
+  HasMenu=false;
   //  PixmapBuffer=false;
   XMouse = 0;
   YMouse = 0;
@@ -77,15 +79,14 @@ void
 CWindow::WCreate (CWindow* window)
 {
  
-  //Window parent 
-  SDL_Window *parent; 
+  //SDL_Window *parent; 
   if(window != NULL)
   {
-    parent=window->GetWWindow();
+    //parent=window->GetWWindow();
     WParent=window;
   }
-  else
-    parent=NULL;
+  //else
+    //parent=NULL;
   
   if(ORedirect)
      WWindow= SDL_CreateWindow(Title.c_str(), X, Y, Width, Height, SDL_WINDOW_HIDDEN |SDL_WINDOW_BORDERLESS); 
@@ -114,7 +115,7 @@ if( Renderer == NULL )
 SDL_SetRenderDrawColor( Renderer, 0xFF, 0xFF, 0xFF, 0xFF ); 
 
 
-  uint FEvent = 0;
+  //uint FEvent = 0;
   
   Win = this;
   WPaint.Create (this);
@@ -353,15 +354,15 @@ CWindow::SetSaveUnder (bool saveunder)
 
 };
 
-
-Bool predicate (Display *display,XEvent *event,XPointer arg)
+/*
+bool predicate (Display *display,XEvent *event,XPointer arg)
 {
   if((event->type == Expose)&&(event->xexpose.window == *((uint*)arg)))
     return 1;
   else
     return 0;
 };
-
+*/
 
 bool
 CWindow::WEvents (SDL_Event WEvent)

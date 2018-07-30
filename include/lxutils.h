@@ -30,7 +30,6 @@
 #include"clxrad.h"
 #include"mstring.h"
 #include<math.h>
-#include<Imlib2.h>
 
 //Compatibillity 
 #define CPWindow CWindow
@@ -77,13 +76,11 @@ class lxTextFile
 class lxImage
 {
 private:
-Imlib_Image Image;
 public:
 lxImage();
 ~lxImage();
 bool LoadFile(String fname);
 void Destroy();
-operator Imlib_Image() const;
 };
 
 class lxBitmap

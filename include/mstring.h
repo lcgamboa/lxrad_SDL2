@@ -56,15 +56,15 @@ public:
   int compare (const String & str) const;
   String Format(const char *fmt, ...) __attribute__((format (printf, 2, 3)));
   String Printf(const char *fmt, ...) __attribute__((format (printf, 2, 3)));
-  uint size (void) const;
-  uint length (void) const;
-  String substr (uint start, uint len) const;
+  unsigned int size (void) const;
+  unsigned int length (void) const;
+  String substr (unsigned int start, unsigned int len) const;
   int find (const String & str) const;
   int Contains(const String & str) const;
   int rfind (const String & str) const;
-  int erase (uint start, int num);
+  int erase (unsigned int start, int num);
   static String FromAscii(char * str);
-  int copy (char *str, uint sz) const;
+  int copy (char *str, unsigned int sz) const;
   bool  operator == (const String & str);
   String & operator = (const String & str);
   String & operator = (const char *str);
@@ -74,7 +74,7 @@ public:
   String & operator += (const String & str);
   String & operator += (const char *str);
   String & operator += (const char &str);
-  char &operator[] (const uint & index);
+  char &operator[] (const unsigned int & index);
   operator const char*() const;
   friend String operator + (const char *str1, const String & str2);
   friend String operator + (const char &str1, const String & str2);
@@ -93,15 +93,15 @@ public:
   void Create ();
   void Clear ();
   void AddLine (const String line);
-  void InsertLine (String line, uint linen);
-  void DelLine (uint linen);
+  void InsertLine (String line, unsigned int linen);
+  void DelLine (unsigned int linen);
   bool LoadFromFile (String fname);
   bool SaveToFile (String fname);
     CStringList & operator = (const CStringList & list);
   //propiedades
-  String GetLine (uint linen) const;
-  void SetLine (String line, uint linen);
-  uint GetLinesCount (void) const;
+  String GetLine (unsigned int linen) const;
+  void SetLine (String line, unsigned int linen);
+  unsigned int GetLinesCount (void) const;
 };
 
 
@@ -127,25 +127,25 @@ public:
   void Create ();
   void Clear ();
   void AddLine (string line);
-  void InsertLine (string line, uint linen);
-  void DelLine (uint linen);
+  void InsertLine (string line, unsigned int linen);
+  void DelLine (unsigned int linen);
   bool LoadFromFile (string fname);
   bool SaveToFile (string fname);
   //propiedades
-  string GetLine (uint linen) const;
-  void SetLine (string line, uint linen);
+  string GetLine (unsigned int linen) const;
+  void SetLine (string line, unsigned int linen);
   unsigned int GetLinesCount (void) const;
 };
 #endif
 
 String eqparse (String & str, String & arg);
-String strndel (const String & str, uint n);
-String strnadd (const String & str, char c, uint n);
+String strndel (const String & str, unsigned int n);
+String strnadd (const String & str, char c, unsigned int n);
 int atoi (const String & str);
 float atof (const String & str);
 bool atob (const String & str);
 String itoa (int n, const String & format = "%i");
-String itoa (uint n, const String & format = "%u");
+String itoa (unsigned int n, const String & format = "%u");
 String ftoa (float f, const String & format = "%f");
 String btoa (bool b);
 

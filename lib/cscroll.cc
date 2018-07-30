@@ -492,7 +492,7 @@ CScroll::button_release (SDL_Event event)
 void
 CScroll::mouse_move (SDL_Event event)
 {
-  SDL_Event Nevent = event;
+  //SDL_Event Nevent = event;
 /*
   while (XEventsQueued (Win->GetADisplay (), QueuedAfterReading) > 0)
     {

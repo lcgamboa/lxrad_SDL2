@@ -77,7 +77,6 @@ public:
   CStringList GetContext (void);
   void SetContext (CStringList context);
   void SetFocus (void);
-  XIC GetIC (void);
   void SetPixmapBuffer(bool pbuffer);
   bool GetPixmapBuffer(void);
   bool LoadXMLContextAndCreateChilds(String fname);

@@ -29,11 +29,9 @@
 #include<time.h>
 #include<unistd.h>
 
+#ifdef HAVE_LIBPTHREAD
 #include<pthread.h>
 pthread_mutex_t Display_Lock;
-
-#ifdef HAVE_LIBIMLIB2
-#include<Imlib2.h>
 #endif
 
 // CApplication__________________________________________________________
@@ -44,6 +42,10 @@ CApplication::CApplication (void)
   Title = "Program";
   AWindowCount = -1;
   AWindowList = NULL;
+  TimerCount = -1;
+  TimerList = NULL;
+  ThreadCount = -1;
+  ThreadList = NULL;
   Tag = 0;
   Exit = false;
 
@@ -51,13 +53,17 @@ CApplication::CApplication (void)
   HintTime=time(NULL);
   HintX=0;
   HintY=0;
+#ifdef HAVE_LIBPTHREAD
   pthread_mutex_init (&Display_Lock,NULL);
   pthread_mutex_lock (&Display_Lock);
+#endif
 };
 
 CApplication::~CApplication (void)
 {
+#ifdef HAVE_LIBPTHREAD
   pthread_mutex_destroy (&Display_Lock);  
+#endif
 };
 
 void
@@ -282,16 +288,13 @@ CApplication::Load (void)
   if (Exit)
     return;
   
+#ifdef HAVE_LIBPTHREAD
   pthread_mutex_unlock (&Display_Lock);
-
+#endif
   if (AWindowCount == -1)
     {
       eprint("No Windows!\n");
       eprint("...Application Finished\n");
-#ifdef _DEBUG
-      eprint("synchronize\n");
-      XSynchronize (ADisplay, false);
-#endif
       TTF_Quit();
       IMG_Quit();
       SDL_Quit();
@@ -309,22 +312,45 @@ CApplication::Load (void)
      ec=SDL_PollEvent(&AEvent);
      while(ec ==  0 )
      {
+
+#ifndef HAVE_LIBPTHREAD
+        for(int t=0; t <= TimerCount;t++)
+	{
+          TimerList[t]->SetTag(TimerList[t]->GetTag()+50);
+          if(TimerList[t]->GetTag() > TimerList[t]->GetTime())
+	  {
+             TimerList[t]->SetTag(TimerList[t]->GetTag()-TimerList[t]->GetTime());
+	     TimerList[t]->on_time();
+	  }	  
+	}
+
+        for(int t=0; t <= ThreadCount;t++)
+	{
+	   ThreadList[t]->on_run();
+	}
+#endif
 	usleep(50000);
 	ec=SDL_PollEvent(&AEvent);
 	if((HintControl)&&(time(NULL)-HintTime > 1))
 	{
           if(HintControl->GetHint().size() >0)
 	  {
-	  WHint(HintControl->GetHint(),
+	    WHint(HintControl->GetHint(),
     	    HintX+HintControl->GetWin()->GetX(),
      	    HintY+HintControl->GetWin()->GetY());
 	  };
 	  HintControl=NULL;
         }
      };
-      HintControl=NULL;
+     HintControl=NULL;
       
 
+#ifndef HAVE_LIBPTHREAD
+     for(int t=0; t <= ThreadCount;t++)
+     {
+       ThreadList[t]->on_run();
+     }
+#endif
       
       FWindow = AEvent.window.windowID;
 
@@ -348,10 +374,10 @@ CApplication::Load (void)
 	      if (Exit)
 		return;
 	      break;
-	    };
+	    }
       
-    };
-};
+    }
+}
 
 
 
@@ -449,3 +475,72 @@ CApplication::ProcessEvents (void)
   printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
 return 0;
 }
+
+#ifndef HAVE_LIBPTHREAD
+void
+CApplication::AddTimer (CTimer * tm)
+{
+  TimerCount++;
+  CTimer **TList;
+  TList = new CTimer *[TimerCount + 1];
+  for (int c = 0; c < TimerCount; c++)
+    TList[c] = TimerList[c];
+  TList[TimerCount] = tm;
+  if (TimerList)
+    delete[]TimerList;
+  TimerList = TList;
+  tm->SetTag(0);
+}
+
+void
+CApplication::RemoveTimer (CTimer *tm)
+{
+  if (TimerCount >= 0)
+    {
+          int n = 0;
+	  for (int f = 0; f <= TimerCount; f++)
+	    if (TimerList[f] == tm)
+	      n = f;
+	  if (n != 0)
+	    {
+	      for (int c = n; c < TimerCount; c++)
+		TimerList[c] = TimerList[c + 1];
+	      TimerList[TimerCount] = NULL;
+	      TimerCount--;
+	    }
+    }
+}
+
+void
+CApplication::AddThread (CThread * td)
+{
+  ThreadCount++;
+  CThread **TList;
+  TList = new CThread *[ThreadCount + 1];
+  for (int c = 0; c < ThreadCount; c++)
+    TList[c] = ThreadList[c];
+  TList[ThreadCount] = td;
+  if (ThreadList)
+    delete[]ThreadList;
+  ThreadList = TList;
+}
+
+void
+CApplication::RemoveThread (CThread *td)
+{
+  if (ThreadCount >= 0)
+    {
+          int n = 0;
+	  for (int f = 0; f <= ThreadCount; f++)
+	    if (ThreadList[f] == td)
+	      n = f;
+	  if (n != 0)
+	    {
+	      for (int c = n; c < ThreadCount; c++)
+		ThreadList[c] = ThreadList[c + 1];
+	      ThreadList[ThreadCount] = NULL;
+	      ThreadCount--;
+	    }
+    }
+}
+#endif

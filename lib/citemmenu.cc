@@ -157,8 +157,8 @@ CItemMenu::button_press (SDL_Event event)
 
   if ((SubMenu != NULL) && ((SubMenu->GetChildCount ()) != -1))
     {
-      Window child;
-      if (!SubMenu->GetWWindow () != 0)
+      //Window child;
+      if ((!SubMenu->GetWWindow ()) != 0)
 	{
 	  //Application.ACreateWindow (SubMenu,Win);
 	  Application->ACreateWindow (SubMenu);

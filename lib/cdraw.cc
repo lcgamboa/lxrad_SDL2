@@ -28,18 +28,10 @@
 #include"../include/cmessage.h"
 #include"../include/capplication.h"
 
-#include"xevents.cc"
 
+#ifdef HAVE_LIBPTHREAD
 #include<pthread.h>
-//extern pthread_mutex_t Display_Lock;
-
-#ifdef HAVE_LIBIMLIB2
-#include<Imlib2.h>
-//extern ImlibData* AID;
-#endif
-
-#ifdef HAVE_LIBXPM    
-#include<X11/xpm.h>
+extern pthread_mutex_t Display_Lock;
 #endif
 
 // CDraw_____________________________________________________________
@@ -102,6 +94,9 @@ CDraw::SetWidth (uint width)
 {
   if(Paint != NULL)
   {
+#ifdef HAVE_LIBPTHREAD
+//      pthread_mutex_lock (&Display_Lock);
+#endif
       if (CPixmap != NULL) SDL_DestroyTexture( CPixmap);
       CPixmap = SDL_CreateTexture(GetWin()->GetRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, Height );
     
@@ -111,7 +106,9 @@ CDraw::SetWidth (uint width)
       }
 
       Canvas.SetDrawIn(CPixmap);
-      //pthread_mutex_unlock (&Display_Lock);
+#ifdef HAVE_LIBPTHREAD
+//      pthread_mutex_unlock (&Display_Lock);
+#endif
   };
   CControl::SetWidth(width);
 };
@@ -121,6 +118,9 @@ CDraw::SetHeight (uint height)
 {
   if(Paint != NULL)
   {
+#ifdef HAVE_LIBPTHREAD
+//      pthread_mutex_lock (&Display_Lock);
+#endif
       if (CPixmap != NULL) SDL_DestroyTexture( CPixmap);
       CPixmap = SDL_CreateTexture(GetWin()->GetRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Width, height );
     
@@ -129,7 +129,9 @@ CDraw::SetHeight (uint height)
         exit(1);
       }
       Canvas.SetDrawIn(CPixmap);
-      //pthread_mutex_unlock (&Display_Lock);
+#ifdef HAVE_LIBPTHREAD
+//      pthread_mutex_unlock (&Display_Lock);
+#endif
   };
   CControl::SetHeight(height);
 };

@@ -60,10 +60,10 @@ CText::Draw (void)
   TTF_SizeText(CFont, Lines.GetLine (CursorLin).c_str (), &x,NULL); 
   int y = 12;
   Paint->Pen.SetColor (Color);
-  Paint->Pen.SetPen (GXxor);
+  Paint->Pen.SetPen (0);
   Paint->Line ( 4 + x, (13 * (CursorLin - 1) + 4), 4 + x,
 		    (13 * (CursorLin - 1) + 4) + y);
-  Paint->Pen.SetPen (GXcopy);
+  Paint->Pen.SetPen (0);
   CControl::Draw ();
 };
 
@@ -86,10 +86,10 @@ CText::DrawLine (void)
   TTF_SizeText(CFont, Lines.GetLine (CursorLin).c_str (), &x,NULL); 
   int y = 12;
   Paint->Pen.SetColor (Color);
-  Paint->Pen.SetPen (GXxor);
+  Paint->Pen.SetPen (0);
   Paint->Line ( 4 + x, (13 * (CursorLin - 1) + 4), 4 + x,
 		    (13 * (CursorLin - 1) + 4) + y);
-  Paint->Pen.SetPen (GXcopy);
+  Paint->Pen.SetPen (0);
   Paint->LowerFrame ( 0, 0, Width, Height);
   CControl::Draw ();
 };

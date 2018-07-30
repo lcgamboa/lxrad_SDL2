@@ -155,7 +155,7 @@ fgetline (FILE* file, String & str)
   fgets (line,5000,file);
  
   
-  if(line != NULL)
+  if(line[0] != 0)
     line[strlen(line)-1]='\0';
   else
     line[0]='\0';

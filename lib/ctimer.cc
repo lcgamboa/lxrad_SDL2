@@ -28,10 +28,12 @@
 #include"../include/ctimer.h"
 #include"../include/capplication.h"
 #include <sys/time.h>
-
-#include<pthread.h>
 #include<unistd.h>
+
+#ifdef HAVE_LIBPTHREAD
+#include<pthread.h>
 extern pthread_mutex_t Display_Lock;
+#endif
 
 // CTimer___________________________________________________________
 
@@ -140,18 +142,6 @@ thread1 (void *arg)
 };
 #endif
 
-/*
-void *
-CTimer::thread (void *arg)
-{
-  CTimer *timer = static_cast < CTimer * >(arg);
-  for (;;)
-    {
-      sleep (timer->GetTime ());
-      timer->on_time ();
-    };
-};
-*/
 
 //propiedades
 
@@ -170,21 +160,27 @@ CTimer::GetTime (void)
 void
 CTimer::SetRunState (bool run)
 {
-#ifdef HAVE_LIBPTHREAD	
   if (Run != run)
     {
       if (run)
       {
+#ifdef HAVE_LIBPTHREAD	
 	  pthread_create (&Th, NULL, thread1, (void *) this);
+#else
+	  Application->AddTimer(this);
+#endif  
       }
       else
 	{
+#ifdef HAVE_LIBPTHREAD	
 	  pthread_cancel (Th);
 	  pthread_join (Th, NULL);
+#else
+	  Application->RemoveTimer(this);
+#endif  
 	};
       Run = run;
     };
-#endif  
 };
 
 bool

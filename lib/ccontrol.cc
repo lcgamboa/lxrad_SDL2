@@ -53,11 +53,11 @@ CControl::CControl (void)
   GChanges=true;
   Tag = 0;
   //OnFocus=false;
-  CanExecuteEvent = True;
-  CanExecuteEventOld = True;
-  CanFocus = True;
-  Enable = True;
-  Pen = GXcopy;
+  CanExecuteEvent = true;
+  CanExecuteEventOld = true;
+  CanFocus = true;
+  Enable = true;
+  Pen = 0;
   FOwner = NULL;
   PointerOn = false;
   FontName = "FreeSans.ttf";
@@ -1028,8 +1028,10 @@ CControl::button_press (SDL_Event event)
   if ((event.button.button == 3) && (PopupMenu != NULL)&&((PopupMenu->GetChildCount ()) != -1))
     {
       int x, y;
-      Window child;
-      if (!PopupMenu->GetWWindow () != 0)
+      //Window child;
+      x=event.button.x;
+      y=event.button.y;
+      if ((!PopupMenu->GetWWindow ()) != 0)
 	{
 	  //Application.ACreateWindow (SubMenu,Win);
 	  Application->ACreateWindow (PopupMenu);

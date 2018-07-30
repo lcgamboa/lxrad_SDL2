@@ -29,6 +29,7 @@
 #include"clxrad.h"
 #include"cwindow.h"
 #include"ctimer.h"
+#include"cthread.h"
 #include"chint.h"
 #include<locale.h>
 
@@ -40,23 +41,30 @@ private:
   SDL_Event AEvent, LAEvent;
   CWindow **AWindowList;
   int AWindowCount;
+  CTimer **TimerList;
+  int TimerCount;
+  CThread **ThreadList;
+  int ThreadCount;
   timeval LastDrawTime;
   bool Exit;
-  Window FWindow;
+  unsigned int FWindow;
   CControl* HintControl;
-  Time HintTime;
+  long int HintTime;
   int HintX,HintY;
   int Tag;
   String Title;
 public:
     CApplication (void);
    ~CApplication (void);
-  Screen *GetAScreen (void);
   void Start (void);
   void ACreateWindow (CWindow * AWindow,CWindow* window=NULL);
   void ADestroyWindow (CWindow * AWindow);
   bool ProcessEvents (CWindow * AWindow);
   bool ProcessEvents (void);
+  void AddTimer(CTimer *tm);	
+  void RemoveTimer(CTimer *tm);	
+  void AddThread(CThread *td);	
+  void RemoveThread(CThread *td);	
   void Draw (void);
   void Update (void);
   void Load (void);
@@ -69,17 +77,7 @@ public:
   void SetTag (int x);
   int GetTag ();
   String GetTitle ();
-  Window *GetADefaultRootWindow (void);
-  int *GetADepth (void);
-  unsigned int *GetAWhiteColor (void);
-  unsigned int *GetABlackColor (void);
-  Atom *GetAWMProtocols (void);
-  Atom *GetAWMDeleteWindow (void);
-  Atom *GetAWMTakeFocus (void);
   void SetHintControl(CControl* hcontrol,int x,int y);
-  void AddToColorTable (String colorname, SDL_Color color, SDL_Color displaycolor);
-  bool XSearchInColorTable (String name, SDL_Color * color);
-  bool XSearchInColorTable (SDL_Color * color);
 };
 
 

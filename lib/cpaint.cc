@@ -40,7 +40,6 @@ CPaint::CPaint (void)
   DoCalcRXY=true;
   Scalex=1.0;
   Scaley=1.0;
-  Agc=0;
 };
   
 void 
@@ -393,14 +392,12 @@ void
 CPaint::PutBitmap (lxBitmap* bitmap,int x,int y)
 {
   printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
- /*   
-  Window root;
-  int rx,ry;
-  unsigned int rw,rh,rb,rd;
-  XGetGeometry(Disp, *bitmap,&root,&rx,&ry,&rw,&rh,&rb,&rd);
-  
-  XCopyArea (Disp, *bitmap, DrawIn,  Agc, 0, 0, rw, rh ,RX+x, RY+y);
-  */
+    SDL_Rect DestR;
+
+    DestR.x = RX+x;
+    DestR.y = RY+y;
+    SDL_QueryTexture(bitmap->GetPixmap(), NULL, NULL, &DestR.w, &DestR.h);
+    SDL_RenderCopy( Win->GetRenderer(), bitmap->GetPixmap(), NULL, &DestR);
 }
 
 void 
