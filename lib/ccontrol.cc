@@ -1013,7 +1013,7 @@ CControl::mouse_move (SDL_Event event)
 {
 	//FIXME inverted coords
   if ((FOwner) && (EvMouseMove))
-    (FOwner->*EvMouseMove) (this, event.motion.y, event.motion.x);
+    (FOwner->*EvMouseMove) (this, 0, event.motion.y, event.motion.x, event.motion.state);
 };
 
 void
@@ -1093,16 +1093,14 @@ void
 CControl::key_press (SDL_Event event)
 {
   if ((FOwner) && (EvKeyboardPress))
-    (FOwner->*EvKeyboardPress) (this, event.key.keysym.sym, 0,
-			      0, event.key.state);
+    (FOwner->*EvKeyboardPress) (this, event.key.keysym.sym, 0, event.key.state);
 };
 
 void
 CControl::key_release (SDL_Event event)
 {
   if ((FOwner) && (EvKeyboardRelease))
-    (FOwner->*EvKeyboardRelease) (this, event.key.keysym.sym, 0,
-				0, event.key.state);
+    (FOwner->*EvKeyboardRelease) (this, event.key.keysym.sym, 0, event.key.state);
 };
 
 

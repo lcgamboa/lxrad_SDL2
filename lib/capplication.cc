@@ -331,7 +331,7 @@ CApplication::MainLoad (void)
  
      //wait hint loop	    
      ec=SDL_PollEvent(&AEvent);
-     while(ec ==  0 )
+     if(ec ==  0 )
      {
 
 #ifndef HAVE_LIBPTHREAD
@@ -351,7 +351,7 @@ CApplication::MainLoad (void)
 	}
 #endif
 	usleep(50000);
-	ec=SDL_PollEvent(&AEvent);
+
 	if((HintControl)&&(time(NULL)-HintTime > 1))
 	{
           if(HintControl->GetHint().size() >0)
@@ -362,7 +362,9 @@ CApplication::MainLoad (void)
 	  };
 	  HintControl=NULL;
         }
-     };
+
+	return;
+     }
      HintControl=NULL;
       
 

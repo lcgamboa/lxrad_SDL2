@@ -3,7 +3,7 @@ include ../Makefile.Conf
 
 datadir=assets
 
-CFLAGS= -D_JS -s WASM=0 -O2 -D_Longlong="long long" -s TOTAL_MEMORY=32MB -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png","bmp"]' -s USE_SDL_TTF=2 --preload-file assets
+CFLAGS= -D_ONEWIN -D_JS -s WASM=0 -O2 -D_Longlong="long long" -s TOTAL_MEMORY=32MB -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png","bmp"]' -s USE_SDL_TTF=2 --preload-file assets
 LIBS =  -lSDL2_ttf  -lSDL2_image  -lSDL2
 
 CC=em++
@@ -37,8 +37,8 @@ LIBSHSONAME := $(LIBNAME).so.$(LIBMAINVER)
 
 LIBTARGETS := $(LIBSHLIBNAME) $(LIBSHSONAME) $(LIBSHBASENAME)
 
-LIBSHOBJECTS := capplication.lo cbutton.lo cedit.lo cdraw.lo cdialog.lo cfiledialog.lo cpen.lo cpaint.lo cobject.lo ccontrol.lo citemmenu.lo cmenu.lo cpmenu.lo clabel.lo ctext.lo cwindow.lo cmessage.lo cinput.lo cbox.lo ccheckbox.lo ctoolbutton.lo cxpmbutton.lo ctimer.lo clist.lo cscroll.lo cfilelist.lo ccombodialog.lo ccombo.lo medit.lo chint.lo chtml.lo ctogglebutton.lo cgauge.lo cstatusbar.lo cspind.lo ccolordialog.lo cthread.lo mstring.lo lxutils.lo
-LIBSTOBJECTS := capplication.ao cbutton.ao cedit.ao cdraw.ao cdialog.ao cfiledialog.ao cpen.ao cpaint.ao cobject.ao ccontrol.ao citemmenu.ao cmenu.ao cpmenu.ao clabel.ao ctext.ao cwindow.ao cmessage.ao cinput.ao cbox.ao ccheckbox.ao ctoolbutton.ao cxpmbutton.ao ctimer.ao clist.ao cscroll.ao cfilelist.ao ccombodialog.ao ccombo.ao medit.ao chint.ao chtml.ao ctogglebutton.ao cgauge.ao cstatusbar.ao cspind.ao ccolordialog.ao cthread.ao mstring.ao lxutils.ao
+LIBSHOBJECTS := capplication.lo cowindow.lo cbutton.lo cedit.lo cdraw.lo cdialog.lo cfiledialog.lo cpen.lo cpaint.lo cobject.lo ccontrol.lo citemmenu.lo cmenu.lo cpmenu.lo clabel.lo ctext.lo cwindow.lo cmessage.lo cinput.lo cbox.lo ccheckbox.lo ctoolbutton.lo cxpmbutton.lo ctimer.lo clist.lo cscroll.lo cfilelist.lo ccombodialog.lo ccombo.lo medit.lo chint.lo chtml.lo ctogglebutton.lo cgauge.lo cstatusbar.lo cspind.lo ccolordialog.lo cthread.lo mstring.lo lxutils.lo
+LIBSTOBJECTS := capplication.ao cowindow.ao cbutton.ao cedit.ao cdraw.ao cdialog.ao cfiledialog.ao cpen.ao cpaint.ao cobject.ao ccontrol.ao citemmenu.ao cmenu.ao cpmenu.ao clabel.ao ctext.ao cwindow.ao cmessage.ao cinput.ao cbox.ao ccheckbox.ao ctoolbutton.ao cxpmbutton.ao ctimer.ao clist.ao cscroll.ao cfilelist.ao ccombodialog.ao ccombo.ao medit.ao chint.ao chtml.ao ctogglebutton.ao cgauge.ao cstatusbar.ao cspind.ao ccolordialog.ao cthread.ao mstring.ao lxutils.ao
 
 #LIBHEADERFILES := ../include/class.h ../include/controls.h 
 

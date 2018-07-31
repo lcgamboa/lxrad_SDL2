@@ -36,8 +36,7 @@ public:
   CButton button1, button2;
   CLabel string1;
   bool Return;
-  void ButtonRelease1 (CControl * control, uint button, uint x, uint y,
-		       uint state);
+  void ButtonRelease1 (CControl * control, uint button, uint x, uint y, uint state);
     CDialog (void);
 };
 
