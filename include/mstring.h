@@ -138,6 +138,9 @@ public:
 };
 #endif
 
+String xml_out (String name, String type, String value);
+void xml_in (String data, String & name, String & type, String & value);
+
 String eqparse (String & str, String & arg);
 String strndel (const String & str, unsigned int n);
 String strnadd (const String & str, char c, unsigned int n);
@@ -151,6 +154,9 @@ String btoa (bool b);
 
 String uppercase (const String & str);
 String lowercase (const String & str);
+
+String basename (const String & str);
+String dirname (const String & str);
 
 bool fgetline (FILE* file, String & str);
 

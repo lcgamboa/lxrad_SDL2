@@ -26,12 +26,16 @@
 #ifndef CMESSAGE
 #define CMESSAGE
 
-#include"cwindow.h"
 #include"cbutton.h"
 #include"clabel.h"
 
-
+#ifdef _ONEWIN
+#include"cowindow.h"
+class CMessage:public COWindow
+#else
+#include"cwindow.h"
 class CMessage:public CWindow
+#endif	       
 {
 public:
   CButton button1;

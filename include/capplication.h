@@ -68,6 +68,7 @@ public:
   void Draw (void);
   void Update (void);
   void Load (void);
+  void MainLoad (void);
   int Aargc;
   char **Aargv;
   bool GetExit (void);

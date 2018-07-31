@@ -40,7 +40,7 @@ class CWindow:public CControl
 {
 protected:
   bool ORedirect;  
-  SDL_Surface* WPixmap;
+  SDL_Texture* WPixmap;
   uint PWidth,PHeight;
   String Title;
   unsigned int XMouse, YMouse;
@@ -61,8 +61,8 @@ public:
   bool HasMenu;//FIXME tornar privado
     CWindow (void);
    ~CWindow (void);
-  void Draw (void);
-  void Destroy (void);
+  virtual void Draw (void);
+  virtual void Destroy (void);
   void DestroyChild (CControl * control);
   void DestroyChilds (void);
   virtual void WCreate (CWindow* window = NULL);
@@ -102,7 +102,7 @@ public:
   CControl *GetControlOnFocus (void);
   void SetControlOnFocus (CControl * controlonfocus);
   CControl *GetLastControl (void);
-  SDL_Surface* GetPixmap(void);
+  SDL_Texture* GetPixmap(void);
   void SetLastControl (CControl * lastcontrol);
   void CirculateFocus (bool asc);
   //operator

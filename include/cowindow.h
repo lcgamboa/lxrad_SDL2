@@ -23,53 +23,32 @@
    For e-mail suggestions :  lcgamboa@yahoo.com
    ######################################################################## */
 
+#ifndef COWINDOW
+#define COWINDOW
 
-#include"../include/cmessage.h"
+#include"cwindow.h"
 
-
-// CMessage__________________________________________________________
-
-
-CMessage::CMessage (void)
+class COWindow:public CWindow
 {
-  SetClass ("CMessage");
-  SetX (320);
-  SetY (240);
-  SetWidth (285);
-  SetHeight (115);
-  SetName ("Message");
-  //button1
-  button1.SetText ("OK");
-  button1.SetX (110);
-  button1.SetY (75);
-  button1.SetFOwner (this);
-  button1.EvMouseButtonRelease = EVMOUSEBUTTONRELEASE & CMessage::ButtonRelease1;
-  CreateChild (&button1);
-  //string1
-  string1.SetText ("OK");
-  string1.SetX (0);
-  string1.SetY (0);
-  string1.SetWidth (285);
-  string1.SetHeight (75);
-  CreateChild (&string1);
+protected:
+public:
+    COWindow (void);
+   ~COWindow (void);
+  void Draw (void);
+  void WCreate (CWindow* window = NULL);
+  void WDestroy (void);
+  void Destroy (void);
+
+  void Show (void);
+  void ShowExclusive (void);
+  void Hide (void);
+  void HideExclusive (void);
+/*
+  void Update (void);
+  void Update (SDL_Rect Reg);
+*/
+//propiedades
 };
 
-void
-CMessage::ButtonRelease1 (CControl * control, uint button, uint x, uint y,
-			  uint state)
-{
-  HideExclusive ();
-};
 
-void
-Message (String str)
-{
-  CMessage *wmessage = new CMessage;
-  wmessage->string1.SetText (str);
-  wmessage->WCreate ();
-  wmessage->Draw ();
-  wmessage->ShowExclusive ();
-  wmessage->SetCanDestroy (true);
-  wmessage->WDestroy ();
-  delete wmessage;
-};
+#endif

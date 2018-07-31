@@ -34,6 +34,9 @@
 pthread_mutex_t Display_Lock;
 #endif
 
+#ifdef _JS
+#include <emscripten.h>
+#endif
 // CApplication__________________________________________________________
 
 
@@ -281,6 +284,13 @@ CApplication::ProcessEvents (CWindow * AWindow)
 
 
 
+#ifdef _JS
+void loop_handler(void*)
+{
+    Application->MainLoad();
+};
+#endif
+
 
 void
 CApplication::Load (void)
@@ -302,12 +312,23 @@ CApplication::Load (void)
     };
 
   int wn = 0;
-  int ec;   //events in queue
-
   FWindow = SDL_GetWindowID(AWindowList[wn]->GetWWindow ());
+#ifdef _JS
+emscripten_set_main_loop_arg(loop_handler, NULL, -1, 1);
+#else 
   for (; AWindowList != NULL;)
     {
+      MainLoad();
+    }
+#endif
+}
 
+void
+CApplication::MainLoad (void)
+{
+  int wn = 0;
+  int ec;   //events in queue
+ 
      //wait hint loop	    
      ec=SDL_PollEvent(&AEvent);
      while(ec ==  0 )
@@ -376,7 +397,6 @@ CApplication::Load (void)
 	      break;
 	    }
       
-    }
 }
 
 
