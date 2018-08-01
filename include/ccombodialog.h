@@ -30,7 +30,14 @@
 #include"ccontrol.h"
 #include"clist.h"
 
+
+#ifdef _ONEWIN
+#include"cowindow.h"
+class CComboDialog:public COWindow
+#else
+#include"cwindow.h"
 class CComboDialog:public CWindow
+#endif
 {
 public:
   CList list1;

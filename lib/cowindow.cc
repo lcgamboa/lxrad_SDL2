@@ -54,14 +54,18 @@ COWindow::WCreate (CWindow* window)
   {
     WParent=window;
   }
+  else
+  {
+    WParent=Application->GetAWindow (0);
+  }
   
   Win = this;
-  WWindow=Application->GetAWindow (0)->GetWWindow ();
-  Renderer=Application->GetAWindow (0)->GetRenderer ();
+  WWindow=WParent->GetWWindow ();
+  Renderer=WParent->GetRenderer ();
   
  // if(ORedirect)
      
-  WPixmap=  SDL_CreateTexture(Win->GetRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Width, Height );
+  //WPixmap=  SDL_CreateTexture(Win->GetRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Width, Height );
 
   
  
@@ -94,20 +98,24 @@ void
 COWindow::Draw(void)
 {
   if(Paint == NULL)return;
-  SDL_SetRenderTarget(Renderer,WPixmap);
+
+  
+  //SDL_SetRenderTarget(Renderer,WPixmap);
   Paint->InitDraw(this);
   Paint->Pen.SetColor(Color);
   Paint->Rectangle ( 0, 0, Width, Height);
+  Paint->RaiserFrame ( 0, 0, Width, Height, 1);
   CControl::Draw ();
-  
+  /*
   SDL_SetRenderTarget(Renderer,NULL);
   SDL_Rect DestR;
 
-  DestR.x = (Win->GetWidth ()-Width)/2;
-  DestR.y = (Win->GetHeight ()- Height)/2;
+  DestR.x = X;
+  DestR.y = Y;
   DestR.w = Width;
   DestR.h = Height;
   SDL_RenderCopy( Renderer, WPixmap, NULL, &DestR); 
+  */
   SDL_RenderPresent( Renderer );
 }
 
@@ -144,6 +152,7 @@ COWindow::Hide (void)
   if (Win != NULL)
     {
       SetVisible (false);
+      WParent->Draw();
     };
 };
 

@@ -27,10 +27,15 @@
 #define CPMENUW
 
 #include"ccontrol.h"
-#include"cwindow.h"
 #include"citemmenu.h"
 
+#ifdef _ONEWIN
+#include"cowindow.h"
+class CPMenu:public COWindow 
+#else
+#include"cwindow.h"
 class CPMenu:public CWindow 
+#endif	     
 {
 private:
   bool Press;

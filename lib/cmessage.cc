@@ -25,7 +25,7 @@
 
 
 #include"../include/cmessage.h"
-
+#include"../include/capplication.h"
 
 // CMessage__________________________________________________________
 
@@ -66,6 +66,10 @@ Message (String str)
 {
   CMessage *wmessage = new CMessage;
   wmessage->string1.SetText (str);
+  
+  wmessage->SetX((Application->GetAWindow(0)->GetWidth ()- wmessage->GetWidth())/2);
+  wmessage->SetY((Application->GetAWindow(0)->GetHeight ()- wmessage->GetHeight())/2);
+ 
   wmessage->WCreate ();
   wmessage->Draw ();
   wmessage->ShowExclusive ();

@@ -121,6 +121,9 @@ CApplication::Start (void)
 void
 CApplication::ACreateWindow (CWindow * AWindow,CWindow *window)
 {
+#ifdef _ONEWIN
+  if (AWindowCount != -1)return;
+#endif
   if (Exit)
     {
       AWindow->CControl::Destroy ();
