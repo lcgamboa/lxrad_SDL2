@@ -89,10 +89,10 @@ public:
   bool GetCanDestroy (void);
   void SetOverrideRedirect (bool redirect);
   void SetSaveUnder (bool saveunder);
-  void SetX (int x);
-  void SetY (int y);
-  void SetWidth (uint width);
-  void SetHeight (uint height);
+  virtual void SetX (int x);
+  virtual void SetY (int y);
+  virtual void SetWidth (uint width);
+  virtual void SetHeight (uint height);
   void SetXMouse (uint x);
   uint GetXMouse (void);
   void SetYMouse (uint y);

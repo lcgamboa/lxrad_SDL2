@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -28,14 +28,18 @@
 
 #include<sys/stat.h>
 #include<errno.h>
-#include"cwindow.h"
 #include"cbutton.h"
 #include"cedit.h"
 #include"cfilelist.h"
 #include"capplication.h"
 
-
+#ifdef _ONEWIN
+#include"cowindow.h"
+class CFileDialog:public COWindow
+#else
+#include"cwindow.h"
 class CFileDialog:public CWindow
+#endif
 {
 private:
   bool CanDestroyChilds;

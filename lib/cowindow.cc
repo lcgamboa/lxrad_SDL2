@@ -97,7 +97,7 @@ COWindow::Destroy (void)
 void
 COWindow::Draw(void)
 {
-  if(Paint == NULL)return;
+  if((Paint == NULL)||(Visible == false))return;
 
   
   //SDL_SetRenderTarget(Renderer,WPixmap);
@@ -162,3 +162,28 @@ COWindow::HideExclusive (void)
   CanExitExclusive = false;
   Hide ();
 };
+
+void
+COWindow::SetX (int x)
+{
+  CControl::SetX (x);
+};
+
+void
+COWindow::SetY (int y)
+{
+  CControl::SetY (y);
+};
+
+void
+COWindow::SetWidth (uint width)
+{
+  CControl::SetWidth (width);
+};
+
+void
+COWindow::SetHeight (uint height)
+{
+  CControl::SetHeight (height);
+};
+

@@ -43,10 +43,10 @@ public:
   void ShowExclusive (void);
   void Hide (void);
   void HideExclusive (void);
-/*
-  void Update (void);
-  void Update (SDL_Rect Reg);
-*/
+  void SetX (int x);
+  void SetY (int y);
+  void SetWidth (uint width);
+  void SetHeight (uint height);
 //propiedades
 };
 

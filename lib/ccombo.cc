@@ -254,22 +254,30 @@ CCombo::TButtonPress (CControl * control, uint button, uint x, uint y,
 
   dlist1.SetX (0);
   dlist1.SetY (0);
-
+/*
   if (!dlist1.GetWWindow ())
     {
       //Application.ACreateWindow (&dlist1,Win);
       Application->ACreateWindow (&dlist1);
     };
+*/
 
 //  XTranslateCoordinates (Win->GetADisplay (), Win->GetWWindow (),
 //			 dlist1.GetWWindow (), GetX (), GetY (), &wx, &wy,
 //			 &child);
+#ifdef _ONEWIN    
+  wx=X;
+  wy=Y+Height;	
+#else
   wx=Win->GetX()+X;
   wy=Win->GetY()+Y+Height;	  
+#endif  
   dlist1.SetX (wx);
   dlist1.SetY (wy + GetHeight () + 1);
 
-  dlist1.list1.Draw ();
+  dlist1.WCreate (Win);
+    
+  //dlist1.list1.Draw ();
   dlist1.ShowExclusive ();
 
   dlist1.WDestroy ();

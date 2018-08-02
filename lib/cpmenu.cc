@@ -82,12 +82,18 @@ CPMenu::Draw (void)
   if (WWindow != 0)
     {
       Paint->InitDraw (this);
+#ifndef _ONEWIN      
       SDL_SetWindowSize( WWindow, Width, Height);
-      CreatePixmap();
-      Paint->Pen.SetColor (Color);
-      Paint->Rectangle ( 2, 2, Width - 2, Height - 2);
-      Paint->RaiserFrame ( 0, 0, Width, Height);
-      CControl::Draw ();
+#endif
+      //CreatePixmap();
+      //Paint->Pen.SetColor (Color);
+      //Paint->Rectangle ( 2, 2, Width - 2, Height - 2);
+      //Paint->RaiserFrame ( 0, 0, Width, Height);
+#ifdef _ONEWIN       
+      COWindow::Draw ();
+#else
+      CControl::Draw (); 
+#endif      
     };
 };
 
