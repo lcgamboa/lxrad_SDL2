@@ -222,10 +222,9 @@ CApplication::ProcessEvents (CWindow * AWindow)
      //wait hint loop	    
 
      ec=SDL_PollEvent(&AEvent);
-     while(ec ==  0 )
+     if(ec ==  0 )
      {
 	usleep(50000);
-        ec=SDL_PollEvent(&AEvent);
 	if((HintControl)&&(time(NULL)-HintTime > 1))
 	{
           if(HintControl->GetHint().size() >0)
@@ -236,7 +235,8 @@ CApplication::ProcessEvents (CWindow * AWindow)
 	  };
 	  HintControl=NULL;
         }
-     };
+       return false;
+     }
       HintControl=NULL;
       
       
