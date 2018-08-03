@@ -34,6 +34,7 @@
 //extern pthread_mutex_t Display_Lock;
 #endif
 
+
 //CWindow _______________________________________________________________
 
 CWindow::CWindow (void)
@@ -259,13 +260,14 @@ CWindow::Show (void)
     };
 };
 
+
 void
 CWindow::ShowExclusive (void)
 {
   Show ();
   CanExitExclusive = true;
-  while (CanExitExclusive)
-    Application->ProcessEvents (this);
+
+  Application->SetModalWindow (this);
 };
 
 void
@@ -282,6 +284,7 @@ void
 CWindow::HideExclusive (void)
 {
   CanExitExclusive = false;
+  Application->SetModalWindow (NULL);
   Hide ();
 };
 

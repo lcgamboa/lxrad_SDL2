@@ -39,33 +39,32 @@ pthread_mutex_t Display_Lock;
 #endif
 // CApplication__________________________________________________________
 
-
 CApplication::CApplication (void)
 {
-  Title = "Program";
-  AWindowCount = -1;
-  AWindowList = NULL;
-  TimerCount = -1;
-  TimerList = NULL;
-  ThreadCount = -1;
-  ThreadList = NULL;
-  Tag = 0;
-  Exit = false;
+ Title = "Program";
+ AWindowCount = -1;
+ AWindowList = NULL;
+ TimerCount = -1;
+ TimerList = NULL;
+ ThreadCount = -1;
+ ThreadList = NULL;
+ Tag = 0;
+ Exit = false;
 
-  HintControl=NULL;
-  HintTime=time(NULL);
-  HintX=0;
-  HintY=0;
+ HintControl = NULL;
+ HintTime = time (NULL);
+ HintX = 0;
+ HintY = 0;
 #ifdef HAVE_LIBPTHREAD
-  pthread_mutex_init (&Display_Lock,NULL);
-  pthread_mutex_lock (&Display_Lock);
+ pthread_mutex_init (&Display_Lock, NULL);
+ pthread_mutex_lock (&Display_Lock);
 #endif
 };
 
 CApplication::~CApplication (void)
 {
 #ifdef HAVE_LIBPTHREAD
-  pthread_mutex_destroy (&Display_Lock);  
+ pthread_mutex_destroy (&Display_Lock);
 #endif
 };
 
@@ -73,344 +72,312 @@ void
 CApplication::Start (void)
 {
 
-   
-  eprint("Application init ...\n");
- if( SDL_Init( SDL_INIT_VIDEO ) < 0 ) 
-   { 
-      printf( "SDL could not initialize! SDL_Error: %s\n", SDL_GetError() ); 
-      eprint("Error!: Can't open  Display \n");
-      eprint("...Application Finished\n");
-      Exit = true;
-      return;
-    };
 
-     //Initialize PNG loading 
-    int imgFlags = IMG_INIT_PNG; 
-    if( !( IMG_Init( imgFlags ) & imgFlags ) ) 
-    { 
-      printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
-      eprint("...Application Finished\n");
-      Exit = true;
-      return; 
-    }
+ eprint ("Application init ...\n");
+ if (SDL_Init (SDL_INIT_VIDEO) < 0)
+  {
+   printf ("SDL could not initialize! SDL_Error: %s\n", SDL_GetError ());
+   eprint ("Error!: Can't open  Display \n");
+   eprint ("...Application Finished\n");
+   Exit = true;
+   return;
+  };
 
-    //Initialize SDL_ttf
-    if( TTF_Init() == -1 )
-    {
-      printf( "SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError() );
-      Exit = true;
-      return; 
-    }    
-    
+ //Initialize PNG loading 
+ int imgFlags = IMG_INIT_PNG;
+ if (!(IMG_Init (imgFlags) & imgFlags))
+  {
+   printf ("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError ());
+   eprint ("...Application Finished\n");
+   Exit = true;
+   return;
+  }
+
+ //Initialize SDL_ttf
+ if (TTF_Init () == -1)
+  {
+   printf ("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError ());
+   Exit = true;
+   return;
+  }
+
 
 #ifdef _DEBUG
-  eprint("synchronize\n");
-  XSynchronize (ADisplay, true);
+ eprint ("synchronize\n");
+ XSynchronize (ADisplay, true);
 #else
-  if (setlocale (LC_CTYPE, "") == NULL)
-    {
-      eprint("Error : setlocale() !\n");
-      Exit = true;
-      return;
-    };
+ if (setlocale (LC_CTYPE, "") == NULL)
+  {
+   eprint ("Error : setlocale() !\n");
+   Exit = true;
+   return;
+  };
 
 #endif
 
 };
 
 void
-CApplication::ACreateWindow (CWindow * AWindow,CWindow *window)
+CApplication::ACreateWindow (CWindow * AWindow, CWindow *window)
 {
 #ifdef _ONEWIN
-  if (AWindowCount != -1)return;
+ if (AWindowCount != -1)return;
 #endif
-  if (Exit)
-    {
-      AWindow->CControl::Destroy ();
-      return;
-    };
-  if (AWindowCount == -1)
-    AWindow->SetVisible (true,false);
-  AWindow->WCreate (window);
-  AWindowCount++;
-  CWindow **WindowList;
-  WindowList = new CWindow *[AWindowCount + 1];
-  for (int c = 0; c < AWindowCount; c++)
-    WindowList[c] = AWindowList[c];
-  WindowList[AWindowCount] = AWindow;
-  if (AWindowList)
-    delete[]AWindowList;
-  AWindowList = WindowList;
-  AWindow->Draw ();
+ if (Exit)
+  {
+   AWindow->CControl::Destroy ();
+   return;
+  };
+ if (AWindowCount == -1)
+  AWindow->SetVisible (true, false);
+ AWindow->WCreate (window);
+ AWindowCount++;
+ CWindow **WindowList;
+ WindowList = new CWindow *[AWindowCount + 1];
+ for (int c = 0; c < AWindowCount; c++)
+  WindowList[c] = AWindowList[c];
+ WindowList[AWindowCount] = AWindow;
+ if (AWindowList)
+  delete[]AWindowList;
+ AWindowList = WindowList;
+ AWindow->Draw ();
 };
 
 void
 CApplication::Draw (void)
 {
-  if (AWindowCount < 0)
-    return;
-  else
-    for (int i = 0; i <= AWindowCount; i++)
-      AWindowList[i]->Draw ();
+ if (AWindowCount < 0)
+  return;
+ else
+  for (int i = 0; i <= AWindowCount; i++)
+   AWindowList[i]->Draw ();
 };
 
 void
 CApplication::Update (void)
 {
-  if (AWindowCount < 0)
-    return;
-  else
-    for (int i = 0; i <= AWindowCount; i++)
-      AWindowList[i]->Update ();
+ if (AWindowCount < 0)
+  return;
+ else
+  for (int i = 0; i <= AWindowCount; i++)
+   AWindowList[i]->Update ();
 };
 
 void
 CApplication::ADestroyWindow (CWindow * AWindow)
 {
-  if (AWindowCount >= 0)
+ if (AWindowCount >= 0)
+  {
+   int wn = 0;
+   if (AWindowList[0]->GetWWindow () == AWindow->GetWWindow ())
     {
-      int wn = 0;
-      if (AWindowList[0]->GetWWindow () == AWindow->GetWWindow ())
-	{
-	  if (AWindowList[0]->GetDynamic ())
-	    delete AWindowList[0];
-	  for (int r = AWindowCount; r > 0; r--)
-	    {
-	      AWindowList[r]->SetCanDestroy (true);
-	      AWindowList[r]->WDestroy ();
-	    };
-	  delete[]AWindowList;
-	  AWindowList = NULL;
-	  eprint("...Application Finished\n");
+     if (AWindowList[0]->GetDynamic ())
+      delete AWindowList[0];
+     for (int r = AWindowCount; r > 0; r--)
+      {
+       AWindowList[r]->SetCanDestroy (true);
+       AWindowList[r]->WDestroy ();
+      };
+     delete[]AWindowList;
+     AWindowList = NULL;
+     eprint ("...Application Finished\n");
 #ifdef _DEBUG
-	  eprint("synchronize\n");
-	  XSynchronize (ADisplay, false);
+     eprint ("synchronize\n");
+     XSynchronize (ADisplay, false);
 #endif
-          TTF_Quit();
-	  IMG_Quit();
-          SDL_Quit();
-	  Exit = true;
-	  return;
-	}
-      else
-	{
-	  for (int f = 0; f <= AWindowCount; f++)
-	    if (AWindowList[f] == AWindow)
-	      wn = f;
-	  if (wn != 0)
-	    {
-	      if (AWindowList[wn]->GetDynamic ())
-		delete AWindowList[wn];
-	      for (int c = wn; c < AWindowCount; c++)
-		AWindowList[c] = AWindowList[c + 1];
-	      AWindowList[AWindowCount] = NULL;
-	      AWindowCount--;
-	    };
-	};
-    };
-};
-
-
-bool
-CApplication::ProcessEvents (CWindow * AWindow)
-{
-  if (AWindow != NULL)
+     TTF_Quit ();
+     IMG_Quit ();
+     SDL_Quit ();
+     Exit = true;
+     return;
+    }
+   else
     {
-      int wn = -1;
-      int ec;
-      
-     //wait hint loop	    
-
-     ec=SDL_PollEvent(&AEvent);
-     if(ec ==  0 )
-     {
-	usleep(50000);
-	if((HintControl)&&(time(NULL)-HintTime > 1))
-	{
-          if(HintControl->GetHint().size() >0)
-	  {
-	  WHint(HintControl->GetHint(),
-    	    HintX+HintControl->GetWin()->GetX(),
-     	    HintY+HintControl->GetWin()->GetY());
-	  };
-	  HintControl=NULL;
-        }
-       return false;
-     }
-      HintControl=NULL;
-      
-      
-      FWindow = AEvent.window.windowID;
-      for (int e = 0; e <= AWindowCount; e++)
-	{
-	  if (FWindow == SDL_GetWindowID(AWindowList[e]->GetWWindow ()) )
-	    {
-	      wn = e;
-	      break;
-	    };
-
-	};
-
-
-      if (((AEvent.type == SDL_WINDOWEVENT) && ((AEvent.window.type == SDL_WINDOWEVENT_ENTER)||(AEvent.window.type == SDL_WINDOWEVENT_EXPOSED)))
-	  && (AWindowCount >= 0) && (wn >= 0))
-	{
-	  AWindowList[wn]->WEvents (AEvent);
-	}
-      else
-       {
-        if (AEvent.window.windowID == SDL_GetWindowID(AWindow->GetWWindow ()))
-	{
-           if ((AEvent.type == SDL_WINDOWEVENT)&&(AEvent.window.type == SDL_WINDOWEVENT_CLOSE))
-            {
-	      return false;
-	    }
-	  else
-          {
-            AWindow->WEvents (AEvent);   
-	    return true;
-          }
-	}
-        else
-	{
-           if (AEvent.type == SDL_MOUSEMOTION )
-	    {
-	      AWindow->WEvents (AEvent);
-	      return true;
-	    }
-	};
-		
-       };
+     for (int f = 0; f <= AWindowCount; f++)
+      if (AWindowList[f] == AWindow)
+       wn = f;
+     if (wn != 0)
+      {
+       if (AWindowList[wn]->GetDynamic ())
+        delete AWindowList[wn];
+       for (int c = wn; c < AWindowCount; c++)
+        AWindowList[c] = AWindowList[c + 1];
+       AWindowList[AWindowCount] = NULL;
+       AWindowCount--;
+      };
     };
-  return false;
+  };
 };
-
 
 
 #ifdef _JS
-void loop_handler(void*)
+
+void
+loop_handler (void)
 {
-    Application->MainLoad();
+ Application->ProcessEvents ();
 };
 #endif
-
 
 void
 CApplication::Load (void)
 {
-  if (Exit)
-    return;
-  
+ if (Exit)
+  return;
+
 #ifdef HAVE_LIBPTHREAD
-  pthread_mutex_unlock (&Display_Lock);
+ pthread_mutex_unlock (&Display_Lock);
 #endif
-  if (AWindowCount == -1)
-    {
-      eprint("No Windows!\n");
-      eprint("...Application Finished\n");
-      TTF_Quit();
-      IMG_Quit();
-      SDL_Quit();
-      return;
-    };
+ if (AWindowCount == -1)
+  {
+   eprint ("No Windows!\n");
+   eprint ("...Application Finished\n");
+   TTF_Quit ();
+   IMG_Quit ();
+   SDL_Quit ();
+   return;
+  };
 
-  int wn = 0;
-  FWindow = SDL_GetWindowID(AWindowList[wn]->GetWWindow ());
+ int wn = 0;
+ FWindow = SDL_GetWindowID (AWindowList[wn]->GetWWindow ());
 #ifdef _JS
-emscripten_set_main_loop_arg(loop_handler, NULL, -1, 1);
+ emscripten_set_main_loop (loop_handler, -1, 1);
 #else 
-  for (; AWindowList != NULL;)
-    {
-      MainLoad();
-    }
+ for (; AWindowList != NULL;)
+  {
+   ProcessEvents ();
+  }
 #endif
 }
 
-void
-CApplication::MainLoad (void)
+bool
+CApplication::ProcessEvents (void)
 {
-  int wn = 0;
-  int ec;   //events in queue
- 
-     //wait hint loop	    
-     ec=SDL_PollEvent(&AEvent);
-     if(ec ==  0 )
-     {
+ int wn = -1;
+ int ec; //events in queue
+
+ //wait hint loop	    
+ ec = SDL_PollEvent (&AEvent);
+ if (ec == 0)
+  {
 
 #ifndef HAVE_LIBPTHREAD
-        for(int t=0; t <= TimerCount;t++)
-	{
-          TimerList[t]->SetTag(TimerList[t]->GetTag()+50);
-          if(TimerList[t]->GetTag() > TimerList[t]->GetTime())
-	  {
-             TimerList[t]->SetTag(TimerList[t]->GetTag()-TimerList[t]->GetTime());
-	     TimerList[t]->on_time();
-	  }	  
-	}
+ if (!MWindow)
+ {
+   for (int t = 0; t <= TimerCount; t++)
+    {
+     TimerList[t]->SetTag (TimerList[t]->GetTag () + 50);
+     if (TimerList[t]->GetTag () > TimerList[t]->GetTime ())
+      {
+       TimerList[t]->SetTag (TimerList[t]->GetTag () - TimerList[t]->GetTime ());
+       TimerList[t]->on_time ();
+      }
+    }
 
-        for(int t=0; t <= ThreadCount;t++)
-	{
-	   ThreadList[t]->on_run();
-	}
+   for (int t = 0; t <= ThreadCount; t++)
+    {
+     ThreadList[t]->on_run ();
+    }
+ }
 #endif
-	usleep(50000);
+   usleep (50000);
 
-	if((HintControl)&&(time(NULL)-HintTime > 1))
-	{
-          if(HintControl->GetHint().size() >0)
-	  {
-	    WHint(HintControl->GetHint(),
-    	    HintX+HintControl->GetWin()->GetX(),
-     	    HintY+HintControl->GetWin()->GetY());
-	  };
-	  HintControl=NULL;
+   if ((HintControl)&&(time (NULL) - HintTime > 1))
+    {
+     if (HintControl->GetHint ().size () > 0)
+      {
+       WHint (HintControl->GetHint (),
+              HintX + HintControl->GetWin ()->GetX (),
+              HintY + HintControl->GetWin ()->GetY ());
+      };
+     HintControl = NULL;
+    }
+
+   return false;
+  }
+ HintControl = NULL;
+
+
+#ifndef HAVE_LIBPTHREAD
+ if (!MWindow)
+ {
+   for (int t = 0; t <= ThreadCount; t++)
+   {
+    ThreadList[t]->on_run ();
+   }
+ }
+#endif
+
+ FWindow = AEvent.window.windowID;
+
+ wn = -1;
+ for (int e = 0; e <= AWindowCount; e++)
+  {
+   if (FWindow == SDL_GetWindowID (AWindowList[e]->GetWWindow ()))
+    {
+     wn = e;
+     break;
+    }
+  }
+
+ if (!MWindow)
+  {
+   if (wn >= 0)
+    AWindowList[wn]->WEvents (AEvent);
+
+   if ((AEvent.type == SDL_WINDOWEVENT)&&(AEvent.window.type == SDL_WINDOWEVENT_CLOSE))
+    for (int p = 0; p <= AWindowCount; p++)
+     {
+      if (AEvent.window.windowID == SDL_GetWindowID (AWindowList[p]->GetWWindow ()))
+       {
+        ADestroyWindow (AWindowList[p]);
+        wn = -1;
+        //Update ();
+        if (Exit)
+         return true;
+        break;
+       }
+     }
+  }
+ else
+  {
+   if (((AEvent.type == SDL_WINDOWEVENT) && ((AEvent.window.type == SDL_WINDOWEVENT_ENTER) || (AEvent.window.type == SDL_WINDOWEVENT_EXPOSED)))
+       && (AWindowCount >= 0) && (wn >= 0))
+    {
+     AWindowList[wn]->WEvents (AEvent);
+    }
+   else
+    {
+     if (AEvent.window.windowID == SDL_GetWindowID (MWindow->GetWWindow ()))
+      {
+       if ((AEvent.type == SDL_WINDOWEVENT)&&(AEvent.window.type == SDL_WINDOWEVENT_CLOSE))
+        {
+         return false;
         }
+       else
+        {
+         MWindow->WEvents (AEvent);
+         return true;
+        }
+      }
+     else
+      {
+       if (AEvent.type == SDL_MOUSEMOTION)
+        {
+         MWindow->WEvents (AEvent);
+         return true;
+        }
+      }
 
-	return;
-     }
-     HintControl=NULL;
-      
-
-#ifndef HAVE_LIBPTHREAD
-     for(int t=0; t <= ThreadCount;t++)
-     {
-       ThreadList[t]->on_run();
-     }
-#endif
-      
-      FWindow = AEvent.window.windowID;
-
-      wn = -1;
-      for (int e = 0; e <= AWindowCount; e++)
-	if (FWindow == SDL_GetWindowID(AWindowList[e]->GetWWindow ()) )
-	  {
-	    wn = e;
-	    break;
-	  };
-      if (wn >= 0)
-	AWindowList[wn]->WEvents (AEvent);
-
-      if ((AEvent.type == SDL_WINDOWEVENT)&&(AEvent.window.type == SDL_WINDOWEVENT_CLOSE))
-	for (int p = 0; p <= AWindowCount; p++)
-	  if (AEvent.window.windowID == SDL_GetWindowID(AWindowList[p]->GetWWindow ()))
-	    {
-	      ADestroyWindow (AWindowList[p]);
-	      wn = -1;
-	      //Update ();
-	      if (Exit)
-		return;
-	      break;
-	    }
-      
+    }
+  }
+  return false;
 }
-
-
-
 
 bool
 CApplication::GetExit (void)
 {
-  return Exit;
+ return Exit;
 };
 
 //propierties
@@ -418,34 +385,32 @@ CApplication::GetExit (void)
 int
 CApplication::GetAWindowCount (void)
 {
-  return AWindowCount;
+ return AWindowCount;
 };
 
 CWindow *
 CApplication::GetAWindow (uint window)
 {
-  return AWindowList[window];
+ return AWindowList[window];
 };
 
 int
 CApplication::GetTag ()
 {
-  return Tag;
+ return Tag;
 };
 
 void
 CApplication::SetTag (int x)
 {
-  Tag = x;
+ Tag = x;
 };
 
-String CApplication::GetTitle (void)
+String
+CApplication::GetTitle (void)
 {
-  return Title;
+ return Title;
 };
-
-
-
 
 /*
 void
@@ -480,92 +445,90 @@ CApplication::OnHintTime(CControl* control)
     HTimer.SetTag(0);   
   
 };
-*/
+ */
 
 
-void 
-CApplication::SetHintControl(CControl* hcontrol,int x,int y)
+void
+CApplication::SetHintControl (CControl* hcontrol, int x, int y)
 {
-  HintControl=hcontrol;
-  HintTime=time(NULL);
-  HintX=x;
-  HintY=y;
+ HintControl = hcontrol;
+ HintTime = time (NULL);
+ HintX = x;
+ HintY = y;
 };
 
-
-bool
-CApplication::ProcessEvents (void)
+void
+CApplication::SetModalWindow (CWindow * mwindow)
 {
-//FIXME
-  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
-return 0;
+ MWindow = mwindow;
 }
 
 #ifndef HAVE_LIBPTHREAD
+
 void
 CApplication::AddTimer (CTimer * tm)
 {
-  TimerCount++;
-  CTimer **TList;
-  TList = new CTimer *[TimerCount + 1];
-  for (int c = 0; c < TimerCount; c++)
-    TList[c] = TimerList[c];
-  TList[TimerCount] = tm;
-  if (TimerList)
-    delete[]TimerList;
-  TimerList = TList;
-  tm->SetTag(0);
+ TimerCount++;
+ CTimer **TList;
+ TList = new CTimer *[TimerCount + 1];
+ for (int c = 0; c < TimerCount; c++)
+  TList[c] = TimerList[c];
+ TList[TimerCount] = tm;
+ if (TimerList)
+  delete[]TimerList;
+ TimerList = TList;
+ tm->SetTag (0);
 }
 
 void
 CApplication::RemoveTimer (CTimer *tm)
 {
-  if (TimerCount >= 0)
+ if (TimerCount >= 0)
+  {
+   int n = 0;
+   for (int f = 0; f <= TimerCount; f++)
+    if (TimerList[f] == tm)
+     n = f;
+   if (n != 0)
     {
-          int n = 0;
-	  for (int f = 0; f <= TimerCount; f++)
-	    if (TimerList[f] == tm)
-	      n = f;
-	  if (n != 0)
-	    {
-	      for (int c = n; c < TimerCount; c++)
-		TimerList[c] = TimerList[c + 1];
-	      TimerList[TimerCount] = NULL;
-	      TimerCount--;
-	    }
+     for (int c = n; c < TimerCount; c++)
+      TimerList[c] = TimerList[c + 1];
+     TimerList[TimerCount] = NULL;
+     TimerCount--;
     }
+  }
 }
 
 void
 CApplication::AddThread (CThread * td)
 {
-  ThreadCount++;
-  CThread **TList;
-  TList = new CThread *[ThreadCount + 1];
-  for (int c = 0; c < ThreadCount; c++)
-    TList[c] = ThreadList[c];
-  TList[ThreadCount] = td;
-  if (ThreadList)
-    delete[]ThreadList;
-  ThreadList = TList;
+ ThreadCount++;
+ CThread **TList;
+ TList = new CThread *[ThreadCount + 1];
+ for (int c = 0; c < ThreadCount; c++)
+  TList[c] = ThreadList[c];
+ TList[ThreadCount] = td;
+ if (ThreadList)
+  delete[]ThreadList;
+ ThreadList = TList;
 }
 
 void
 CApplication::RemoveThread (CThread *td)
 {
-  if (ThreadCount >= 0)
+ if (ThreadCount >= 0)
+  {
+   int n = 0;
+   for (int f = 0; f <= ThreadCount; f++)
+    if (ThreadList[f] == td)
+     n = f;
+   if (n != 0)
     {
-          int n = 0;
-	  for (int f = 0; f <= ThreadCount; f++)
-	    if (ThreadList[f] == td)
-	      n = f;
-	  if (n != 0)
-	    {
-	      for (int c = n; c < ThreadCount; c++)
-		ThreadList[c] = ThreadList[c + 1];
-	      ThreadList[ThreadCount] = NULL;
-	      ThreadCount--;
-	    }
+     for (int c = n; c < ThreadCount; c++)
+      ThreadList[c] = ThreadList[c + 1];
+     ThreadList[ThreadCount] = NULL;
+     ThreadCount--;
     }
+  }
 }
 #endif

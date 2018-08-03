@@ -38,6 +38,7 @@ CMessage::CMessage (void)
   SetWidth (285);
   SetHeight (115);
   SetName ("Message");
+  SetVisible(false);
   //button1
   button1.SetText ("OK");
   button1.SetX (110);
@@ -54,6 +55,7 @@ CMessage::CMessage (void)
   CreateChild (&string1);
 };
 
+
 void
 CMessage::ButtonRelease1 (CControl * control, uint button, uint x, uint y,
 			  uint state)
@@ -61,19 +63,23 @@ CMessage::ButtonRelease1 (CControl * control, uint button, uint x, uint y,
   HideExclusive ();
 };
 
+CMessage wmessage;
+ 
 void
 Message (String str)
 {
-  CMessage *wmessage = new CMessage;
-  wmessage->string1.SetText (str);
-  
-  wmessage->SetX((Application->GetAWindow(0)->GetWidth ()- wmessage->GetWidth())/2);
-  wmessage->SetY((Application->GetAWindow(0)->GetHeight ()- wmessage->GetHeight())/2);
- 
-  wmessage->WCreate ();
-  wmessage->Draw ();
-  wmessage->ShowExclusive ();
-  wmessage->SetCanDestroy (true);
-  wmessage->WDestroy ();
-  delete wmessage;
+  wmessage.string1.SetText (str);
+
+#ifdef _ONEWIN  
+  wmessage.SetX((Application->GetAWindow(0)->GetWidth ()- wmessage.GetWidth())/2);
+  wmessage.SetY((Application->GetAWindow(0)->GetHeight ()- wmessage.GetHeight())/2);
+#else
+  wmessage.SetX(((Application->GetAWindow(0)->GetWidth ()- wmessage.GetWidth())/2)+Application->GetAWindow(0)->GetX ());
+  wmessage.SetY(((Application->GetAWindow(0)->GetHeight ()- wmessage.GetHeight())/2)+Application->GetAWindow(0)->GetY ());
+#endif  
+  if(!wmessage.GetWWindow ())
+    wmessage.WCreate ();
+  wmessage.Draw ();
+  wmessage.ShowExclusive ();
+  //wmessage.SetCanDestroy (true);
 };

@@ -53,13 +53,13 @@ private:
   int HintX,HintY;
   int Tag;
   String Title;
+  CWindow * MWindow; //Modal Window
 public:
     CApplication (void);
    ~CApplication (void);
   void Start (void);
   void ACreateWindow (CWindow * AWindow,CWindow* window=NULL);
   void ADestroyWindow (CWindow * AWindow);
-  bool ProcessEvents (CWindow * AWindow);
   bool ProcessEvents (void);
   void AddTimer(CTimer *tm);	
   void RemoveTimer(CTimer *tm);	
@@ -68,13 +68,13 @@ public:
   void Draw (void);
   void Update (void);
   void Load (void);
-  void MainLoad (void);
   int Aargc;
   char **Aargv;
   bool GetExit (void);
   //propiedades
   int GetAWindowCount (void);
   CWindow *GetAWindow (uint window);
+  void SetModalWindow (CWindow * mwindow);
   void SetTag (int x);
   int GetTag ();
   String GetTitle ();

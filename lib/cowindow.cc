@@ -30,7 +30,7 @@
 #include"../include/capplication.h"
 
 
-//CWindow _______________________________________________________________
+//COWindow _______________________________________________________________
 
 COWindow::COWindow (void)
 {
@@ -137,13 +137,13 @@ COWindow::Show (void)
     };
 };
 
+
 void
 COWindow::ShowExclusive (void)
 {
   Show ();
   CanExitExclusive = true;
-  while (CanExitExclusive)
-    Application->ProcessEvents (this);
+  Application->SetModalWindow (this);
 };
 
 void
@@ -160,6 +160,7 @@ void
 COWindow::HideExclusive (void)
 {
   CanExitExclusive = false;
+  Application->SetModalWindow (NULL);
   Hide ();
 };
 

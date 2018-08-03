@@ -34,104 +34,102 @@
 
 CItemMenu::CItemMenu (void)
 {
-  SetCanExecuteEvent (true);
-  SetClass ("CItemMenu");
-  SubMenu = NULL;
-  EvMenuActive= NULL;
+ SetCanExecuteEvent (true);
+ SetClass ("CItemMenu");
+ SubMenu = NULL;
+ EvMenuActive = NULL;
 };
-
 
 void
 CItemMenu::Draw (void)
 {
-  if ((!Visible)||(Paint == NULL)) return;
+ if ((!Visible) || (Paint == NULL)) return;
 
-  Width = GetTextWidth ()+2;
-  Height = GetTextHeight ();
+ Width = GetTextWidth () + 2;
+ Height = GetTextHeight ();
 
-  CPMenu *PMenu = dynamic_cast < CPMenu * >(Owner);
-  CMenu *Menu = dynamic_cast < CMenu * >(Owner);
+ CPMenu *PMenu = dynamic_cast<CPMenu *> (Owner);
+ CMenu *Menu = dynamic_cast<CMenu *> (Owner);
 
-  if (Menu != NULL)
-    {
+ if (Menu != NULL)
+  {
 
-      Y = 2;
-      X = Menu->NextItemX;
-      Menu->NextItemX += Width + 20;
-      Height = Menu->GetHeight () - 4;
-    };
+   Y = 2;
+   X = Menu->NextItemX;
+   Menu->NextItemX += Width + 20;
+   Height = Menu->GetHeight () - 4;
+  };
 
-  if (PMenu != NULL)
-    {
-      X = 4;
-      Y = PMenu->NextItemY + 4;
-      PMenu->NextItemY += Height + 4;
-    };
-  CLabel::Draw ();
+ if (PMenu != NULL)
+  {
+   X = 4;
+   Y = PMenu->NextItemY + 4;
+   PMenu->NextItemY += Height + 4;
+  };
+ CLabel::Draw ();
 };
-
 
 void
 CItemMenu::Create (CControl * control)
 {
-  CLabel::Create (control);
+ CLabel::Create (control);
 };
 
 void
 CItemMenu::SetSubMenu (CPMenu * submenu)
 {
-  SubMenu = submenu;
+ SubMenu = submenu;
 };
-  
-CPMenu * 
+
+CPMenu *
 CItemMenu::GetSubMenu (void)
 {
-  return SubMenu;
+ return SubMenu;
 }
 
 CStringList
 CItemMenu::GetContext (void)
 {
-  CObject::GetContext ();
+ CObject::GetContext ();
 
-  Context.AddLine ("Text=" + GetText () + ";String");
+ Context.AddLine ("Text=" + GetText () + ";String");
 
-  if (SubMenu)
-    Context.AddLine ("SubMenu=" + SubMenu->GetName () + ";SubMenu");
-  else
-    Context.AddLine ("SubMenu=NULL;SubMenu");
- 
-  Context.AddLine ("MouseButtonPress=" + btoa (GetEv (true)) + ";event");
-  
-  /*
-  for (uint i = 0; i < Context.GetLinesCount(); i++)
-  {
-  if(Context.GetLine(i).find("PopupMenu") == 0)
-    Context.DelLine(i);
-  };
+ if (SubMenu)
+  Context.AddLine ("SubMenu=" + SubMenu->GetName () + ";SubMenu");
+ else
+  Context.AddLine ("SubMenu=NULL;SubMenu");
+
+ Context.AddLine ("MouseButtonPress=" + btoa (GetEv (true)) + ";event");
+
+ /*
+ for (uint i = 0; i < Context.GetLinesCount(); i++)
+ {
+ if(Context.GetLine(i).find("PopupMenu") == 0)
+   Context.DelLine(i);
+ };
   */
-  return Context;
+ return Context;
 };
 
 void
 CItemMenu::SetContext (CStringList context)
 {
-  Eraser ();
-  CObject::SetContext (context);
-  for (uint i = 0; i < context.GetLinesCount (); i++)
-    {
-      String line = Context.GetLine (i);
-      String arg;
-      eqparse (line, arg);
-      if (line.compare ("Text") == 0)
-	 SetText(arg);     
-      if (line.compare ("SubMenu") == 0)
-	if (arg.compare ("NULL") != 0)
-	  SetSubMenu (dynamic_cast < CPMenu * >(Win->GetChildByName (arg)));
-      if (line.compare ("MouseButtonPress") == 0)
-	SetEv (atob (arg),true);
-    };
-  Draw ();
+ Eraser ();
+ CObject::SetContext (context);
+ for (uint i = 0; i < context.GetLinesCount (); i++)
+  {
+   String line = Context.GetLine (i);
+   String arg;
+   eqparse (line, arg);
+   if (line.compare ("Text") == 0)
+    SetText (arg);
+   if (line.compare ("SubMenu") == 0)
+    if (arg.compare ("NULL") != 0)
+     SetSubMenu (dynamic_cast<CPMenu *> (Win->GetChildByName (arg)));
+   if (line.compare ("MouseButtonPress") == 0)
+    SetEv (atob (arg), true);
+  };
+ Draw ();
 };
 
 
@@ -140,60 +138,57 @@ CItemMenu::SetContext (CStringList context)
 void
 CItemMenu::button_press (SDL_Event event)
 {
-  CPMenu *PMenu = dynamic_cast < CPMenu * >(Owner);
-  if (PMenu != NULL)
-    {
-      PMenu->HideExclusive ();
-      //XSync(GetWin()->GetADisplay(),false);
-//      XFlush(GetWin()->GetADisplay());
-      CControl::button_press (event);
-      
-      if ((FOwner) && (EvMenuActive))
-      {
-         (FOwner->*EvMenuActive) (this);
-      }
-      return;
-    };
+ CPMenu *PMenu = dynamic_cast<CPMenu *> (Owner);
+ if (PMenu != NULL)
+  {
+   PMenu->HideExclusive ();
+   //XSync(GetWin()->GetADisplay(),false);
+   //      XFlush(GetWin()->GetADisplay());
+   CControl::button_press (event);
 
-  if ((SubMenu != NULL) && ((SubMenu->GetChildCount ()) != -1))
+   if ((FOwner) && (EvMenuActive))
     {
+     (FOwner->*EvMenuActive) (this);
+    }
+   return;
+  };
+
+ if ((SubMenu != NULL) && ((SubMenu->GetChildCount ()) != -1))
+  {
    /* 
       //Window child;
       if ((!SubMenu->GetWWindow ()) != 0)
-	{
-	  //Application.ACreateWindow (SubMenu,Win);
-	  Application->ACreateWindow (SubMenu);
-	};
-    */
-    
-#ifdef _ONEWIN
-      SubMenu->SetX (GetX());
-      SubMenu->SetY (GetY() + Height);
-#else
-      SubMenu->SetX (Win->GetX ()+GetX()  );
-      SubMenu->SetY (Win->GetY ()+GetY() + Height);
-#endif      
-      SubMenu->WCreate (Win);
-      SubMenu->Show ();
-      SubMenu->Draw ();
-      while (SubMenu->GetVisible ())
-	{
-	  Application->ProcessEvents (SubMenu);
-	};
+    {
+      //Application.ACreateWindow (SubMenu,Win);
+      Application->ACreateWindow (SubMenu);
     };
-  //Owner->GetWin ()->Update ();
-  CControl::button_press (event);
-  
+    */
+
+#ifdef _ONEWIN
+   SubMenu->SetX (GetX ());
+   SubMenu->SetY (GetY () + Height);
+#else
+   SubMenu->SetX (Win->GetX () + GetX ());
+   SubMenu->SetY (Win->GetY () + GetY () + Height);
+#endif      
+   SubMenu->WCreate (Win);
+   SubMenu->Show ();
+   SubMenu->Draw ();
+   SubMenu->ShowExclusive ();
+  }
+ //Owner->GetWin ()->Update ();
+ CControl::button_press (event);
+
 };
 
 void
 CItemMenu::button_release (SDL_Event event)
 {
-  if (SubMenu != NULL)
-    {
-      SubMenu->WDestroy ();
-    };
-  CControl::button_release (event);
+ if (SubMenu != NULL)
+  {
+   SubMenu->WDestroy ();
+  };
+ CControl::button_release (event);
 
 
 };
@@ -201,10 +196,10 @@ CItemMenu::button_release (SDL_Event event)
 void
 CItemMenu::focus_out (void)
 {
-  if (SubMenu != NULL)
-    {
-      SubMenu->WDestroy ();
-    };
-  CControl::focus_out ();
+ if (SubMenu != NULL)
+  {
+   SubMenu->WDestroy ();
+  };
+ CControl::focus_out ();
 };
 

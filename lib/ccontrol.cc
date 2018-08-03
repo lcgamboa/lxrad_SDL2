@@ -1051,14 +1051,10 @@ CControl::button_press (SDL_Event event)
    PopupMenu->SetX (Win->GetX () + x);
    PopupMenu->SetY (Win->GetY () + y);
 
-   PopupMenu->Show ();
    PopupMenu->Draw ();
-   while (PopupMenu->GetVisible ())
-    {
-     Application->ProcessEvents (PopupMenu);
-    };
-
-  }
+   PopupMenu->ShowExclusive ();
+   
+   }
 };
 
 void
