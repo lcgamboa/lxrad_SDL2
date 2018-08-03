@@ -57,6 +57,7 @@ protected:
   void CreatePixmap(bool draw=false);
   void DestroyPixmap(void);
   bool PixmapBuffer;
+  bool OverWin;
 public:
   bool HasMenu;//FIXME tornar privado
     CWindow (void);
@@ -105,6 +106,8 @@ public:
   SDL_Texture* GetPixmap(void);
   void SetLastControl (CControl * lastcontrol);
   void CirculateFocus (bool asc);
+  bool GetOverWin(void);
+  void SetOverWin(bool ow);
   //operator
   void *operator new (size_t sz);
   //eventos

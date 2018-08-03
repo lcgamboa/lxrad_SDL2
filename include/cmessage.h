@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -28,14 +28,9 @@
 
 #include"cbutton.h"
 #include"clabel.h"
-
-#ifdef _ONEWIN
-#include"cowindow.h"
-class CMessage:public COWindow
-#else
 #include"cwindow.h"
-class CMessage:public CWindow
-#endif	       
+
+class CMessage:public CWindow       
 {
 public:
   CButton button1;

@@ -39,6 +39,9 @@ CMessage::CMessage (void)
   SetHeight (115);
   SetName ("Message");
   SetVisible(false);
+  #ifdef _ONEWIN
+  OverWin=true;
+  #endif
   //button1
   button1.SetText ("OK");
   button1.SetX (110);

@@ -25,7 +25,6 @@
 
 #include"../include/ccontrol.h"
 #include"../include/cwindow.h"
-#include"../include/cowindow.h"
 #include"../include/cmenu.h"
 #include"../include/cpmenu.h"
 #include"../include/capplication.h"
@@ -647,13 +646,11 @@ void
 CControl::CalcRXY (void)
 {
  CWindow *o, *t;
- COWindow *ow;
 
- ow = dynamic_cast<COWindow *> (Owner);
  o = dynamic_cast<CWindow *> (Owner);
  t = dynamic_cast<CWindow *> (this);
  
- if(ow)
+ if((o)&&(o->GetOverWin()))
   {
     o =NULL;
     t = NULL;

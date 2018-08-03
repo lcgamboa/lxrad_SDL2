@@ -32,14 +32,9 @@
 #include"cedit.h"
 #include"cfilelist.h"
 #include"capplication.h"
-
-#ifdef _ONEWIN
-#include"cowindow.h"
-class CFileDialog:public COWindow
-#else
 #include"cwindow.h"
+
 class CFileDialog:public CWindow
-#endif
 {
 private:
   bool CanDestroyChilds;

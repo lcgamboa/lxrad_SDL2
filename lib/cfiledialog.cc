@@ -50,6 +50,11 @@ CFileDialog::CFileDialog (void)
   SetWidth (200);
   SetHeight (250);
   SetName ("Dialog");
+  
+  #ifdef _ONEWIN
+  OverWin=true;
+  #endif
+
   //button1
   button1.SetText ("OK");
   button1.SetX (33);

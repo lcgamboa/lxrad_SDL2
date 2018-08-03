@@ -121,7 +121,7 @@ void
 CApplication::ACreateWindow (CWindow * AWindow, CWindow *window)
 {
 #ifdef _ONEWIN
- if (AWindowCount != -1)return;
+ if (AWindowCount != -1)AWindow->SetOverWin(true);
 #endif
  if (Exit)
   {

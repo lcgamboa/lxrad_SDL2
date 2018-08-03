@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -29,15 +29,9 @@
 #include"cwindow.h"
 #include"ccontrol.h"
 #include"clist.h"
-
-
-#ifdef _ONEWIN
-#include"cowindow.h"
-class CComboDialog:public COWindow
-#else
 #include"cwindow.h"
+
 class CComboDialog:public CWindow
-#endif
 {
 public:
   CList list1;

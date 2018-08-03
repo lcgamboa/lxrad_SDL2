@@ -44,6 +44,9 @@ CPMenu::CPMenu (void)
   SetOverrideRedirect (true);
   SetSaveUnder (true);
   SetCanExecuteEvent (false);
+  #ifdef _ONEWIN
+  OverWin=true;
+  #endif
 }
 
 void
@@ -90,7 +93,7 @@ CPMenu::Draw (void)
       //Paint->Rectangle ( 2, 2, Width - 2, Height - 2);
       //Paint->RaiserFrame ( 0, 0, Width, Height);
 #ifdef _ONEWIN       
-      COWindow::Draw ();
+      CWindow::Draw ();
 #else
       CControl::Draw (); 
 #endif      

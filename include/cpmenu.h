@@ -28,14 +28,9 @@
 
 #include"ccontrol.h"
 #include"citemmenu.h"
-
-#ifdef _ONEWIN
-#include"cowindow.h"
-class CPMenu:public COWindow 
-#else
 #include"cwindow.h"
-class CPMenu:public CWindow 
-#endif	     
+
+class CPMenu:public CWindow    
 {
 private:
   bool Press;
