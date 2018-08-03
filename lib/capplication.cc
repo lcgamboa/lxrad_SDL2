@@ -255,6 +255,7 @@ CApplication::ProcessEvents (void)
 {
  int wn = -1;
  int ec; //events in queue
+ struct timeval  tv;
 
  //wait hint loop	    
  ec = SDL_PollEvent (&AEvent);
@@ -264,13 +265,15 @@ CApplication::ProcessEvents (void)
 #ifndef HAVE_LIBPTHREAD
  if (!MWindow)
  {
+   gettimeofday(&tv, NULL);
    for (int t = 0; t <= TimerCount; t++)
     {
-     TimerList[t]->SetTag (TimerList[t]->GetTag () + 50);
-     if (TimerList[t]->GetTag () > TimerList[t]->GetTime ())
+     TimerList[t]->Elapsed+= (((tv.tv_usec - TimerList[t]->tv.tv_usec) + 1000000L*(tv.tv_sec - TimerList[t]->tv.tv_sec)))/1000;
+     if (TimerList[t]->Elapsed > TimerList[t]->GetTime ())
       {
-       TimerList[t]->SetTag (TimerList[t]->GetTag () - TimerList[t]->GetTime ());
+       TimerList[t]->Elapsed-= TimerList[t]->GetTime ();
        TimerList[t]->on_time ();
+       TimerList[t]->tv=tv;
       }
     }
 
@@ -279,8 +282,9 @@ CApplication::ProcessEvents (void)
      ThreadList[t]->on_run ();
     }
  }
+#else 
+   usleep (50);
 #endif
-   usleep (50000);
 
    if ((HintControl)&&(time (NULL) - HintTime > 1))
     {
@@ -477,7 +481,7 @@ CApplication::AddTimer (CTimer * tm)
  if (TimerList)
   delete[]TimerList;
  TimerList = TList;
- tm->SetTag (0);
+ gettimeofday(&tm->tv, NULL);
 }
 
 void

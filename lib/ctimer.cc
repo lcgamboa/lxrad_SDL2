@@ -49,6 +49,9 @@ CTimer::CTimer (void)
   Run = false;
   EvOnTime = NULL;
   SetVisible (false);
+#ifndef HAVE_LIBPTHREAD
+  Elapsed=0;
+#endif
 };
 
 CTimer::~CTimer (void)

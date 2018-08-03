@@ -28,6 +28,7 @@
 
 #include"ccontrol.h"
 #include"cwindow.h"
+#include <sys/time.h>
 
 
 #define ONTIME (void(CControl::*)(CControl*))
@@ -39,7 +40,11 @@ protected:
   bool Run;
   pthread_t Th;
 public:
-    CTimer (void);
+#ifndef HAVE_LIBPTHREAD
+  unsigned long Elapsed;
+  struct timeval  tv;
+#endif
+   CTimer (void);
    ~CTimer (void);
   void Draw (void);
   void Create (CControl * control);

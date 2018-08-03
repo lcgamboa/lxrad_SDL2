@@ -10,15 +10,6 @@
 /* Define to 1 if you have the `pthread' library (-lpthread). */
 #undef HAVE_LIBPTHREAD
 
-/* Define to 1 if you have the `X11' library (-lX11). */
-#undef HAVE_LIBX11
-
-/* Define to 1 if you have the `Imlib2' library (-lImlib2). */
-#undef HAVE_LIBIMLIB2
-
-/* Define to 1 if you have the `Xpm' library (-lXpm). */
-#undef HAVE_LIBXPM
-
 /* Define to 1 if you have the <locale.h> header file. */
 #undef HAVE_LOCALE_H
 
@@ -103,9 +94,6 @@
 
 /* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
 #undef TIME_WITH_SYS_TIME
-
-/* Define to 1 if the X Window System is missing or not being used. */
-#undef X_DISPLAY_MISSING
 
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const

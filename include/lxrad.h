@@ -26,7 +26,6 @@
 #include"clxrad.h"
 #include"cobject.h"
 #include"cwindow.h"
-#include"cowindow.h"
 #include"capplication.h"
 #include"cscroll.h"
 #include"cbutton.h"
