@@ -256,7 +256,7 @@ CApplication::ProcessEvents (void)
  int wn = -1;
  int ec; //events in queue
  struct timeval  tv;
-
+ long int elapsed; 
  //wait hint loop	    
  ec = SDL_PollEvent (&AEvent);
  if (ec == 0)
@@ -266,12 +266,15 @@ CApplication::ProcessEvents (void)
  if (!MWindow)
  {
    gettimeofday(&tv, NULL);
+   //printf("---------------------\n");
    for (int t = 0; t <= TimerCount; t++)
     {
-     TimerList[t]->Elapsed+= (((tv.tv_usec - TimerList[t]->tv.tv_usec) + 1000000L*(tv.tv_sec - TimerList[t]->tv.tv_sec)))/1000;
-     if (TimerList[t]->Elapsed > TimerList[t]->GetTime ())
+     elapsed= (((tv.tv_usec - TimerList[t]->tv.tv_usec)/1000L) + 1000L*(tv.tv_sec - TimerList[t]->tv.tv_sec));
+     
+     //printf("Elapsed %i = %lu de %lu\n",t,elapsed,TimerList[t]->GetTime());
+     if (elapsed >= TimerList[t]->GetTime ())
       {
-       TimerList[t]->Elapsed-= TimerList[t]->GetTime ();
+       //printf("===>>Timer %i reseted\n",t);	       
        TimerList[t]->on_time ();
        TimerList[t]->tv=tv;
       }
@@ -482,6 +485,7 @@ CApplication::AddTimer (CTimer * tm)
   delete[]TimerList;
  TimerList = TList;
  gettimeofday(&tm->tv, NULL);
+ //printf("Timer %i added: %s\n",TimerCount,tm->GetName().c_str()); 
 }
 
 void
@@ -489,17 +493,18 @@ CApplication::RemoveTimer (CTimer *tm)
 {
  if (TimerCount >= 0)
   {
-   int n = 0;
+   int n = -1;
    for (int f = 0; f <= TimerCount; f++)
     if (TimerList[f] == tm)
      n = f;
-   if (n != 0)
+   if (n != -1)
     {
      for (int c = n; c < TimerCount; c++)
       TimerList[c] = TimerList[c + 1];
      TimerList[TimerCount] = NULL;
      TimerCount--;
     }
+  //printf("Timer %i Removed: %s\n",TimerCount,tm->GetName().c_str()); 
   }
 }
 
@@ -522,11 +527,11 @@ CApplication::RemoveThread (CThread *td)
 {
  if (ThreadCount >= 0)
   {
-   int n = 0;
+   int n = -1;
    for (int f = 0; f <= ThreadCount; f++)
     if (ThreadList[f] == td)
      n = f;
-   if (n != 0)
+   if (n != -1)
     {
      for (int c = n; c < ThreadCount; c++)
       ThreadList[c] = ThreadList[c + 1];
