@@ -102,9 +102,9 @@ CFileList::SetDir (String dir)
   for (int cnt = 0; cnt < n; ++cnt)
     {
       if (dirs[cnt])
-	delete dirs[cnt];
+	free( dirs[cnt]);
     };
-    delete[]dirs;
+    free(dirs);
   
   dirs = NULL;
 
@@ -119,9 +119,9 @@ CFileList::SetDir (String dir)
   for (int cnt = 0; cnt < n; ++cnt)
     {
       if (files[cnt])
-	delete files[cnt];
+	free( files[cnt]);
     };
-   delete[]files;
+   free(files);
   
   files = NULL;
   

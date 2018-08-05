@@ -247,16 +247,13 @@ CWindow::DestroyChilds (void)
 void
 CWindow::WDestroy (void)
 {
- if (OverWin)
-  {
-   SetVisible (false);
+   if(OverWin)	
+     SetVisible (false);
+   else  
+     Hide ();
+
    on_destroy ();
-  }
- else
-  {
-   Hide ();
-   on_destroy ();
-   if ((CanDestroy) || (this == Application->GetAWindow ((uint) 0)))
+   if ((!OverWin)||(CanDestroy) || (this == Application->GetAWindow ((uint) 0)))
     {
      Destroy ();
      WPaint.Destroy ();
@@ -265,10 +262,10 @@ CWindow::WDestroy (void)
        //        XDestroyWindow (ADisplay, GetWWindow ());
       };
      Win = NULL;
-     Application->ADestroyWindow (this);
+     if(!OverWin)	
+       Application->ADestroyWindow (this);
      WWindow = 0;
     }
-  }
 }
 
 void
@@ -474,7 +471,6 @@ CWindow::WEvents (SDL_Event WEvent)
      break;
     case SDL_WINDOWEVENT_CLOSE:
      //SDL_Log("Window %d closed", WEvent.window.windowID);
-     on_destroy ();
      WDestroy ();
      ret = 1;
      break;
