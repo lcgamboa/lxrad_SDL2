@@ -40,9 +40,7 @@ protected:
   bool Run;
   pthread_t Th;
 public:
-#ifndef HAVE_LIBPTHREAD
   struct timeval  tv;
-#endif
    CTimer (void);
    ~CTimer (void);
   void Draw (void);

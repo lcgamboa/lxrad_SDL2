@@ -247,13 +247,19 @@ CWindow::DestroyChilds (void)
 void
 CWindow::WDestroy (void)
 {
+   if(CanExitExclusive)
+   {
+     CanExitExclusive = false;
+     Application->SetModalWindow (NULL);
+   }
+   
    if(OverWin)	
      SetVisible (false);
    else  
      Hide ();
 
    on_destroy ();
-   if ((!OverWin)||(CanDestroy) || (this == Application->GetAWindow ((uint) 0)))
+   if ((!OverWin)&&((CanDestroy) || (this == Application->GetAWindow ((uint) 0))))
     {
      Destroy ();
      WPaint.Destroy ();
