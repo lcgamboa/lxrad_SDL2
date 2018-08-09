@@ -31,18 +31,22 @@
 #include"clist.h"
 #include"cwindow.h"
 
+class CCombo;
+
 class CComboDialog:public CWindow
 {
 public:
   CList list1;
+  CCombo * combo;
   void Create (CControl * control);
   void SetWidth(unsigned width);
   void SetHeight(unsigned height );
   void SetItems (String litens);
   String GetItems (void);
-  void listchange1 (CList * list);
-  void buttonpress1 (CControl * control, uint key, uint x, uint y,uint mask);
   CComboDialog (void);
+  //events
+  void listchange1 (CList * list);
+  void buttonpress1 (CControl * control, uint button, uint x, uint y,uint state);
 };
 
 #endif

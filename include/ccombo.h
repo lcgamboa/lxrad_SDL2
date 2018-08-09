@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -31,16 +31,17 @@
 #include"cedit.h"
 #include"ctoolbutton.h"
 #include"ccombodialog.h"
+  
 
 #define EVONCOMBOCHANGE   (void(CControl::*)(CCombo*))
 
 class CCombo:public CControl
 {
 protected:
+public:
   CEdit edit1;
   CToolButton tbutton1;
   CComboDialog dlist1;
-public:
     CCombo (void);
    ~CCombo (void);
   void Draw (void);
@@ -66,7 +67,6 @@ public:
   //eventos
   void EditKeyPress (CControl * control, const uint key, const uint hk, uint mask);
   void TButtonPress (CControl * control, uint button, uint x, uint y,uint state);
-  
   void combo_change (void);
   
   void (CControl::*EvOnComboChange) (CCombo * combo);

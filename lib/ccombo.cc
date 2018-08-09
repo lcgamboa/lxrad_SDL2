@@ -68,7 +68,9 @@ CCombo::CCombo (void)
 
   dlist1.SetX (10);
   dlist1.SetY (10);
-
+  
+  dlist1.combo=this;
+  
   SetX (10);
   SetY (10);
   SetHeight (20);
@@ -82,6 +84,7 @@ CCombo::CCombo (void)
 
 CCombo::~CCombo (void)
 {
+  dlist1.WDestroy ();
 };
 
 void
@@ -274,21 +277,12 @@ CCombo::TButtonPress (CControl * control, uint button, uint x, uint y,
 #endif  
   dlist1.SetX (wx);
   dlist1.SetY (wy + GetHeight () + 1);
-
-  dlist1.WCreate (Win);
+  if(!dlist1.GetWWindow ())
+    dlist1.WCreate (Win);
     
   //dlist1.list1.Draw ();
   dlist1.ShowExclusive ();
 
-  dlist1.WDestroy ();
-
-  edit1.SetText (dlist1.list1.GetSelectedItem ());
-  //Application.Update ();
-
-  tbutton1.SetPress (false);
-  Update ();
-
-  combo_change ();
 };
 
 void
@@ -303,3 +297,5 @@ CCombo::SetReadOnly (bool r)
 {
   edit1.SetReadOnly (r);
 }
+
+

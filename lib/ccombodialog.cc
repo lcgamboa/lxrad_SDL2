@@ -24,6 +24,7 @@
    ######################################################################## */
 
 #include"../include/ccombodialog.h"
+#include"../include/ccombo.h"
 
 //CComboDialog-------------------------------------------------------
 
@@ -88,6 +89,12 @@ void
 CComboDialog::listchange1 (CList * list)
 {
   HideExclusive ();
+  combo->edit1.SetText (list1.GetSelectedItem ());
+  //Application.Update ();
+  combo->tbutton1.SetPress (false);
+  combo->Update ();
+  combo->combo_change ();
+
 };
 
 void
@@ -95,5 +102,11 @@ CComboDialog::buttonpress1 (CControl * control, uint key, uint x, uint y,
 			    uint mask)
 {
   HideExclusive ();
+  combo->edit1.SetText (list1.GetSelectedItem ());
+  //Application.Update ();
+  combo->tbutton1.SetPress (false);
+  combo->Update ();
+
+  combo->combo_change ();
 };
 
