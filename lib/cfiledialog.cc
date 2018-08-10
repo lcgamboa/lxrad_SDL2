@@ -214,8 +214,13 @@ CFileDialog::Run (void)
    */
   WCreate(Win);
   ShowExclusive ();
+  while(CanExitExclusive)
+  {
+    Application->ProcessEvents ();
+  }
   SetFileName (edit1.GetText ());
   WDestroy ();
+  Win->Draw ();
   return Result;
 };
 
