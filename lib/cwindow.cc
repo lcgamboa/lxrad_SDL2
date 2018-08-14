@@ -179,8 +179,12 @@ CWindow::Draw (void)
 
  CControl::Draw ();
 
- SDL_RenderPresent (Renderer);
-};
+
+ if (!OverWin)
+ {
+   SDL_RenderPresent (Renderer);
+ }
+}
 
 void
 CWindow::SetPixmapBuffer (bool pbuffer)
@@ -865,7 +869,6 @@ CWindow::GetCanExitExclusive (void)
 CWindow*
 CWindow::GetWWidget (void)
 {
- printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
  return this;
 }
 

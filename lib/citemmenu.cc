@@ -170,9 +170,10 @@ CItemMenu::button_press (SDL_Event event)
 #else
    SubMenu->SetX (Win->GetX () + GetX ());
    SubMenu->SetY (Win->GetY () + GetY () + Height);
-#endif      
-   SubMenu->WCreate (Win);
-   SubMenu->Show ();
+#endif   
+   if(!SubMenu->GetWWindow ())     
+     SubMenu->WCreate (Win);
+   //SubMenu->Show ();
    SubMenu->Draw ();
    SubMenu->ShowExclusive ();
   }

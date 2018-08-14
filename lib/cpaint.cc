@@ -78,6 +78,7 @@ void
 CPaint::Create (CControl * control ,lxBitmap *bitmap)
 {
   Win = control->GetWin ();
+  if(Win == NULL)Win= (CWindow *)control;	  
   Owner = control;
   DrawIn = bitmap->GetPixmap();
   DrawOut = bitmap->GetPixmap();
@@ -398,6 +399,7 @@ CPaint::PutBitmap (lxBitmap* bitmap,int x,int y)
     DestR.y = RY+y;
     SDL_QueryTexture(bitmap->GetPixmap(), NULL, NULL, &DestR.w, &DestR.h);
     SDL_RenderCopy( Win->GetRenderer(), bitmap->GetPixmap(), NULL, &DestR);
+    SDL_RenderPresent( Win->GetRenderer() );
 }
 
 void 

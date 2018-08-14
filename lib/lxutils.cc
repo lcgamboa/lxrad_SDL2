@@ -91,54 +91,60 @@ lxTextFile::operator FILE*() const
 	
 lxImage::lxImage()
 {
-  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+ Surface = NULL;
 }
 
 lxImage::~lxImage()
 {
-//FIXME	
-  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+ if(Surface)
+  SDL_FreeSurface(Surface);
+ Surface = NULL; 
 }
 
 
 bool
 lxImage::LoadFile(String fname)
 {
-//FIXME	
-  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
-  return 0;
+  Surface=IMG_Load(fname.c_str());
+  if(Surface)
+   return 1;
+  else 
+   return 0;
 }
 
 void
 lxImage::Destroy(void)
 {
-//FIXME	
-  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+ if(Surface)
+  SDL_FreeSurface(Surface);
+ Surface = NULL; 
+}
+
+SDL_Surface* 
+lxImage::GetImage(void)
+{
+ return Surface;
+}
+
+lxImage::operator SDL_Surface*() const 
+{ 
+  return Surface; 
 }
 
 //-------------------------------------------------------------------------
-lxBitmap::lxBitmap()
-{
- 
-    Texture =NULL;
-}
+
 
 lxBitmap::~lxBitmap()
 {
   if (Texture)
     SDL_DestroyTexture (Texture);
+  Texture=NULL;
 }
 
-lxBitmap::lxBitmap(lxImage img)
-{
-//FIXME	
-  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
 
-}
-
-lxBitmap::lxBitmap(SDL_Texture * text)
+lxBitmap::lxBitmap(SDL_Surface* surf, CPWindow * win)
 {
-    Texture=text;
+  Texture=SDL_CreateTextureFromSurface( win->GetRenderer(), surf );
 }
 
 

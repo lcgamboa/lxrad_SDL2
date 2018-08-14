@@ -73,6 +73,9 @@ CPMenu::Draw (void)
 
   if ((!Visible)||(Paint == NULL))
     return;
+  unsigned int w_old=Width;
+  unsigned int h_old=Height;
+  
   NextItemY = 0;
   if (ChildCount >= 0)
     Height = ((ChildCount + 1) * (((CItemMenu *) Child[0])->GetTextHeight () + 4)) + 8;
@@ -86,12 +89,13 @@ CPMenu::Draw (void)
     {
       Paint->InitDraw (this);
 #ifndef _ONEWIN      
-      SDL_SetWindowSize( WWindow, Width, Height);
+      if((w_old != Width)||(h_old != Height)) 
+        SDL_SetWindowSize( WWindow, Width, Height);
 #endif
       //CreatePixmap();
-      //Paint->Pen.SetColor (Color);
-      //Paint->Rectangle ( 2, 2, Width - 2, Height - 2);
-      //Paint->RaiserFrame ( 0, 0, Width, Height);
+      Paint->Pen.SetColor (Color);
+      Paint->Rectangle ( 2, 2, Width - 2, Height - 2);
+      Paint->RaiserFrame ( 0, 0, Width, Height);
 #ifdef _ONEWIN       
       CWindow::Draw ();
 #else

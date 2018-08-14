@@ -31,6 +31,8 @@
 #include"mstring.h"
 #include<math.h>
 
+class CWindow;
+
 //Compatibillity 
 #define CPWindow CWindow
 #define CImage CDraw
@@ -53,11 +55,7 @@ SDL_Color ColorByRGB (unsigned short r, unsigned short g, unsigned short b);
 
 SDL_Color ColorByName (String name);
 
-/*
-int XXLookupString (XIC ic, XKeyPressedEvent * event, char *buffer_return,
-		    int bytes_buffer, KeySym * keysym_return,
-		    Status * status_return);
-*/
+
 class lxTextFile
 {
   private:	
@@ -76,11 +74,14 @@ class lxTextFile
 class lxImage
 {
 private:
+SDL_Surface* Surface;
 public:
 lxImage();
 ~lxImage();
 bool LoadFile(String fname);
 void Destroy();
+SDL_Surface* GetImage(void);
+operator SDL_Surface*() const;
 };
 
 class lxBitmap
@@ -88,10 +89,8 @@ class lxBitmap
 private:
 SDL_Texture* Texture;
 public:
-lxBitmap();
 ~lxBitmap();
-lxBitmap(lxImage img);
-lxBitmap(SDL_Texture * text);
+lxBitmap(SDL_Surface* surf, CPWindow * win);
 SDL_Texture* GetPixmap(void);
 };
 

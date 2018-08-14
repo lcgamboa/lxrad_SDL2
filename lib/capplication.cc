@@ -34,7 +34,7 @@
 pthread_mutex_t Display_Lock;
 #endif
 
-#ifdef _JS
+#ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
 // CApplication__________________________________________________________
@@ -59,19 +59,21 @@ CApplication::CApplication (void)
  pthread_mutex_init (&Display_Lock, NULL);
  pthread_mutex_lock (&Display_Lock);
 #endif
-};
+}
 
 CApplication::~CApplication (void)
 {
 #ifdef HAVE_LIBPTHREAD
  pthread_mutex_destroy (&Display_Lock);
 #endif
+     TTF_Quit ();
+     IMG_Quit ();
+     SDL_Quit ();
 };
 
 void
 CApplication::Start (void)
 {
-
 
  eprint ("Application init ...\n");
  if (SDL_Init (SDL_INIT_VIDEO) < 0)
@@ -102,18 +104,12 @@ CApplication::Start (void)
   }
 
 
-#ifdef _DEBUG
- eprint ("synchronize\n");
- XSynchronize (ADisplay, true);
-#else
  if (setlocale (LC_CTYPE, "") == NULL)
   {
    eprint ("Error : setlocale() !\n");
    Exit = true;
    return;
   };
-
-#endif
 
 };
 
@@ -130,7 +126,6 @@ CApplication::ACreateWindow (CWindow * AWindow, CWindow *window)
   };
  if (AWindowCount == -1)
   AWindow->SetVisible (true, false);
- AWindow->WCreate (window);
  AWindowCount++;
  CWindow **WindowList;
  WindowList = new CWindow *[AWindowCount + 1];
@@ -140,6 +135,7 @@ CApplication::ACreateWindow (CWindow * AWindow, CWindow *window)
  if (AWindowList)
   delete[]AWindowList;
  AWindowList = WindowList;
+ AWindow->WCreate (window);
  AWindow->Draw ();
 };
 
@@ -169,7 +165,7 @@ CApplication::ADestroyWindow (CWindow * AWindow)
  if (AWindowCount >= 0)
   {
    int wn = 0;
-   if (AWindowList[0]->GetWWindow () == AWindow->GetWWindow ())
+   if (AWindowList[0] == AWindow)
     {
      if (AWindowList[0]->GetDynamic ())
       delete AWindowList[0];
@@ -180,14 +176,12 @@ CApplication::ADestroyWindow (CWindow * AWindow)
       };
      delete[]AWindowList;
      AWindowList = NULL;
+     AWindowCount=-1;
      eprint ("...Application Finished\n");
 #ifdef _DEBUG
      eprint ("synchronize\n");
      XSynchronize (ADisplay, false);
 #endif
-     TTF_Quit ();
-     IMG_Quit ();
-     SDL_Quit ();
      Exit = true;
      return;
     }
@@ -210,7 +204,7 @@ CApplication::ADestroyWindow (CWindow * AWindow)
 };
 
 
-#ifdef _JS
+#ifdef __EMSCRIPTEN__
 
 void
 loop_handler (void)
@@ -232,15 +226,12 @@ CApplication::Load (void)
   {
    eprint ("No Windows!\n");
    eprint ("...Application Finished\n");
-   TTF_Quit ();
-   IMG_Quit ();
-   SDL_Quit ();
    return;
   };
 
  int wn = 0;
  FWindow = SDL_GetWindowID (AWindowList[wn]->GetWWindow ());
-#ifdef _JS
+#ifdef __EMSCRIPTEN__
  emscripten_set_main_loop (loop_handler, -1, 1);
 #else 
  for (; AWindowList != NULL;)
@@ -398,7 +389,10 @@ CApplication::GetAWindowCount (void)
 CWindow *
 CApplication::GetAWindow (uint window)
 {
- return AWindowList[window];
+   if(((int)window <=AWindowCount)&&(AWindowCount >= 0))
+     return AWindowList[window];
+   else
+    return NULL;
 };
 
 int

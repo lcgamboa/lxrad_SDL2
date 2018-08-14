@@ -212,7 +212,8 @@ CFileDialog::Run (void)
       Application->ACreateWindow (this);
     }
    */
-  WCreate(Win);
+  if(!WWindow)
+    WCreate(Win);
   ShowExclusive ();
   while(CanExitExclusive)
   {
@@ -220,7 +221,7 @@ CFileDialog::Run (void)
   }
   SetFileName (edit1.GetText ());
   WDestroy ();
-  Win->Draw ();
+  Owner->Draw ();
   return Result;
 };
 
