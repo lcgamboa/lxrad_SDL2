@@ -105,19 +105,20 @@ CWindow::WCreate (CWindow* window)
      printf ("Window could not be created! SDL Error: %s\n", SDL_GetError ());
      exit (-1);
     }
-
-   //Renderer = SDL_CreateRenderer( WWindow, -1, SDL_RENDERER_ACCELERATED ); 
+    
+   //Renderer = SDL_CreateRenderer( WWindow, -1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_TARGETTEXTURE ); 
    if (Renderer == NULL)
     {
      //    printf( "Hardware renderer could not be created! SDL Error: %s\n", SDL_GetError() );
      printf ("Switching to software renderer...\n");
-     Renderer = SDL_CreateRenderer (WWindow, -1, SDL_RENDERER_SOFTWARE);
+     Renderer = SDL_CreateRenderer (WWindow, -1, SDL_RENDERER_SOFTWARE|SDL_RENDERER_TARGETTEXTURE );
     }
    if (Renderer == NULL)
     {
      printf ("Renderer could not be created! SDL Error: %s\n", SDL_GetError ());
      exit (-1);
     }
+      
    //Initialize renderer color 
    SDL_SetRenderDrawColor (Renderer, 0xFF, 0xFF, 0xFF, 0xFF);
   }

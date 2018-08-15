@@ -70,7 +70,7 @@ CPaint::Create (CControl * control)
   Win = control->GetWin ();
   Owner = control;
   DrawIn = NULL;
-  DrawOut = NULL;
+  //DrawOut = NULL;
   Pen.Create (control);
  };
   
@@ -79,9 +79,9 @@ CPaint::Create (CControl * control ,lxBitmap *bitmap)
 {
   Win = control->GetWin ();
   if(Win == NULL)Win= (CWindow *)control;	  
-  Owner = control;
+  Owner = NULL;//control;
   DrawIn = bitmap->GetPixmap();
-  DrawOut = bitmap->GetPixmap();
+  //DrawOut = bitmap->GetPixmap();
   Pen.Create (control);
 }
 
@@ -126,32 +126,10 @@ CPaint::InitDraw (CControl * control)
 void
 CPaint::DrawControl (CControl * control)
 {
+    
+  SDL_SetRenderTarget(Win->GetRenderer(),NULL);
   SDL_RenderPresent( Win->GetRenderer() );  
-  /*  
-  if ((control->GetVisible ())&&
-      (DrawIn !=0 )&& 
-      (DrawIn != DrawOut))
-    {
-      if(Owner != Win)
-      {
-      RX=control->GetRX();
-      RY=control->GetRY();
-      Pen.SetPen (control->GetPen ());
-//      XCopyArea (Disp, DrawIn, DrawOut,
-//		 Agc, RX, RY, control->GetWidth (), control->GetHeight (),RX, RY);
-      Pen.SetPen (GXcopy);
-      }
-      else
-      {
-      RX=control->GetRX()-1;
-      RY=control->GetRY()-1;
-      Pen.SetPen (control->GetPen ());
-//      XCopyArea (Disp, DrawIn, DrawOut,
-//		 Agc, RX, RY, control->GetWidth ()+2, control->GetHeight ()+2,RX, RY);
-      Pen.SetPen (GXcopy);
-      }
-    };
-    */
+    
 };
 
 
@@ -264,7 +242,7 @@ CPaint::Text (String text,  int x1, int y1)
         if(text.size()==0)return;
         //Render text surface
         //SDL_Color textColor = { 0, 0, 0 };
-	SDL_Surface* textSurface = TTF_RenderText_Shaded( Owner->GetFont(), text.c_str(), Pen.GetColor(), Pen.GetBGColor() );
+	SDL_Surface* textSurface = TTF_RenderText_Shaded( Win->GetFont(), text.c_str(), Pen.GetColor(), Pen.GetBGColor() );
 	if( textSurface == NULL )
 	{
 		printf( "Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError() );
@@ -326,6 +304,7 @@ CPaint::Init(void)
 {
   Scalex=1.0;
   Scaley=1.0;  
+  DrawOut=SDL_GetRenderTarget(Win->GetRenderer());
   SDL_SetRenderTarget(Win->GetRenderer(),DrawIn);
 }
   
@@ -335,15 +314,18 @@ CPaint::Init(float sx, float sy)
 {
   Scalex=sx;
   Scaley=sy;  
+  DrawOut=SDL_GetRenderTarget(Win->GetRenderer());
   SDL_SetRenderTarget(Win->GetRenderer(),DrawIn);
 }
 
 void 
 CPaint::End(void)
 {
+  SDL_RenderPresent (Win->GetRenderer());
   SDL_SetRenderTarget(Win->GetRenderer(),NULL);
   if(Owner)  
-    Owner->Draw();	
+   Owner->Draw();
+  SDL_SetRenderTarget(Win->GetRenderer(),DrawOut);
 }
 
 void 
@@ -392,7 +374,6 @@ CPaint::RotatedText (String str, int x, int y, int angle)
 void 
 CPaint::PutBitmap (lxBitmap* bitmap,int x,int y)
 {
-  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
     SDL_Rect DestR;
 
     DestR.x = RX+x;

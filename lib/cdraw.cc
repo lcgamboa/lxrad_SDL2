@@ -145,7 +145,7 @@ CDraw::Draw ()
  
   if(Color.r != BColor.r)
   {
-    if(CPixmap != 0)
+    if(CPixmap != NULL)
     {	  
       SDL_DestroyTexture(CPixmap);
       CPixmap=NULL;
@@ -153,7 +153,7 @@ CDraw::Draw ()
     BColor=Color;
   };
   
-  if (CPixmap == 0)
+  if (CPixmap == NULL)
     {
       Visible=false;	    
       SetPixmapFileName (FileName);
@@ -165,7 +165,7 @@ CDraw::Draw ()
         CPixmap = SDL_CreateTexture(GetWin()->GetRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Width, Height );
         Canvas.SetDrawIn(CPixmap);
         Canvas.Pen.SetColor (Color);
-	Canvas.Rectangle ( 0, 0, Width, Height);
+	    Canvas.Rectangle ( 0, 0, Width, Height);
       };
     };
   
