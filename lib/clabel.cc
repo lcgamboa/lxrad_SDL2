@@ -127,7 +127,7 @@ CLabel::Draw (void)
   
   Paint->Pen.SetColor (Color);
   Paint->Pen.SetBGColor (Owner->GetColor ());
-  Paint->ImgText ( 0, Height - GetTextDes (), VText);
+  Paint->ImgText ( 0, 0 /*Height - GetTextDes ()*/, VText);
   SwapVirtual ();
 /*
   Pixmap mask=XCreateFontMask (Win->GetADisplay (), Win->GetWWindow (), ColorByName("yellow").pixel,CPixmap,50,50);

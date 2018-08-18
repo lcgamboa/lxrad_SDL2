@@ -144,7 +144,8 @@ lxBitmap::~lxBitmap()
 
 lxBitmap::lxBitmap(SDL_Surface* surf, CPWindow * win)
 {
-  if(!win->GetVisible ())SDL_ShowWindow(win->GetWWindow ());     
+  if(!win->GetVisible () && !win->GetOverWin() )SDL_ShowWindow(win->GetWWindow ());     
+  
   SDL_Texture *tim=SDL_CreateTextureFromSurface( win->GetRenderer(), surf );
       
   Texture = SDL_CreateTexture(win->GetRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, surf->w, surf->h );
@@ -160,7 +161,7 @@ lxBitmap::lxBitmap(SDL_Surface* surf, CPWindow * win)
   
   SDL_SetRenderTarget(win->GetRenderer(),NULL);
   
-  if(!win->GetVisible ())SDL_HideWindow(win->GetWWindow ());
+  if(!win->GetVisible () && !win->GetOverWin() )SDL_HideWindow(win->GetWWindow ());     
   
 }
 

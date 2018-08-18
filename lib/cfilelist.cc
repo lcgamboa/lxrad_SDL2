@@ -85,6 +85,8 @@ CFileList::SetDir (String dir)
   struct dirent **files = NULL;
   int n;
 
+  chdir(dir);
+  
   Dir = dir;
   
   Scroll->SetPosition (0);
@@ -210,7 +212,7 @@ CFileList::Draw ()
       (SelectedItem - Scroll->GetPosition () <= ItemsCount))
     {
       SetColor ("dark blue");
-      SDL_Color color =
+      lxColor color =
 	Items[SelectedItem - Scroll->GetPosition ()]->GetColor ();
       Items[SelectedItem - Scroll->GetPosition ()]->SetColor ("white");
       Items[SelectedItem - Scroll->GetPosition ()]->Draw ();

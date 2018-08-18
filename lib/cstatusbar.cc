@@ -153,7 +153,7 @@ CStatusbar::Draw (void)
   Paint->Pen.SetBGColor (Color);
   for (unsigned int i = 0; i < Fields.GetLinesCount (); i++)
   {
-    Paint->ImgText ((Owner->GetWidth()*i/Fields.GetLinesCount())+5 , 15 , Fields.GetLine(i).c_str());
+    Paint->ImgText ((Owner->GetWidth()*i/Fields.GetLinesCount())+5 , 3 , Fields.GetLine(i).c_str());
   }
 
   CControl::Draw ();

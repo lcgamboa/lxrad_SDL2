@@ -43,6 +43,7 @@ private:
   bool DoCalcRXY;
   float Scalex;
   float Scaley;
+  int LineWidth;
 public:
     CPen Pen;
     CPaint (void);

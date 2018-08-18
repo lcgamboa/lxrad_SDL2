@@ -282,9 +282,9 @@ CWindow::WDestroy (void)
 void
 CWindow::Show (void)
 {
+ SetVisible (true);
  if (Win != NULL)
   {
-   SetVisible (true);
    Draw ();
    if (!OverWin)
     {
@@ -306,9 +306,9 @@ CWindow::ShowExclusive (void)
 void
 CWindow::Hide (void)
 {
+ SetVisible (false);
  if (Win != NULL)
   {
-   SetVisible (false);
    if (OverWin)
     {
      WParent->Draw ();
@@ -438,16 +438,20 @@ CWindow::WEvents (SDL_Event WEvent)
      break;
     case SDL_WINDOWEVENT_RESIZED:
      //SDL_Log("Window %d resized to %dx%d", WEvent.window.windowID, WEvent.window.data1,WEvent.window.data2);    
+#ifndef _ONEWIN
      Width = WEvent.window.data1;
      Height = WEvent.window.data2;
      Draw ();
+#endif     
      ret = 1;
      break;
     case SDL_WINDOWEVENT_SIZE_CHANGED:
      //SDL_Log("Window %d size changed to %dx%d", WEvent.window.windowID, WEvent.window.data1,WEvent.window.data2);
+#ifndef _ONEWIN
      Width = WEvent.window.data1;
      Height = WEvent.window.data2;
      Draw ();
+#endif    
      ret = 1;
      break;
     case SDL_WINDOWEVENT_MINIMIZED:
@@ -768,7 +772,13 @@ CWindow::SetX (int x)
 {
  CControl::SetX (x);
  if ((WWindow)&&(!OverWin))
-  SDL_SetWindowPosition (WWindow, X, Y);
+  {
+#ifdef _ONEWIN
+     SDL_SetWindowPosition (WWindow, 0, 0);
+#else   
+    SDL_SetWindowPosition (WWindow, X, Y);
+#endif    
+  }
 };
 
 void
@@ -776,7 +786,13 @@ CWindow::SetY (int y)
 {
  CControl::SetY (y);
  if ((WWindow)&&(!OverWin))
-  SDL_SetWindowPosition (WWindow, X, Y);
+  {
+#ifdef _ONEWIN
+     SDL_SetWindowPosition (WWindow, 0, 0);
+#else    
+    SDL_SetWindowPosition (WWindow, X, Y);
+#endif
+  }
 };
 
 void
@@ -784,7 +800,13 @@ CWindow::SetWidth (uint width)
 {
  CControl::SetWidth (width);
  if ((WWindow)&&(!OverWin))
-  SDL_SetWindowSize (WWindow, Width, Height);
+ {
+#ifdef _ONEWIN
+   SDL_SetWindowSize (WWindow, 1360, 768);
+#else   
+   SDL_SetWindowSize (WWindow, Width, Height);
+#endif
+  }
 };
 
 void
@@ -792,7 +814,13 @@ CWindow::SetHeight (uint height)
 {
  CControl::SetHeight (height);
  if ((WWindow)&&(!OverWin))
+  {
+#ifdef _ONEWIN
+   SDL_SetWindowSize (WWindow, 1360, 768);
+#else     
   SDL_SetWindowSize (WWindow, Width, Height);
+#endif  
+  }
 };
 
 //operators
