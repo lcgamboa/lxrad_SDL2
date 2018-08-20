@@ -39,7 +39,7 @@ CPaint::CPaint (void)
  DoCalcRXY = true;
  Scalex = 1.0;
  Scaley = 1.0;
- LineWidth=1.0;
+ LineWidth = 1.0;
 };
 
 void
@@ -148,22 +148,38 @@ CPaint::FillPolygon (SDL_Point * points, int npoints)
 
 void
 CPaint::Line (int x1, int y1, int x2, int y2)
-{  
-  //TODO fix line draw
-  float xi,yi,m;
-  int xo,yo;
+{
+ if (LineWidth == 1)
+  {
+   SDL_RenderDrawLine (Win->GetRenderer (), RX + x1, RY + y1, RX + x2, RY + y2);
+  }
+ else
+  {
+   SDL_Rect DestR;
+   SDL_Point center;
+   float a, m;
+
+   m = sqrt (((x2 - x1)*(x2 - x1)+((y2 - y1)*(y2 - y1))));
+   a = 180/M_PI*atan2 ((y2 - y1), (x2 - x1));
+
    
-  m=sqrt(((x2-x1)*(x2-x1)+((y2-y1)*(y2-y1))));
-  xi= fabs(y2-y1)/m;
-  yi= (x2-x1)/m;  
-     
-  for(int i=0;i<LineWidth;i++) 
-   {
-     xo=xi*(i-(LineWidth/2.0));
-     yo=yi*(i-(LineWidth/2.0));
-     SDL_RenderDrawLine (Win->GetRenderer (), RX + x1+ xo, RY + y1+yo, RX + x2+xo, RY + y2+yo);
-   }
-};
+   SDL_Texture* line = SDL_CreateTexture (Win->GetRenderer (), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, m, LineWidth);
+   SDL_SetRenderTarget (Win->GetRenderer (), line);
+   SDL_RenderClear (Win->GetRenderer ());
+   SDL_SetRenderTarget (Win->GetRenderer (), DrawIn);
+   
+   DestR.w = m+LineWidth/2;
+   DestR.h = LineWidth;
+   DestR.x = RX + x1 -LineWidth/2;
+   DestR.y = RY + y1 -LineWidth/2;
+
+   center.x = LineWidth/2;
+   center.y = LineWidth/2;
+
+   SDL_RenderCopyEx (Win->GetRenderer (), line, NULL, &DestR, a, &center, SDL_FLIP_NONE);
+   SDL_DestroyTexture (line);
+  }
+}
 
 void
 CPaint::Lines (SDL_Point * points, int npoints)
@@ -245,7 +261,7 @@ CPaint::Text (String text, int x1, int y1)
  if (text.size () == 0)return;
  //Render text surface
  //SDL_Color textColor = { 0, 0, 0 };
- SDL_Surface* textSurface = TTF_RenderText_Blended(Win->GetFont (), text.c_str (), Pen.GetColor ()/*, Pen.GetBGColor ()*/);
+ SDL_Surface* textSurface = TTF_RenderText_Blended (Win->GetFont (), text.c_str (), Pen.GetColor ()/*, Pen.GetBGColor ()*/);
  if (textSurface == NULL)
   {
    printf ("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError ());
@@ -264,7 +280,7 @@ CPaint::Text (String text, int x1, int y1)
 
      SDL_QueryTexture (mTexture, NULL, NULL, &DestR.w, &DestR.h);
      DestR.x = RX + x1;
-     DestR.y = RY + y1 ;
+     DestR.y = RY + y1;
      SDL_RenderCopy (Win->GetRenderer (), mTexture, NULL, &DestR);
      SDL_DestroyTexture (mTexture);
     }
@@ -296,9 +312,10 @@ CPaint::PutPixmap (int x, int y, int w, int h, SDL_Texture * pixmap)
 };
 
 void
-CPaint::SetLineWidth (int w) {
+CPaint::SetLineWidth (int w)
+{
  //  Pen.SetWidth (w);
- LineWidth=w;
+ LineWidth = w;
 }
 
 void
@@ -388,15 +405,15 @@ CPaint::RotatedText (String text, int x, int y, int angle)
     {
      SDL_Rect DestR;
      SDL_Point center;
-     
+
      SDL_QueryTexture (mTexture, NULL, NULL, &DestR.w, &DestR.h);
      DestR.x = RX + x;
-     DestR.y = RY + y ;
-     
-     center.x=0;
-     center.y=0;
-         
-     SDL_RenderCopyEx (Win->GetRenderer (), mTexture, NULL, &DestR,-angle,&center ,SDL_FLIP_NONE);
+     DestR.y = RY + y;
+
+     center.x = 0;
+     center.y = 0;
+
+     SDL_RenderCopyEx (Win->GetRenderer (), mTexture, NULL, &DestR, -angle, &center, SDL_FLIP_NONE);
      SDL_DestroyTexture (mTexture);
     }
 
@@ -424,7 +441,7 @@ CPaint::SetBitmap (lxBitmap* bitmap, double xs, double ys)
 
  SDL_Texture* back = SDL_GetRenderTarget (Win->GetRenderer ());
  SDL_SetRenderTarget (Win->GetRenderer (), DrawIn);
- 
+
  DestR.x = 0;
  DestR.y = 0;
  SDL_QueryTexture (bitmap->GetPixmap (), NULL, NULL, &DestR.w, &DestR.h);
@@ -432,8 +449,8 @@ CPaint::SetBitmap (lxBitmap* bitmap, double xs, double ys)
  DestR.h *= ys;
  SDL_RenderCopy (Win->GetRenderer (), bitmap->GetPixmap (), NULL, &DestR);
  SDL_RenderPresent (Win->GetRenderer ());
- 
-  SDL_SetRenderTarget (Win->GetRenderer (), back);
+
+ SDL_SetRenderTarget (Win->GetRenderer (), back);
 }
 
 void
@@ -454,8 +471,8 @@ CPaint::ChangeScale (float sx, float sy)
 void
 CPaint::Circle (bool filled, int cx, int cy, int radius)
 {
-//This function is based in the code of: 
-//https://gist.github.com/derofim/912cfc9161269336f722
+ //This function is based in the code of: 
+ //https://gist.github.com/derofim/912cfc9161269336f722
  if (filled)
   {
    for (double dy = 1; dy <= radius; dy += 1.0)
@@ -475,25 +492,25 @@ CPaint::Circle (bool filled, int cx, int cy, int radius)
 
    while (x >= y)
     {
-     SDL_RenderDrawPoint(Win->GetRenderer (), (int) (cx + x), (int) (cy + y));
-     SDL_RenderDrawPoint(Win->GetRenderer (), (int) (cx + y), (int) (cy + x));
+     SDL_RenderDrawPoint (Win->GetRenderer (), (int) (cx + x), (int) (cy + y));
+     SDL_RenderDrawPoint (Win->GetRenderer (), (int) (cx + y), (int) (cy + x));
 
      if (x != 0)
       {
-       SDL_RenderDrawPoint(Win->GetRenderer (), (int) (cx - x), (int) (cy + y));
-       SDL_RenderDrawPoint(Win->GetRenderer (), (int) (cx + y), (int) (cy - x));
+       SDL_RenderDrawPoint (Win->GetRenderer (), (int) (cx - x), (int) (cy + y));
+       SDL_RenderDrawPoint (Win->GetRenderer (), (int) (cx + y), (int) (cy - x));
       }
 
      if (y != 0)
       {
-       SDL_RenderDrawPoint(Win->GetRenderer (), (int) (cx + x), (int) (cy - y));
-       SDL_RenderDrawPoint(Win->GetRenderer (), (int) (cx - y), (int) (cy + x));
+       SDL_RenderDrawPoint (Win->GetRenderer (), (int) (cx + x), (int) (cy - y));
+       SDL_RenderDrawPoint (Win->GetRenderer (), (int) (cx - y), (int) (cy + x));
       }
 
      if (x != 0 && y != 0)
       {
-       SDL_RenderDrawPoint(Win->GetRenderer (), (int) (cx - x), (int) (cy - y));
-       SDL_RenderDrawPoint(Win->GetRenderer (), (int) (cx - y), (int) (cy - x));
+       SDL_RenderDrawPoint (Win->GetRenderer (), (int) (cx - x), (int) (cy - y));
+       SDL_RenderDrawPoint (Win->GetRenderer (), (int) (cx - y), (int) (cy - x));
       }
 
      error += y;
@@ -516,15 +533,15 @@ void
 CPaint::Polygon (bool filed, lxPoint * points, int npoints)
 {
  printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
- 
+
  for (int c = 0; c < npoints; c++)
   {
    points[c].x += RX;
    points[c].y += RY;
   }
- 
+
  SDL_RenderDrawLines (Win->GetRenderer (), points, npoints);
- 
+
 }
 
 void

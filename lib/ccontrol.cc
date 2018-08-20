@@ -1018,9 +1018,8 @@ CControl::operator delete(void *p)
 void
 CControl::mouse_move (SDL_Event event)
 {
- //FIXME inverted coords
  if ((FOwner) && (EvMouseMove))
-  (FOwner->*EvMouseMove) (this, 0, event.motion.y, event.motion.x, event.motion.state);
+  (FOwner->*EvMouseMove) (this, 0, event.motion.x, event.motion.y, event.motion.state);
 };
 
 void
