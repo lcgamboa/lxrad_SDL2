@@ -31,473 +31,459 @@
 #include<unistd.h>
 #include<dirent.h>
 #include<sys/stat.h>
+#include <minizip/zip.h>
+#include <minizip/unzip.h>
+
 
 #ifndef PATH_MAX
 #define PATH_MAX 1024
 #endif
 
 //-------------------------------------------------------------------------
-lxTextFile::lxTextFile()
+
+lxTextFile::lxTextFile ()
 {
-  f=NULL;
+ f = NULL;
 }
 
-int 
-lxTextFile::Open(String fname)
+int
+lxTextFile::Open (String fname)
 {
-  f=fopen(fname.c_str(),"rw");
-  if(f)
-   return 1;
-  else
-   return 0;		  
-}
-  
-bool 
-lxTextFile::IsOpened(void)
-{
-  if(f)
-   return 1;
-  else
-   return 0;		  
+ f = fopen (fname.c_str (), "rw");
+ if (f)
+  return 1;
+ else
+  return 0;
 }
 
-void 
-lxTextFile::Close(void)
+bool
+lxTextFile::IsOpened (void)
 {
-  fclose(f);
-  f=NULL;  
+ if (f)
+  return 1;
+ else
+  return 0;
 }
 
-void 
-lxTextFile::GoToLine(int l)
+void
+lxTextFile::Close (void)
 {
-  //FIXME	
-  fseek ( f, l, SEEK_SET);
+ fclose (f);
+ f = NULL;
 }
-  
-FILE * 
-lxTextFile::GetFd(void)
+
+void
+lxTextFile::GoToLine (int l)
 {
-  return f;
+ //FIXME	
+ fseek (f, l, SEEK_SET);
 }
-  
-lxTextFile::operator FILE*() const 
-{ 
-	return f; 
+
+FILE *
+lxTextFile::GetFd (void)
+{
+ return f;
+}
+
+lxTextFile::operator FILE*() const
+{
+ return f;
 }
 
 //-------------------------------------------------------------------------
 
-	
-lxImage::lxImage()
+lxImage::lxImage ()
 {
  Surface = NULL;
 }
 
-lxImage::~lxImage()
+lxImage::~lxImage ()
 {
- if(Surface)
-  SDL_FreeSurface(Surface);
- Surface = NULL; 
+ if (Surface)
+  SDL_FreeSurface (Surface);
+ Surface = NULL;
 }
 
-
 bool
-lxImage::LoadFile(String fname)
+lxImage::LoadFile (String fname)
 {
-  Surface=IMG_Load(fname.c_str());
-  if(Surface)
-   return 1;
-  else 
-   return 0;
+ Surface = IMG_Load (fname.c_str ());
+ if (Surface)
+  return 1;
+ else
+  return 0;
 }
 
 void
-lxImage::Destroy(void)
+lxImage::Destroy (void)
 {
- if(Surface)
-  SDL_FreeSurface(Surface);
- Surface = NULL; 
+ if (Surface)
+  SDL_FreeSurface (Surface);
+ Surface = NULL;
 }
 
-SDL_Surface* 
-lxImage::GetImage(void)
+SDL_Surface*
+lxImage::GetImage (void)
 {
  return Surface;
 }
 
-lxImage::operator SDL_Surface*() const 
-{ 
-  return Surface; 
+lxImage::operator SDL_Surface*() const
+{
+ return Surface;
 }
 
 //-------------------------------------------------------------------------
 
-
-lxBitmap::~lxBitmap()
+lxBitmap::~lxBitmap ()
 {
-  if (Texture)
-    SDL_DestroyTexture (Texture);
-  Texture=NULL;
+ if (Texture)
+  SDL_DestroyTexture (Texture);
+ Texture = NULL;
 }
 
-
-lxBitmap::lxBitmap(SDL_Surface* surf, CPWindow * win)
+lxBitmap::lxBitmap (SDL_Surface* surf, CPWindow * win)
 {
-  if(!win->GetVisible () && !win->GetOverWin() )SDL_ShowWindow(win->GetWWindow ());     
-  
-  SDL_Texture *tim=SDL_CreateTextureFromSurface( win->GetRenderer(), surf );
-      
-  Texture = SDL_CreateTexture(win->GetRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, surf->w, surf->h );
-  
-  SDL_SetRenderTarget(win->GetRenderer(),Texture);
-  
-  SDL_SetRenderDrawColor (win->GetRenderer(), 0xFF, 0xFF, 0x00, 0xFF);
-   SDL_RenderClear( win->GetRenderer()); 
-  
-  SDL_RenderCopy( win->GetRenderer(), tim, NULL, NULL);
-  SDL_DestroyTexture (tim);
-  SDL_RenderPresent (win->GetRenderer());
-  
-  SDL_SetRenderTarget(win->GetRenderer(),NULL);
-  
-  if(!win->GetVisible () && !win->GetOverWin() )SDL_HideWindow(win->GetWWindow ());     
-  
+ if (!win->GetVisible () && !win->GetOverWin ())SDL_ShowWindow (win->GetWWindow ());
+
+ SDL_Texture *tim = SDL_CreateTextureFromSurface (win->GetRenderer (), surf);
+
+ Texture = SDL_CreateTexture (win->GetRenderer (), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, surf->w, surf->h);
+
+ SDL_SetRenderTarget (win->GetRenderer (), Texture);
+
+ SDL_SetRenderDrawColor (win->GetRenderer (), 0xFF, 0xFF, 0x00, 0xFF);
+ SDL_RenderClear (win->GetRenderer ());
+
+ SDL_RenderCopy (win->GetRenderer (), tim, NULL, NULL);
+ SDL_DestroyTexture (tim);
+ SDL_RenderPresent (win->GetRenderer ());
+
+ SDL_SetRenderTarget (win->GetRenderer (), NULL);
+
+ if (!win->GetVisible () && !win->GetOverWin ())SDL_HideWindow (win->GetWWindow ());
+
 }
 
-
-SDL_Texture *  
-lxBitmap::GetPixmap(void)
+SDL_Texture *
+lxBitmap::GetPixmap (void)
 {
-  return Texture;
+ return Texture;
 }
 
 
 //-------------------------------------------------------------------------
 
 bool
-lxSound::Create(String fname)
+lxSound::Create (String fname)
 {
-//FIXME	
-  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
-return false;
+ //FIXME	
+ printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
+ return false;
 }
 
 void
-lxSound::Stop(void)
+lxSound::Stop (void)
 {
-  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
-}
-
-void 
-lxSound::Play(int flags)
-{
-  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
-}
-//-------------------------------------------------------------------------
-void 
-lxFileName::Assign(String fname)
-{
-  FName=fname;
+ printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
 }
 
 void
-lxFileName::MakeAbsolute(void)
+lxSound::Play (int flags)
 {
-    char resolved_path[PATH_MAX]; 
-    realpath(FName, resolved_path); 
-    FName=resolved_path;
+ printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
+}
+//-------------------------------------------------------------------------
+
+void
+lxFileName::Assign (String fname)
+{
+ FName = fname;
+}
+
+void
+lxFileName::MakeAbsolute (void)
+{
+ char resolved_path[PATH_MAX];
+ realpath (FName, resolved_path);
+ FName = resolved_path;
 }
 
 String
-lxFileName::GetFullPath(void)
+lxFileName::GetFullPath (void)
 {
-return FName;
+ return FName;
 }
 
 //-------------------------------------------------------------------------
-lxColor::lxColor()
+
+lxColor::lxColor () { }
+
+lxColor::lxColor (SDL_Color color)
 {
+ Color = color;
 }
 
-lxColor::lxColor(SDL_Color color)
+lxColor::lxColor (const char * name)
 {
-  Color=color;
-}
-
-lxColor::lxColor(const char * name)
-{
-    Color=ColorByName(name);
+ Color = ColorByName (name);
 }
 
 String
-lxColor::GetAsString(int flags)
+lxColor::GetAsString (int flags)
 {
-    //FIXME	
-  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
-  /*
-   char cname[20];
-   XQueryColor(Application->GetADisplay (), Application->GetAScreen ()->cmap, &Color);
+ //FIXME	
+ printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
+ /*
+  char cname[20];
+  XQueryColor(Application->GetADisplay (), Application->GetAScreen ()->cmap, &Color);
 
-   if(flags ==  lxC2S_HTML_SYNTAX )
-   {
-     sprintf(cname,"#%02X%02X%02X",Color.red>>8,Color.green>>8,Color.blue>>8);
-   }
-   else
-   {
-     cname[0]=0;
-   }
+  if(flags ==  lxC2S_HTML_SYNTAX )
+  {
+    sprintf(cname,"#%02X%02X%02X",Color.red>>8,Color.green>>8,Color.blue>>8);
+  }
+  else
+  {
+    cname[0]=0;
+  }
 
-   return cname;	
+  return cname;	
 
-   */
-  return "";
+  */
+ return "";
 }
 
-lxColor::operator SDL_Color() const 
-{ 
-  return Color; 
+lxColor::operator
+SDL_Color () const
+{
+ return Color;
 }
 //-------------------------------------------------------------------------
 
-lxCursor::lxCursor()
+lxCursor::lxCursor ()
 {
-  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+ printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
 }
 
-lxCursor::lxCursor(int type)
+lxCursor::lxCursor (int type)
 {
-  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+ printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
 }
 
 //-------------------------------------------------------------------------
 
-lxFont::lxFont()
+lxFont::lxFont ()
 {
-  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+ printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
 }
 
-lxFont::lxFont(int size,int family,int style,int weight)
+lxFont::lxFont (int size, int family, int style, int weight)
 {
-#ifdef _DEBUG	
-  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+#ifdef _DEBUG 
+ printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
 #endif
 }
 //-------------------------------------------------------------------------
-void lxMilliSleep(unsigned int time)
+
+void
+lxMilliSleep (unsigned int time)
 {
-  usleep(time *1000);
+ usleep (time * 1000);
 }
 
-void lxSetCursor(lxCursor cursor)
+void
+lxSetCursor (lxCursor cursor)
 {
-  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+ printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
 }
 
-bool lxFileExists(String fname)
+bool
+lxFileExists (String fname)
 {
-  struct stat sb;
-  
-  sb.st_mode=0; 
+ struct stat sb;
 
-  stat(fname.c_str(), &sb);
-          
-  if(S_ISREG(sb.st_mode))
-    return true;
-  else
-    return false;
+ sb.st_mode = 0;
+
+ stat (fname.c_str (), &sb);
+
+ if (S_ISREG (sb.st_mode))
+  return true;
+ else
+  return false;
 }
 
-void lxExecute(String cmd,unsigned int flags)
+void
+lxExecute (String cmd, unsigned int flags)
 {
-  cmd+=lxT(" &");	
-  system(cmd.c_str());
+ cmd += lxT (" &");
+ system (cmd.c_str ());
 }
 
-String lxGetCwd(void)
+String
+lxGetCwd (void)
 {
-   char cwd[1024];
-   if (getcwd(cwd, sizeof(cwd)) != NULL)
-     return cwd;
-   else
-    return "";
+ char cwd[1024];
+ if (getcwd (cwd, sizeof (cwd)) != NULL)
+  return cwd;
+ else
+  return "";
 }
 
 
 //-------------------------------------------------------------------------
-bool lxUnzipDir(const String &in_filename, const String &out_dirname)
-{
-  char cmd[1024];	
-  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
-  //FIXME use library
-  
-  sprintf(cmd,"unzip %s -d%s\n",in_filename.c_str(),out_dirname.c_str()); 
-  
-  system(cmd);
- /*	
-    bool ret = true;
 
-        wxFileSystem::AddHandler(new wxZipFSHandler);
-        wxFileSystem fs;
-           
-        xauto_ptr<wxZipEntry> entry(new wxZipEntry);
-        do {    
-            wxFileInputStream in(in_filename);
-            if (!in)
-            {
-                wxLogError(_T("Can not open file '")+in_filename+_T("'."));
-                ret = false;
-                break;
-            }
-            wxZipInputStream zip(in);
-
-            //create dirs
-            while (entry.reset(zip.GetNextEntry()), entry.get() != NULL)
-            {
-                // access meta-data
-                wxString name = entry->GetName();
-                
-                if(dirname(name).Length() > 0)
-                {
-                    lxCreateDir(out_dirname+dirname(name));
-                }
-                
-                name = out_dirname + name;
-
-                    
-                // read 'zip' to access the entry's data
-                if (entry->IsDir())
-                {
-                    int perm = entry->GetMode();
-                    wxFileName::Mkdir(name, perm, wxPATH_MKDIR_FULL);
-                }
-                else
-                {
-                    zip.OpenEntry(*entry.get());
-                    if (!zip.CanRead())
-                    {
-                        wxLogError(_T("Can not read zip entry '")+entry->GetName()+_T("'."));
-                        ret = false;
-                        break;
-                    }
-                    wxFileOutputStream file(name);
-                    if (!file)
-                    {
-                         wxLogError(_T("Can not create file '")+name+_T("'."));
-                         ret = false;
-                         break;
-                    }
-                    zip.Read(file);
-                }
-                       
-            }
-        } while(false);
-    return ret;
-    */
-	return 0;
-}
-
-
-bool 
-lxZipDir(const String &in_dirname, const String &out_filename)
-{
-  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
-/*	
-   wxString sep(wxFileName::GetPathSeparator());
-
-   wxArrayString files;
-
-   wxDir::GetAllFiles(in_dirname,&files);//the dir contented all the files need to compress.
-
-   wxFFileOutputStream  fileout(out_filename);
-
-   wxZipOutputStream zipout (fileout);
-
-   wxFFileInputStream *in = NULL;   
-   wxZipEntry *entry=NULL;
-   wxFileName *zipname = NULL;
-
-   for (size_t i = 0;i != files.GetCount(); ++i)
-   {
-      if (in!=NULL)
+bool
+lxUnzipDir (const String &in_filename, const String &out_dirname) {
+ 
+ char fname[1024];
+ unzFile uzf =unzOpen (in_filename.c_str ());
+ 
+ if(uzf != NULL)
+ {
+   if(unzGoToFirstFile(uzf) == UNZ_OK)
+    {
+     do
       {
-         delete in;
-         in = NULL;
-      }
-      if (zipname!=NULL)
-      {
-         delete zipname;
-         zipname = NULL;
-      }
-
-      in = new wxFFileInputStream(files[i]);
-      zipname = new wxFileName (files[i]);
-      if(zipname->MakeRelativeTo(in_dirname))
-      {
-         entry =  new wxZipEntry(wxT("picsimlab_workspace/")+zipname->GetFullPath());
-         zipout.PutNextEntry(entry);
-         zipout.Write(*(in));
-      }
-      else
-      {
-         return false;
-      }
-   }
-   zipout.CloseEntry();
-   zipout.Close();
-   fileout.Close();
-   if (in!=NULL)
-   {
-      delete in;
-      in = NULL;
-   }
-   if (zipname!=NULL)
-   {
-      delete zipname;
-      zipname = NULL;
-   }
-   */
-   return true;
-}
-
-bool lxRemoveFile(const char * fname)
-{
-    return remove(fname);
-}
-
-bool lxRemoveDir(const char* dirname)
-{	
-     DIR  *dp;
-     struct dirent *dent;
-     struct stat sb;
-     char fname[1024];
-     
-     dp = opendir (dirname);
-
-     if(dp)
-     {
-       while((dent=readdir(dp))!=NULL)
+      unz_file_info finfo; 
+      unzGetCurrentFileInfo(uzf,&finfo,fname,1024,NULL,0,NULL,0);
+      
+      char *buff= (char *)malloc(finfo.uncompressed_size);
+      unzOpenCurrentFile(uzf);
+      unzReadCurrentFile(uzf,buff,finfo.uncompressed_size);
+      unzCloseCurrentFile(uzf);
+      
+      String dname=out_dirname;
+      dname+=dirname(fname);
+      
+      if(dname.length () > 0)
        {
-          snprintf(fname,1024,"%s/%s",dirname,dent->d_name);  
-          stat(fname, &sb);
-          
-          if(S_ISREG(sb.st_mode))
-          {
-            lxRemoveFile(fname);
-          }
-          else if(S_ISDIR(sb.st_mode))
-          {
-            if(!(!strcmp(dent->d_name,".") || !strcmp(dent->d_name,"..")))
-            {    
-              lxRemoveDir(fname);
-            }
-          }
+        lxCreateDir(dname);
        }
-       closedir(dp);
-       return rmdir(dirname);
-     }
-   return 0;
-}    
+      
+      String name=out_dirname;
+      name+=fname;
+      
+      FILE * fout=fopen(name.c_str(),"w");
+      if(fout)
+       {
+        fwrite(buff,finfo.uncompressed_size,1, fout);
+        fclose(fout);
+       }
+      free(buff);
+      }
+      while(unzGoToNextFile(uzf) == UNZ_OK);
+    }
+   
+   unzClose(uzf);
+ }
+ 
+ return 0;
+ }
+
+bool
+lxZipDir (const String &in_dirname, const String &out_filename)
+{
+CStringList paths =lxListDirRec(in_dirname);
+   
+String dname= basename(in_dirname.substr(0,in_dirname.length ()-1));
+
+ if (paths.GetLinesCount () == 0)
+  {
+   return 1;
+  }
+
+
+ zipFile zf = zipOpen (out_filename.c_str (), APPEND_STATUS_CREATE);
+ if (zf == NULL)
+  {
+   return 1;
+  }
+
+ bool _return = true;
+
+
+ for (size_t i = 0; i < paths.GetLinesCount (); i++)
+  {
+   FILE * file =fopen(paths.GetLine (i).c_str (), "r");
+   if (file)
+    {
+     fseek (file,0,SEEK_END);
+     long size = ftell (file);
+     fseek (file, 0, SEEK_SET);
+
+     char * buffer= (char*)malloc(size);
+     if (size == 0 || fread (buffer, size,1,file))
+      {
+       zip_fileinfo zfi = {0};
+       String fileName = dname+paths.GetLine (i).substr(in_dirname.length (),paths.GetLine (i).length ()-in_dirname.length ());
+
+       if (0 == zipOpenNewFileInZip (zf, fileName.c_str (), &zfi, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION))
+        {
+         if (zipWriteInFileInZip (zf, size == 0 ? "" : buffer, size))
+          _return = false;
+
+         if (zipCloseFileInZip (zf))
+          _return = false;
+
+         fclose (file);
+         free(buffer);
+         continue;
+        }
+      }
+     fclose (file);
+    }
+   _return = false;
+  }
+
+ if (zipClose (zf, NULL))
+  return 3;
+
+ if (!_return)
+  return 4;
+ return 0;
+ 
+}
+
+bool
+lxRemoveFile (const char * fname)
+{
+ return remove (fname);
+}
+
+bool
+lxRemoveDir (const char* dirname)
+{
+ DIR *dp;
+ struct dirent *dent;
+ struct stat sb;
+ char fname[1024];
+
+ dp = opendir (dirname);
+
+ if (dp)
+  {
+   while ((dent = readdir (dp)) != NULL)
+    {
+     snprintf (fname, 1024, "%s/%s", dirname, dent->d_name);
+     stat (fname, &sb);
+
+     if (S_ISREG (sb.st_mode))
+      {
+       lxRemoveFile (fname);
+      }
+     else if (S_ISDIR (sb.st_mode))
+      {
+       if (!(!strcmp (dent->d_name, ".") || !strcmp (dent->d_name, "..")))
+        {
+         lxRemoveDir (fname);
+        }
+      }
+    }
+   closedir (dp);
+   return rmdir (dirname);
+  }
+ return 0;
+}
 
 bool 
 lxCreateDir(const char * dirname)
@@ -520,192 +506,227 @@ lxCreateDir(const char * dirname)
    return 0;
 }
 
-
-String 
-lxGetUserDataDir(String appname)
+CStringList
+lxListDirRec (const String & dirname)
 {
-  return String("/home/")+getlogin()+"/."+appname;
+ DIR *dp;
+ struct dirent *dent;
+ struct stat sb;
+ char fname[1024];
+
+ CStringList list;
+
+ list.Clear ();
+
+ dp = opendir (dirname);
+
+ if (dp)
+  {
+   while ((dent = readdir (dp)) != NULL)
+    {
+     snprintf (fname, 1024, "%s/%s", dirname.c_str(), dent->d_name);
+     stat (fname, &sb);
+
+     if (S_ISREG (sb.st_mode))
+      {
+       list.AddLine (fname);
+      }
+     else if (S_ISDIR (sb.st_mode))
+      {
+       if (!(!strcmp (dent->d_name, ".") || !strcmp (dent->d_name, "..")))
+        {
+          CStringList list2=lxListDirRec (fname);
+          for(unsigned int i=0;i<list2.GetLinesCount ();i++)
+           {
+            list.AddLine (list2.GetLine (i));
+           }
+        }
+      }
+    }
+   closedir (dp);
+  }
+ return list;
+
 }
 
-String 
-lxGetTempDir(String appname)
+String
+lxGetUserDataDir (String appname)
 {
-  return "/tmp/";
+ return String ("/home/") + getlogin () + "/." + appname;
 }
 
-String 
-lxGetExecutablePath(String appname)
+String
+lxGetTempDir (String appname)
 {
-  return "/usr/bin/";
+ return "/tmp/";
+}
+
+String
+lxGetExecutablePath (String appname)
+{
+ return "/usr/bin/";
 }
 
 
 
 // Useful functions_______________________________________________________
 
-void mprint(String message)
+void
+mprint (String message)
 {
-  fprintf(stdout,"%s",message.c_str());
+ fprintf (stdout, "%s", message.c_str ());
 };
 
-void eprint(String error)
+void
+eprint (String error)
 {
-  fprintf(stderr,"%s",error.c_str());
+ fprintf (stderr, "%s", error.c_str ());
 };
 
 SDL_Color
 ColorByRGB (unsigned short r, unsigned short g, unsigned short b)
 {
 
-  SDL_Color colorA;
+ SDL_Color colorA;
 
-  colorA.r=r;
-  colorA.g=g;
-  colorA.b=b;
-  
-  return colorA;
+ colorA.r = r;
+ colorA.g = g;
+ colorA.b = b;
+
+ return colorA;
 };
 
 SDL_Color
 ColorByName (String name)
-{        
-  char cname[10];
-  strncpy(cname,name.c_str(),9);
-  SDL_Color  colorA;
-  if(cname[0] == '#' )
+{
+ char cname[10];
+ strncpy (cname, name.c_str (), 9);
+ SDL_Color colorA;
+ if (cname[0] == '#')
   {
-    char tmp[3];
-    tmp[2]=0;
-    tmp[0]=cname[1];
-    tmp[1]=cname[2];
-    sscanf(tmp,"%02hhX",&colorA.r);
-    tmp[0]=cname[3];
-    tmp[1]=cname[4];
-    sscanf(tmp,"%02hhX",&colorA.g);
-    tmp[0]=cname[5];
-    tmp[1]=cname[6];
-    sscanf(tmp,"%02hhX",&colorA.b);
-  }	  
-  else
-  { 
-     if(!name.Cmp("gray35"))
-     {
-         colorA.r=0x59;
-         colorA.g=0x59;
-         colorA.b=0x59;
-         return colorA;
-     }
-     if(!name.Cmp("gray59"))
-     {
-         colorA.r=0x96;
-         colorA.g=0x96;
-         colorA.b=0x96;
-         return colorA;
-     }
-     if(!name.Cmp("gray96"))
-     {
-         colorA.r=0x60;
-         colorA.g=0x60;
-         colorA.b=0x60;
-         return colorA;
-     }
-     if(!name.Cmp("gray86"))
-     {
-         colorA.r=0xdb;
-         colorA.g=0xdb;
-         colorA.b=0xdb;
-         return colorA;
-     }
-     if(!name.Cmp("gray82"))
-     {
-         colorA.r=0xd1;
-         colorA.g=0xd1;
-         colorA.b=0xd1;
-         return colorA;
-     }
-     if(!name.Cmp("gray"))
-     {
-         colorA.r=0xbe;
-         colorA.g=0xbe;
-         colorA.b=0xbe;
-         return colorA;
-     }
-     if(!name.Cmp("dark gray"))
-     {
-         colorA.r=0xa9;
-         colorA.g=0xa9;
-         colorA.b=0xa9;
-         return colorA;
-     }
-     if(!name.Cmp("light gray"))
-     {
-         colorA.r=0xd3;
-         colorA.g=0xd3;
-         colorA.b=0xd3;
-         return colorA;
-     }     
-     if(!name.Cmp("black"))
-     {
-         colorA.r=0x00;
-         colorA.g=0x00;
-         colorA.b=0x00;
-         return colorA;
-     } 
-     if(!name.Cmp("white"))
-     {
-         colorA.r=0xff;
-         colorA.g=0xff;
-         colorA.b=0xff;
-         return colorA;
-     } 
-     if(!name.Cmp("blue"))
-     {
-         colorA.r=0x00;
-         colorA.g=0x00;
-         colorA.b=0xff;
-         return colorA;
-     } 
-     if(!name.Cmp("red"))
-     {
-         colorA.r=0xff;
-         colorA.g=0x00;
-         colorA.b=0x00;
-         return colorA;
-     } 
-     if(!name.Cmp("green"))
-     {
-         colorA.r=0x00;
-         colorA.g=0xff;
-         colorA.b=0x00;
-         return colorA;
-     } 
-     if(!name.Cmp("light yellow"))
-     {
-         colorA.r=0xfe;
-         colorA.g=0xfe;
-         colorA.b=0xe0;
-         return colorA;
-     }
-     if(!name.Cmp("dark blue"))
-     {
-         colorA.r=0x00;
-         colorA.g=0x00;
-         colorA.b=0x8b;
-         return colorA;
-     }
-       
-    printf("Color %s not found\n",name.c_str());  
+   char tmp[3];
+   tmp[2] = 0;
+   tmp[0] = cname[1];
+   tmp[1] = cname[2];
+   sscanf (tmp, "%02hhX", &colorA.r);
+   tmp[0] = cname[3];
+   tmp[1] = cname[4];
+   sscanf (tmp, "%02hhX", &colorA.g);
+   tmp[0] = cname[5];
+   tmp[1] = cname[6];
+   sscanf (tmp, "%02hhX", &colorA.b);
   }
-  return colorA;    
+ else
+  {
+   if (!name.Cmp ("gray35"))
+    {
+     colorA.r = 0x59;
+     colorA.g = 0x59;
+     colorA.b = 0x59;
+     return colorA;
+    }
+   if (!name.Cmp ("gray59"))
+    {
+     colorA.r = 0x96;
+     colorA.g = 0x96;
+     colorA.b = 0x96;
+     return colorA;
+    }
+   if (!name.Cmp ("gray96"))
+    {
+     colorA.r = 0x60;
+     colorA.g = 0x60;
+     colorA.b = 0x60;
+     return colorA;
+    }
+   if (!name.Cmp ("gray86"))
+    {
+     colorA.r = 0xdb;
+     colorA.g = 0xdb;
+     colorA.b = 0xdb;
+     return colorA;
+    }
+   if (!name.Cmp ("gray82"))
+    {
+     colorA.r = 0xd1;
+     colorA.g = 0xd1;
+     colorA.b = 0xd1;
+     return colorA;
+    }
+   if (!name.Cmp ("gray"))
+    {
+     colorA.r = 0xbe;
+     colorA.g = 0xbe;
+     colorA.b = 0xbe;
+     return colorA;
+    }
+   if (!name.Cmp ("dark gray"))
+    {
+     colorA.r = 0xa9;
+     colorA.g = 0xa9;
+     colorA.b = 0xa9;
+     return colorA;
+    }
+   if (!name.Cmp ("light gray"))
+    {
+     colorA.r = 0xd3;
+     colorA.g = 0xd3;
+     colorA.b = 0xd3;
+     return colorA;
+    }
+   if (!name.Cmp ("black"))
+    {
+     colorA.r = 0x00;
+     colorA.g = 0x00;
+     colorA.b = 0x00;
+     return colorA;
+    }
+   if (!name.Cmp ("white"))
+    {
+     colorA.r = 0xff;
+     colorA.g = 0xff;
+     colorA.b = 0xff;
+     return colorA;
+    }
+   if (!name.Cmp ("blue"))
+    {
+     colorA.r = 0x00;
+     colorA.g = 0x00;
+     colorA.b = 0xff;
+     return colorA;
+    }
+   if (!name.Cmp ("red"))
+    {
+     colorA.r = 0xff;
+     colorA.g = 0x00;
+     colorA.b = 0x00;
+     return colorA;
+    }
+   if (!name.Cmp ("green"))
+    {
+     colorA.r = 0x00;
+     colorA.g = 0xff;
+     colorA.b = 0x00;
+     return colorA;
+    }
+   if (!name.Cmp ("light yellow"))
+    {
+     colorA.r = 0xfe;
+     colorA.g = 0xfe;
+     colorA.b = 0xe0;
+     return colorA;
+    }
+   if (!name.Cmp ("dark blue"))
+    {
+     colorA.r = 0x00;
+     colorA.g = 0x00;
+     colorA.b = 0x8b;
+     return colorA;
+    }
+
+   printf ("Color %s not found\n", name.c_str ());
+  }
+ return colorA;
 };
 
-/*
-int
-XXLookupString (XIC ic, XKeyPressedEvent * event, char *buffer_return,
-		int bytes_buffer, KeySym * keysym_return,
-		Status * status_return)
-{
-  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
-  return 0;
-}
-*/
+

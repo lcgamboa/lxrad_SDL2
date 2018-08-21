@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
 
 
 #include"../include/cdialog.h"
-
+#include"../include/capplication.h"
 
 // CDialog__________________________________________________________
 
@@ -83,6 +83,10 @@ Dialog (String label)
   winput->Draw ();
   winput->ShowExclusive ();
   winput->SetCanDestroy (true);
+  while(winput->GetCanExitExclusive ())
+  {
+    Application->ProcessEvents ();
+  }
   ret = winput->Return;
   winput->WDestroy ();
   delete winput;
