@@ -50,7 +50,7 @@ CApplication::CApplication (void)
  ThreadList = NULL;
  Tag = 0;
  Exit = false;
-
+ ARootWindow = NULL;
  HintControl = NULL;
  HintTime = time (NULL);
  HintX = 0;
@@ -117,7 +117,19 @@ void
 CApplication::ACreateWindow (CWindow * AWindow, CWindow *window)
 {
 #ifdef _ONEWIN
- if (AWindowCount != -1)AWindow->SetOverWin(true);
+ if (AWindowCount == -1)
+  {
+   ARootWindow = new CWindow;
+   ARootWindow->SetWidth (1360);
+   ARootWindow->SetHeight (768);
+   ARootWindow->WCreate();
+  } 
+ AWindow->SetOverWin(true);
+#else
+ if (AWindowCount == -1)
+  {
+   ARootWindow = AWindow;
+  }  
 #endif
  if (Exit)
   {
@@ -239,12 +251,20 @@ CApplication::Load (void)
    ProcessEvents ();
   }
 #endif
+ 
+#ifdef _ONEWIN
+ if(ARootWindow)
+  {
+   delete ARootWindow;
+   ARootWindow=NULL;
+  }
+#endif
 }
 
 bool
 CApplication::ProcessEvents (void)
 {
- int wn = -1;
+ CWindow * wn = NULL;
  int ec; //events in queue
  struct timeval  tv;
  long int elapsed; 
@@ -308,20 +328,31 @@ CApplication::ProcessEvents (void)
 
  FWindow = AEvent.window.windowID;
 
- wn = -1;
+ 
+ 
+#ifdef _ONEWIN
+ for (int e = 0; e <= AWindowCount; e++)
+  {
+   if(AWindowList[e]->GetVisible ())
+     wn = AWindowList[e];
+   else
+     wn = NULL;
+#else
+ wn = NULL;
  for (int e = 0; e <= AWindowCount; e++)
   {
    if (FWindow == SDL_GetWindowID (AWindowList[e]->GetWWindow ()))
     {
-     wn = e;
+     wn = AWindowList[e];
      break;
     }
   }
-
+ #endif
+ 
  if (!MWindow)
   {
-   if (wn >= 0)
-    AWindowList[wn]->WEvents (AEvent);
+   if (wn)
+    wn->WEvents (AEvent);
 
    if ((AEvent.type == SDL_WINDOWEVENT)&&(AEvent.window.type == SDL_WINDOWEVENT_CLOSE))
     for (int p = 0; p <= AWindowCount; p++)
@@ -329,7 +360,7 @@ CApplication::ProcessEvents (void)
       if (AEvent.window.windowID == SDL_GetWindowID (AWindowList[p]->GetWWindow ()))
        {
         ADestroyWindow (AWindowList[p]);
-        wn = -1;
+        wn = NULL;
         //Update ();
         if (Exit)
          return true;
@@ -342,7 +373,7 @@ CApplication::ProcessEvents (void)
    if (((AEvent.type == SDL_WINDOWEVENT) && ((AEvent.window.type == SDL_WINDOWEVENT_ENTER) || (AEvent.window.type == SDL_WINDOWEVENT_EXPOSED)))
        && (AWindowCount >= 0) && (wn >= 0))
     {
-     AWindowList[wn]->WEvents (AEvent);
+     wn->WEvents (AEvent);
     }
    else
     {
@@ -369,6 +400,9 @@ CApplication::ProcessEvents (void)
 
     }
   }
+#ifdef _ONEWIN
+  }
+#endif 
   return false;
 }
 
@@ -393,6 +427,12 @@ CApplication::GetAWindow (uint window)
      return AWindowList[window];
    else
     return NULL;
+};
+
+CWindow *
+CApplication::GetARootWindow (void)
+{
+   return ARootWindow;
 };
 
 int

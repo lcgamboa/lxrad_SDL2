@@ -89,6 +89,7 @@ public:
   void SetCanDestroy (bool candestroy);
   bool GetCanDestroy (void);
   void SetOverrideRedirect (bool redirect);
+  bool GetOverrideRedirect (void);
   void SetSaveUnder (bool saveunder);
   virtual void SetX (int x);
   virtual void SetY (int y);

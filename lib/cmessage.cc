@@ -74,11 +74,11 @@ Message (String str)
   wmessage.string1.SetText (str);
 
 #ifdef _ONEWIN  
-  wmessage.SetX((Application->GetAWindow(0)->GetWidth ()- wmessage.GetWidth())/2);
-  wmessage.SetY((Application->GetAWindow(0)->GetHeight ()- wmessage.GetHeight())/2);
+  wmessage.SetX((Application->GetARootWindow()->GetWidth ()- wmessage.GetWidth())/2);
+  wmessage.SetY((Application->GetARootWindow()->GetHeight ()- wmessage.GetHeight())/2);
 #else
-  wmessage.SetX(((Application->GetAWindow(0)->GetWidth ()- wmessage.GetWidth())/2)+Application->GetAWindow(0)->GetX ());
-  wmessage.SetY(((Application->GetAWindow(0)->GetHeight ()- wmessage.GetHeight())/2)+Application->GetAWindow(0)->GetY ());
+  wmessage.SetX(((Application->GetARootWindow()->GetWidth ()- wmessage.GetWidth())/2)+Application->GetARootWindow()->GetX ());
+  wmessage.SetY(((Application->GetARootWindow()->GetHeight ()- wmessage.GetHeight())/2)+Application->GetARootWindow()->GetY ());
 #endif  
   if(!wmessage.GetWWindow ())
     wmessage.WCreate ();

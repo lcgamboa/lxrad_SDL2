@@ -84,7 +84,7 @@ CWindow::WCreate (CWindow* window)
   }
  else if (OverWin)
   {
-   WParent = Application->GetAWindow (0);
+   WParent = Application->GetARootWindow();
   }
  else
   {
@@ -162,12 +162,30 @@ CWindow::Draw (void)
  if (OverWin)
   {
    if ((Paint == NULL) || (Visible == false))return;
-
    Paint->InitDraw (this);
    Paint->Pen.SetColor (Color);
+#ifdef _ONEWIN   
+   if(!ORedirect)
+   {
+     Paint->Rectangle (0, 0, Width, Height+20);
+     Paint->RaiserFrame (0, 0, Width, Height+20, 1);
+     Paint->Pen.SetColor (ColorByRGB(0,0,80));
+     Paint->Rectangle (0, 0, Width, 20);
+     Paint->RaiserFrame (0, 0, Width, 20, 1);
+     int tw;
+     TTF_SizeText (CFont, Title.c_str (),&tw,NULL);
+     Paint->Pen.SetColor (ColorByRGB(255,255,255));
+     Paint->Text (Title,(Width-tw)/2,2);
+   }
+   else
+   {
+     Paint->Rectangle (0, 0, Width, Height);
+     Paint->RaiserFrame (0, 0, Width, Height, 1);  
+   }
+#else
    Paint->Rectangle (0, 0, Width, Height);
    Paint->RaiserFrame (0, 0, Width, Height, 1);
-
+#endif   
   }
  else
   {
@@ -264,7 +282,7 @@ CWindow::WDestroy (void)
      Hide ();
 
    on_destroy ();
-   if ((!OverWin)&&((CanDestroy) || (this == Application->GetAWindow ((uint) 0))))
+   if (((!OverWin)&&(CanDestroy)) || (this == Application->GetAWindow (0)))
     {
      Destroy ();
      WPaint.Destroy ();
@@ -273,8 +291,7 @@ CWindow::WDestroy (void)
        //        XDestroyWindow (ADisplay, GetWWindow ());
       };
      Win = NULL;
-     if(!OverWin)	
-       Application->ADestroyWindow (this);
+     Application->ADestroyWindow (this);
      WWindow = 0;
     }
 }
@@ -389,7 +406,13 @@ CWindow::SetOverrideRedirect (bool oredirect)
    else
     SDL_SetWindowBordered (WWindow, SDL_FALSE);
   }
-};
+}
+
+bool
+CWindow::GetOverrideRedirect (void)
+{
+ return ORedirect;
+}
 
 void
 CWindow::SetSaveUnder (bool saveunder) { };
@@ -432,8 +455,10 @@ CWindow::WEvents (SDL_Event WEvent)
      break;
     case SDL_WINDOWEVENT_MOVED:
      //SDL_Log("Window %d moved to %d,%d", WEvent.window.windowID, WEvent.window.data1, WEvent.window.data2);
+#ifndef _ONEWIN
      X = WEvent.window.data1;
      Y = WEvent.window.data2;
+#endif     
      ret = 1;
      break;
     case SDL_WINDOWEVENT_RESIZED:
@@ -498,7 +523,7 @@ CWindow::WEvents (SDL_Event WEvent)
      break;
 #endif
     default:
-     //SDL_Log("Window %d got unknown event %d", WEvent.window.windowID, WEvent.window.event);
+     SDL_Log("Window %d got unknown event %d", WEvent.window.windowID, WEvent.window.event);
      break;
     }
 
@@ -772,12 +797,8 @@ CWindow::SetX (int x)
 {
  CControl::SetX (x);
  if ((WWindow)&&(!OverWin))
-  {
-#ifdef _ONEWIN
-     SDL_SetWindowPosition (WWindow, 0, 0);
-#else   
-    SDL_SetWindowPosition (WWindow, X, Y);
-#endif    
+  {  
+    SDL_SetWindowPosition (WWindow, X, Y);    
   }
 };
 
@@ -786,12 +807,8 @@ CWindow::SetY (int y)
 {
  CControl::SetY (y);
  if ((WWindow)&&(!OverWin))
-  {
-#ifdef _ONEWIN
-     SDL_SetWindowPosition (WWindow, 0, 0);
-#else    
+  { 
     SDL_SetWindowPosition (WWindow, X, Y);
-#endif
   }
 };
 
@@ -800,12 +817,8 @@ CWindow::SetWidth (uint width)
 {
  CControl::SetWidth (width);
  if ((WWindow)&&(!OverWin))
- {
-#ifdef _ONEWIN
-   SDL_SetWindowSize (WWindow, 1360, 768);
-#else   
+ { 
    SDL_SetWindowSize (WWindow, Width, Height);
-#endif
   }
 };
 
@@ -815,11 +828,7 @@ CWindow::SetHeight (uint height)
  CControl::SetHeight (height);
  if ((WWindow)&&(!OverWin))
   {
-#ifdef _ONEWIN
-   SDL_SetWindowSize (WWindow, 1360, 768);
-#else     
-  SDL_SetWindowSize (WWindow, Width, Height);
-#endif  
+  SDL_SetWindowSize (WWindow, Width, Height);  
   }
 };
 

@@ -40,6 +40,7 @@ class CApplication
 private:
   SDL_Event AEvent, LAEvent;
   CWindow **AWindowList;
+  CWindow * ARootWindow;
   int AWindowCount;
   CTimer **TimerList;
   int TimerCount;
@@ -74,6 +75,7 @@ public:
   //propiedades
   int GetAWindowCount (void);
   CWindow *GetAWindow (uint window);
+  CWindow *GetARootWindow (void);
   void SetModalWindow (CWindow * mwindow);
   void SetTag (int x);
   int GetTag ();

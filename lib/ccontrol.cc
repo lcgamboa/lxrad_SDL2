@@ -650,14 +650,20 @@ CControl::CalcRXY (void)
  o = dynamic_cast<CWindow *> (Owner);
  t = dynamic_cast<CWindow *> (this);
  
+ /*
  if((o)&&(o->GetOverWin()))
   {
     o =NULL;
     t = NULL;
+    #ifdef _ONEWIN
+    RX = X;
+    RY = Y;
+    #else
     RX = 0;
     RY = 0;
+   #endif
   }
-   
+  */ 
 
  //printf ("ctrl=%s  owner=%s\n", GetClass ().c_str (), Owner->GetClass ().c_str ());
 
@@ -665,8 +671,13 @@ CControl::CalcRXY (void)
   {
    if (t) //this == CWindow 
     {
-     RX = 0;
-     RY = 0;
+   #ifdef _ONEWIN
+    RX = X;
+    RY = Y;
+    #else
+    RX = 0;
+    RY = 0;
+   #endif
     }
    else //this != CWindow
     {
@@ -677,6 +688,14 @@ CControl::CalcRXY (void)
       RY = Y;
 
      RX = X;
+#ifdef _ONEWIN    
+    RX += Owner->GetRX ();
+    RY += Owner->GetRY ();
+    if(!o->GetOverrideRedirect ())
+    {
+      RY +=20; 
+    }
+#endif     
     }
   }
  else //owner != CWindow

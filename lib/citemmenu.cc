@@ -164,13 +164,15 @@ CItemMenu::button_press (SDL_Event event)
     };
     */
 
-#ifdef _ONEWIN
-   SubMenu->SetX (GetX ());
-   SubMenu->SetY (GetY () + Height);
-#else
+
    SubMenu->SetX (Win->GetX () + GetX ());
-   SubMenu->SetY (Win->GetY () + GetY () + Height);
-#endif   
+   
+#ifdef _ONEWIN
+   SubMenu->SetY (Win->GetY () + GetY () + Height+20);
+#else
+   SubMenu->SetY (Win->GetY () + GetY () + Height);   
+#endif
+   
    if(!SubMenu->GetWWindow ())     
      SubMenu->WCreate (Win);
    //SubMenu->Show ();

@@ -195,7 +195,7 @@ CPaint::Lines (SDL_Point * points, int npoints)
 void
 CPaint::Rectangle (int x, int y, int w, int h)
 {
- SDL_Rect fillRect = {(RX + x) * Scalex, (RY + y) * Scaley, w*Scalex, h * Scaley};
+ SDL_Rect fillRect = {(int)((RX + x) * Scalex), (int)((RY + y) * Scaley),(int)( w*Scalex),(int) (h * Scaley)};
  SDL_RenderFillRect (Win->GetRenderer (), &fillRect);
 }
 
@@ -204,7 +204,7 @@ CPaint::Frame (int x, int y, int w, int h, uint wb)
 {
  for (uint c = 0; c < wb; c++)
   {
-   SDL_Rect fillRect = {(RX + x + c) * Scalex, (RY + y + c) * Scaley, (w - (c * 2)) * Scalex, (h - (c * 2)) * Scaley};
+   SDL_Rect fillRect = {(int)((RX + x + c) * Scalex),(int)((RY + y + c) * Scaley),(int)((w - (c * 2)) * Scalex),(int)((h - (c * 2)) * Scaley)};
    SDL_RenderDrawRect (Win->GetRenderer (), &fillRect);
   }
 };
@@ -530,9 +530,9 @@ CPaint::Circle (bool filled, int cx, int cy, int radius)
 }
 
 void
-CPaint::Polygon (bool filed, lxPoint * points, int npoints)
+CPaint::Polygon (bool filled, lxPoint * points, int npoints)
 {
- printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
+// printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
 
  for (int c = 0; c < npoints; c++)
   {
@@ -541,6 +541,96 @@ CPaint::Polygon (bool filed, lxPoint * points, int npoints)
   }
 
  SDL_RenderDrawLines (Win->GetRenderer (), points, npoints);
+
+
+ if(filled)
+ {
+    // Sort the points so that y0 <= y1 <= y2
+    if (points[1].y < points[0].y) 
+    {
+       lxPoint temp= points[1];	    
+       points[1]=points[0];
+       points[0]=temp;        
+    };
+    if (points[2].y < points[0].y) 
+    {
+       lxPoint temp= points[2];	    
+       points[2]=points[0];
+       points[0]=temp;        
+    };
+    if (points[2].y < points[1].y)
+    {
+       lxPoint temp= points[2];	    
+       points[2]=points[1];
+       points[1]=temp;        
+    };
+
+    // Compute the x coordinates of the triangle edges
+    //x01 = Interpolate(point[0].y, point[0].x, point[1].y, point[1].x);
+    int yX01= points[1].y-points[0].y; 
+    int xX01= points[1].x-points[0].x;
+    float dx=xX01/((float)yX01); 
+    int X01[100]; //fixme 
+    for(int i=0; i < yX01 ;i++)
+    {
+      X01[i]=points[0].x+dx*i;
+    }
+    //x12 = Interpolate(point[1].y, point[1].x, point[2].y, point[2].x);
+    int yX12= points[2].y-points[1].y; 
+    int xX12= points[2].x-points[1].x;
+    dx=xX12/((float)yX12); 
+    int X12[100]; //fixme 
+    for(int i=0; i < yX12 ;i++)
+    {
+      X12[i]=points[1].x+dx*i;
+    }
+    //x02 = Interpolate(point[0].y, point[0].x, point[2].y, point[2].x);
+    int yX02= points[2].y-points[0].y; 
+    int xX02= points[2].x-points[0].x;
+    dx=xX02/((float)yX02); 
+    int X02[100]; //fixme 
+    for(int i=0; i < yX02 ;i++)
+    {
+      X02[i]=points[0].x+dx*i;
+    }
+  
+    // Concatenate the short sides
+    //remove_last(x01)
+    //yX01--;
+    //x012 = x01 + x12
+    int yX012=yX01+yX12;
+    int X012[200];//fixme
+    for(int i=0; i < yX01; i++)
+      X012[i]=X01[i];
+    for(int i=0; i < yX12; i++)
+      X012[i+yX01]=X12[i];
+
+    // Determine which is left and which is right
+    //m = x012.length / 2
+    int m = yX012/2;
+
+    int * x_left;
+    int * x_right;
+
+    if (X02[m] < X012[m]) {
+        x_left = X02;
+        x_right = X012;
+    } else {
+        x_left = X012;
+        x_right = X02;
+    }
+
+    // Draw the horizontal segments
+    for( int y = points[0].y; y < points[2].y; y++) {
+        for(int x = x_left[y - points[0].y]; x < x_right[y - points[0].y]; x++) {
+            SDL_RenderDrawPoint (Win->GetRenderer (), x, y);
+        }
+    }
+
+ }
+
+
+
 
 }
 
