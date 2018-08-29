@@ -4,8 +4,8 @@ CPWindow1::CPWindow1(void)
   SetClass(lxT("CPWindow"));
   SetName(lxT("window1"));
   SetTag(0);
-  SetX(311);
-  SetY(212);
+  SetX(100);
+  SetY(100);
   SetWidth(367);
   SetHeight(242);
   SetHint(lxT(""));

@@ -63,6 +63,7 @@ CWindow::CWindow (void)
  LastControl = NULL;
  ORedirect = false;
  OverWin = false;
+ move_on = false;
  //events
  EvOnCreate = NULL;
  EvOnDestroy = NULL;
@@ -84,7 +85,7 @@ CWindow::WCreate (CWindow* window)
   }
  else if (OverWin)
   {
-   WParent = Application->GetARootWindow();
+   WParent = Application->GetARootWindow ();
   }
  else
   {
@@ -105,20 +106,20 @@ CWindow::WCreate (CWindow* window)
      printf ("Window could not be created! SDL Error: %s\n", SDL_GetError ());
      exit (-1);
     }
-    
+
    //Renderer = SDL_CreateRenderer( WWindow, -1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_TARGETTEXTURE ); 
    if (Renderer == NULL)
     {
      //    printf( "Hardware renderer could not be created! SDL Error: %s\n", SDL_GetError() );
      printf ("Switching to software renderer...\n");
-     Renderer = SDL_CreateRenderer (WWindow, -1, SDL_RENDERER_SOFTWARE|SDL_RENDERER_TARGETTEXTURE );
+     Renderer = SDL_CreateRenderer (WWindow, -1, SDL_RENDERER_SOFTWARE | SDL_RENDERER_TARGETTEXTURE);
     }
    if (Renderer == NULL)
     {
      printf ("Renderer could not be created! SDL Error: %s\n", SDL_GetError ());
      exit (-1);
     }
-      
+
    //Initialize renderer color 
    SDL_SetRenderDrawColor (Renderer, 0xFF, 0xFF, 0xFF, 0xFF);
   }
@@ -165,23 +166,27 @@ CWindow::Draw (void)
    Paint->InitDraw (this);
    Paint->Pen.SetColor (Color);
 #ifdef _ONEWIN   
-   if(!ORedirect)
-   {
-     Paint->Rectangle (0, 0, Width, Height+20);
-     Paint->RaiserFrame (0, 0, Width, Height+20, 1);
-     Paint->Pen.SetColor (ColorByRGB(0,0,80));
+   if (!ORedirect)
+    {
+     Paint->Rectangle (0, 0, Width, Height + 20);
+     Paint->RaiserFrame (0, 0, Width, Height + 20, 1);
+     Paint->Pen.SetColor (ColorByRGB (50, 50, 80));
      Paint->Rectangle (0, 0, Width, 20);
      Paint->RaiserFrame (0, 0, Width, 20, 1);
+     Paint->Pen.SetColor (ColorByRGB (80, 30, 30));
+     Paint->Rectangle (Width - 16, 4, 12, 12);
+     Paint->Pen.SetColor (ColorByRGB (120, 120, 120));
+     Paint->Rectangle (0, Width - 16, 4, 12, 12);
      int tw;
-     TTF_SizeText (CFont, Title.c_str (),&tw,NULL);
-     Paint->Pen.SetColor (ColorByRGB(255,255,255));
-     Paint->Text (Title,(Width-tw)/2,2);
-   }
+     TTF_SizeText (CFont, Title.c_str (), &tw, NULL);
+     Paint->Pen.SetColor (ColorByRGB (255, 255, 255));
+     Paint->Text (Title, (Width - tw) / 2, 2);
+    }
    else
-   {
+    {
      Paint->Rectangle (0, 0, Width, Height);
-     Paint->RaiserFrame (0, 0, Width, Height, 1);  
-   }
+     Paint->RaiserFrame (0, 0, Width, Height, 1);
+    }
 #else
    Paint->Rectangle (0, 0, Width, Height);
    Paint->RaiserFrame (0, 0, Width, Height, 1);
@@ -200,9 +205,9 @@ CWindow::Draw (void)
 
 
  if (!OverWin)
- {
+  {
    SDL_RenderPresent (Renderer);
- }
+  }
 }
 
 void
@@ -270,30 +275,30 @@ CWindow::DestroyChilds (void)
 void
 CWindow::WDestroy (void)
 {
-   if(CanExitExclusive)
-   {
-     CanExitExclusive = false;
-     Application->SetModalWindow (NULL);
-   }
-   
-   if(OverWin)	
-     SetVisible (false);
-   else  
-     Hide ();
+ if (CanExitExclusive)
+  {
+   CanExitExclusive = false;
+   Application->SetModalWindow (NULL);
+  }
 
-   on_destroy ();
-   if (((!OverWin)&&(CanDestroy)) || (this == Application->GetAWindow (0)))
+//if (OverWin)
+//  SetVisible (false);
+// else
+  Hide ();
+
+ on_destroy ();
+ if (((!OverWin)&&(CanDestroy)) || (this == Application->GetAWindow (0)))
+  {
+   Destroy ();
+   WPaint.Destroy ();
+   if (WParent != NULL)
     {
-     Destroy ();
-     WPaint.Destroy ();
-     if (WParent != NULL)
-      {
-       //        XDestroyWindow (ADisplay, GetWWindow ());
-      };
-     Win = NULL;
-     Application->ADestroyWindow (this);
-     WWindow = 0;
-    }
+     //        XDestroyWindow (ADisplay, GetWWindow ());
+    };
+   Win = NULL;
+   Application->ADestroyWindow (this);
+   WWindow = 0;
+  }
 }
 
 void
@@ -307,6 +312,10 @@ CWindow::Show (void)
     {
      SDL_ShowWindow (WWindow);
      SDL_RaiseWindow (WWindow);
+    }
+   else
+    {
+     on_show();
     }
    Update ();
   };
@@ -329,6 +338,7 @@ CWindow::Hide (void)
    if (OverWin)
     {
      WParent->Draw ();
+     on_hide();
     }
    else
     {
@@ -523,11 +533,57 @@ CWindow::WEvents (SDL_Event WEvent)
      break;
 #endif
     default:
-     SDL_Log("Window %d got unknown event %d", WEvent.window.windowID, WEvent.window.event);
+     //SDL_Log ("Window %d got unknown event %d", WEvent.window.windowID, WEvent.window.event);
      break;
     }
 
    break;
+#ifdef _ONEWIN   
+  case SDL_MOUSEBUTTONDOWN:
+  case SDL_MOUSEBUTTONUP:
+   if (!ORedirect)
+    {
+     CalcRXY ();
+     if ((WEvent.button.x > RX) && (WEvent.button.x < (int) (Width + RX)))
+      {
+       if ((WEvent.button.y > RY) && (WEvent.button.y < (int) (20 + RY)))
+        {
+         if (WEvent.type == SDL_MOUSEBUTTONDOWN)
+          {
+           if (WEvent.button.x < (int) (Width + RX - 20))
+            {
+             move_on = true;
+            }
+           else
+            {
+             WDestroy ();
+             Application->GetARootWindow ()->Draw ();
+            }
+          }
+         else
+          move_on = false;
+         break;
+        }
+      }
+    }
+   CControl::Event (WEvent);
+   ret = 1;
+   break;
+  case SDL_MOUSEMOTION:
+   if (move_on)
+    {
+     SetX (WEvent.motion.x - 10);
+     SetY (WEvent.motion.y - 10);
+     Application->GetARootWindow ()->Draw ();
+     Draw ();
+    }
+   else
+    {
+     CControl::Event (WEvent);
+    }
+   ret = 1;
+   break;
+#endif   
   default:
    CControl::Event (WEvent);
    ret = 1;
@@ -797,8 +853,8 @@ CWindow::SetX (int x)
 {
  CControl::SetX (x);
  if ((WWindow)&&(!OverWin))
-  {  
-    SDL_SetWindowPosition (WWindow, X, Y);    
+  {
+   SDL_SetWindowPosition (WWindow, X, Y);
   }
 };
 
@@ -807,8 +863,8 @@ CWindow::SetY (int y)
 {
  CControl::SetY (y);
  if ((WWindow)&&(!OverWin))
-  { 
-    SDL_SetWindowPosition (WWindow, X, Y);
+  {
+   SDL_SetWindowPosition (WWindow, X, Y);
   }
 };
 
@@ -817,7 +873,7 @@ CWindow::SetWidth (uint width)
 {
  CControl::SetWidth (width);
  if ((WWindow)&&(!OverWin))
- { 
+  {
    SDL_SetWindowSize (WWindow, Width, Height);
   }
 };
@@ -828,7 +884,7 @@ CWindow::SetHeight (uint height)
  CControl::SetHeight (height);
  if ((WWindow)&&(!OverWin))
   {
-  SDL_SetWindowSize (WWindow, Width, Height);  
+   SDL_SetWindowSize (WWindow, Width, Height);
   }
 };
 
@@ -916,13 +972,13 @@ CWindow::GetRenderer (void)
 }
 
 bool
-CWindow::GetOverWin(void)
+CWindow::GetOverWin (void)
 {
-  return OverWin;
-} 
+ return OverWin;
+}
 
 void
-CWindow::SetOverWin(bool ow)
+CWindow::SetOverWin (bool ow)
 {
-  OverWin=ow;
+ OverWin = ow;
 }

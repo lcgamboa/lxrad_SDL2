@@ -1038,7 +1038,7 @@ void
 CControl::mouse_move (SDL_Event event)
 {
  if ((FOwner) && (EvMouseMove))
-  (FOwner->*EvMouseMove) (this, 0, event.motion.x, event.motion.y, event.motion.state);
+  (FOwner->*EvMouseMove) (this, 0, event.motion.x -RX, event.motion.y -RY, event.motion.state);
 };
 
 void
@@ -1059,13 +1059,18 @@ CControl::button_press (SDL_Event event)
    if ((!PopupMenu->GetWWindow ()) != 0)
     {
      //Application.ACreateWindow (SubMenu,Win);
-     Application->ACreateWindow (PopupMenu);
+     //Application->ACreateWindow (PopupMenu);
+     PopupMenu->WCreate (Win);
     };
 
-
+#ifdef _ONEWIN
+   PopupMenu->SetX (x);
+   PopupMenu->SetY (y);
+#else    
    PopupMenu->SetX (Win->GetX () + x);
    PopupMenu->SetY (Win->GetY () + y);
-
+#endif
+   
    PopupMenu->Draw ();
    PopupMenu->ShowExclusive ();
    

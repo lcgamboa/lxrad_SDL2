@@ -232,15 +232,11 @@ lxColor::lxColor (const char * name)
 String
 lxColor::GetAsString (int flags)
 {
- //FIXME	
- printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
- /*
-  char cname[20];
-  XQueryColor(Application->GetADisplay (), Application->GetAScreen ()->cmap, &Color);
-
+  char cname[10];
+ 
   if(flags ==  lxC2S_HTML_SYNTAX )
   {
-    sprintf(cname,"#%02X%02X%02X",Color.red>>8,Color.green>>8,Color.blue>>8);
+    sprintf(cname,"#%02X%02X%02X",Color.r,Color.g,Color.b);
   }
   else
   {
@@ -248,9 +244,6 @@ lxColor::GetAsString (int flags)
   }
 
   return cname;	
-
-  */
- return "";
 }
 
 lxColor::operator

@@ -3270,7 +3270,7 @@ ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
-CFLAGS="-Wall -O2"
+CFLAGS="-Wall -O2 -I/usr/include/SDL2"
 LIBS=""
 
 # Checks for libraries.
@@ -3410,6 +3410,52 @@ _ACEOF
 LIBS=" -lSDL2_ttf $LIBS"
 else
   as_fn_error $? "SDL2 ttf Not Found!" "$LINENO" 5
+fi
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for zipOpen in -lminizip" >&5
+$as_echo_n "checking for zipOpen in -lminizip... " >&6; }
+if ${ac_cv_lib_minizip_zipOpen+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lminizip  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char zipOpen ();
+int
+main ()
+{
+return zipOpen ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_minizip_zipOpen=yes
+else
+  ac_cv_lib_minizip_zipOpen=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_minizip_zipOpen" >&5
+$as_echo "$ac_cv_lib_minizip_zipOpen" >&6; }
+if test "x$ac_cv_lib_minizip_zipOpen" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBMINIZIP 1
+_ACEOF
+LIBS=" -lminizip $LIBS"
+else
+  as_fn_error $? "minizip Not Found!" "$LINENO" 5
 fi
 
 

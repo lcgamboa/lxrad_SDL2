@@ -8,7 +8,7 @@ AC_CONFIG_HEADER([config.h])
 # Checks for programs.
 AC_PROG_CC()
 AC_PROG_CXX()
-CFLAGS="-Wall -O2"
+CFLAGS="-Wall -O2 -I/usr/include/SDL2"
 LIBS=""
 
 # Checks for libraries.
@@ -32,6 +32,13 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 LIBS=" -lSDL2_ttf $LIBS",
 AC_MSG_ERROR([SDL2 ttf Not Found!]))
+
+AC_CHECK_LIB([minizip], [zipOpen],
+cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBMINIZIP 1
+_ACEOF
+LIBS=" -lminizip $LIBS",
+AC_MSG_ERROR([minizip Not Found!]))
 
 AC_CHECK_LIB([pthread], [pthread_create],
 cat >>confdefs.h <<_ACEOF

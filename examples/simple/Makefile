@@ -5,7 +5,7 @@ OBJS = psimple.o simple1.o
 
 
 all: $(OBJS)
-	$(CC) $(FLAGS) $(OBJS) -osimple `lxrad_SDL2-config --libs`
+	$(CC) $(FLAGS) $(OBJS) -osimple `lxrad_SDL2-config --libs` 
 
 %.o: %.cc
 	$(CC) -c $(FLAGS) $< 

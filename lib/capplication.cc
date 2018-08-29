@@ -66,9 +66,9 @@ CApplication::~CApplication (void)
 #ifdef HAVE_LIBPTHREAD
  pthread_mutex_destroy (&Display_Lock);
 #endif
-     TTF_Quit ();
-     IMG_Quit ();
-     SDL_Quit ();
+ TTF_Quit ();
+ IMG_Quit ();
+ SDL_Quit ();
 };
 
 void
@@ -120,16 +120,17 @@ CApplication::ACreateWindow (CWindow * AWindow, CWindow *window)
  if (AWindowCount == -1)
   {
    ARootWindow = new CWindow;
-   ARootWindow->SetWidth (1360);
+   ARootWindow->SetWidth (1024);
    ARootWindow->SetHeight (768);
-   ARootWindow->WCreate();
-  } 
- AWindow->SetOverWin(true);
+   ARootWindow->WCreate ();
+  }
+ AWindow->SetOverWin (true);
+ ARootWindow->CreateChild (AWindow);
 #else
  if (AWindowCount == -1)
   {
    ARootWindow = AWindow;
-  }  
+  }
 #endif
  if (Exit)
   {
@@ -176,6 +177,9 @@ CApplication::ADestroyWindow (CWindow * AWindow)
 {
  if (AWindowCount >= 0)
   {
+#ifdef _ONEWIN   
+   ARootWindow->DestroyChild (AWindow);
+#endif   
    int wn = 0;
    if (AWindowList[0] == AWindow)
     {
@@ -188,8 +192,12 @@ CApplication::ADestroyWindow (CWindow * AWindow)
       };
      delete[]AWindowList;
      AWindowList = NULL;
-     AWindowCount=-1;
+     AWindowCount = -1;
      eprint ("...Application Finished\n");
+#ifdef __EMSCRIPTEN__
+  emscripten_cancel_main_loop ();
+#endif  
+
 #ifdef _DEBUG
      eprint ("synchronize\n");
      XSynchronize (ADisplay, false);
@@ -251,12 +259,12 @@ CApplication::Load (void)
    ProcessEvents ();
   }
 #endif
- 
+
 #ifdef _ONEWIN
- if(ARootWindow)
+ if (ARootWindow)
   {
    delete ARootWindow;
-   ARootWindow=NULL;
+   ARootWindow = NULL;
   }
 #endif
 }
@@ -266,36 +274,36 @@ CApplication::ProcessEvents (void)
 {
  CWindow * wn = NULL;
  int ec; //events in queue
- struct timeval  tv;
- long int elapsed; 
+ struct timeval tv;
+ long int elapsed;
  //wait hint loop	    
  ec = SDL_PollEvent (&AEvent);
  if (ec == 0)
   {
 
 #ifndef HAVE_LIBPTHREAD
- if (!MWindow)
- {
-   gettimeofday(&tv, NULL);
-   //printf("---------------------\n");
-   for (int t = 0; t <= TimerCount; t++)
+   if (!MWindow)
     {
-     elapsed= (((tv.tv_usec - TimerList[t]->tv.tv_usec)/1000L) + 1000L*(tv.tv_sec - TimerList[t]->tv.tv_sec));
-     
-     //printf("Elapsed %i = %lu de %lu\n",t,elapsed,TimerList[t]->GetTime());
-     if (elapsed >= TimerList[t]->GetTime ())
+     gettimeofday (&tv, NULL);
+     //printf("---------------------\n");
+     for (int t = 0; t <= TimerCount; t++)
       {
-       //printf("===>>Timer %i reseted\n",t);	       
-       TimerList[t]->on_time ();
-       TimerList[t]->tv=tv;
+       elapsed = (((tv.tv_usec - TimerList[t]->tv.tv_usec) / 1000L) + 1000L * (tv.tv_sec - TimerList[t]->tv.tv_sec));
+
+       //printf("Elapsed %i = %lu de %lu\n",t,elapsed,TimerList[t]->GetTime());
+       if (elapsed >= TimerList[t]->GetTime ())
+        {
+         //printf("===>>Timer %i reseted\n",t);	       
+         TimerList[t]->on_time ();
+         TimerList[t]->tv = tv;
+        }
+      }
+
+     for (int t = 0; t <= ThreadCount; t++)
+      {
+       ThreadList[t]->on_run ();
       }
     }
-
-   for (int t = 0; t <= ThreadCount; t++)
-    {
-     ThreadList[t]->on_run ();
-    }
- }
 #else 
    usleep (50);
 #endif
@@ -313,30 +321,66 @@ CApplication::ProcessEvents (void)
 
    return false;
   }
+ 
+ //compress mouse move events
+ if(AEvent.type == SDL_MOUSEMOTION)
+ { 
+   SDL_Event LEvent;
+   //int i=0;
+   do
+   {
+     LEvent=AEvent;
+     ec = SDL_PollEvent (&AEvent);
+     //i++;
+   }while(ec && (AEvent.type == SDL_MOUSEMOTION));
+   
+   //printf("compressed %i\n",i);
+   
+   if(ec)//event != SDL_MOUSEMOTION
+   {
+     SDL_PushEvent(&AEvent);
+   }
+   AEvent=LEvent;
+ }
+ 
  HintControl = NULL;
 
 
 #ifndef HAVE_LIBPTHREAD
  if (!MWindow)
- {
+  {
    for (int t = 0; t <= ThreadCount; t++)
-   {
-    ThreadList[t]->on_run ();
-   }
- }
+    {
+     ThreadList[t]->on_run ();
+    }
+  }
 #endif
 
  FWindow = AEvent.window.windowID;
 
- 
- 
-#ifdef _ONEWIN
+
+
+#ifdef _ONEWIN   
  for (int e = 0; e <= AWindowCount; e++)
   {
-   if(AWindowList[e]->GetVisible ())
-     wn = AWindowList[e];
-   else
-     wn = NULL;
+   wn = NULL; 
+   
+   if (AWindowList[e]->GetVisible ())
+    {
+     switch (AEvent.type)
+      {
+      case SDL_MOUSEBUTTONDOWN:
+      case SDL_MOUSEBUTTONUP:
+       if (AWindowList[e]->OwnerEvent (AEvent.button.x, AEvent.button.y))
+        {
+         wn = AWindowList[e];
+        }
+       break;
+       default:
+         wn = AWindowList[e]; 
+      }
+    }
+ 
 #else
  wn = NULL;
  for (int e = 0; e <= AWindowCount; e++)
@@ -347,8 +391,8 @@ CApplication::ProcessEvents (void)
      break;
     }
   }
- #endif
- 
+#endif
+
  if (!MWindow)
   {
    if (wn)
@@ -371,7 +415,7 @@ CApplication::ProcessEvents (void)
  else
   {
    if (((AEvent.type == SDL_WINDOWEVENT) && ((AEvent.window.type == SDL_WINDOWEVENT_ENTER) || (AEvent.window.type == SDL_WINDOWEVENT_EXPOSED)))
-       && (AWindowCount >= 0) && (wn >= 0))
+       && (AWindowCount >= 0) && (wn != NULL))
     {
      wn->WEvents (AEvent);
     }
@@ -401,9 +445,9 @@ CApplication::ProcessEvents (void)
     }
   }
 #ifdef _ONEWIN
-  }
-#endif 
-  return false;
+ }
+#endif
+return false;
 }
 
 bool
@@ -423,16 +467,16 @@ CApplication::GetAWindowCount (void)
 CWindow *
 CApplication::GetAWindow (uint window)
 {
-   if(((int)window <=AWindowCount)&&(AWindowCount >= 0))
-     return AWindowList[window];
-   else
-    return NULL;
+ if (((int) window <= AWindowCount)&&(AWindowCount >= 0))
+  return AWindowList[window];
+ else
+  return NULL;
 };
 
 CWindow *
 CApplication::GetARootWindow (void)
 {
-   return ARootWindow;
+ return ARootWindow;
 };
 
 int
@@ -518,7 +562,7 @@ CApplication::AddTimer (CTimer * tm)
  if (TimerList)
   delete[]TimerList;
  TimerList = TList;
- gettimeofday(&tm->tv, NULL);
+ gettimeofday (&tm->tv, NULL);
  //printf("Timer %i added: %s\n",TimerCount,tm->GetName().c_str()); 
 }
 
@@ -538,7 +582,7 @@ CApplication::RemoveTimer (CTimer *tm)
      TimerList[TimerCount] = NULL;
      TimerCount--;
     }
-  //printf("Timer %i Removed: %s\n",TimerCount,tm->GetName().c_str()); 
+   //printf("Timer %i Removed: %s\n",TimerCount,tm->GetName().c_str()); 
   }
 }
 

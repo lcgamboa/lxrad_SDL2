@@ -162,8 +162,10 @@ CPMenu::SetContext (CStringList context)
 void
 CPMenu::button_press (SDL_Event event)
 {
+ /*
   HideExclusive ();
   CControl::button_press (event);
+ */
 };
 
 void

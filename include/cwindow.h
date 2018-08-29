@@ -38,6 +38,8 @@
 
 class CWindow:public CControl
 {
+private:    
+  bool move_on;
 protected:
   bool ORedirect;  
   SDL_Texture* WPixmap;
