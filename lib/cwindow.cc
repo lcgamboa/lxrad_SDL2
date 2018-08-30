@@ -63,7 +63,7 @@ CWindow::CWindow (void)
  LastControl = NULL;
  ORedirect = false;
  OverWin = false;
- move_on = false;
+ move_on = 0;
  //events
  EvOnCreate = NULL;
  EvOnDestroy = NULL;
@@ -106,7 +106,7 @@ CWindow::WCreate (CWindow* window)
      printf ("Window could not be created! SDL Error: %s\n", SDL_GetError ());
      exit (-1);
     }
-
+   //FIXME
    //Renderer = SDL_CreateRenderer( WWindow, -1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_TARGETTEXTURE ); 
    if (Renderer == NULL)
     {
@@ -168,15 +168,22 @@ CWindow::Draw (void)
 #ifdef _ONEWIN   
    if (!ORedirect)
     {
+     //background
      Paint->Rectangle (0, 0, Width, Height + 20);
      Paint->RaiserFrame (0, 0, Width, Height + 20, 1);
+     //bar
      Paint->Pen.SetColor (ColorByRGB (50, 50, 80));
      Paint->Rectangle (0, 0, Width, 20);
      Paint->RaiserFrame (0, 0, Width, 20, 1);
+     //close button
      Paint->Pen.SetColor (ColorByRGB (80, 30, 30));
      Paint->Rectangle (Width - 16, 4, 12, 12);
      Paint->Pen.SetColor (ColorByRGB (120, 120, 120));
      Paint->Rectangle (0, Width - 16, 4, 12, 12);
+     //resize button
+     Paint->Pen.SetColor (ColorByRGB (170, 170, 170));
+     Paint->Rectangle (1, Width - 10, Height + 10, 8, 8);
+     //bar text
      int tw;
      TTF_SizeText (CFont, Title.c_str (), &tw, NULL);
      Paint->Pen.SetColor (ColorByRGB (255, 255, 255));
@@ -281,10 +288,10 @@ CWindow::WDestroy (void)
    Application->SetModalWindow (NULL);
   }
 
-//if (OverWin)
-//  SetVisible (false);
-// else
-  Hide ();
+ //if (OverWin)
+ //  SetVisible (false);
+ // else
+ Hide ();
 
  on_destroy ();
  if (((!OverWin)&&(CanDestroy)) || (this == Application->GetAWindow (0)))
@@ -315,7 +322,7 @@ CWindow::Show (void)
     }
    else
     {
-     on_show();
+     on_show ();
     }
    Update ();
   };
@@ -338,7 +345,7 @@ CWindow::Hide (void)
    if (OverWin)
     {
      WParent->Draw ();
-     on_hide();
+     on_hide ();
     }
    else
     {
@@ -478,6 +485,8 @@ CWindow::WEvents (SDL_Event WEvent)
      Height = WEvent.window.data2;
      Draw ();
 #endif     
+     on_show ();
+     Draw ();
      ret = 1;
      break;
     case SDL_WINDOWEVENT_SIZE_CHANGED:
@@ -544,6 +553,7 @@ CWindow::WEvents (SDL_Event WEvent)
    if (!ORedirect)
     {
      CalcRXY ();
+     //bar click
      if ((WEvent.button.x > RX) && (WEvent.button.x < (int) (Width + RX)))
       {
        if ((WEvent.button.y > RY) && (WEvent.button.y < (int) (20 + RY)))
@@ -552,7 +562,7 @@ CWindow::WEvents (SDL_Event WEvent)
           {
            if (WEvent.button.x < (int) (Width + RX - 20))
             {
-             move_on = true;
+             move_on = 1;
             }
            else
             {
@@ -561,8 +571,26 @@ CWindow::WEvents (SDL_Event WEvent)
             }
           }
          else
-          move_on = false;
+          {
+           move_on = 0;
+          }
          break;
+        }
+        //resize click
+       else if ((WEvent.button.x > (int) (Width + RX - 10)) && (WEvent.button.x < (int) (Width + RX)))
+        {
+         if ((WEvent.button.y > (int) (RY + Height + 10)) && (WEvent.button.y < (int) (RY + Height + 20)))
+          {
+           if (WEvent.type == SDL_MOUSEBUTTONDOWN)
+            {
+              move_on = 2;
+            }
+           else
+            {
+              move_on = 0;
+            } 
+           break;
+          }
         }
       }
     }
@@ -570,10 +598,18 @@ CWindow::WEvents (SDL_Event WEvent)
    ret = 1;
    break;
   case SDL_MOUSEMOTION:
-   if (move_on)
+   if (move_on == 1)
     {
      SetX (WEvent.motion.x - 10);
      SetY (WEvent.motion.y - 10);
+     Application->GetARootWindow ()->Draw ();
+     Draw ();
+    }
+   else if (move_on == 2)
+    {
+     SetWidth (WEvent.motion.x-X+5);
+     SetHeight (WEvent.motion.y-Y-15);
+     on_show();
      Application->GetARootWindow ()->Draw ();
      Draw ();
     }
@@ -982,3 +1018,23 @@ CWindow::SetOverWin (bool ow)
 {
  OverWin = ow;
 }
+
+bool
+CWindow::OwnerEvent (int x, int y)
+{
+ CalcRXY ();
+
+ if ((x > RX) && (x < (int) (Width + RX)))
+  {
+#ifdef _ONEWIN   
+   if ((y > RY) && (y < (int) (Height + RY+20)))
+#else   
+   if ((y > RY) && (y < (int) (Height + RY)))
+#endif
+    return true;
+   else
+    return false;
+  }
+ else
+  return false;
+};

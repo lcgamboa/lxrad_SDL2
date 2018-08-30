@@ -69,7 +69,7 @@ protected:
 public:
     CControl (void);
    ~CControl (void);
-  bool OwnerEvent (int x, int y);
+  virtual bool OwnerEvent (int x, int y);
   CWindow *GetWin (void);
   void SetWin (CWindow * win);
   virtual void Event (SDL_Event event);

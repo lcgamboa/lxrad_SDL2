@@ -39,7 +39,7 @@
 class CWindow:public CControl
 {
 private:    
-  bool move_on;
+  int move_on;
 protected:
   bool ORedirect;  
   SDL_Texture* WPixmap;
@@ -84,6 +84,7 @@ public:
   bool GetPixmapBuffer(void);
   bool LoadXMLContextAndCreateChilds(String fname);
   bool GetCanExitExclusive(void);
+  bool OwnerEvent (int x, int y);
 //propiedades
   SDL_Window * GetWWindow (void);
   SDL_Renderer * GetRenderer (void);
