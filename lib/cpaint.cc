@@ -104,6 +104,14 @@ CPaint::SetFont (CControl * control) {
 void
 CPaint::InitDraw (CControl * control)
 {
+ #ifdef _ONEWIN   
+   SDL_Rect wrec;
+   wrec.x=Win->GetX();
+   wrec.y=Win->GetY();
+   wrec.w=Win->GetWidth();
+   wrec.h=Win->GetHeight()+20;
+   SDL_RenderSetClipRect(Win->GetRenderer (),&wrec);
+#endif  
  if (DoCalcRXY)
   {
    control->CalcRXY ();
