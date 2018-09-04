@@ -296,6 +296,7 @@ CApplication::ProcessEvents (void)
          //printf("===>>Timer %i reseted\n",t);	       
          TimerList[t]->on_time ();
          TimerList[t]->tv = tv;
+         TimerList[t]->SetOverTime(elapsed-TimerList[t]->GetTime ());
         }
       }
 

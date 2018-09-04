@@ -46,6 +46,7 @@ CTimer::CTimer (void)
   SetHeight (10);
   SetClass ("CTimer");
   Time = 1;
+  OverTime=0;
   Run = false;
   EvOnTime = NULL;
   SetVisible (false);
@@ -155,6 +156,18 @@ uint
 CTimer::GetTime (void)
 {
   return Time;
+};
+
+void
+CTimer::SetOverTime (uint overtime)
+{
+  OverTime = overtime;
+};
+
+uint
+CTimer::GetOverTime (void)
+{
+  return OverTime;
 };
 
 void
