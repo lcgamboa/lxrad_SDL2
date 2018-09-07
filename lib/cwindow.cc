@@ -43,9 +43,9 @@ CWindow::CWindow (void)
  Renderer = NULL;
  SetClass ("CWindow");
  Win = NULL;
- PixmapBuffer = true;
+ //PixmapBuffer = true;
+ PixmapBuffer=false;
  HasMenu = false;
- //  PixmapBuffer=false;
  XMouse = 0;
  YMouse = 0;
  SetX (0);
@@ -64,6 +64,7 @@ CWindow::CWindow (void)
  ORedirect = false;
  OverWin = false;
  move_on = 0;
+ Redraw=1;
  //events
  EvOnCreate = NULL;
  EvOnDestroy = NULL;
@@ -107,7 +108,7 @@ CWindow::WCreate (CWindow* window)
      exit (-1);
     }
    //FIXME
-   //Renderer = SDL_CreateRenderer( WWindow, -1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_TARGETTEXTURE ); 
+   Renderer = SDL_CreateRenderer( WWindow, -1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_TARGETTEXTURE ); 
    if (Renderer == NULL)
     {
      //    printf( "Hardware renderer could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -160,9 +161,12 @@ CWindow::Destroy (void)
 void
 CWindow::Draw (void)
 {
+ if ((Paint == NULL) || (Visible == false))return;
+ 
+ SDL_SetRenderTarget (Win->GetRenderer (), NULL);
+ 
  if (OverWin)
   {
-   if ((Paint == NULL) || (Visible == false))return;
    Paint->InitDraw (this);
    Paint->Pen.SetColor (Color);
 #ifdef _ONEWIN   
@@ -194,6 +198,7 @@ CWindow::Draw (void)
      Paint->Rectangle (0, 0, Width, Height);
      Paint->RaiserFrame (0, 0, Width, Height, 1);
     }
+   Application->GetARootWindow ()->SetRedraw ();
 #else
    Paint->Rectangle (0, 0, Width, Height);
    Paint->RaiserFrame (0, 0, Width, Height, 1);
@@ -201,20 +206,19 @@ CWindow::Draw (void)
   }
  else
   {
-   if (Paint == NULL)return;
+#ifndef _ONEWIN    
+   if (Redraw ==0 )return;
+#endif
    SDL_RenderClear (Renderer);
    Paint->InitDraw (this);
    Paint->Pen.SetColor (Color);
    Paint->Rectangle (0, 0, Width, Height);
   }
 
- CControl::Draw ();
+ //CControl::Draw ();
 
-
- if (!OverWin)
-  {
-   SDL_RenderPresent (Renderer);
-  }
+ Update();
+ Redraw=0;
 }
 
 void
@@ -365,6 +369,7 @@ CWindow::HideExclusive (void)
 void
 CWindow::Update (void)
 {
+ if ((Paint == NULL) || (Visible == false))return;
  for (int i = 0; i <= ChildCount; i++)
   {
    if (Child[i]->GetVisible ())
@@ -376,6 +381,11 @@ CWindow::Update (void)
     };
   };
  CControl::Update ();
+ 
+ if (!OverWin)
+  {
+   SDL_RenderPresent (Renderer);
+  }
 };
 
 void
@@ -457,7 +467,7 @@ CWindow::WEvents (SDL_Event WEvent)
     case SDL_WINDOWEVENT_SHOWN:
      //SDL_Log("Window %d shown", WEvent.window.windowID);
      on_show ();
-     Draw ();
+     SetRedraw();
      ret = 1;
      break;
     case SDL_WINDOWEVENT_HIDDEN:
@@ -467,7 +477,7 @@ CWindow::WEvents (SDL_Event WEvent)
      break;
     case SDL_WINDOWEVENT_EXPOSED:
      //SDL_Log("Window %d exposed", WEvent.window.windowID);
-     Draw ();
+     SetRedraw();
      ret = 1;
      break;
     case SDL_WINDOWEVENT_MOVED:
@@ -486,7 +496,7 @@ CWindow::WEvents (SDL_Event WEvent)
      Draw ();
 #endif     
      on_show ();
-     Draw ();
+     SetRedraw();
      ret = 1;
      break;
     case SDL_WINDOWEVENT_SIZE_CHANGED:
@@ -504,12 +514,12 @@ CWindow::WEvents (SDL_Event WEvent)
      break;
     case SDL_WINDOWEVENT_MAXIMIZED:
      //SDL_Log("Window %d maximized", WEvent.window.windowID);
-     Draw ();
+     SetRedraw();
      ret = 1;
      break;
     case SDL_WINDOWEVENT_RESTORED:
      //SDL_Log("Window %d restored", WEvent.window.windowID);
-     Draw ();
+     SetRedraw();
      ret = 1;
      break;
     case SDL_WINDOWEVENT_ENTER:
@@ -1017,6 +1027,19 @@ void
 CWindow::SetOverWin (bool ow)
 {
  OverWin = ow;
+}
+
+int
+CWindow::GetRedraw (void)
+{
+ return Redraw;
+}
+
+	
+void
+CWindow::SetRedraw (void)
+{
+ Redraw++;
 }
 
 bool

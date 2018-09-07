@@ -60,6 +60,7 @@ protected:
   void DestroyPixmap(void);
   bool PixmapBuffer;
   bool OverWin;
+  int Redraw;
 public:
   bool HasMenu;//FIXME tornar privado
     CWindow (void);
@@ -112,6 +113,8 @@ public:
   void CirculateFocus (bool asc);
   bool GetOverWin(void);
   void SetOverWin(bool ow);
+  void SetRedraw(void);
+  int  GetRedraw(void);
   //operator
   void *operator new (size_t sz);
   //eventos

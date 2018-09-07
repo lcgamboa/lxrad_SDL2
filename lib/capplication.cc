@@ -276,6 +276,17 @@ CApplication::ProcessEvents (void)
  int ec; //events in queue
  struct timeval tv;
  long int elapsed;
+ 
+#ifdef _ONEWIN
+ ARootWindow->Draw();
+#else
+ //Redraw window
+ for (int e = 0; e <= AWindowCount; e++)
+  {
+    AWindowList[e]->Draw();
+  }
+#endif
+ 
  //wait hint loop	    
  ec = SDL_PollEvent (&AEvent);
  if (ec == 0)

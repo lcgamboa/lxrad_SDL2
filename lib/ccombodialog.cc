@@ -40,7 +40,7 @@ CComboDialog::CComboDialog (void)
   SetVisible (false);
   SetOverrideRedirect (true);
   SetSaveUnder (true);
-  SetPixmapBuffer(true);
+  //SetPixmapBuffer(true);
   #ifdef _ONEWIN
   OverWin=true;
   #endif
