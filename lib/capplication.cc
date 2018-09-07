@@ -287,10 +287,6 @@ CApplication::ProcessEvents (void)
   }
 #endif
  
- //wait hint loop	    
- ec = SDL_PollEvent (&AEvent);
- if (ec == 0)
-  {
 
 #ifndef HAVE_LIBPTHREAD
    if (!MWindow)
@@ -319,7 +315,11 @@ CApplication::ProcessEvents (void)
 #else 
    usleep (50);
 #endif
-
+ 
+ //wait hint loop	    
+ ec = SDL_PollEvent (&AEvent);
+ if (ec == 0)
+  {
    if ((HintControl)&&(time (NULL) - HintTime > 1))
     {
      if (HintControl->GetHint ().size () > 0)
@@ -358,15 +358,6 @@ CApplication::ProcessEvents (void)
  HintControl = NULL;
 
 
-#ifndef HAVE_LIBPTHREAD
- if (!MWindow)
-  {
-   for (int t = 0; t <= ThreadCount; t++)
-    {
-     ThreadList[t]->on_run ();
-    }
-  }
-#endif
 
  FWindow = AEvent.window.windowID;
 
@@ -558,6 +549,12 @@ void
 CApplication::SetModalWindow (CWindow * mwindow)
 {
  MWindow = mwindow;
+}
+
+CWindow *
+CApplication::GetModalWindow (void)
+{
+ return MWindow;
 }
 
 #ifndef HAVE_LIBPTHREAD

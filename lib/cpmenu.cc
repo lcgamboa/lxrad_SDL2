@@ -32,7 +32,7 @@
 CPMenu::CPMenu (void)
 {
   CanFocus = false;
-  PixmapBuffer=true;
+  //PixmapBuffer=true;
   SetBorder (0);
   SetX (1);
   SetY (1);
@@ -73,8 +73,8 @@ CPMenu::Draw (void)
 
   if ((!Visible)||(Paint == NULL))
     return;
-  unsigned int w_old=Width;
-  unsigned int h_old=Height;
+  //unsigned int w_old=Width;
+  //unsigned int h_old=Height;
   
   NextItemY = 0;
   if (ChildCount >= 0)
@@ -85,7 +85,7 @@ CPMenu::Draw (void)
   for (int a = 0; a <= ChildCount; a++)
     if (((CItemMenu *) Child[a])->GetTextWidth () + 4 > Width)
       Width = ((CItemMenu *) Child[a])->GetTextWidth () + 8;
-  if (WWindow != 0)
+  if (WWindow != NULL)
     {
       Paint->InitDraw (this);
 #ifndef _ONEWIN      

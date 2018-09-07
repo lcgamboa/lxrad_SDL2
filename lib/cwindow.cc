@@ -384,6 +384,13 @@ CWindow::Update (void)
  
  if (!OverWin)
   {
+#ifdef _ONEWIN   
+   CWindow * mw=Application->GetModalWindow();
+   if(mw)
+    {
+     mw->Draw();
+    }
+#endif   
    SDL_RenderPresent (Renderer);
   }
 };
@@ -468,6 +475,7 @@ CWindow::WEvents (SDL_Event WEvent)
      //SDL_Log("Window %d shown", WEvent.window.windowID);
      on_show ();
      SetRedraw();
+     Draw();
      ret = 1;
      break;
     case SDL_WINDOWEVENT_HIDDEN:
@@ -478,6 +486,7 @@ CWindow::WEvents (SDL_Event WEvent)
     case SDL_WINDOWEVENT_EXPOSED:
      //SDL_Log("Window %d exposed", WEvent.window.windowID);
      SetRedraw();
+     Draw();
      ret = 1;
      break;
     case SDL_WINDOWEVENT_MOVED:
@@ -497,6 +506,7 @@ CWindow::WEvents (SDL_Event WEvent)
 #endif     
      on_show ();
      SetRedraw();
+     Draw();
      ret = 1;
      break;
     case SDL_WINDOWEVENT_SIZE_CHANGED:
@@ -515,11 +525,13 @@ CWindow::WEvents (SDL_Event WEvent)
     case SDL_WINDOWEVENT_MAXIMIZED:
      //SDL_Log("Window %d maximized", WEvent.window.windowID);
      SetRedraw();
+     Draw();
      ret = 1;
      break;
     case SDL_WINDOWEVENT_RESTORED:
      //SDL_Log("Window %d restored", WEvent.window.windowID);
      SetRedraw();
+     Draw();
      ret = 1;
      break;
     case SDL_WINDOWEVENT_ENTER:

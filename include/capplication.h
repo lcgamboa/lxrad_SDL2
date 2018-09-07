@@ -77,6 +77,7 @@ public:
   CWindow *GetAWindow (uint window);
   CWindow *GetARootWindow (void);
   void SetModalWindow (CWindow * mwindow);
+  CWindow * GetModalWindow (void);
   void SetTag (int x);
   int GetTag ();
   String GetTitle ();
