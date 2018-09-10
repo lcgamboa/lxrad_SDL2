@@ -83,7 +83,7 @@ public:
   void SetFocus (void);
   void SetPixmapBuffer(bool pbuffer);
   bool GetPixmapBuffer(void);
-  bool LoadXMLContextAndCreateChilds(String fname);
+  int LoadXMLContextAndCreateChilds (String filename, CControl* ctrl = NULL);
   bool GetCanExitExclusive(void);
   bool OwnerEvent (int x, int y);
 //propiedades

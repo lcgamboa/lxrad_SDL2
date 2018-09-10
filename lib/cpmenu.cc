@@ -73,9 +73,11 @@ CPMenu::Draw (void)
 
   if ((!Visible)||(Paint == NULL))
     return;
-  //unsigned int w_old=Width;
-  //unsigned int h_old=Height;
-  
+#ifndef _ONEWIN      
+  unsigned int w_old=Width;
+  unsigned int h_old=Height;
+#endif
+
   NextItemY = 0;
   if (ChildCount >= 0)
     Height = ((ChildCount + 1) * (((CItemMenu *) Child[0])->GetTextHeight () + 4)) + 8;
@@ -96,13 +98,10 @@ CPMenu::Draw (void)
       Paint->Pen.SetColor (Color);
       Paint->Rectangle ( 2, 2, Width - 2, Height - 2);
       Paint->RaiserFrame ( 0, 0, Width, Height);
-#ifdef _ONEWIN       
-      CWindow::Draw ();
-#else
-      CControl::Draw (); 
-#endif      
-    };
-};
+      
+      CWindow::Update ();      
+    }
+}
 
 void 
 CPMenu::SetMenuItems (String menuitems)

@@ -334,13 +334,13 @@ CControl::Event (SDL_Event event)
    return;
    break;
   case SDL_KEYDOWN:
+   if(event.key.repeat > 0)return;
    if (event.key.keysym.sym == SDLK_TAB)
     {
      //look status        
      Win->CirculateFocus (true);
      return;
     };
-
    if (Win->GetControlOnFocus ())
     Win->GetControlOnFocus ()->key_press (event);
    else
@@ -488,91 +488,102 @@ CControl::GetContext (void)
  CObject::GetContext ();
 
  //propierties
- Context.AddLine ("X=" + itoa (GetX ()) + ";int");
- Context.AddLine ("Y=" + itoa (GetY ()) + ";int");
- Context.AddLine ("Width=" + itoa (GetWidth ()) + ";uint");
- Context.AddLine ("Height=" + itoa (GetHeight ()) + ";uint");
- Context.AddLine ("Hint=" + GetHint () + ";String");
- Context.AddLine ("Enable=" + itoa (GetEnable ()) + ";bool");
- Context.AddLine ("Visible=" + itoa (GetVisible ()) + ";bool");
- //  Context.AddLine("FontSize="+itoa(GetFontSize()));
+  Context.AddLine (xml_out (lxT("X"), lxT("int"), itoa (GetX ())));
+  Context.AddLine (xml_out (lxT("Y"), lxT("int"), itoa (GetY ())));
+  Context.AddLine (xml_out (lxT("Width"), lxT("uint"), itoa (GetWidth ())));
+  Context.AddLine (xml_out (lxT("Height"), lxT("uint"), itoa (GetHeight ())));
+  Context.AddLine (xml_out (lxT("Hint"), lxT("String"), GetHint ()));
+  Context.AddLine (xml_out (lxT("Enable"), lxT("bool"), itoa (GetEnable ())));
+  Context.AddLine (xml_out (lxT("Visible"), lxT("bool"), itoa (GetVisible ())));
+  Context.AddLine (xml_out (lxT("Color"), lxT("String"), GetColor ().GetAsString (lxC2S_HTML_SYNTAX) ));
 
- if (PopupMenu)
-  Context.AddLine ("PopupMenu=" + PopupMenu->GetName () + ";PopupMenu");
- else
-  Context.AddLine ("PopupMenu=NULL;PopupMenu");
- //events  
- Context.AddLine ("MouseMove=" + btoa (GetEv (true)) + ";event");
- Context.AddLine ("MouseButtonPress=" + btoa (GetEv ()) + ";event");
- Context.AddLine ("MouseButtonRelease=" + btoa (GetEv ()) + ";event");
- Context.AddLine ("MouseButtonClick=" + btoa (GetEv ()) + ";event");
- Context.AddLine ("MouseButtonDoubleClick=" + btoa (GetEv ()) + ";event");
- Context.AddLine ("KeyboardPress=" + btoa (GetEv ()) + ";event");
- Context.AddLine ("KeyboardRelease=" + btoa (GetEv ()) + ";event");
- Context.AddLine ("KeyboardKey=" + btoa (GetEv ()) + ";event");
- Context.AddLine ("PointerIn=" + btoa (GetEv ()) + ";event");
- Context.AddLine ("PointerOut=" + btoa (GetEv ()) + ";event");
- Context.AddLine ("OnDraw=" + btoa (GetEv ()) + ";event");
- Context.AddLine ("CFocusIn=" + btoa (GetEv ()) + ";event");
- Context.AddLine ("CFocusOut=" + btoa (GetEv ()) + ";event");
- return Context;
+  if (PopupMenu)
+    Context.AddLine (xml_out (lxT("PopupMenu"), lxT("PopupMenu"), PopupMenu->GetName ()));
+  else
+    Context.AddLine (xml_out (lxT("PopupMenu"), lxT("PopupMenu"), lxT("NULL")));
+
+//events  
+  Context.AddLine (xml_out (lxT("EvMouseMove"), lxT("Event"), btoa (GetEv (true))));
+  Context.AddLine (xml_out (lxT("EvMouseButtonPress"), lxT("Event"), btoa (GetEv ())));
+  Context.AddLine (xml_out (lxT("EvMouseButtonRelease"), lxT("Event"), btoa (GetEv ())));
+  Context.AddLine (xml_out (lxT("EvMouseButtonClick"), lxT("Event"), btoa (GetEv ())));
+  Context.AddLine (xml_out (lxT("EvMouseButtonDoubleClick"), lxT("Event"), btoa (GetEv ())));
+  Context.AddLine (xml_out (lxT("EvKeyboardPress"), lxT("Event"), btoa (GetEv ())));
+  Context.AddLine (xml_out (lxT("EvKeyboardRelease"), lxT("Event"), btoa (GetEv ())));
+  Context.AddLine (xml_out (lxT("EvKeyboardKey"), lxT("Event"), btoa (GetEv ())));
+  Context.AddLine (xml_out (lxT("EvOnDraw"), lxT("Event"), btoa (GetEv ())));
+  Context.AddLine (xml_out (lxT("EvOnFocusIn"), lxT("Event"), btoa (GetEv ())));
+  Context.AddLine (xml_out (lxT("EvOnFocusOut"), lxT("Event"), btoa (GetEv ())));
+ 
+  return Context;
 };
 
 void
 CControl::SetContext (CStringList context)
 {
- CObject::SetContext (context);
- for (uint i = 0; i < context.GetLinesCount (); i++)
-  {
-   String line = Context.GetLine (i);
-   String arg;
-   eqparse (line, arg);
-   if (line.compare ("X") == 0)
-    SetX (atoi (arg));
-   if (line.compare ("Y") == 0)
-    SetY (atoi (arg));
-   if (line.compare ("Width") == 0)
-    SetWidth (atoi (arg));
-   if (line.compare ("Height") == 0)
-    SetHeight (atoi (arg));
-   if (line.compare ("Hint") == 0)
-    SetHint (arg);
-   if (line.compare ("Enable") == 0)
-    SetEnable (atoi (arg));
-   if (line.compare ("Visible") == 0)
-    SetVisible (atoi (arg));
-   if (line.compare ("PopupMenu") == 0)
-    if (arg.compare ("NULL") != 0)
-     SetPopupMenu (dynamic_cast<CPMenu *> (Win->GetChildByName (arg)));
+  String name, type, value;
 
-   if (line.compare ("MouseMove") == 0)
-    SetEv (atob (arg), true);
-   if (line.compare ("MouseButtonPress") == 0)
-    SetEv (atob (arg));
-   if (line.compare ("MouseButtonRelease") == 0)
-    SetEv (atob (arg));
-   if (line.compare ("MouseButtonClick") == 0)
-    SetEv (atob (arg));
-   if (line.compare ("MouseButtonDoubleClick") == 0)
-    SetEv (atob (arg));
-   if (line.compare ("KeyboardPress") == 0)
-    SetEv (atob (arg));
-   if (line.compare ("KeyboardRelease") == 0)
-    SetEv (atob (arg));
-   if (line.compare ("KeyboardKey") == 0)
-    SetEv (atob (arg));
-   if (line.compare ("PointerIn") == 0)
-    SetEv (atob (arg));
-   if (line.compare ("PointerOut") == 0)
-    SetEv (atob (arg));
-   if (line.compare ("OnDraw") == 0)
-    SetEv (atob (arg));
-   if (line.compare ("CFocusIn") == 0)
-    SetEv (atob (arg));
-   if (line.compare ("CFocusOut") == 0)
-    SetEv (atob (arg));
-  };
-};
+#ifdef _DEBUG_
+#ifdef __UNICODE__
+  printf("##########SetContext(%ls)\n",(const wchar_t*)GetName().c_str());	
+#else
+  printf("##########SetContext(%s)\n",(const char *)GetName().c_str());	
+#endif
+#endif
+  CObject::SetContext (context);
+  for (uint i = 0; i < context.GetLinesCount (); i++)
+    {
+      xml_in (Context.GetLine (i), name, type, value);
+     
+      //printf("Set%ls\n",name.c_str()); 
+ 
+      if (name.compare (lxT("X")) == 0)
+	SetX (atoi (value));
+      if (name.compare (lxT("Y")) == 0)
+	SetY (atoi (value));
+      if (name.compare (lxT("Width")) == 0)
+	SetWidth (atoi (value));
+      if (name.compare (lxT("Height")) == 0)
+	SetHeight (atoi (value));
+      if (name.compare (lxT("Hint")) == 0)
+	SetHint (value);
+      if (name.compare (lxT("Enable")) == 0)
+	SetEnable (atoi (value));
+      if (name.compare (lxT("Visible")) == 0)
+      {
+	SetVisible (!(atoi (value)),false);
+	SetVisible (atoi (value));
+      }
+      if (name.compare (lxT("Color")) == 0)
+	if(value.compare(lxT("#000001")) != 0 )//color not defined      
+	   SetColor (lxColor(value));
+      if (name.compare ("PopupMenu") == 0)
+	if (value.compare ("NULL") != 0)
+	  SetPopupMenu (dynamic_cast < CPMenu * >(Win->GetChildByName (value)));
+      if (name.compare (lxT("EvMouseMove")) == 0)
+	SetEv (atob (value), true);
+      if (name.compare (lxT("EvMouseButtonPress")) == 0)
+	SetEv (atob (value));
+      if (name.compare (lxT("EvMouseButtonRelease")) == 0)
+	SetEv (atob (value));
+      if (name.compare (lxT("EvMouseButtonClick")) == 0)
+	SetEv (atob (value));
+      if (name.compare (lxT("EvMouseButtonDoubleClick")) == 0)
+	SetEv (atob (value));
+      if (name.compare (lxT("EvKeyboardPress")) == 0)
+	SetEv (atob (value));
+      if (name.compare (lxT("EvKeyboardRelease")) == 0)
+	SetEv (atob (value));
+      if (name.compare (lxT("EvKeyboardKey")) == 0)
+	SetEv (atob (value));
+      if (name.compare (lxT("EvOnDraw")) == 0)
+	SetEv (atob (value));
+      if (name.compare (lxT("EvOnFocusIn")) == 0)
+	SetEv (atob (value));
+      if (name.compare (lxT("EvOnFocusOut")) == 0)
+	SetEv (atob (value));
+    }
+}
 
 SDL_Rect
 CControl::GetRectangle (void)

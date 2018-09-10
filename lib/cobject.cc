@@ -78,28 +78,28 @@ uint CObject::GetTag (void)
 CStringList CObject::GetContext (void)
 {
   Context.Clear ();
-  Context.AddLine ("Name=" + GetName () + ";String");
-  Context.AddLine ("Tag=" + itoa(GetTag ()) + ";int");
+  Context.AddLine (xml_out (lxT("Class"), lxT("String"), GetClass ()));
+  Context.AddLine (xml_out (lxT("Name"), lxT("String"), GetName ()));
+  Context.AddLine (xml_out (lxT("Tag"), lxT("int"), itoa (GetTag ())));
   return Context;
 };
 
 void
 CObject::SetContext (CStringList context)
 {
+  String name, type, value;
   Context.Clear ();
   for (uint i = 0; i < context.GetLinesCount (); i++)
     {
+      
       Context.AddLine (context.GetLine (i));
-      //set propierties<      
-      String line = Context.GetLine (i);
-      String arg;
-      eqparse (line, arg);
-      if (line.compare ("Name") == 0)
-	SetName (arg);
-      if (line.compare ("Tag") == 0)
-	SetTag (atoi(arg));
-    };
-};
+      xml_in (Context.GetLine (i), name, type, value);
+      if (name.compare (lxT("Name")) == 0)
+	SetName (value);
+      if (name.compare (lxT("Tag")) == 0)
+	SetTag (atoi (value));
+    }
+}
 
 bool CObject::GetEv (bool reset)
 {

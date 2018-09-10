@@ -86,22 +86,22 @@ CButton::Draw (void)
 CStringList CButton::GetContext (void)
 {
   CControl::GetContext ();
-  Context.AddLine ("Text=" + GetText () + ";String");
+  Context.AddLine (xml_out (lxT("Text"), lxT("String"), GetText ()));
+
   return Context;
 };
 
 void
 CButton::SetContext (CStringList context)
-{
+{	
   Eraser ();
+  String name, type, value;
   CControl::SetContext (context);
   for (uint i = 0; i < context.GetLinesCount (); i++)
     {
-      String line = Context.GetLine (i);
-      String arg;
-      eqparse (line, arg);
-      if (line.compare ("Text") == 0)
-	SetText (arg);
+      xml_in (Context.GetLine (i), name, type, value);
+      if (name.compare (lxT("Text")) == 0)
+	SetText (value);
     };
   Draw ();
 };

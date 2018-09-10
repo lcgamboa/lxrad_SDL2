@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2017  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -23,34 +23,10 @@
    For e-mail suggestions :  lcgamboa@yahoo.com
    ######################################################################## */
 
-#include"clxrad.h"
-#include"cobject.h"
-#include"cwindow.h"
-#include"capplication.h"
-#include"cscroll.h"
-#include"cbutton.h"
-#include"cedit.h"
-#include"ctext.h"
-#include"cmenu.h"
-#include"cpmenu.h"
-#include"cmessage.h"
-#include"cinput.h"
-#include"cdialog.h"
-#include"cfiledialog.h"
-#include"cdraw.h"
-#include"ccheckbox.h"
-#include"ctoolbutton.h"
-#include"cxpmbutton.h"
-#include"ctimer.h"
-#include"clist.h"
-#include"cfilelist.h"
-#include"ccombo.h"
-#include"chint.h"
-#include"chtml.h"
-#include"cgauge.h"
-#include"ctogglebutton.h"
-#include"cspind.h"
-#include"ccolordialog.h"
-#include"cstatusbar.h"
-#include"cthread.h"
-#include"newcontrolbycname.h"
+
+#ifndef NEWCONTROLBYCNAME
+#define NEWCONTROLBYCNAME
+
+CControl * newcontrolbycname (String controltype);
+#endif
+

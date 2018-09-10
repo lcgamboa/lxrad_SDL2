@@ -397,7 +397,7 @@ CApplication::ProcessEvents (void)
 #endif
 
  if (!MWindow)
-  {
+  { 
    if (wn)
     wn->WEvents (AEvent);
 

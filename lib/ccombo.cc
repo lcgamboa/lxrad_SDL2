@@ -188,31 +188,34 @@ CStringList
 CCombo::GetContext (void)
 {
   CControl::GetContext ();
-  Context.AddLine ("Text=" + GetText () + ";String");
-  Context.AddLine ("Items=" + GetItems () + ";StringList");
-  Context.AddLine ("OnComboChange=" + btoa (GetEv ()) + ";event");
+  Context.AddLine (xml_out (lxT("Items"), lxT("StringList"), GetItems ()));
+  Context.AddLine (xml_out (lxT("Text"), lxT("String"), GetText ()));
+  Context.AddLine (xml_out (lxT("ReadOnly"), lxT("bool"), itoa(GetReadOnly ())));
+  Context.AddLine (xml_out (lxT("EvOnComboChange"), lxT("Event"), btoa (GetEv ())));
   return Context;
-};
+}
 
 void
 CCombo::SetContext (CStringList context)
 {
+  String name, type, value;
   Eraser ();
+
   CControl::SetContext (context);
   for (uint i = 0; i < context.GetLinesCount (); i++)
     {
-      String line = Context.GetLine (i);
-      String arg;
-      eqparse (line, arg);
-      if (line.compare ("Text") == 0)
-	SetText (arg);
-      if (line.compare ("Items") == 0)
-	SetItems (arg);
-      if (line.compare ("OnComboChange") == 0)
-	SetEv (atob (arg));
+      xml_in (Context.GetLine (i), name, type, value);
+      if (name.compare (lxT("Text")) == 0)
+	SetText (value);
+      if (name.compare (lxT("Items")) == 0)
+	SetItems (value);
+      if (name.compare (lxT("ReadOnly")) == 0)
+	SetReadOnly (atoi(value));
+      if (name.compare (lxT("EvOnComboChange")) == 0)
+	SetEv (atob (value));
     };
   Draw ();
-};
+}
   
 void 
 CCombo::SetText(String text)
@@ -299,3 +302,8 @@ CCombo::SetReadOnly (bool r)
 }
 
 
+bool
+CCombo::GetReadOnly (void)
+{
+  return edit1.GetReadOnly();
+};

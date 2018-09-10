@@ -28,6 +28,7 @@
 #include"../config.h"
 #include"../include/cwindow.h"
 #include"../include/capplication.h"
+#include"../include/newcontrolbycname.h"
 
 #ifdef LIBPTHREAD
 #include<pthread.h>
@@ -436,9 +437,9 @@ CWindow::SetOverrideRedirect (bool oredirect)
  if (WWindow)
   {
    if (ORedirect)
-    SDL_SetWindowBordered (WWindow, SDL_TRUE);
-   else
     SDL_SetWindowBordered (WWindow, SDL_FALSE);
+   else
+    SDL_SetWindowBordered (WWindow, SDL_TRUE);
   }
 }
 
@@ -708,45 +709,46 @@ CWindow::WEvents (SDL_Event WEvent)
 CStringList
 CWindow::GetContext (void)
 {
- CControl::GetContext ();
- Context.AddLine ("Title=" + GetTitle () + ";String");
- //events 
- Context.AddLine ("OnCreate=" + btoa (GetEv (false)) + ";event");
- Context.AddLine ("OnDestroy=" + btoa (GetEv (false)) + ";event");
- Context.AddLine ("OnShow=" + btoa (GetEv (false)) + ";event");
- Context.AddLine ("OnHide=" + btoa (GetEv (false)) + ";event");
- Context.AddLine ("OnEnter=" + btoa (GetEv (false)) + ";event");
- Context.AddLine ("OnLeave=" + btoa (GetEv (false)) + ";event");
- return Context;
+  CControl::GetContext ();
+  Context.AddLine (xml_out (lxT("Title"), lxT("String"), GetTitle ()));
+  Context.AddLine (xml_out (lxT("OverrideRedirect"), lxT("bool"), itoa (GetOverrideRedirect ())));
+  //events 
+  Context.AddLine (xml_out (lxT("EvOnCreate"), lxT("Event"), btoa (GetEv ())));
+  Context.AddLine (xml_out (lxT("EvOnDestroy"), lxT("Event"), btoa (GetEv ())));
+  Context.AddLine (xml_out (lxT("EvOnShow"), lxT("Event"), btoa (GetEv ())));
+  Context.AddLine (xml_out (lxT("EvOnHide"), lxT("Event"), btoa (GetEv ())));
+  Context.AddLine (xml_out (lxT("EvOnEnter"), lxT("Event"), btoa (GetEv ())));
+  Context.AddLine (xml_out (lxT("EvOnLeave"), lxT("Event"), btoa (GetEv ())));
+  return Context;
 };
 
 void
 CWindow::SetContext (CStringList context)
 {
- Eraser ();
- CControl::SetContext (context);
- for (uint i = 0; i < context.GetLinesCount (); i++)
-  {
-   String line = Context.GetLine (i);
-   String arg;
-   eqparse (line, arg);
-   if (line.compare ("Title") == 0)
-    SetTitle (arg);
-   if (line.compare ("OnCreate") == 0)
-    SetEv (atob (arg), false);
-   if (line.compare ("OnDestroy") == 0)
-    SetEv (atob (arg), false);
-   if (line.compare ("OnShow") == 0)
-    SetEv (atob (arg), false);
-   if (line.compare ("OnHide") == 0)
-    SetEv (atob (arg), false);
-   if (line.compare ("OnEnter") == 0)
-    SetEv (atob (arg), false);
-   if (line.compare ("OnLeave") == 0)
-    SetEv (atob (arg), false);
-  };
- Draw ();
-};
+  String name, type, value;
+  CControl::SetContext (context);
+  for (uint i = 0; i < context.GetLinesCount (); i++)
+    {
+      xml_in (Context.GetLine (i), name, type, value);
+      if (name.compare (lxT("Title")) == 0)
+	SetTitle (value);
+      if (name.compare (lxT("OverrideRedirect")) == 0)
+	SetOverrideRedirect (atoi (value));
+      if (name.compare (lxT("EvOnCreate")) == 0)
+	SetEv (atob (value));
+      if (name.compare (lxT("EvOnDestroy")) == 0)
+	SetEv (atob (value));
+      if (name.compare (lxT("EvOnShow")) == 0)
+	SetEv (atob (value));
+      if (name.compare (lxT("EvOnHide")) == 0)
+	SetEv (atob (value));
+      if (name.compare (lxT("EvOnEnter")) == 0)
+	SetEv (atob (value));
+      if (name.compare (lxT("EvOnLeave")) == 0)
+	SetEv (atob (value));
+    }
+  Draw();
+}
 
 void
 CWindow::CirculateFocus (bool asc)
@@ -1003,12 +1005,88 @@ CWindow::on_leave (void)
   (FOwner->*EvOnLeave) (this);
 };
 
-bool
-CWindow::LoadXMLContextAndCreateChilds (String fname)
+int
+CWindow::LoadXMLContextAndCreateChilds (String filename, CControl* ctrl)
 {
- //FIXME
- printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
- return 0;
+  FILE* file2;
+  CStringList list;
+  String line;
+
+  file2 = fopen (filename.c_str(),"r");
+  rewind(file2);
+  
+
+  if (file2)
+    {
+
+      if(ctrl == NULL)//for owner window
+      {
+        if(fgetline (file2, line))
+        {
+          ctrl = this;
+          ctrl->SetName(line.substr (1, line.size () - 2));//Get Window name
+          rewind(file2);
+        }
+      }
+
+      list.Clear ();
+      while (fgetline (file2, line))
+        {
+          if (line.compare (lxT ("<") + ctrl->GetName () + lxT (">")) == 0)
+            {
+              fgetline (file2, line);
+              do
+                {
+                  list.AddLine (line);
+                  fgetline (file2, line);
+                }
+              while (line[0] == ' ');
+              ctrl->SetContext (list);
+
+              while (line.compare (lxT ("</") + ctrl->GetName () + lxT (">")) != 0)
+                {
+                  String controlclass, ctype, name, cname;
+
+                  cname = line.substr (1, line.size () - 2);
+                  fgetline (file2, line);
+                  xml_in (line, name, ctype, controlclass);
+
+                  CControl *ch = newcontrolbycname (controlclass);
+                  ch->SetName (cname);
+                  ch->SetFOwner (ctrl);
+                 
+		  /* 
+		  if (ch->GetClass ().compare (lxT ("CItemMenu")) == 0)
+                    {
+                      ch->SetVisible (false, false);
+                    };
+                  */
+                  ctrl->CreateChild (ch);
+
+                  if (ch != NULL)
+                    LoadXMLContextAndCreateChilds (filename, ch);
+                  else
+                    printf ("Child Not Found! %s \n", (char*) name.char_str ());
+
+                  do
+                    {
+                      fgetline (file2, line);
+                    }
+                  while ((line.compare (lxT ("</") + cname + lxT (">")) != 0));
+                  fgetline (file2, line);
+                }
+
+            }
+
+        }
+
+      fclose(file2);
+      return 1;
+    }
+  else
+    printf ("File (%s) not found!\n",(char *)filename.char_str());
+
+  return 0;
 }
 
 bool
