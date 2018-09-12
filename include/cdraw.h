@@ -33,7 +33,6 @@ class CDraw:public CControl
 {
 private:
   String FileName;
-  char ** Data;
   bool Transparent;
   SDL_Texture* CPixmap;
   SDL_Color BColor;
@@ -43,7 +42,6 @@ public:
    ~CDraw (void);
   void Draw (void);
   bool SetPixmapFileName (String filename);
-  bool SetPixmapData (char** data);
   String GetPixmapFileName (void);
   void WritePixmapToFile (String filename);
   void WriteImgToFile (String filename);

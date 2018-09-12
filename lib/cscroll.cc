@@ -26,223 +26,193 @@
 
 #include"../include/cscroll.h"
 
-//Pixmaps____________________________________________________________
-static const char *rarrow[] = {
-  "16 16 2 1",
-  " 	c None",
-  ".	c #000000",
-  "                ",
-  "                ",
-  "     .          ",
-  "     ..         ",
-  "     ...        ",
-  "     ....       ",
-  "     .....      ",
-  "     ......     ",
-  "     ......     ",
-  "     .....      ",
-  "     ....       ",
-  "     ...        ",
-  "     ..         ",
-  "     .          ",
-  "                ",
-  "                "
-};
-
-static const char *larrow[] = {
-  "16 16 3 1",
-  " 	c None",
-  ".	c #FFFFFF",
-  "+	c #000000",
-  "                ",
-  "                ",
-  "          +     ",
-  "         ++     ",
-  "        +++     ",
-  "       ++++     ",
-  "      +++++     ",
-  "     ++++++     ",
-  "     ++++++     ",
-  "      +++++     ",
-  "       ++++     ",
-  "        +++     ",
-  "         ++     ",
-  "          +     ",
-  "                ",
-  "                "
-};
-
-
-static const char *uarrow[] = {
-  "16 16 3 1",
-  " 	c None",
-  ".	c #FFFFFF",
-  "+	c #000000",
-  "                ",
-  "                ",
-  "                ",
-  "                ",
-  "                ",
-  "       ++       ",
-  "      ++++      ",
-  "     ++++++     ",
-  "    ++++++++    ",
-  "   ++++++++++   ",
-  "  ++++++++++++  ",
-  "                ",
-  "                ",
-  "                ",
-  "                ",
-  "                "
-};
-
-static const char *darrow[] = {
-  "16 16 3 1",
-  " 	c None",
-  ".	c #FFFFFF",
-  "+	c #000000",
-  "                ",
-  "                ",
-  "                ",
-  "                ",
-  "                ",
-  "  ++++++++++++  ",
-  "   ++++++++++   ",
-  "    ++++++++    ",
-  "     ++++++     ",
-  "      ++++      ",
-  "       ++       ",
-  "                ",
-  "                ",
-  "                ",
-  "                ",
-  "                "
-};
-
 // CScroll___________________________________________________________
 
 CScroll::CScroll (void)
 {
-  button1 = new CToolButton;
-  button1->SetName ("Button1");
-  button1->SetTag (0);
-  button1->SetFOwner (this);
-  button1->EvMouseButtonPress = EVMOUSEBUTTONPRESS & CScroll::ScrollButtonPress;
-  button1->EvMouseButtonRelease = EVMOUSEBUTTONRELEASE & CScroll::ScrollButtonRelease;
-  button2 = new CToolButton;
-  button2->SetName ("Button2");
-  button2->SetTag (1);
-  button2->SetFOwner (this);
-  button2->EvMouseButtonPress = EVMOUSEBUTTONPRESS & CScroll::ScrollButtonPress;
-  button2->EvMouseButtonRelease =EVMOUSEBUTTONRELEASE & CScroll::ScrollButtonRelease;
-  Type = 0;
-  Size = 0;
-  SetRange (7);
-  SetPosition (3);
-  SetWidth (20);
-  SetHeight (160);
-  SetX (10);
-  SetY (10);
-  SetType (st_horizontal);
-  SetType (st_vertical);
-  EvOnChangePosition = NULL;
-  SetClass ("CScroll");
-//  SetCanFocus (false);
-  Move = false;
-  CreateChild (button1);
-  CreateChild (button2);
+ button1 = new CToolButton;
+ button1->SetName ("Button1");
+ button1->SetTag (0);
+ button1->SetFOwner (this);
+ button1->EvMouseButtonPress = EVMOUSEBUTTONPRESS & CScroll::ScrollButtonPress;
+ button1->EvMouseButtonRelease = EVMOUSEBUTTONRELEASE & CScroll::ScrollButtonRelease;
+ button2 = new CToolButton;
+ button2->SetName ("Button2");
+ button2->SetTag (1);
+ button2->SetFOwner (this);
+ button2->EvMouseButtonPress = EVMOUSEBUTTONPRESS & CScroll::ScrollButtonPress;
+ button2->EvMouseButtonRelease = EVMOUSEBUTTONRELEASE & CScroll::ScrollButtonRelease;
+ Type = 0;
+ Size = 0;
+ SetRange (7);
+ SetPosition (3);
+ SetWidth (20);
+ SetHeight (160);
+ SetX (10);
+ SetY (10);
+ SetType (st_horizontal);
+ SetType (st_vertical);
+ EvOnChangePosition = NULL;
+ SetClass ("CScroll");
+ //  SetCanFocus (false);
+ Move = false;
+ CreateChild (button1);
+ CreateChild (button2);
 };
 
-CScroll::~CScroll (void)
-{
-};
+CScroll::~CScroll (void) { };
 
 void
 CScroll::Create (CControl * control)
 {
-  CControl::Create (control);
-  if (!ColorSet)
-    Color = ColorByName ("gray");
+ CControl::Create (control);
+ if (!ColorSet)
+  Color = ColorByName ("gray");
 };
 
 void
 CScroll::Draw (void)
 {
-  if ((!Visible)||(Paint == NULL))
-    return;
-  Paint->InitDraw (this);
+ if ((!Visible) || (Paint == NULL))
+  return;
 
-  if (Type == st_vertical)
+ SDL_Point points[3];
+
+ if (Type == st_vertical)
+  {
+   points[0].x = 4;
+   points[0].y = button1->GetHeight () - 8;
+   points[1].x = button1->GetWidth () - 8;
+   points[1].y = points[0].y;
+   points[2].x = ((button1->GetWidth () - 4) / 2.0);
+   points[2].y = 4;
+
+   button1->Xpm->Canvas.Init ();
+   button1->Xpm->Canvas.SetFgColor (Color);
+   button1->Xpm->Canvas.Rectangle (1, 0, 0, button1->GetWidth (), button1->GetHeight ());
+   button1->Xpm->Canvas.SetColor (0, 0, 0);
+   button1->Xpm->Canvas.Polygon (1, points, 3);
+   button1->Xpm->Canvas.End ();
+
+   points[0].x = 4;
+   points[0].y = 4;
+   points[1].x = button2->GetWidth () - 8;
+   points[1].y = 4;
+   points[2].x = ((button2->GetWidth () - 4) / 2.0);
+   points[2].y = button2->GetHeight () - 8;
+
+   button2->Xpm->Canvas.Init ();
+   button2->Xpm->Canvas.SetFgColor (Color);
+   button2->Xpm->Canvas.Rectangle (1, 0, 0, button2->GetWidth (), button2->GetHeight ());
+   button2->Xpm->Canvas.SetColor (0, 0, 0);
+   button2->Xpm->Canvas.Polygon (1, points, 3);
+   button2->Xpm->Canvas.End ();
+  }
+ else
+  {
+   points[0].x = button1->GetWidth () - 8;
+   points[0].y = 4;
+   points[1].x = points[0].x;
+   points[1].y = button1->GetHeight () - 8;
+   points[2].x = 4;
+   points[2].y = ((button1->GetHeight () - 4) / 2.0);
+
+   button1->Xpm->Canvas.Init ();
+   button1->Xpm->Canvas.SetFgColor (Color);
+   button1->Xpm->Canvas.Rectangle (1, 0, 0, button1->GetWidth (), button1->GetHeight ());
+   button1->Xpm->Canvas.SetColor (0, 0, 0);
+   button1->Xpm->Canvas.Polygon (1, points, 3);
+   button1->Xpm->Canvas.End ();
+    
+   points[0].x = 4;
+   points[0].y = 4;
+   points[1].x = points[0].x;
+   points[1].y = button2->GetHeight () - 8;
+   points[2].x = button2->GetWidth () - 8;
+   points[2].y = ((button2->GetHeight () - 4) / 2.0);
+
+   button2->Xpm->Canvas.Init ();
+   button2->Xpm->Canvas.SetFgColor (Color);
+   button2->Xpm->Canvas.Rectangle (1, 0, 0, button2->GetWidth (), button2->GetHeight ());
+   button2->Xpm->Canvas.SetColor (0, 0, 0);
+   button2->Xpm->Canvas.Polygon (1, points, 3);
+   button2->Xpm->Canvas.End ();
+   
+  }
+
+ Paint->InitDraw (this);
+
+ if (Type == st_vertical)
+  {
+   int hb = button1->GetHeight ();
+   int h2;
+   Paint->Pen.SetColor (Color);
+   Paint->Rectangle (0, hb, Width, Height - (2 * hb));
+   Paint->Pen.SetColor (ColorByName ("light gray"));
+
+   if (Position == 0)
     {
-      int hb = button1->GetHeight ();
-      int h2;
-      Paint->Pen.SetColor (Color);
-      Paint->Rectangle ( 0, hb, Width, Height - (2 * hb));
-      Paint->Pen.SetColor (ColorByName ("light gray"));
-
-      if (Position == 0)
-	{
-	  h2 = 0;
-	}
-      else
-	{
-	  if (Position == Range - 1)
-	    h2 = ((Height - (2 * hb)) - Size);
-	  else
-	    h2 = (((Height - (2 * hb) - Size) * Position) / Range);
-	};
-
-      Paint->Rectangle ( 0, hb + h2, Width, Size);
-      Paint->RaiserFrame ( 0, hb + h2, Width, hb + h2 + Size, 1);
+     h2 = 0;
     }
-  else
+   else
     {
-      int wb = button1->GetWidth ();
-      int w2;
-
-      Paint->Pen.SetColor (Color);
-      Paint->Rectangle ( wb, 0, Width - (2 * wb), Height);
-      Paint->Pen.SetColor (ColorByName ("light gray"));
-
-      if (Position == 0)
-	{
-	  w2 = 0;
-	}
-      else
-	{
-	  if (Position == Range - 1)
-	    w2 = ((Width - (2 * wb)) - Size);
-	  else
-	    w2 = (((Width - (2 * wb) - Size) * Position) / Range);
-	};
-      Paint->Rectangle ( wb + w2, 0, Size, Height);
-      Paint->RaiserFrame ( wb + w2, 0, wb + w2 + Size, Height);
+     if (Position == Range - 1)
+      h2 = ((Height - (2 * hb)) - Size);
+     else
+      h2 = (((Height - (2 * hb) - Size) * Position) / Range);
     };
-  CControl::Draw ();
+
+   Paint->Rectangle (0, hb + h2, Width, Size);
+   Paint->RaiserFrame (0, hb + h2, Width, hb + h2 + Size, 1);
+  }
+ else
+  {
+   int wb = button1->GetWidth ();
+   int w2;
+
+   Paint->Pen.SetColor (Color);
+   Paint->Rectangle (wb, 0, Width - (2 * wb), Height);
+   Paint->Pen.SetColor (ColorByName ("light gray"));
+
+   if (Position == 0)
+    {
+     w2 = 0;
+    }
+   else
+    {
+     if (Position == Range - 1)
+      w2 = ((Width - (2 * wb)) - Size);
+     else
+      w2 = (((Width - (2 * wb) - Size) * Position) / Range);
+    };
+   Paint->Rectangle (wb + w2, 0, Size, Height);
+   Paint->RaiserFrame (wb + w2, 0, wb + w2 + Size, Height);
+  };
+ CControl::Draw ();
 };
 
-CStringList 
+CStringList
 CScroll::GetContext (void)
 {
-  CControl::GetContext ();
-  Context.AddLine ("OnChangePosition=" + btoa (GetEv ()) + ";event");
-  return Context;
+ CControl::GetContext ();
+ Context.AddLine ("OnChangePosition=" + btoa (GetEv ()) + ";event");
+ return Context;
 };
 
 void
 CScroll::SetContext (CStringList context)
 {
-  Eraser ();
-  CControl::SetContext (context);
-  for (uint i = 0; i < context.GetLinesCount (); i++)
-    {
-      string line = Context.GetLine (i);
-      string arg;
-      eqparse (line, arg);
-      if (line.compare ("OnChangePosition") == 0)
-	SetEv (atob (arg));
-    };
-  Draw ();
+ Eraser ();
+ CControl::SetContext (context);
+ for (uint i = 0; i < context.GetLinesCount (); i++)
+  {
+   string line = Context.GetLine (i);
+   string arg;
+   eqparse (line, arg);
+   if (line.compare ("OnChangePosition") == 0)
+    SetEv (atob (arg));
+  };
+ Draw ();
 };
 
 //propiedades
@@ -250,147 +220,136 @@ CScroll::SetContext (CStringList context)
 void
 CScroll::SetPosition (int position)
 {
-  if ((position >= 0) && (position < Range))
+ if ((position >= 0) && (position < Range))
+  {
+   if (Position != position)
     {
-      if (Position != position)
-	{
-	  Position = position;
-	  Draw ();
-	  if ((FOwner) && (EvOnChangePosition))
-	    (FOwner->*EvOnChangePosition) (this, true);
-	}
-      else if ((FOwner) && (EvOnChangePosition))
-	(FOwner->*EvOnChangePosition) (this, false);
-    };
+     Position = position;
+     Draw ();
+     if ((FOwner) && (EvOnChangePosition))
+      (FOwner->*EvOnChangePosition) (this, true);
+    }
+   else if ((FOwner) && (EvOnChangePosition))
+    (FOwner->*EvOnChangePosition) (this, false);
+  };
 };
 
 int
 CScroll::GetPosition (void)
 {
-  return Position;
+ return Position;
 };
 
 void
 CScroll::SetRange (int range)
 {
-  if(range <= 0)range=1;	
-  
-  Range = range;
+ if (range <= 0)range = 1;
 
-  if (Type == st_vertical)
-    {
-      if (Range > 0)
-	Size = (Height - (2 * button1->GetHeight ())) / Range;
-      else
-	Size = Height - (2 * button1->GetHeight ());
-    }
-  else
-    {
-      if (Range > 0)
-	Size = (Width - (2 * button1->GetWidth ())) / Range;
-      else
-	Size = Width - (2 * button1->GetWidth ());
-    };
-  if (Size < 20)
-    Size = 20;
+ Range = range;
+
+ if (Type == st_vertical)
+  {
+   if (Range > 0)
+    Size = (Height - (2 * button1->GetHeight ())) / Range;
+   else
+    Size = Height - (2 * button1->GetHeight ());
+  }
+ else
+  {
+   if (Range > 0)
+    Size = (Width - (2 * button1->GetWidth ())) / Range;
+   else
+    Size = Width - (2 * button1->GetWidth ());
+  };
+ if (Size < 20)
+  Size = 20;
 };
 
 int
 CScroll::GetRange (void)
 {
-  return Range;
+ return Range;
 };
-
 
 void
 CScroll::SetType (scrolltype type)
 {
-  if (Type != type)
-    {
-      Type = type;
-      /*
-      int temp = GetWidth ();
-      SetWidth (GetHeight ());
-      SetHeight (temp);*/
-      SetWidth(Width);
-      SetHeight(Height);
-      SetRange (Range);
-      if (Type == st_vertical)
-	{
-	  button1->SetPixmapData ((char **)uarrow);
-	  button2->SetPixmapData ((char **)darrow);
-	}
-      else
-	{
-	  button1->SetPixmapData ((char **)larrow);
-	  button2->SetPixmapData ((char **)rarrow);
-	};
-      Draw ();
-    }
+ if (Type != type)
+  {
+   Type = type;
+   /*
+   int temp = GetWidth ();
+   SetWidth (GetHeight ());
+   SetHeight (temp);*/
+   SetWidth (Width);
+   SetHeight (Height);
+   SetRange (Range);
+   Draw ();
+  }
 };
 
 void
 CScroll::SetX (int x)
 {
-  if (Type == st_vertical)
-    {
-      button1->SetX (0);
-      button2->SetX (0);
-    }
-  else
-    {
-      button1->SetX (0);
-      button2->SetX (Width - button2->GetWidth ());
-    };
-  CControl::SetX (x);
+ if (Type == st_vertical)
+  {
+   button1->SetX (0);
+   button2->SetX (0);
+  }
+ else
+  {
+   button1->SetX (0);
+   button2->SetX (Width - button2->GetWidth ());
+  };
+ CControl::SetX (x);
 };
 
 void
 CScroll::SetY (int y)
 {
-  if (Type == st_vertical)
-    {
-      button1->SetY (0);
-      button2->SetY (Height - button2->GetHeight ());
-    }
-  else
-    {
-      button1->SetY (0);
-      button2->SetY (0);
-    };
-  CControl::SetY (y);
+ if (Type == st_vertical)
+  {
+   button1->SetY (0);
+   button2->SetY (Height - button2->GetHeight ());
+  }
+ else
+  {
+   button1->SetY (0);
+   button2->SetY (0);
+  };
+ CControl::SetY (y);
 };
 
 void
 CScroll::SetWidth (uint width)
 {
-  if (Type == st_vertical)
-    {
-      button1->SetWidth (width);
-      button1->SetHeight (width);
-      button2->SetWidth (width);
-      button2->SetHeight (width);
-    };
-  CControl::SetWidth (width);
-  SetX (GetX ());
-  SetY (GetY ());
-  SetRange (Range);
+ if (Type == st_vertical)
+  {
+   button1->SetWidth (width);
+   button1->SetHeight (width);
+   button2->SetWidth (width);
+   button2->SetHeight (width);
+  };
+ CControl::SetWidth (width);
+ SetX (GetX ());
+ SetY (GetY ());
+ SetRange (Range);
 };
 
 void
 CScroll::SetHeight (uint height)
 {
-  if (Type == st_horizontal)
-    {
-      button1->SetWidth (height);
-      button1->SetHeight (height);
-      button2->SetWidth (height);
-      button2->SetHeight (height);
-    };
-  CControl::SetHeight (height);
-  SetX (GetX ());
-  SetY (GetY ());
-  SetRange (Range);
+ if (Type == st_horizontal)
+  {
+   button1->SetWidth (height);
+   button1->SetHeight (height);
+   button2->SetWidth (height);
+   button2->SetHeight (height);
+  };
+ CControl::SetHeight (height);
+ SetX (GetX ());
+ SetY (GetY ());
+ SetRange (Range);
 };
 
 
@@ -399,226 +358,223 @@ CScroll::SetHeight (uint height)
 void
 CScroll::pointer_out (void)
 {
-  Move = false;
-  CControl::pointer_out ();
+ Move = false;
+ CControl::pointer_out ();
 };
 
 void
 CScroll::key_press (SDL_Event event)
 {
- 
-  switch (event.key.keysym.sym)
-    {
-    case SDLK_LEFT:
-      SetPosition (GetPosition () - 1);
-      break;
-    case SDLK_UP:
-      SetPosition (GetPosition () - 1);
-      break;
-    case SDLK_RIGHT:
-      SetPosition (GetPosition () + 1);
-      break;
-    case SDLK_DOWN:
-      SetPosition (GetPosition () + 1);
-      break;
-    case SDLK_PAGEUP:
-      SetPosition (GetPosition () - ((Range / 10) + 1));
-      break;
-    case SDLK_PAGEDOWN:
-      SetPosition (GetPosition () + ((Range / 10) + 1));
-      break;
-    default:
-      CControl::key_press (event);
-    };
+
+ switch (event.key.keysym.sym)
+  {
+  case SDLK_LEFT:
+   SetPosition (GetPosition () - 1);
+   break;
+  case SDLK_UP:
+   SetPosition (GetPosition () - 1);
+   break;
+  case SDLK_RIGHT:
+   SetPosition (GetPosition () + 1);
+   break;
+  case SDLK_DOWN:
+   SetPosition (GetPosition () + 1);
+   break;
+  case SDLK_PAGEUP:
+   SetPosition (GetPosition () - ((Range / 10) + 1));
+   break;
+  case SDLK_PAGEDOWN:
+   SetPosition (GetPosition () + ((Range / 10) + 1));
+   break;
+  default:
+   CControl::key_press (event);
+  };
 };
 
 void
-CScroll::key_release (SDL_Event event)
-{
-};
+CScroll::key_release (SDL_Event event) { };
 
 void
 CScroll::button_press (SDL_Event event)
 {
-  if (event.button.button == 1)
+ if (event.button.button == 1)
+  {
+   if (Type == st_vertical)
     {
-      if (Type == st_vertical)
-	{
-	  int hb = button1->GetHeight ();
-	  int h1;
-	  if (Position == 0)
-	    {
-	      h1 = 0;
-	    }
-	  else
-	    {
-	      if (Position == Range - 1)
-		h1 = ((Height - (2 * hb)) - Size);
-	      else
-		h1 = (((Height - (2 * hb) - Size) * Position) / Range);
-	    };
-	  int y = event.button.y - hb - GetRY();
-	  if ((y >= h1) && (y <= int (h1 + Size)))
-	    Move = true;
-	}
-      else
-	{
-	  int wb = button1->GetWidth ();
-	  int w1;
-	  if (Position == 0)
-	    {
-	      w1 = 0;
-	    }
-	  else
-	    {
-	      if (Position == Range - 1)
-		w1 = ((Width - (2 * wb)) - Size);
-	      else
-		w1 = (((Width - (2 * wb) - Size) * Position) / Range);
-	    };
-	  int w = event.button.x - wb - GetRX ();
-	  if ((w >= w1) && (w <= int (w1 + Size)))
-	    Move = true;
-	};
-      CControl::button_press (event);
+     int hb = button1->GetHeight ();
+     int h1;
+     if (Position == 0)
+      {
+       h1 = 0;
+      }
+     else
+      {
+       if (Position == Range - 1)
+        h1 = ((Height - (2 * hb)) - Size);
+       else
+        h1 = (((Height - (2 * hb) - Size) * Position) / Range);
+      };
+     int y = event.button.y - hb - GetRY ();
+     if ((y >= h1) && (y <= int (h1 + Size)))
+      Move = true;
+    }
+   else
+    {
+     int wb = button1->GetWidth ();
+     int w1;
+     if (Position == 0)
+      {
+       w1 = 0;
+      }
+     else
+      {
+       if (Position == Range - 1)
+        w1 = ((Width - (2 * wb)) - Size);
+       else
+        w1 = (((Width - (2 * wb) - Size) * Position) / Range);
+      };
+     int w = event.button.x - wb - GetRX ();
+     if ((w >= w1) && (w <= int (w1 + Size)))
+      Move = true;
     };
+   CControl::button_press (event);
+  };
 };
 
 void
 CScroll::button_release (SDL_Event event)
 {
-  Move = false;
-  CControl::button_release (event);
+ Move = false;
+ CControl::button_release (event);
 };
-
 
 void
 CScroll::mouse_move (SDL_Event event)
 {
-  //SDL_Event Nevent = event;
-/*
-  while (XEventsQueued (Win->GetADisplay (), QueuedAfterReading) > 0)
+ //SDL_Event Nevent = event;
+ /*
+   while (XEventsQueued (Win->GetADisplay (), QueuedAfterReading) > 0)
+     {
+       XPeekEvent (Win->GetADisplay (), &Nevent);
+       if ((Nevent.type == MotionNotify) || (Nevent.type == NoExpose))
+     {
+       if (Nevent.type == MotionNotify)
+         XNextEvent (Win->GetADisplay (), &event);
+       else
+         XNextEvent (Win->GetADisplay (), &Nevent);
+     }
+       else
+     {
+       break;
+     };
+     };
+  */
+ if (Move)
+  {
+   if (Type == st_vertical)
     {
-      XPeekEvent (Win->GetADisplay (), &Nevent);
-      if ((Nevent.type == MotionNotify) || (Nevent.type == NoExpose))
-	{
-	  if (Nevent.type == MotionNotify)
-	    XNextEvent (Win->GetADisplay (), &event);
-	  else
-	    XNextEvent (Win->GetADisplay (), &Nevent);
-	}
-      else
-	{
-	  break;
-	};
-    };
-*/
-  if (Move)
+     int h1, hb = button1->GetHeight ();
+     int y = event.button.y - hb - GetRY ();
+     int s;
+     if (Range != 1)
+      s = (Range / (Height - 2 * hb - Size));
+     else
+      s = 0;
+     s++;
+
+     for (int c = 0; c < Range; c++)
+      {
+
+       if (c == 0)
+        {
+         h1 = 0;
+        }
+       else
+        {
+         if (c == Range - 1)
+          h1 = ((Height - (2 * hb)) - Size);
+         else
+          h1 = (((Height - (2 * hb) - Size) * c * s) / Range);
+        };
+
+       if ((y > h1 + 5)
+           && (y < int (h1 + Size - 5)) &&(GetPosition () != c))
+        {
+         SetPosition (c * s);
+         return;
+        };
+      }
+    }
+   else
     {
-      if (Type == st_vertical)
-	{
-	  int h1, hb = button1->GetHeight ();
-	  int y = event.button.y - hb - GetRY ();
-	  int s;
-	  if(Range != 1)
-	    s = (Range / (Height - 2 * hb - Size));
-	  else
-	    s=0;	  
-	  s++;
-	  
-	  for (int c = 0; c < Range; c++)
-	    {
+     int w1, wb = button1->GetWidth ();
+     int w = event.button.x - wb - GetRX ();
+     int s;
+     if (Range != 1)
+      s = (Range / (Width - 2 * wb - Size));
+     else
+      s = 0;
+     s++;
 
-	      if (c == 0)
-		{
-		  h1 = 0;
-		}
-	      else
-		{
-		  if (c == Range - 1)
-		    h1 = ((Height - (2 * hb)) - Size);
-		  else
-		    h1 = (((Height - (2 * hb) - Size) * c * s) / Range);
-		};
-
-	      if ((y > h1 + 5)
-		  && (y < int (h1 + Size - 5)) &&(GetPosition () != c))
-		{
-		  SetPosition (c * s);
-		  return;
-		};
-	    }
-	}
-      else
-	{
-	  int w1, wb = button1->GetWidth ();
-	  int w = event.button.x - wb - GetRX ();
-	  int s;
-	  if(Range != 1)
-	    s= (Range / (Width - 2 * wb - Size));
-	  else
-	    s=0;	  
-	  s++;
-
-	  for (int c = 0; c < Range; c++)
-	    {
-	      if (c == 0)
-		{
-		  w1 = 0;
-		}
-	      else
-		{
-		  if (c == Range - 1)
-		    w1 = ((Width - (2 * wb)) - Size);
-		  else
-		    w1 = (((Width - (2 * wb) - Size) * c * s) / Range);
-		};
-	      if ((w >= w1 + 5)
-		  && (w <= int (w1 + Size - 5)) &&(GetPosition () != c))
-		{
-		  SetPosition (c * s);
-		  return;
-		};
-	    };
-	};
+     for (int c = 0; c < Range; c++)
+      {
+       if (c == 0)
+        {
+         w1 = 0;
+        }
+       else
+        {
+         if (c == Range - 1)
+          w1 = ((Width - (2 * wb)) - Size);
+         else
+          w1 = (((Width - (2 * wb) - Size) * c * s) / Range);
+        };
+       if ((w >= w1 + 5)
+           && (w <= int (w1 + Size - 5)) &&(GetPosition () != c))
+        {
+         SetPosition (c * s);
+         return;
+        };
+      };
     };
-  CControl::mouse_move (event);
+  };
+ CControl::mouse_move (event);
 };
 
 void
 CScroll::ScrollButtonPress (CControl * control, uint button, uint x, uint y,
-			    uint status)
+                            uint status)
 {
-  Update ();
-  if ((FOwner) && (EvMouseButtonPress))
-    (FOwner->*EvMouseButtonPress) (this, button, x, y, status);
+ Update ();
+ if ((FOwner) && (EvMouseButtonPress))
+  (FOwner->*EvMouseButtonPress) (this, button, x, y, status);
 };
 
 void
 CScroll::ScrollButtonRelease (CControl * control, uint button, uint x, uint y,
-			      uint status)
+                              uint status)
 {
-  CToolButton *bt;
-  CScroll *sc;
-  bt = dynamic_cast < CToolButton * >(control);
-  sc = dynamic_cast < CScroll * >(bt->GetOwner ());
-  int pos;
-  if (bt->GetTag ())
-    {
-      pos = sc->GetPosition () + 1;
-      if (pos != Range)
-	sc->SetPosition (pos);
-      else
-	sc->SetPosition (pos - 1);
-    }
-  else
-    {
-      pos = sc->GetPosition () - 1;
-      if (pos >= 0)
-	sc->SetPosition (pos);
-      else
-	sc->SetPosition (pos + 1);
-    };
-  Update ();
+ CToolButton *bt;
+ CScroll *sc;
+ bt = dynamic_cast<CToolButton *> (control);
+ sc = dynamic_cast<CScroll *> (bt->GetOwner ());
+ int pos;
+ if (bt->GetTag ())
+  {
+   pos = sc->GetPosition () + 1;
+   if (pos != Range)
+    sc->SetPosition (pos);
+   else
+    sc->SetPosition (pos - 1);
+  }
+ else
+  {
+   pos = sc->GetPosition () - 1;
+   if (pos >= 0)
+    sc->SetPosition (pos);
+   else
+    sc->SetPosition (pos + 1);
+  };
+ Update ();
 
 };

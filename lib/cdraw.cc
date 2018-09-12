@@ -39,7 +39,6 @@ extern pthread_mutex_t Display_Lock;
 CDraw::CDraw (void)
 {
   FileName = "";
-  Data = NULL;
   SetX (10);
   SetY (10);
   SetWidth (100);
@@ -65,7 +64,6 @@ CDraw::Create (CControl * control)
   Canvas.SetDoCalcRXY(false);
   Visible=false;	    
   SetPixmapFileName (FileName);
-  SetPixmapData (Data);
   Visible=true;	    
   if(!CPixmap)
   {
@@ -157,7 +155,6 @@ CDraw::Draw ()
     {
       Visible=false;	    
       SetPixmapFileName (FileName);
-      SetPixmapData (Data);
       Visible=true;	    
       Canvas.SetDrawIn(CPixmap);
       if(!CPixmap)
@@ -244,13 +241,6 @@ CDraw::SetPixmapFileName (String filename)
     return SetImgFileName(filename,1.0,1.0);
 }
 
-
-bool
-CDraw::SetPixmapData (char **data)
-{
-  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
-  return false;
-};
 
 void
 CDraw::WritePixmapToFile (String filename)

@@ -120,13 +120,6 @@ CXpmButton::SetContext (CStringList context)
 //propiedades
 
 void
-CXpmButton::SetPixmapData (char **data)
-{
-  Xpm->SetPixmapData (data);
-  Draw ();
-};
-
-void
 CXpmButton::SetPixmapFileName (String filename)
 {
   Xpm->SetPixmapFileName (filename);

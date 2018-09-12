@@ -26,30 +26,6 @@
 #include"../include/ccombo.h"
 #include"../include/capplication.h"
 
-//Pixmap____________________________________________________________
-
-static const char *darrow[] = {
-  "16 16 3 1",
-  " 	c None",
-  ".	c #FFFFFF",
-  "+	c #000000",
-  "                ",
-  "                ",
-  "                ",
-  "                ",
-  "                ",
-  "  ++++++++++++  ",
-  "   ++++++++++   ",
-  "    ++++++++    ",
-  "     ++++++     ",
-  "      ++++      ",
-  "       ++       ",
-  "                ",
-  "                ",
-  "                ",
-  "                ",
-  "                "
-};
 
 // CCombo_____________________________________________________________
 
@@ -62,7 +38,6 @@ CCombo::CCombo (void)
   edit1.SetFOwner (this);
   edit1.EvKeyboardPress = EVKEYBOARDPRESS & CCombo::EditKeyPress;
 
-  tbutton1.SetPixmapData ((char **)darrow);
   tbutton1.SetFOwner (this);
   tbutton1.EvMouseButtonPress = EVMOUSEBUTTONPRESS & CCombo::TButtonPress;
 
@@ -96,10 +71,16 @@ CCombo::Create (CControl * control)
 void
 CCombo::SetWidth (unsigned width)
 {
+  if(Width == width) return;
   edit1.SetX (0);
   edit1.SetWidth (width - GetHeight () - 1);
   tbutton1.SetX (width - GetHeight ());
   tbutton1.SetWidth (GetHeight ());
+  
+  edit1.SetY (0);
+  edit1.SetHeight (Height);
+  tbutton1.SetY (0);
+  tbutton1.SetHeight (Height);
 
   dlist1.SetWidth (width);
 
@@ -109,10 +90,17 @@ CCombo::SetWidth (unsigned width)
 void
 CCombo::SetHeight (unsigned height)
 {
+  if(Height == height)return;
   edit1.SetY (0);
   edit1.SetHeight (height);
   tbutton1.SetY (0);
   tbutton1.SetHeight (height);
+  
+  edit1.SetX (0);
+  edit1.SetWidth (Width - height  - 1);
+  tbutton1.SetX (Width - height );
+  tbutton1.SetWidth (height);
+  
   CControl::SetHeight (height);
 };
 
@@ -121,6 +109,23 @@ CCombo::Draw ()
 {
   if ((!Visible)||(Paint == NULL))
     return;
+
+  
+  SDL_Point points[3];
+  points[0].x= 6;
+  points[0].y= 6;
+  points[1].x= tbutton1.GetWidth () -12;
+  points[1].y=6;
+  points[2].x=((tbutton1.GetWidth ()-6)/2.0) ;
+  points[2].y=tbutton1.GetHeight ()-12;
+  
+  tbutton1.Xpm->Canvas.Init();
+  tbutton1.Xpm->Canvas.SetFgColor(Color);
+  tbutton1.Xpm->Canvas.Rectangle (1,0,0,tbutton1.GetWidth (),tbutton1.GetHeight ());
+  tbutton1.Xpm->Canvas.SetColor(0,0,0);
+  tbutton1.Xpm->Canvas.Polygon (1,points,3);
+  tbutton1.Xpm->Canvas.End ();
+  
   Paint->InitDraw (this);
   Paint->Pen.SetColor (Color);
   Paint->Rectangle ( 0, 0, Width, Height);

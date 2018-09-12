@@ -104,13 +104,13 @@ CPaint::SetFont (CControl * control) {
 void
 CPaint::InitDraw (CControl * control)
 {
- #ifdef _ONEWIN   
-   SDL_Rect wrec;
-   wrec.x=Win->GetX();
-   wrec.y=Win->GetY();
-   wrec.w=Win->GetWidth();
-   wrec.h=Win->GetHeight()+20;
-   SDL_RenderSetClipRect(Win->GetRenderer (),&wrec);
+#ifdef _ONEWIN   
+ SDL_Rect wrec;
+ wrec.x = Win->GetX ();
+ wrec.y = Win->GetY ();
+ wrec.w = Win->GetWidth ();
+ wrec.h = Win->GetHeight () + 20;
+ SDL_RenderSetClipRect (Win->GetRenderer (), &wrec);
 #endif  
  if (DoCalcRXY)
   {
@@ -132,7 +132,7 @@ CPaint::DrawControl (CControl * control)
  //FIXME
  SDL_SetRenderTarget (Win->GetRenderer (), NULL);
  //SDL_RenderPresent (Win->GetRenderer ());
- Win->SetRedraw(); 
+ Win->SetRedraw ();
 };
 
 void
@@ -168,21 +168,21 @@ CPaint::Line (int x1, int y1, int x2, int y2)
    float a, m;
 
    m = sqrt (((x2 - x1)*(x2 - x1)+((y2 - y1)*(y2 - y1))));
-   a = 180/M_PI*atan2 ((y2 - y1), (x2 - x1));
+   a = 180 / M_PI * atan2 ((y2 - y1), (x2 - x1));
 
-   
+
    SDL_Texture* line = SDL_CreateTexture (Win->GetRenderer (), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, m, LineWidth);
    SDL_SetRenderTarget (Win->GetRenderer (), line);
    SDL_RenderClear (Win->GetRenderer ());
    SDL_SetRenderTarget (Win->GetRenderer (), DrawIn);
-   
-   DestR.w = m+LineWidth/2;
-   DestR.h = LineWidth;
-   DestR.x = RX + x1 -LineWidth/2;
-   DestR.y = RY + y1 -LineWidth/2;
 
-   center.x = LineWidth/2;
-   center.y = LineWidth/2;
+   DestR.w = m + LineWidth / 2;
+   DestR.h = LineWidth;
+   DestR.x = RX + x1 - LineWidth / 2;
+   DestR.y = RY + y1 - LineWidth / 2;
+
+   center.x = LineWidth / 2;
+   center.y = LineWidth / 2;
 
    SDL_RenderCopyEx (Win->GetRenderer (), line, NULL, &DestR, a, &center, SDL_FLIP_NONE);
    SDL_DestroyTexture (line);
@@ -203,7 +203,7 @@ CPaint::Lines (SDL_Point * points, int npoints)
 void
 CPaint::Rectangle (int x, int y, int w, int h)
 {
- SDL_Rect fillRect = {(int)((RX + x) * Scalex), (int)((RY + y) * Scaley),(int)( w*Scalex),(int) (h * Scaley)};
+ SDL_Rect fillRect = {(int) ((RX + x) * Scalex), (int) ((RY + y) * Scaley), (int) (w * Scalex), (int) (h * Scaley)};
  SDL_RenderFillRect (Win->GetRenderer (), &fillRect);
 }
 
@@ -212,7 +212,7 @@ CPaint::Frame (int x, int y, int w, int h, uint wb)
 {
  for (uint c = 0; c < wb; c++)
   {
-   SDL_Rect fillRect = {(int)((RX + x + c) * Scalex),(int)((RY + y + c) * Scaley),(int)((w - (c * 2)) * Scalex),(int)((h - (c * 2)) * Scaley)};
+   SDL_Rect fillRect = {(int) ((RX + x + c) * Scalex), (int) ((RY + y + c) * Scaley), (int) ((w - (c * 2)) * Scalex), (int) ((h - (c * 2)) * Scaley)};
    SDL_RenderDrawRect (Win->GetRenderer (), &fillRect);
   }
 };
@@ -316,8 +316,8 @@ CPaint::PutPixmap (int x, int y, int w, int h, SDL_Texture * pixmap)
  DestR.w = w;
  DestR.h = h;
  SDL_RenderCopy (Win->GetRenderer (), pixmap, NULL, &DestR);
- if(SDL_GetRenderTarget(Win->GetRenderer ()))
-   SDL_RenderPresent (Win->GetRenderer ());
+ if (SDL_GetRenderTarget (Win->GetRenderer ()))
+  SDL_RenderPresent (Win->GetRenderer ());
 };
 
 void
@@ -348,16 +348,16 @@ CPaint::Init (float sx, float sy)
 void
 CPaint::End (void)
 {
- if(SDL_GetRenderTarget(Win->GetRenderer ()))
-   SDL_RenderPresent (Win->GetRenderer ());
-/*
- SDL_SetRenderTarget (Win->GetRenderer (), NULL);
- if (Owner)
-  Owner->Draw ();
- */
+ if (SDL_GetRenderTarget (Win->GetRenderer ()))
+  SDL_RenderPresent (Win->GetRenderer ());
+ /*
+  SDL_SetRenderTarget (Win->GetRenderer (), NULL);
+  if (Owner)
+   Owner->Draw ();
+  */
  SDL_SetRenderTarget (Win->GetRenderer (), DrawOut);
 
- Win->SetRedraw (); 
+ Win->SetRedraw ();
 }
 
 void
@@ -445,8 +445,8 @@ CPaint::PutBitmap (lxBitmap* bitmap, int x, int y)
  DestR.y = RY + y;
  SDL_QueryTexture (bitmap->GetPixmap (), NULL, NULL, &DestR.w, &DestR.h);
  SDL_RenderCopy (Win->GetRenderer (), bitmap->GetPixmap (), NULL, &DestR);
- if(SDL_GetRenderTarget(Win->GetRenderer ()))
-   SDL_RenderPresent (Win->GetRenderer ());
+ if (SDL_GetRenderTarget (Win->GetRenderer ()))
+  SDL_RenderPresent (Win->GetRenderer ());
 }
 
 void
@@ -547,7 +547,7 @@ CPaint::Circle (bool filled, int cx, int cy, int radius)
 void
 CPaint::Polygon (bool filled, lxPoint * points, int npoints)
 {
-// printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
+ // printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
 
  for (int c = 0; c < npoints; c++)
   {
@@ -556,93 +556,98 @@ CPaint::Polygon (bool filled, lxPoint * points, int npoints)
   }
 
  SDL_RenderDrawLines (Win->GetRenderer (), points, npoints);
-
-
- if(filled)
- {
-    // Sort the points so that y0 <= y1 <= y2
-    if (points[1].y < points[0].y) 
+ SDL_RenderDrawLine(Win->GetRenderer (),points[0].x,points[0].y,points[npoints-1].x,points[npoints-1].y);
+ 
+ if (filled)
+  {
+   // Sort the points so that y0 <= y1 <= y2
+   if (points[1].y < points[0].y)
     {
-       lxPoint temp= points[1];	    
-       points[1]=points[0];
-       points[0]=temp;        
-    };
-    if (points[2].y < points[0].y) 
-    {
-       lxPoint temp= points[2];	    
-       points[2]=points[0];
-       points[0]=temp;        
-    };
-    if (points[2].y < points[1].y)
-    {
-       lxPoint temp= points[2];	    
-       points[2]=points[1];
-       points[1]=temp;        
-    };
-
-    // Compute the x coordinates of the triangle edges
-    //x01 = Interpolate(point[0].y, point[0].x, point[1].y, point[1].x);
-    int yX01= points[1].y-points[0].y; 
-    int xX01= points[1].x-points[0].x;
-    float dx=xX01/((float)yX01); 
-    int X01[100]; //fixme 
-    for(int i=0; i < yX01 ;i++)
-    {
-      X01[i]=points[0].x+dx*i;
+     lxPoint temp = points[1];
+     points[1] = points[0];
+     points[0] = temp;
     }
-    //x12 = Interpolate(point[1].y, point[1].x, point[2].y, point[2].x);
-    int yX12= points[2].y-points[1].y; 
-    int xX12= points[2].x-points[1].x;
-    dx=xX12/((float)yX12); 
-    int X12[100]; //fixme 
-    for(int i=0; i < yX12 ;i++)
+   if (points[2].y < points[0].y)
     {
-      X12[i]=points[1].x+dx*i;
+     lxPoint temp = points[2];
+     points[2] = points[0];
+     points[0] = temp;
     }
-    //x02 = Interpolate(point[0].y, point[0].x, point[2].y, point[2].x);
-    int yX02= points[2].y-points[0].y; 
-    int xX02= points[2].x-points[0].x;
-    dx=xX02/((float)yX02); 
-    int X02[100]; //fixme 
-    for(int i=0; i < yX02 ;i++)
+   if (points[2].y < points[1].y)
     {
-      X02[i]=points[0].x+dx*i;
-    }
-  
-    // Concatenate the short sides
-    //remove_last(x01)
-    //yX01--;
-    //x012 = x01 + x12
-    int yX012=yX01+yX12;
-    int X012[200];//fixme
-    for(int i=0; i < yX01; i++)
-      X012[i]=X01[i];
-    for(int i=0; i < yX12; i++)
-      X012[i+yX01]=X12[i];
-
-    // Determine which is left and which is right
-    //m = x012.length / 2
-    int m = yX012/2;
-
-    int * x_left;
-    int * x_right;
-
-    if (X02[m] < X012[m]) {
-        x_left = X02;
-        x_right = X012;
-    } else {
-        x_left = X012;
-        x_right = X02;
+     lxPoint temp = points[2];
+     points[2] = points[1];
+     points[1] = temp;
     }
 
-    // Draw the horizontal segments
-    for( int y = points[0].y; y < points[2].y; y++) {
-        for(int x = x_left[y - points[0].y]; x < x_right[y - points[0].y]; x++) {
-            SDL_RenderDrawPoint (Win->GetRenderer (), x, y);
-        }
+   // Compute the x coordinates of the triangle edges
+   //x01 = Interpolate(point[0].y, point[0].x, point[1].y, point[1].x);
+   int yX01 = points[1].y - points[0].y;
+   int xX01 = points[1].x - points[0].x;
+   float dx = xX01 / ((float) yX01);
+   int X01[100]; //fixme 
+   for (int i = 0; i < yX01; i++)
+    {
+     X01[i] = points[0].x + (dx*i+0.5);
+    }
+   //x12 = Interpolate(point[1].y, point[1].x, point[2].y, point[2].x);
+   int yX12 = points[2].y - points[1].y;
+   int xX12 = points[2].x - points[1].x;
+   dx = xX12 / ((float) yX12);
+   int X12[100]; //fixme 
+   for (int i = 0; i < yX12; i++)
+    {
+     X12[i] = points[1].x + (dx*i+0.5);
+    }
+   //x02 = Interpolate(point[0].y, point[0].x, point[2].y, point[2].x);
+   int yX02 = points[2].y - points[0].y;
+   int xX02 = points[2].x - points[0].x;
+   dx = xX02 / ((float) yX02);
+   int X02[100]; //fixme 
+   for (int i = 0; i < yX02; i++)
+    {
+     X02[i] = points[0].x + (dx*i+0.5);
     }
 
- }
+   // Concatenate the short sides
+   //remove_last(x01)
+   //yX01--;
+   //x012 = x01 + x12
+   int yX012 = yX01 + yX12;
+   int X012[200]; //fixme
+   for (int i = 0; i < yX01; i++)
+    X012[i] = X01[i];
+   for (int i = 0; i < yX12; i++)
+    X012[i + yX01] = X12[i];
+
+   // Determine which is left and which is right
+   //m = x012.length / 2
+   int m = yX012 / 2;
+
+   int * x_left;
+   int * x_right;
+
+   if (X02[m] < X012[m])
+    {
+     x_left = X02;
+     x_right = X012;
+    }
+   else
+    {
+     x_left = X012;
+     x_right = X02;
+    }
+
+   // Draw the horizontal segments
+   for (int y = points[0].y; y < points[2].y; y++)
+    {
+     for (int x = x_left[y - points[0].y]; x < x_right[y - points[0].y]; x++)
+      {
+       SDL_RenderDrawPoint (Win->GetRenderer (), x, y);
+      }
+    }
+
+  }
 
 
 

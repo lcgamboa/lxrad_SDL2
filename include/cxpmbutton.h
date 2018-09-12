@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gambôa Lopes
+   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -41,7 +41,6 @@ public:
   CStringList GetContext (void);
   void SetContext (CStringList context);
   //propiedades
-  void SetPixmapData (char** data);
   void SetPixmapFileName (String filename);
   String GetPixmapFileName (void);
   void SetWidth (uint width);

@@ -280,7 +280,7 @@ CApplication::ProcessEvents (void)
 #ifdef _ONEWIN
  ARootWindow->Draw();
 #else
- //Redraw window
+ //Redraw windows
  for (int e = 0; e <= AWindowCount; e++)
   {
     AWindowList[e]->Draw();
@@ -417,6 +417,9 @@ CApplication::ProcessEvents (void)
   }
  else
   {
+#ifndef _ONEWIN   
+   MWindow->Draw ();
+#endif   
    if (((AEvent.type == SDL_WINDOWEVENT) && ((AEvent.window.type == SDL_WINDOWEVENT_ENTER) || (AEvent.window.type == SDL_WINDOWEVENT_EXPOSED)))
        && (AWindowCount >= 0) && (wn != NULL))
     {

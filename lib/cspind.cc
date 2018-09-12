@@ -25,41 +25,6 @@
 
 #include"../include/cspind.h"
 
-//Pixmap____________________________________________________________
-
-static const char *uarrow[] = {
-  "16 10 3 1",
-  " 	c None",
-  ".	c #FFFFFF",
-  "+	c #000000",
-  "                ",
-  "       ++       ",
-  "      ++++      ",
-  "     ++++++     ",
-  "    ++++++++    ",
-  "   ++++++++++   ",
-  "  ++++++++++++  ",
-  "                ",
-  "                ",
-  "                "
-};
-
-static const char *darrow[] = {
-  "16 10 3 1",
-  " 	c None",
-  ".	c #FFFFFF",
-  "+	c #000000",
-  "                ",
-  "  ++++++++++++  ",
-  "   ++++++++++   ",
-  "    ++++++++    ",
-  "     ++++++     ",
-  "      ++++      ",
-  "       ++       ",
-  "                ",
-  "                ",
-  "                "
-};
 
 // CSpind_____________________________________________________________
 
@@ -79,11 +44,9 @@ CSpind::CSpind (void)
   edit1.SetFOwner (this);
   edit1.EvKeyboardPress = EVKEYBOARDPRESS & CSpind::EditKeyPress;
 
-  tbutton1.SetPixmapData ((char **)uarrow);
   tbutton1.SetFOwner (this);
   tbutton1.EvMouseButtonPress = EVMOUSEBUTTONPRESS & CSpind::TButtonPress1;
   
-  tbutton2.SetPixmapData ((char **)darrow);
   tbutton2.SetFOwner (this);
   tbutton2.EvMouseButtonPress = EVMOUSEBUTTONPRESS & CSpind::TButtonPress2;
 
@@ -136,6 +99,36 @@ CSpind::Draw ()
 {
   if ((!Visible)||(Paint == NULL))
     return;
+  
+  SDL_Point points[3];
+  points[0].x= 3;
+  points[0].y= tbutton1.GetHeight ()-6;;
+  points[1].x= tbutton1.GetWidth () -6;
+  points[1].y=points[0].y;
+  points[2].x=((tbutton1.GetWidth ()-3)/2.0) ;
+  points[2].y=3;
+  
+  tbutton1.Xpm->Canvas.Init();
+  tbutton1.Xpm->Canvas.SetFgColor(Color);
+  tbutton1.Xpm->Canvas.Rectangle (1,0,0,tbutton1.GetWidth (),tbutton1.GetHeight ());
+  tbutton1.Xpm->Canvas.SetColor(0,0,0);
+  tbutton1.Xpm->Canvas.Polygon (1,points,3);
+  tbutton1.Xpm->Canvas.End ();
+  
+  points[0].x= 3;
+  points[0].y= 3;
+  points[1].x= tbutton2.GetWidth () -6;
+  points[1].y=3;
+  points[2].x=((tbutton2.GetWidth ()-3)/2.0) ;
+  points[2].y=tbutton2.GetHeight ()-6;
+  
+  tbutton2.Xpm->Canvas.Init();
+  tbutton2.Xpm->Canvas.SetFgColor(Color);
+  tbutton2.Xpm->Canvas.Rectangle (1,0,0,tbutton2.GetWidth (),tbutton2.GetHeight ());
+  tbutton2.Xpm->Canvas.SetColor(0,0,0);
+  tbutton2.Xpm->Canvas.Polygon (1,points,3);
+  tbutton2.Xpm->Canvas.End ();
+  
   Paint->InitDraw (this);
   Paint->Pen.SetColor (Color);
   Paint->Rectangle ( 0, 0, Width, Height);
