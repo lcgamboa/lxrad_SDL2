@@ -135,9 +135,11 @@ CWindow::WCreate (CWindow* window)
  Paint = &WPaint;
 
  Create (this);
- Draw ();
+ 
 
  if (Visible) Show ();
+ 
+ Draw ();
 
  if (!OverWin)
   SDL_SetWindowPosition (WWindow, X, Y);
@@ -316,19 +318,20 @@ CWindow::WDestroy (void)
 void
 CWindow::Show (void)
 {
- SetVisible (true);
+ SetVisible (true,false);
  if (Win != NULL)
   {
-   Draw ();
    if (!OverWin)
     {
      SDL_ShowWindow (WWindow);
      SDL_RaiseWindow (WWindow);
+     SDL_RenderPresent (Renderer);
     }
    else
     {
      on_show ();
     }
+   //Draw ();
    Update ();
   };
 };

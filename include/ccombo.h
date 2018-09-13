@@ -37,7 +37,7 @@
 
 class CCombo:public CControl
 {
-protected:
+protected:  
 public:
   CEdit edit1;
   CToolButton tbutton1;

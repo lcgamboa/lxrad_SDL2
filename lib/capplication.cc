@@ -281,10 +281,7 @@ CApplication::ProcessEvents (void)
  ARootWindow->Draw();
 #else
  //Redraw windows
- for (int e = 0; e <= AWindowCount; e++)
-  {
-    AWindowList[e]->Draw();
-  }
+ Draw();
 #endif
  
 

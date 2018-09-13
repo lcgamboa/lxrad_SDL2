@@ -348,8 +348,8 @@ CPaint::Init (float sx, float sy)
 void
 CPaint::End (void)
 {
- if (SDL_GetRenderTarget (Win->GetRenderer ()))
-  SDL_RenderPresent (Win->GetRenderer ());
+// if (SDL_GetRenderTarget (Win->GetRenderer ()))
+//  SDL_RenderPresent (Win->GetRenderer ());
  /*
   SDL_SetRenderTarget (Win->GetRenderer (), NULL);
   if (Owner)
@@ -441,9 +441,11 @@ CPaint::PutBitmap (lxBitmap* bitmap, int x, int y)
 {
  SDL_Rect DestR;
 
- DestR.x = RX + x;
- DestR.y = RY + y;
+ DestR.x = (RX + x)*Scalex;
+ DestR.y = (RY + y)*Scaley;
  SDL_QueryTexture (bitmap->GetPixmap (), NULL, NULL, &DestR.w, &DestR.h);
+ DestR.w*=Scalex;
+ DestR.h*=Scaley;
  SDL_RenderCopy (Win->GetRenderer (), bitmap->GetPixmap (), NULL, &DestR);
  if (SDL_GetRenderTarget (Win->GetRenderer ()))
   SDL_RenderPresent (Win->GetRenderer ());
@@ -486,6 +488,10 @@ CPaint::ChangeScale (float sx, float sy)
 void
 CPaint::Circle (bool filled, int cx, int cy, int radius)
 {
+ cx=(RX + cx) * Scalex;
+ cy=(RY + cy) * Scaley;
+ radius=radius * Scalex;
+ 
  //This function is based in the code of: 
  //https://gist.github.com/derofim/912cfc9161269336f722
  if (filled)

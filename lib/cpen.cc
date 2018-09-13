@@ -48,8 +48,8 @@ void
 CPen::SetBGColor (SDL_Color color)
 {
   BGColor = color;
- // if((Owner)&&(Owner->GetWin()))
- //   SDL_SetRenderDrawColor(Owner->GetWin()->GetRenderer(),color.r,color.g,color.b,0xFF);
+  if((Owner)&&(Owner->GetWin()))
+    SDL_SetRenderDrawColor(Owner->GetWin()->GetRenderer(),color.r,color.g,color.b,0xFF);
 };
 
 SDL_Color CPen::GetColor ()
