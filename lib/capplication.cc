@@ -119,9 +119,12 @@ CApplication::ACreateWindow (CWindow * AWindow, CWindow *window)
 #ifdef _ONEWIN
  if (AWindowCount == -1)
   {
+   SDL_Rect rect; 
+   SDL_GetDisplayUsableBounds(0,&rect);
+
    ARootWindow = new CWindow;
-   ARootWindow->SetWidth (1024);
-   ARootWindow->SetHeight (768);
+   ARootWindow->SetWidth (rect.w);
+   ARootWindow->SetHeight (rect.h);
    ARootWindow->WCreate ();
   }
  AWindow->SetOverWin (true);

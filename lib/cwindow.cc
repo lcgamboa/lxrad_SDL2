@@ -108,7 +108,6 @@ CWindow::WCreate (CWindow* window)
      printf ("Window could not be created! SDL Error: %s\n", SDL_GetError ());
      exit (-1);
     }
-   //FIXME
    Renderer = SDL_CreateRenderer( WWindow, -1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_TARGETTEXTURE ); 
    if (Renderer == NULL)
     {
@@ -121,6 +120,9 @@ CWindow::WCreate (CWindow* window)
      printf ("Renderer could not be created! SDL Error: %s\n", SDL_GetError ());
      exit (-1);
     }
+   
+   //ZOOM
+   //SDL_RenderSetLogicalSize(Renderer,Width*2,Height*2);
 
    //Initialize renderer color 
    SDL_SetRenderDrawColor (Renderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -1043,7 +1045,7 @@ CWindow::LoadXMLContextAndCreateChilds (String filename, CControl* ctrl)
                   list.AddLine (line);
                   fgetline (file2, line);
                 }
-              while (line[0] == ' ');
+              while (line.c_str()[0] == ' ');
               ctrl->SetContext (list);
 
               while (line.compare (lxT ("</") + ctrl->GetName () + lxT (">")) != 0)
