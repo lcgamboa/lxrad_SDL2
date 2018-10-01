@@ -55,6 +55,8 @@ CApplication::CApplication (void)
  HintTime = time (NULL);
  HintX = 0;
  HintY = 0;
+ MWindow = NULL;
+ LMWindow = NULL;    
 #ifdef HAVE_LIBPTHREAD
  pthread_mutex_init (&Display_Lock, NULL);
  pthread_mutex_lock (&Display_Lock);
@@ -119,8 +121,8 @@ CApplication::ACreateWindow (CWindow * AWindow, CWindow *window)
 #ifdef _ONEWIN
  if (AWindowCount == -1)
   {
-   SDL_Rect rect; 
-   SDL_GetDisplayUsableBounds(0,&rect);
+   SDL_Rect rect;
+   SDL_GetDisplayUsableBounds (0, &rect);
 
    ARootWindow = new CWindow;
    ARootWindow->SetWidth (rect.w);
@@ -198,7 +200,7 @@ CApplication::ADestroyWindow (CWindow * AWindow)
      AWindowCount = -1;
      eprint ("...Application Finished\n");
 #ifdef __EMSCRIPTEN__
-  emscripten_cancel_main_loop ();
+     emscripten_cancel_main_loop ();
 #endif  
 
 #ifdef _DEBUG
@@ -279,43 +281,43 @@ CApplication::ProcessEvents (void)
  int ec; //events in queue
  struct timeval tv;
  long int elapsed;
- 
+
 #ifdef _ONEWIN
- ARootWindow->Draw();
+ ARootWindow->Draw ();
 #else
  //Redraw windows
- Draw();
+ Draw ();
 #endif
- 
+
 
 #ifndef HAVE_LIBPTHREAD
-   if (!MWindow)
+ if (!MWindow)
+  {
+   gettimeofday (&tv, NULL);
+   //printf("---------------------\n");
+   for (int t = 0; t <= TimerCount; t++)
     {
-     gettimeofday (&tv, NULL);
-     //printf("---------------------\n");
-     for (int t = 0; t <= TimerCount; t++)
-      {
-       elapsed = (((tv.tv_usec - TimerList[t]->tv.tv_usec) / 1000L) + 1000L * (tv.tv_sec - TimerList[t]->tv.tv_sec));
+     elapsed = (((tv.tv_usec - TimerList[t]->tv.tv_usec) / 1000L) + 1000L * (tv.tv_sec - TimerList[t]->tv.tv_sec));
 
-       //printf("Elapsed %i = %lu de %lu\n",t,elapsed,TimerList[t]->GetTime());
-       if (elapsed >= TimerList[t]->GetTime ())
-        {
-         //printf("===>>Timer %i reseted\n",t);	       
-         TimerList[t]->on_time ();
-         TimerList[t]->tv = tv;
-         TimerList[t]->SetOverTime(elapsed-TimerList[t]->GetTime ());
-        }
-      }
-
-     for (int t = 0; t <= ThreadCount; t++)
+     //printf("Elapsed %i = %lu de %lu\n",t,elapsed,TimerList[t]->GetTime());
+     if (elapsed >= TimerList[t]->GetTime ())
       {
-       ThreadList[t]->on_run ();
+       //printf("===>>Timer %i reseted\n",t);	       
+       TimerList[t]->on_time ();
+       TimerList[t]->tv = tv;
+       TimerList[t]->SetOverTime (elapsed - TimerList[t]->GetTime ());
       }
     }
+
+   for (int t = 0; t <= ThreadCount; t++)
+    {
+     ThreadList[t]->on_run ();
+    }
+  }
 #else 
-   usleep (50);
+ usleep (50);
 #endif
- 
+
  //wait hint loop	    
  ec = SDL_PollEvent (&AEvent);
  if (ec == 0)
@@ -333,28 +335,29 @@ CApplication::ProcessEvents (void)
 
    return false;
   }
- 
+
  //compress mouse move events
- if(AEvent.type == SDL_MOUSEMOTION)
- { 
+ if (AEvent.type == SDL_MOUSEMOTION)
+  {
    SDL_Event LEvent;
    //int i=0;
    do
-   {
-     LEvent=AEvent;
+    {
+     LEvent = AEvent;
      ec = SDL_PollEvent (&AEvent);
      //i++;
-   }while(ec && (AEvent.type == SDL_MOUSEMOTION));
-   
+    }
+   while (ec && (AEvent.type == SDL_MOUSEMOTION));
+
    //printf("compressed %i\n",i);
-   
-   if(ec)//event != SDL_MOUSEMOTION
-   {
-     SDL_PushEvent(&AEvent);
-   }
-   AEvent=LEvent;
- }
- 
+
+   if (ec)//event != SDL_MOUSEMOTION
+    {
+     SDL_PushEvent (&AEvent);
+    }
+   AEvent = LEvent;
+  }
+
  HintControl = NULL;
 
 
@@ -366,8 +369,8 @@ CApplication::ProcessEvents (void)
 #ifdef _ONEWIN   
  for (int e = 0; e <= AWindowCount; e++)
   {
-   wn = NULL; 
-   
+   wn = NULL;
+
    if (AWindowList[e]->GetVisible ())
     {
      switch (AEvent.type)
@@ -379,11 +382,11 @@ CApplication::ProcessEvents (void)
          wn = AWindowList[e];
         }
        break;
-       default:
-         wn = AWindowList[e]; 
+      default:
+       wn = AWindowList[e];
       }
     }
- 
+
 #else
  wn = NULL;
  for (int e = 0; e <= AWindowCount; e++)
@@ -396,64 +399,64 @@ CApplication::ProcessEvents (void)
   }
 #endif
 
- if (!MWindow)
-  { 
-   if (wn)
-    wn->WEvents (AEvent);
-
-   if ((AEvent.type == SDL_WINDOWEVENT)&&(AEvent.window.type == SDL_WINDOWEVENT_CLOSE))
-    for (int p = 0; p <= AWindowCount; p++)
-     {
-      if (AEvent.window.windowID == SDL_GetWindowID (AWindowList[p]->GetWWindow ()))
-       {
-        ADestroyWindow (AWindowList[p]);
-        wn = NULL;
-        //Update ();
-        if (Exit)
-         return true;
-        break;
-       }
-     }
-  }
- else
-  {
-#ifndef _ONEWIN   
-   MWindow->Draw ();
-#endif   
-   if (((AEvent.type == SDL_WINDOWEVENT) && ((AEvent.window.type == SDL_WINDOWEVENT_ENTER) || (AEvent.window.type == SDL_WINDOWEVENT_EXPOSED)))
-       && (AWindowCount >= 0) && (wn != NULL))
+   if (!MWindow)
     {
-     wn->WEvents (AEvent);
+     if (wn)
+      wn->WEvents (AEvent);
+
+     if ((AEvent.type == SDL_WINDOWEVENT)&&(AEvent.window.type == SDL_WINDOWEVENT_CLOSE))
+      for (int p = 0; p <= AWindowCount; p++)
+       {
+        if (AEvent.window.windowID == SDL_GetWindowID (AWindowList[p]->GetWWindow ()))
+         {
+          ADestroyWindow (AWindowList[p]);
+          wn = NULL;
+          //Update ();
+          if (Exit)
+           return true;
+          break;
+         }
+       }
     }
    else
     {
-     if (AEvent.window.windowID == SDL_GetWindowID (MWindow->GetWWindow ()))
+#ifndef _ONEWIN   
+     MWindow->Draw ();
+#endif   
+     if (((AEvent.type == SDL_WINDOWEVENT) && ((AEvent.window.type == SDL_WINDOWEVENT_ENTER) || (AEvent.window.type == SDL_WINDOWEVENT_EXPOSED)))
+         && (AWindowCount >= 0) && (wn != NULL))
       {
-       if ((AEvent.type == SDL_WINDOWEVENT)&&(AEvent.window.type == SDL_WINDOWEVENT_CLOSE))
-        {
-         return false;
-        }
-       else
-        {
-         MWindow->WEvents (AEvent);
-         return true;
-        }
+       wn->WEvents (AEvent);
       }
      else
       {
-       if (AEvent.type == SDL_MOUSEMOTION)
+       if (AEvent.window.windowID == SDL_GetWindowID (MWindow->GetWWindow ()))
         {
-         MWindow->WEvents (AEvent);
-         return true;
+         if ((AEvent.type == SDL_WINDOWEVENT)&&(AEvent.window.type == SDL_WINDOWEVENT_CLOSE))
+          {
+           return false;
+          }
+         else
+          {
+           MWindow->WEvents (AEvent);
+           return true;
+          }
         }
-      }
+       else
+        {
+         if (AEvent.type == SDL_MOUSEMOTION)
+          {
+           MWindow->WEvents (AEvent);
+           return true;
+          }
+        }
 
+      }
     }
-  }
 #ifdef _ONEWIN
- }
+  }
 #endif
-return false;
+ return false;
 }
 
 bool
@@ -551,7 +554,16 @@ CApplication::SetHintControl (CControl* hcontrol, int x, int y)
 void
 CApplication::SetModalWindow (CWindow * mwindow)
 {
- MWindow = mwindow;
+ if (mwindow)
+  {
+   LMWindow = MWindow;
+   MWindow = mwindow;
+  }
+ else
+  {
+    MWindow = LMWindow;
+    LMWindow=NULL;
+  }
 }
 
 CWindow *

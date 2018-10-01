@@ -74,25 +74,25 @@ using namespace std;
 #define EVMAX 100
 #define DOUBLECLICKTIME 400
 
-#define EVMOUSEMOVE              (void(CControl::*)(CControl*,uint,uint,uint,uint))
-#define EVMOUSEBUTTONPRESS       (void(CControl::*)(CControl*,uint,uint,uint,uint))
-#define EVMOUSEBUTTONRELEASE     (void(CControl::*)(CControl*,uint,uint,uint,uint))
-#define EVMOUSEBUTTONCLICK       (void(CControl::*)(CControl*,uint,uint,uint,uint))
-#define EVMOUSEBUTTONDOUBLECLICK (void(CControl::*)(CControl*,uint,uint,uint,uint))
-#define EVKEYBOARDPRESS          (void(CControl::*)(CControl*,uint,uint,uint))
-#define EVKEYBOARDRELEASE        (void(CControl::*)(CControl*,uint,uint,uint))
-#define EVKEYBOARDKEY            (void(CControl::*)(CControl*,uint,uint,uint,uint))
+#define EVMOUSEMOVE              (void(CControl::*)(CControl*,const uint,const uint,const uint,const uint))
+#define EVMOUSEBUTTONPRESS       (void(CControl::*)(CControl*,const uint,const uint,const uint,const uint))
+#define EVMOUSEBUTTONRELEASE     (void(CControl::*)(CControl*,const uint,const uint,const uint,const uint))
+#define EVMOUSEBUTTONCLICK       (void(CControl::*)(CControl*,const uint,const uint,const uint,const uint))
+#define EVMOUSEBUTTONDOUBLECLICK (void(CControl::*)(CControl*,const uint,const uint,const uint,const uint))
+#define EVKEYBOARDPRESS          (void(CControl::*)(CControl*,const uint,const uint,const uint))
+#define EVKEYBOARDRELEASE        (void(CControl::*)(CControl*,const uint,const uint,const uint))
 #define EVPOINTERIN              (void(CControl::*)(CControl*))
 #define EVPOINTEROUT             (void(CControl::*)(CControl*))
 #define EVONDRAW                 (void(CControl::*)(CControl*))
-#define EVCFOCUSIN              (void(CControl::*)(CControl*))
-#define EVCFOCUSOUT             (void(CControl::*)(CControl*))
+#define EVONFOCUSIN             (void(CControl::*)(CControl*))
+#define EVONFOCUSOUT             (void(CControl::*)(CControl*))
 #define EVMENUACTIVE            (void(CControl::*)(CControl*))
 #define EVONTIME                (void(CControl::*)(CControl*))
 #define EVONTOGGLEBUTTON        (void(CControl::*)(CControl*))
 #define EVTHREADRUN     	(void(CControl::*)(CControl*))
 #define EVTHREADEND	        (void(CControl::*)(CControl*))
 #define EVONCHANGESPINDOUBLE    (void(CControl::*)(CControl*))
+#define EVONCLOSE        	(void(CControl::*)(const int))
 
 typedef unsigned int uint;
 

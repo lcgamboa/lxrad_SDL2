@@ -158,7 +158,7 @@ public:
   void (CControl::*PointerIn) (CControl * control);
   void (CControl::*PointerOut) (CControl * control);
   void (CControl::*EvOnDraw) (CControl * control);
-  void (CControl::*CFocusIn) (CControl * control);
-  void (CControl::*CFocusOut) (CControl * control);
+  void (CControl::*EvOnFocusIn) (CControl * control);
+  void (CControl::*EvOnFocusOut) (CControl * control);
 };
 #endif

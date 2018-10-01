@@ -54,6 +54,8 @@ CFileDialog::CFileDialog (void)
   #ifdef _ONEWIN
   OverWin=true;
   #endif
+  
+  EvOnClose = NULL;
 
   //button1
   button1.SetText ("OK");
@@ -129,6 +131,11 @@ CFileDialog::ButtonRelease1 (CControl * control, uint button, uint x, uint y,
 {
   HideExclusive ();
   Result = true;
+  SetFileName (edit1.GetText ());
+  WDestroy ();
+  Owner->Draw ();
+  if ((FOwner) && (EvOnClose))
+    (FOwner->*EvOnClose) (Result);
 };
 
 void
@@ -137,6 +144,11 @@ CFileDialog::ButtonRelease2 (CControl * control, uint button, uint x, uint y,
 {
   HideExclusive ();
   Result = false;
+  SetFileName (edit1.GetText ());
+  WDestroy ();
+  Owner->Draw ();
+  if ((FOwner) && (EvOnClose))
+    (FOwner->*EvOnClose) (Result);
 };
 
 void
@@ -201,7 +213,7 @@ CFileDialog::SetDir (String dir)
   filelist1.SetDir (dir);
 };
 
-bool
+void
 CFileDialog::Run (void)
 {
   SetTitle (GetName ());
@@ -215,15 +227,12 @@ CFileDialog::Run (void)
   if(!WWindow)
     WCreate(Win);
   ShowExclusive ();
-  while(CanExitExclusive)
-  {
-    Application->ProcessEvents ();
-  }
-  SetFileName (edit1.GetText ());
-  WDestroy ();
-  Owner->Draw ();
-  return Result;
-};
+
+
+}
+
+
+
 
 
 CStringList 
@@ -262,3 +271,11 @@ CFileDialog::SetType(int type)
   Type=type;
   //TODO
 }
+
+
+int
+CFileDialog::GetType(void)
+{
+  return Type;
+}
+

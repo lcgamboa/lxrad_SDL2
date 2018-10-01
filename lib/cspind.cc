@@ -40,7 +40,7 @@ CSpind::CSpind (void)
   SetClass ("CSpind");
   edit1.SetText ("");
   edit1.SetFont (FontName);
-  edit1.SetReadOnly (true);
+  edit1.SetReadOnly (false);
   edit1.SetFOwner (this);
   edit1.EvKeyboardPress = EVKEYBOARDPRESS & CSpind::EditKeyPress;
 

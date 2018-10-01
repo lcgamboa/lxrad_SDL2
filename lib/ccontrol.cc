@@ -76,8 +76,8 @@ CControl::CControl (void)
  PointerIn = NULL;
  PointerOut = NULL;
  EvOnDraw = NULL;
- CFocusIn = NULL;
- CFocusOut = NULL;
+ EvOnFocusIn = NULL;
+ EvOnFocusOut = NULL;
 
  CFont = NULL;
  ColorName = "";
@@ -1033,7 +1033,7 @@ CControl::operator new (size_t sz){
 void *
 CControl::operator new[] (size_t sz)
  {
-  printf ("operator new[]: %ld Bytes\n", sz);
+  //printf ("operator new[]: %ld Bytes\n", sz);
   return::new char[sz];
  };
 
@@ -1144,16 +1144,16 @@ void
 CControl::focus_in (void)
 {
  Update ();
- if ((FOwner) && (CFocusIn))
-  (FOwner->*CFocusIn) (this);
+ if ((FOwner) && (EvOnFocusIn))
+  (FOwner->*EvOnFocusIn) (this);
 };
 
 void
 CControl::focus_out (void)
 {
  Update ();
- if ((FOwner) && (CFocusOut))
-  (FOwner->*CFocusOut) (this);
+ if ((FOwner) && (EvOnFocusOut))
+  (FOwner->*EvOnFocusOut) (this);
 };
 
 void

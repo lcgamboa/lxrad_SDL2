@@ -34,21 +34,40 @@
 
 #include"ccontrol.h"
 #include"cwindow.h"
+#include"cbutton.h"
+#include"cedit.h"
+#include"cscroll.h"
 
 /** \brief Color Dialog Control.
  *
  * Generic Color Dialog Control Class.
  */
 
-class CColorDialog:public CControl
+class CColorDialog:public CWindow
 {
 private:
   lxColor Color;
 public:
+  /*#Controls*/
+  CScroll scroll1;
+  CScroll scroll2;
+  CScroll scroll3;
+  CLabel label1;
+  CLabel label2;
+  CLabel label3;
+  CButton button1;
+  CButton button2;
+  CEdit edit1;
+  CEdit edit2;
+  CEdit edit3;
+  /*#Events*/
+  void scroll_EvOnChangePosition(CControl * control);
+  void button_EvMouseButtonRelease(CControl * control, const uint button, const uint x,const  uint y, const uint state);
+  void edit_EvOnFocusOut(CControl * control);
   CColorDialog (void);
    ~CColorDialog (void);
   void Create (CControl * control);
-  bool Run (void);
+  void Run (void);
   //propriedades
   String GetColorName (void);
   void SetColorName (String cname);
@@ -57,6 +76,8 @@ public:
   void SetColor (uint r, uint g, uint b);
   CStringList GetContext (void);
   void SetContext (CStringList context);
+  //events
+  void (CControl::*EvOnClose) (int retId);
 };
 
 #endif

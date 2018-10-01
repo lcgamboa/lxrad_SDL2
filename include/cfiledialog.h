@@ -49,7 +49,7 @@ public:
     CFileDialog (void);
    ~CFileDialog (void);
   void Create(CControl* control);
-  bool Run (void);
+  void Run (void);
   //propriedades
   String GetFileName (void);
   void SetFileName (String filename);
@@ -60,15 +60,13 @@ public:
   void SetContext (CStringList context);
   void SetFilter(String filter);
   void SetType(int type);
-  //eventos
-  void ButtonRelease1 (CControl * control, uint button, uint x, uint y,
-		       uint state);
-  void ButtonRelease2 (CControl * control, uint button, uint x, uint y,
-		       uint state);
-  void ButtonRelease3 (CControl * control, uint button, uint x, uint y,
-		       uint state);
-  void ButtonRelease4 (CControl * control, uint button, uint x, uint y,
-		       uint state);
+  int GetType(void);
+  //events
+  void (CControl::*EvOnClose) (int retId);
+  void ButtonRelease1 (CControl * control, uint button, uint x, uint y, uint state);
+  void ButtonRelease2 (CControl * control, uint button, uint x, uint y, uint state);
+  void ButtonRelease3 (CControl * control, uint button, uint x, uint y, uint state);
+  void ButtonRelease4 (CControl * control, uint button, uint x, uint y, uint state);
   void ListOnFileSelected (CFileList * flist);
 };
 

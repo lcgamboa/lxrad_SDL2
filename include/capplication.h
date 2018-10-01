@@ -55,6 +55,7 @@ private:
   int Tag;
   String Title;
   CWindow * MWindow; //Modal Window
+  CWindow * LMWindow; //Last Modal Window
 public:
     CApplication (void);
    ~CApplication (void);
