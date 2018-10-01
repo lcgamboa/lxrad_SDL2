@@ -227,12 +227,10 @@ CScroll::SetPosition (int position)
      Position = position;
      Draw ();
      if ((FOwner) && (EvOnChangePosition))
-      (FOwner->*EvOnChangePosition) (this, true);
+      (FOwner->*EvOnChangePosition) (this);
     }
-   else if ((FOwner) && (EvOnChangePosition))
-    (FOwner->*EvOnChangePosition) (this, false);
-  };
-};
+  }
+}
 
 int
 CScroll::GetPosition (void)
@@ -542,8 +540,7 @@ CScroll::mouse_move (SDL_Event event)
 };
 
 void
-CScroll::ScrollButtonPress (CControl * control, uint button, uint x, uint y,
-                            uint status)
+CScroll::ScrollButtonPress (CControl * control, const uint button, const uint x, const uint y, const uint status)
 {
  Update ();
  if ((FOwner) && (EvMouseButtonPress))
@@ -551,8 +548,7 @@ CScroll::ScrollButtonPress (CControl * control, uint button, uint x, uint y,
 };
 
 void
-CScroll::ScrollButtonRelease (CControl * control, uint button, uint x, uint y,
-                              uint status)
+CScroll::ScrollButtonRelease (CControl * control, const uint button, const uint x, const uint y, const uint status)
 {
  CToolButton *bt;
  CScroll *sc;

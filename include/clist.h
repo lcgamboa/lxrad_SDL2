@@ -74,11 +74,9 @@ public:
   void SetShowSelection (bool show);
   bool GetShowSelection (void);
   //eventos
-  void ScrollOnChangePosition (CScroll * scroll, bool status);
-  void ScrollOnButtonPress (CControl * control, uint button, uint x, uint y,
-			    uint state);
-  void ItemButtonPress (CControl * control, uint button, uint x, uint y,
-			uint state);
+  void ScrollOnChangePosition (CControl * scroll);
+  void ScrollOnButtonPress (CControl * control, const uint button, const uint x, const uint y, const uint state);
+  void ItemButtonPress (CControl * control, const uint button, const uint x, const uint y,const uint state);
   void button_press (SDL_Event event);
   void key_press (SDL_Event event);
   void focus_in (void);

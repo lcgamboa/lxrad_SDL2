@@ -3,7 +3,7 @@ include ../Makefile.Conf
 
 datadir=/assets
 
-CFLAGS= -D_ONEWIN  -s WASM=0 -O2 -D_Longlong="long long" -s TOTAL_MEMORY=32MB -s USE_ZLIB=1 -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png","bmp"]' -s USE_SDL_TTF=2 --preload-file assets
+CFLAGS= -D_ONEWIN  -s WASM=0 -Os -D_Longlong="long long" -s TOTAL_MEMORY=32MB -s USE_ZLIB=1 -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png","bmp"]' -s USE_SDL_TTF=2 --preload-file assets
 LIBS =  -lSDL2_ttf  -lSDL2_image  -lSDL2
 
 CC=em++

@@ -34,6 +34,9 @@ CColorDialog::CColorDialog (void)
  SetWidth (320);
  SetHeight (243);
  SetName ("CColorDialog");
+ SetVisible (false,false);
+ CanFocus = false;
+ CanExecuteEvent = false;
 #ifdef _ONEWIN
  OverWin = true;
 #endif

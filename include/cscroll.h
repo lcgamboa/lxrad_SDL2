@@ -34,7 +34,7 @@
 #define  st_vertical 0x08
 #define  st_horizontal 0x04
 
-#define EVONCHANGEPOSITION   (void(CControl::*)(CScroll*,bool))
+#define EVONCHANGEPOSITION   (void(CControl::*)(CControl*))
 
 class CScroll:public CControl
 {
@@ -45,10 +45,8 @@ protected:
   bool Move;
   scrolltype Type;
   CToolButton *button1, *button2;
-  void ScrollButtonPress (CControl * control, uint button, uint x, uint y,
-			  uint state);
-  void ScrollButtonRelease (CControl * control, uint button, uint x, uint y,
-			    uint state);
+  void ScrollButtonPress (CControl * control, const uint button, const uint x, const uint y, const uint state);
+  void ScrollButtonRelease (CControl * control, const uint button, const uint x, const uint y, const uint state);
 public:
     CScroll (void);
    ~CScroll (void);
@@ -73,7 +71,7 @@ public:
   void button_press (SDL_Event event);
   void button_release (SDL_Event event);
   void mouse_move (SDL_Event event);
-  void (CControl::*EvOnChangePosition) (CScroll * scroll, bool status);
+  void (CControl::*EvOnChangePosition) (CControl * scroll);
 };
 
 #endif
