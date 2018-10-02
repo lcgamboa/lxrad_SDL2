@@ -126,8 +126,7 @@ CFileDialog::DestroyChilds (void)
 };
 
 void
-CFileDialog::ButtonRelease1 (CControl * control, uint button, uint x, uint y,
-			     uint state)
+CFileDialog::ButtonRelease1 (CControl * control, uint button, uint x, uint y, uint state)
 {
   HideExclusive ();
   Result = true;
@@ -225,7 +224,7 @@ CFileDialog::Run (void)
     }
    */
   if(!WWindow)
-    WCreate(Win);
+    WCreate();
   ShowExclusive ();
 
 

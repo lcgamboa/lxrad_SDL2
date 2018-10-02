@@ -56,7 +56,7 @@ CApplication::CApplication (void)
  HintX = 0;
  HintY = 0;
  MWindow = NULL;
- LMWindow = NULL;    
+ LMWindow = NULL;
 #ifdef HAVE_LIBPTHREAD
  pthread_mutex_init (&Display_Lock, NULL);
  pthread_mutex_lock (&Display_Lock);
@@ -436,6 +436,13 @@ CApplication::ProcessEvents (void)
           {
            return false;
           }
+         else if ((AEvent.type == SDL_MOUSEBUTTONDOWN) || (AEvent.type == SDL_MOUSEBUTTONUP))
+          {
+           if (MWindow->OwnerEvent (AEvent.button.x, AEvent.button.y))
+            {
+             MWindow->WEvents (AEvent);
+            }
+          }
          else
           {
            MWindow->WEvents (AEvent);
@@ -561,8 +568,8 @@ CApplication::SetModalWindow (CWindow * mwindow)
   }
  else
   {
-    MWindow = LMWindow;
-    LMWindow=NULL;
+   MWindow = LMWindow;
+   LMWindow = NULL;
   }
 }
 

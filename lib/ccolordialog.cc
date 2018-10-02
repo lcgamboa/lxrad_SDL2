@@ -35,8 +35,9 @@ CColorDialog::CColorDialog (void)
  SetHeight (243);
  SetName ("CColorDialog");
  SetVisible (false,false);
- CanFocus = false;
- CanExecuteEvent = false;
+ //CanFocus = false;
+ //SetCanExecuteEvent (false);
+ //SetSaveUnder (true);
 #ifdef _ONEWIN
  OverWin = true;
 #endif
@@ -102,16 +103,16 @@ CColorDialog::CColorDialog (void)
  label1.SetClass (lxT ("CLabel"));
  label1.SetName (lxT ("label1"));
  label1.SetTag (0);
- label1.SetX (22);
+ label1.SetX (20);
  label1.SetY (39);
- label1.SetWidth (60);
+ label1.SetWidth (62);
  label1.SetHeight (20);
  label1.SetHint (lxT (""));
  label1.SetEnable (1);
  label1.SetVisible (1);
  label1.SetColor (lxT ("#000001"));
  label1.SetPopupMenu (NULL);
- label1.SetText (lxT ("Red"));
+ label1.SetText (lxT ("Red "));
  label1.SetAlign (1);
  CreateChild (&label1);
  //label2
@@ -119,16 +120,16 @@ CColorDialog::CColorDialog (void)
  label2.SetClass (lxT ("CLabel"));
  label2.SetName (lxT ("label2"));
  label2.SetTag (0);
- label2.SetX (22);
+ label2.SetX (20);
  label2.SetY (69);
- label2.SetWidth (60);
+ label2.SetWidth (62);
  label2.SetHeight (20);
  label2.SetHint (lxT (""));
  label2.SetEnable (1);
  label2.SetVisible (1);
  label2.SetColor (lxT ("#000001"));
  label2.SetPopupMenu (NULL);
- label2.SetText (lxT ("Green"));
+ label2.SetText (lxT ("Green "));
  label2.SetAlign (1);
  CreateChild (&label2);
  //label3
@@ -136,16 +137,16 @@ CColorDialog::CColorDialog (void)
  label3.SetClass (lxT ("CLabel"));
  label3.SetName (lxT ("label3"));
  label3.SetTag (0);
- label3.SetX (22);
+ label3.SetX (20);
  label3.SetY (101);
- label3.SetWidth (60);
+ label3.SetWidth (62);
  label3.SetHeight (20);
  label3.SetHint (lxT (""));
  label3.SetEnable (1);
  label3.SetVisible (1);
  label3.SetColor (lxT ("#000001"));
  label3.SetPopupMenu (NULL);
- label3.SetText (lxT ("Blue"));
+ label3.SetText (lxT ("Blue "));
  label3.SetAlign (1);
  CreateChild (&label3);
  //button1
@@ -251,7 +252,7 @@ CColorDialog::Run (void)
 {
  SetTitle (GetName ());
  if (!WWindow)
-  WCreate (Win);
+  WCreate ();
  CControl::SetColor (Color);
  
  scroll1.SetPosition (Color.GetR ());

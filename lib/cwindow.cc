@@ -864,7 +864,7 @@ CWindow::SetTitle (const String & title)
 {
  Title = title;
 
- if (WWindow)
+ if ((WWindow)&&(!OverWin))
   {
    SDL_SetWindowTitle (WWindow, Title.c_str ());
   };
