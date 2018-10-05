@@ -334,8 +334,7 @@ CControl::Event (SDL_Event event)
    return;
    break;
   case SDL_KEYDOWN:
-   if(event.key.repeat > 0)return;
-   if (event.key.keysym.sym == SDLK_TAB)
+    if (event.key.keysym.sym == SDLK_TAB)
     {
      //look status        
      Win->CirculateFocus (true);

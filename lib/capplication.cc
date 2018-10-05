@@ -336,20 +336,17 @@ CApplication::ProcessEvents (void)
    return false;
   }
 
+ 
  //compress mouse move events
  if (AEvent.type == SDL_MOUSEMOTION)
   {
    SDL_Event LEvent;
-   //int i=0;
    do
     {
      LEvent = AEvent;
      ec = SDL_PollEvent (&AEvent);
-     //i++;
     }
    while (ec && (AEvent.type == SDL_MOUSEMOTION));
-
-   //printf("compressed %i\n",i);
 
    if (ec)//event != SDL_MOUSEMOTION
     {
@@ -358,6 +355,12 @@ CApplication::ProcessEvents (void)
    AEvent = LEvent;
   }
 
+  //discard repeated keydown event
+  if ((AEvent.type == SDL_KEYDOWN)&&(AEvent.key.repeat > 0))
+  {
+    return false;
+  }
+ 
  HintControl = NULL;
 
 
