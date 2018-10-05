@@ -277,8 +277,11 @@ CCombo::TButtonPress (CControl * control, uint button, uint x, uint y,
  //			 dlist1.GetWWindow (), GetX (), GetY (), &wx, &wy,
  //			 &child);
 #ifdef _ONEWIN    
- wx = X;
- wy = Y + Height;
+ wx = Win->GetX () + X;
+ if(Win->HasMenu)
+   wy = Win->GetY () + Y + Height + 17;
+ else 
+   wy = Win->GetY () + Y + Height -8;
 #else
  wx = Win->GetX () + X;
  wy = Win->GetY () + Y + Height;
