@@ -34,6 +34,9 @@
 #include <minizip/zip.h>
 #include <minizip/unzip.h>
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten/emscripten.h>
+#endif
 
 #ifndef PATH_MAX
 #define PATH_MAX 1024
@@ -322,7 +325,20 @@ lxGetCwd (void)
   return "";
 }
 
-
+bool 
+lxLaunchDefaultBrowser(String url)
+{
+#ifdef __EMSCRIPTEN__
+EM_ASM_({
+  var link=UTF8ToString($0);
+  window.open(link);
+}, url.c_str());
+return true;
+#else	
+ String cmd= lxT("xdg-open ")+url+lxT("  &");
+ return system(cmd.c_str ());
+#endif
+}
 //-------------------------------------------------------------------------
 
 bool
