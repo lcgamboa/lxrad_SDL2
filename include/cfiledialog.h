@@ -62,12 +62,12 @@ public:
   void SetType(int type);
   int GetType(void);
   //events
-  void (CControl::*EvOnClose) (int retId);
-  void ButtonRelease1 (CControl * control, uint button, uint x, uint y, uint state);
-  void ButtonRelease2 (CControl * control, uint button, uint x, uint y, uint state);
-  void ButtonRelease3 (CControl * control, uint button, uint x, uint y, uint state);
-  void ButtonRelease4 (CControl * control, uint button, uint x, uint y, uint state);
-  void ListOnFileSelected (CFileList * flist);
+  void (CControl::*EvOnClose) (const int retId);
+  void ButtonRelease1 (CControl * control, const uint button, const uint x, const uint y, const uint state);
+  void ButtonRelease2 (CControl * control, const uint button, const uint x, const uint y, const uint state);
+  void ButtonRelease3 (CControl * control, const uint button, const uint x, const uint y, const uint state);
+  void ButtonRelease4 (CControl * control, const uint button, const uint x, const uint y, const uint state);
+  void ListOnFileSelected (CControl * flist);
 };
 
 #endif

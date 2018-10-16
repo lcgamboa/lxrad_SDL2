@@ -301,6 +301,7 @@ CWindow::WDestroy (void)
  //  SetVisible (false);
  // else
  Hide ();
+ on_hide ();
 
  on_destroy ();
  if (((!OverWin)&&(CanDestroy)) || (this == Application->GetAWindow (0)))
@@ -354,8 +355,8 @@ CWindow::Hide (void)
   {
    if (OverWin)
     {
-     WParent->Draw ();
-     on_hide ();
+     if(WParent) 	    
+       WParent->Draw ();
     }
    else
     {
@@ -478,25 +479,32 @@ CWindow::WEvents (SDL_Event WEvent)
    switch (WEvent.window.event)
     {
     case SDL_WINDOWEVENT_SHOWN:
-     //SDL_Log("Window %d shown", WEvent.window.windowID);
+#ifdef _DEBUG
+     SDL_Log("Window %d shown", WEvent.window.windowID);
+#endif
      on_show ();
      SetRedraw();
      Draw();
      ret = 1;
      break;
     case SDL_WINDOWEVENT_HIDDEN:
-     //SDL_Log("Window %d hidden", WEvent.window.windowID);
-     on_hide ();
+#ifdef _DEBUG
+     SDL_Log("Window %d hidden", WEvent.window.windowID);
+#endif
      ret = 1;
      break;
     case SDL_WINDOWEVENT_EXPOSED:
-     //SDL_Log("Window %d exposed", WEvent.window.windowID);
+#ifdef _DEBUG
+     SDL_Log("Window %d exposed", WEvent.window.windowID);
+#endif
      SetRedraw();
      Draw();
      ret = 1;
      break;
     case SDL_WINDOWEVENT_MOVED:
-     //SDL_Log("Window %d moved to %d,%d", WEvent.window.windowID, WEvent.window.data1, WEvent.window.data2);
+#ifdef _DEBUG
+     SDL_Log("Window %d moved to %d,%d", WEvent.window.windowID, WEvent.window.data1, WEvent.window.data2);
+#endif
 #ifndef _ONEWIN
      X = WEvent.window.data1;
      Y = WEvent.window.data2;
@@ -504,7 +512,9 @@ CWindow::WEvents (SDL_Event WEvent)
      ret = 1;
      break;
     case SDL_WINDOWEVENT_RESIZED:
-     //SDL_Log("Window %d resized to %dx%d", WEvent.window.windowID, WEvent.window.data1,WEvent.window.data2);    
+#ifdef _DEBUG
+     SDL_Log("Window %d resized to %dx%d", WEvent.window.windowID, WEvent.window.data1,WEvent.window.data2);    
+#endif     
 #ifndef _ONEWIN
      Width = WEvent.window.data1;
      Height = WEvent.window.data2;
@@ -516,7 +526,9 @@ CWindow::WEvents (SDL_Event WEvent)
      ret = 1;
      break;
     case SDL_WINDOWEVENT_SIZE_CHANGED:
-     //SDL_Log("Window %d size changed to %dx%d", WEvent.window.windowID, WEvent.window.data1,WEvent.window.data2);
+#ifdef _DEBUG
+     SDL_Log("Window %d size changed to %dx%d", WEvent.window.windowID, WEvent.window.data1,WEvent.window.data2);
+#endif     
 #ifndef _ONEWIN
      Width = WEvent.window.data1;
      Height = WEvent.window.data2;
@@ -525,52 +537,74 @@ CWindow::WEvents (SDL_Event WEvent)
      ret = 1;
      break;
     case SDL_WINDOWEVENT_MINIMIZED:
-     //SDL_Log("Window %d minimized", WEvent.window.windowID);
+#ifdef _DEBUG
+     SDL_Log("Window %d minimized", WEvent.window.windowID);
+#endif     
      ret = 1;
      break;
     case SDL_WINDOWEVENT_MAXIMIZED:
-     //SDL_Log("Window %d maximized", WEvent.window.windowID);
+#ifdef _DEBUG
+     SDL_Log("Window %d maximized", WEvent.window.windowID);
+#endif     
      SetRedraw();
      Draw();
      ret = 1;
      break;
     case SDL_WINDOWEVENT_RESTORED:
-     //SDL_Log("Window %d restored", WEvent.window.windowID);
+#ifdef _DEBUG
+     SDL_Log("Window %d restored", WEvent.window.windowID);
+#endif    
      SetRedraw();
      Draw();
      ret = 1;
      break;
     case SDL_WINDOWEVENT_ENTER:
-     //SDL_Log("Mouse entered window %d", WEvent.window.windowID);
+#ifdef _DEBUG
+     SDL_Log("Mouse entered window %d", WEvent.window.windowID);
+#endif    
      on_enter ();
      ret = 1;
      break;
     case SDL_WINDOWEVENT_LEAVE:
-     //SDL_Log("Mouse left window %d", WEvent.window.windowID);
+#ifdef _DEBUG
+     SDL_Log("Mouse left window %d", WEvent.window.windowID);
+#endif    
      on_leave ();
      ret = 1;
      break;
     case SDL_WINDOWEVENT_FOCUS_GAINED:
-     //SDL_Log("Window %d gained keyboard focus", WEvent.window.windowID);
+#ifdef _DEBUG
+     SDL_Log("Window %d gained keyboard focus", WEvent.window.windowID);
+#endif    
      break;
     case SDL_WINDOWEVENT_FOCUS_LOST:
-     //SDL_Log("Window %d lost keyboard focus", WEvent.window.windowID);
+#ifdef _DEBUG
+     SDL_Log("Window %d lost keyboard focus", WEvent.window.windowID);
+#endif    
      break;
     case SDL_WINDOWEVENT_CLOSE:
-     //SDL_Log("Window %d closed", WEvent.window.windowID);
+#ifdef _DEBUG
+     SDL_Log("Window %d closed", WEvent.window.windowID);
+#endif    
      WDestroy ();
      ret = 1;
      break;
 #if SDL_VERSION_ATLEAST(2, 0, 5)
     case SDL_WINDOWEVENT_TAKE_FOCUS:
-     //SDL_Log("Window %d is offered a focus", WEvent.window.windowID);
+#ifdef _DEBUG
+     SDL_Log("Window %d is offered a focus", WEvent.window.windowID);
+#endif    
      break;
     case SDL_WINDOWEVENT_HIT_TEST:
-     //SDL_Log("Window %d has a special hit test", WEvent.window.windowID);
+#ifdef _DEBUG
+     SDL_Log("Window %d has a special hit test", WEvent.window.windowID);
+#endif    
      break;
 #endif
     default:
-     //SDL_Log ("Window %d got unknown event %d", WEvent.window.windowID, WEvent.window.event);
+#ifdef _DEBUG
+     SDL_Log ("Window %d got unknown event %d", WEvent.window.windowID, WEvent.window.event);
+#endif
      break;
     }
 

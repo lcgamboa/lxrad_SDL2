@@ -77,8 +77,8 @@ public:
   int GetDigits(void);
   //eventos
   void EditKeyPress (CControl * control, const uint key, const uint hk, uint mask);
-  void TButtonPress1 (CControl * control, uint button, uint x, uint y,uint state);
-  void TButtonPress2 (CControl * control, uint button, uint x, uint y,uint state);
+  void TButtonPress1 (CControl * control, const uint button, const uint x, const uint y, const uint state);
+  void TButtonPress2 (CControl * control, const uint button, const uint x, const uint y, const uint state);
   void (CControl::*EvOnChangeSpinDouble) (CControl * control);
 };
 

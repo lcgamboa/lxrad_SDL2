@@ -77,7 +77,7 @@ public:
   CStringList GetContext (void);
   void SetContext (CStringList context);
   //events
-  void (CControl::*EvOnClose) (int retId);
+  void (CControl::*EvOnClose) (const int retId);
 };
 
 #endif

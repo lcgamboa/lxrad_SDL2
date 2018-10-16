@@ -473,9 +473,9 @@ CPaint::SetBitmap (lxBitmap* bitmap, double xs, double ys)
 void
 CPaint::SetFont (lxFont font)
 {
-#ifdef _DEBUG 
- printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
-#endif
+//#ifdef _DEBUG 
+// printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
+//#endif
 }
 
 void

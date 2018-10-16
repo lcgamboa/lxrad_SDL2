@@ -31,8 +31,8 @@
 #include<unistd.h>
 #include<dirent.h>
 
-#define EVFILELISTSELECTFILE   (void(CControl::*)(CFileList*))
-#define EVFILELISTSELECTDIR   (void(CControl::*)(CFileList*))
+#define EVFILELISTSELECTFILE   (void(CControl::*)(CControl*))
+#define EVFILELISTSELECTDIR   (void(CControl::*)(CControl*))
 
 class CFileList:public CList
 {
@@ -60,8 +60,8 @@ public:
 			     uint state);
   void FileButtonRelease (CControl * control, uint button, uint x, uint y,
 			  uint state);
-  void (CControl::*EvFileListSelectFile) (CFileList * flist);
-  void (CControl::*EvFileListSelectDir) (CFileList * flist);
+  void (CControl::*EvFileListSelectFile) (CControl * flist);
+  void (CControl::*EvFileListSelectDir) (CControl * flist);
 };
 
 #endif

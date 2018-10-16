@@ -126,7 +126,7 @@ CFileDialog::DestroyChilds (void)
 };
 
 void
-CFileDialog::ButtonRelease1 (CControl * control, uint button, uint x, uint y, uint state)
+CFileDialog::ButtonRelease1 (CControl * control, const uint button, const uint x, const uint y, const uint state)
 {
   HideExclusive ();
   Result = true;
@@ -138,8 +138,8 @@ CFileDialog::ButtonRelease1 (CControl * control, uint button, uint x, uint y, ui
 };
 
 void
-CFileDialog::ButtonRelease2 (CControl * control, uint button, uint x, uint y,
-			     uint state)
+CFileDialog::ButtonRelease2 (CControl * control, const uint button, const uint x, const uint y,
+			     const uint state)
 {
   HideExclusive ();
   Result = false;
@@ -151,8 +151,8 @@ CFileDialog::ButtonRelease2 (CControl * control, uint button, uint x, uint y,
 };
 
 void
-CFileDialog::ButtonRelease3 (CControl * control, uint button, uint x, uint y,
-			     uint state)
+CFileDialog::ButtonRelease3 (CControl * control, const uint button, const uint x, const uint y,
+			     const uint state)
 {
   String texto = "untitled";
   if (Input ("Dir Name:", texto))
@@ -164,8 +164,8 @@ CFileDialog::ButtonRelease3 (CControl * control, uint button, uint x, uint y,
 };
 
 void
-CFileDialog::ButtonRelease4 (CControl * control, uint button, uint x, uint y,
-			     uint state)
+CFileDialog::ButtonRelease4 (CControl * control,const  uint button,const  uint x,const uint y,
+			     const uint state)
 {
   if (Dialog ("Remove " + edit1.GetText () + " ?"))
     if (unlink (edit1.GetText ().c_str ()) != 0)
@@ -176,11 +176,11 @@ CFileDialog::ButtonRelease4 (CControl * control, uint button, uint x, uint y,
 };
 
 void
-CFileDialog::ListOnFileSelected (CFileList * flist)
+CFileDialog::ListOnFileSelected (CControl * flist)
 {
   CFileDialog *dialog;
   dialog = dynamic_cast < CFileDialog * >(flist->GetOwner ());
-  String selected = flist->GetSelectedItem ();
+  String selected = ((CFileList*)flist)->GetSelectedItem ();
   int pos = selected.find ("/");
   if (pos < 0)
     dialog->edit1.SetText (selected);

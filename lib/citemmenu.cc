@@ -153,7 +153,7 @@ CItemMenu::button_press (SDL_Event event)
    return;
   };
 
- if ((SubMenu != NULL) && ((SubMenu->GetChildCount ()) != -1))
+ if ((SubMenu) && ((SubMenu->GetChildCount ()) != -1))
   {
    /* 
       //Window child;
@@ -180,20 +180,18 @@ CItemMenu::button_press (SDL_Event event)
    SubMenu->ShowExclusive ();
   }
  //Owner->GetWin ()->Update ();
- CControl::button_press (event);
-
+ //CControl::button_press (event);
 };
 
 void
 CItemMenu::button_release (SDL_Event event)
 {
- if (SubMenu != NULL)
+ if (SubMenu)
   {
-   SubMenu->WDestroy ();
-  };
- CControl::button_release (event);
-
-
+    //SubMenu->WDestroy ();
+    SubMenu->HideExclusive ();
+  }
+ //CControl::button_release (event);
 };
 
 void
@@ -201,8 +199,9 @@ CItemMenu::focus_out (void)
 {
  if (SubMenu != NULL)
   {
-   SubMenu->WDestroy ();
-  };
- CControl::focus_out ();
+    //SubMenu->WDestroy ();
+    SubMenu->HideExclusive ();
+  }
+  //CControl::focus_out ();
 };
 

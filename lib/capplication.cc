@@ -203,10 +203,6 @@ CApplication::ADestroyWindow (CWindow * AWindow)
      emscripten_cancel_main_loop ();
 #endif  
 
-#ifdef _DEBUG
-     eprint ("synchronize\n");
-     XSynchronize (ADisplay, false);
-#endif
      Exit = true;
      return;
     }

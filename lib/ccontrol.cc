@@ -72,7 +72,6 @@ CControl::CControl (void)
  EvMouseButtonDoubleClick = NULL;
  EvKeyboardPress = NULL;
  EvKeyboardRelease = NULL;
- EvKeyboardKey = NULL;
  PointerIn = NULL;
  PointerOut = NULL;
  EvOnDraw = NULL;
@@ -522,7 +521,7 @@ CControl::SetContext (CStringList context)
 {
   String name, type, value;
 
-#ifdef _DEBUG_
+#ifdef _DEBUG
 #ifdef __UNICODE__
   printf("##########SetContext(%ls)\n",(const wchar_t*)GetName().c_str());	
 #else

@@ -33,7 +33,7 @@
 #include"ccombodialog.h"
   
 
-#define EVONCOMBOCHANGE   (void(CControl::*)(CCombo*))
+#define EVONCOMBOCHANGE   (void(CControl::*)(CControl*))
 
 class CCombo:public CControl
 {
@@ -70,7 +70,7 @@ public:
   void TButtonPress (CControl * control, uint button, uint x, uint y,uint state);
   void combo_change (void);
   
-  void (CControl::*EvOnComboChange) (CCombo * combo);
+  void (CControl::*EvOnComboChange) (CControl * combo);
 };
 
 #endif
