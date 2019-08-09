@@ -84,6 +84,13 @@ SDL_Surface* GetImage(void);
 operator SDL_Surface*() const;
 };
 
+class lxSize
+{
+private:
+public:
+int x,y;	
+};
+
 class lxBitmap
 {
 private:
@@ -92,6 +99,7 @@ public:
 ~lxBitmap();
 lxBitmap(SDL_Surface* surf, CPWindow * win);
 SDL_Texture* GetPixmap(void);
+lxSize GetSize(void);
 };
 
 class lxSound
@@ -145,9 +153,12 @@ public:
   lxFont(int size,int family,int style,int weight);
 };
 
+
+
 #define lxFONTFAMILY_TELETYPE 0x01
 #define lxFONTSTYLE_NORMAL 0x01
 #define lxFONTWEIGHT_BOLD 0x01
+#define lxFONTWEIGHT_NORMAL 0x00
 
 
 #define lxCURSOR_CROSS 0x01
