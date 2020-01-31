@@ -177,9 +177,9 @@ lxBitmap::GetPixmap (void)
 lxSize 
 lxBitmap::GetSize(void)
 {
- //FIXME	
- printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
- return {0,0};
+ lxSize t;
+ SDL_QueryTexture(Texture, NULL, NULL, &t.x, &t.y);
+ return t;
 }
 
 //-------------------------------------------------------------------------

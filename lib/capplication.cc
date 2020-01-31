@@ -275,8 +275,11 @@ CApplication::ProcessEvents (void)
 {
  CWindow * wn = NULL;
  int ec; //events in queue
+#ifndef HAVE_LIBPTHREAD
  struct timeval tv;
  long int elapsed;
+ static int trun=0;
+#endif
 
 #ifdef _ONEWIN
  ARootWindow->Draw ();
@@ -289,6 +292,9 @@ CApplication::ProcessEvents (void)
 #ifndef HAVE_LIBPTHREAD
  if (!MWindow)
   {
+   if(!trun)
+   {
+   trun = 1;	   
    gettimeofday (&tv, NULL);
    //printf("---------------------\n");
    for (int t = 0; t <= TimerCount; t++)
@@ -309,11 +315,15 @@ CApplication::ProcessEvents (void)
     {
      ThreadList[t]->on_run ();
     }
+    trun =0;
+   }
   }
 #else 
  usleep (50);
 #endif
 
+while(1)
+{	
  //wait hint loop	    
  ec = SDL_PollEvent (&AEvent);
  if (ec == 0)
@@ -462,6 +472,7 @@ CApplication::ProcessEvents (void)
 #ifdef _ONEWIN
   }
 #endif
+}
  return false;
 }
 
@@ -471,7 +482,7 @@ CApplication::GetExit (void)
  return Exit;
 };
 
-//propierties
+//properties
 
 int
 CApplication::GetAWindowCount (void)
