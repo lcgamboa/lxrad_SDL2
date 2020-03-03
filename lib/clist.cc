@@ -60,13 +60,13 @@ CList::~CList (void)
   ItemsCount = -1;
 };
 
-void
+int
 CList::Create (CControl * control)
 {
   if (!ColorSet)
     SetColor ("white");
-  CControl::Create (control);
-};
+  return CControl::Create (control);
+}
 
 void
 CList::Draw ()

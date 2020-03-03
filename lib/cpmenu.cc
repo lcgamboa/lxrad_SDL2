@@ -49,12 +49,12 @@ CPMenu::CPMenu (void)
   #endif
 }
 
-void
+int
 CPMenu::Create (CControl * control)
 {
   CMenu *Menu = dynamic_cast < CMenu * >(control);
     
-  CWindow::Create (control);
+  int ret = CWindow::Create (control);
   
   if((IMenu.GetSubMenu() != this)&& Menu)
   {
@@ -65,7 +65,9 @@ CPMenu::Create (CControl * control)
     //Menu->DestroyChild(this);
     //FOwner->CreateChild(this);
   }
-};
+
+  return ret;
+}
 
 void
 CPMenu::Draw (void)

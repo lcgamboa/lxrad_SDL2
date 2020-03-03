@@ -69,11 +69,11 @@ CItemMenu::Draw (void)
  CLabel::Draw ();
 };
 
-void
+int
 CItemMenu::Create (CControl * control)
 {
- CLabel::Create (control);
-};
+ return CLabel::Create (control);
+}
 
 void
 CItemMenu::SetSubMenu (CPMenu * submenu)

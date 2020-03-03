@@ -41,7 +41,7 @@ public:
   CItemMenu (void);
 //propiedade;
   void Draw (void);
-  void Create (CControl * control);
+  int Create (CControl * control);
   CStringList GetContext (void);
   void SetContext (CStringList context);
   void SetSubMenu (CPMenu * submenu);

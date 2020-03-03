@@ -40,7 +40,7 @@ public:
     CButton (void);
    ~CButton (void);
   virtual void Draw (void);
-  void Create (CControl * control);
+  int Create (CControl * control);
   CStringList GetContext (void);
   void SetContext (CStringList context);
   //propiedades

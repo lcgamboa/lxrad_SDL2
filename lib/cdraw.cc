@@ -54,7 +54,7 @@ CDraw::~CDraw (void)
    CPixmap=NULL;
 };
 
-void
+int
 CDraw::Create (CControl * control)
 {
   if (!ColorSet)
@@ -73,7 +73,8 @@ CDraw::Create (CControl * control)
     Canvas.Pen.SetColor (Color);
     Canvas.Rectangle ( 0, 0, Width, Height);
   };
- };
+  return 1;
+}
 
 void
 CDraw::Destroy (void)

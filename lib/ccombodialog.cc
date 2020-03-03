@@ -53,11 +53,11 @@ CComboDialog::CComboDialog (void)
   CreateChild (&list1);
 };
 
-void
+int
 CComboDialog::Create (CControl * control)
 {
-  CWindow::Create (control);
-};
+  return CWindow::Create (control);
+}
 
 void
 CComboDialog::SetWidth (unsigned width)

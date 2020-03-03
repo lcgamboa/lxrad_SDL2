@@ -38,10 +38,10 @@ CHtml::~CHtml (void)
 }
 
 
-void 
+int 
 CHtml::Create (CControl * control)
 {
-  CText::Create(control);
+  return CText::Create(control);
 }
 
 CStringList 

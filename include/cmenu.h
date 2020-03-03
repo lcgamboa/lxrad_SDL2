@@ -42,7 +42,7 @@ public:
   void SetY(int y);
   void Draw (void);
   void Update (void);
-  void Create (CControl * control);
+  int Create (CControl * control);
   void SetMenuItems (String mitens);
   String GetMenuItems (void);
   CStringList GetContext (void);

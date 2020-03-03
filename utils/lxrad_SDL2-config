@@ -45,7 +45,7 @@ while test $# -gt 0; do
 
           includes=-I${prefix}/include
       fi
-      echo $includes -I${prefix}/include/lxrad_SDL2/ -Wall -I/usr/include/SDL2 -D_REENTRANT
+      echo $includes -I${prefix}/include/lxrad_SDL2/ -Wall -O2 -D_REENTRANT -I/usr/include/x86_64-linux-gnu/SDL2 -I/usr/include/SDL2 -D_REENTRANT
       ;;
     --cxxflags)
       if test ${prefix}/include != /usr/include ; then
@@ -54,7 +54,7 @@ while test $# -gt 0; do
 
           includes=-I${prefix}/include
       fi
-      echo $includes -I${prefix}/include/lxrad_SDL2/ -Wall -I/usr/include/SDL2 -D_REENTRANT
+      echo $includes -I${prefix}/include/lxrad_SDL2/ -Wall -O2 -D_REENTRANT -I/usr/include/x86_64-linux-gnu/SDL2 -I/usr/include/SDL2 -D_REENTRANT
       ;;
     --libs|--plugin-libs|--library-libs)
       libdirs="-L${exec_prefix}/lib "

@@ -43,14 +43,15 @@ CCbox::~CCbox (void)
 {
 };
 
-void
+int
 CCbox::Create (CControl * control)
 {
   if (!ColorSet)
     SetColor ("white");
-  CControl::Create (control);
+  int ret=CControl::Create (control);
   PressColor = ColorByName ("black");
-};
+  return ret;
+}
 
 
 void

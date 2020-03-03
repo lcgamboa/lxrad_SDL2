@@ -241,10 +241,10 @@ CColorDialog::CColorDialog (void)
 
 CColorDialog::~CColorDialog (void) { }
 
-void
+int
 CColorDialog::Create (CControl * control)
 {
- CWindow::Create (control);
+ return CWindow::Create (control);
 }
 
 void

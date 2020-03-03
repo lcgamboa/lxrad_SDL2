@@ -45,7 +45,7 @@ public:
     CCombo (void);
    ~CCombo (void);
   void Draw (void);
-  void Create (CControl * control);
+  int Create (CControl * control);
   void SetWidth(unsigned width);
   void SetHeight(unsigned height );
   void SetItems (String litens);

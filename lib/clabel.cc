@@ -276,13 +276,13 @@ CLabel::SwapVirtual (void)
 };
 
 
-void
+int
 CLabel::Create (CControl * control)
 {
   if (!ColorSet)
     SetColor ("black");
-  CControl::Create (control);
-};
+  return CControl::Create (control);
+}
 
 
 

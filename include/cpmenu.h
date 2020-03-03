@@ -41,7 +41,7 @@ public:
   CPMenu(void);
 //   ~CPMenu (void);
   void Draw (void);
-  void Create (CControl * control);
+  int Create (CControl * control);
   void SetMenuItems (String mitens);
   String GetMenuItems (void);
   CStringList GetContext (void);

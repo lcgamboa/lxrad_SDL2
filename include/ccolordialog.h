@@ -66,7 +66,7 @@ public:
   void edit_EvOnFocusOut(CControl * control);
   CColorDialog (void);
    ~CColorDialog (void);
-  void Create (CControl * control);
+  int Create (CControl * control);
   void Run (void);
   //propriedades
   String GetColorName (void);

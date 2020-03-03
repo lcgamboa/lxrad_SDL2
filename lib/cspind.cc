@@ -63,10 +63,10 @@ CSpind::~CSpind (void)
 {
 }
 
-void 
+int
 CSpind::Create (CControl * control)
 {
-  CControl::Create (control);
+  return CControl::Create (control);
 }
 
 void

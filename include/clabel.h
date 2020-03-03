@@ -50,7 +50,7 @@ public:
   void Draw (void);
   void Update (void);
   void Eraser (void);
-  void Create (CControl * control);
+  int Create (CControl * control);
   CStringList GetContext (void);
   void SetContext (CStringList context);
 //propierties  

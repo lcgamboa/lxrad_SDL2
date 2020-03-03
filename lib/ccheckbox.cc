@@ -53,11 +53,11 @@ CCheckBox::~CCheckBox (void)
 {
 };
 
-void
+int
 CCheckBox::Create (CControl * control)
 {
-  CControl::Create (control);
-};
+  return CControl::Create (control);
+}
 
 void
 CCheckBox::Draw (void)

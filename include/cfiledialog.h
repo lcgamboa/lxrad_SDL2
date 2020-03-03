@@ -48,7 +48,7 @@ private:
 public:
     CFileDialog (void);
    ~CFileDialog (void);
-  void Create(CControl* control);
+  int Create(CControl* control);
   void Run (void);
   //propriedades
   String GetFileName (void);

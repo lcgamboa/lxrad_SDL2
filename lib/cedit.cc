@@ -32,11 +32,12 @@ CCursor::CCursor ()
   SetVisible (false);
 };
 
-void
+int
 CCursor::Create (CControl * control)
 {
   CControl::Create (control);
-};
+  return 1;
+}
 
 void
 CCursor::Draw (void)
@@ -77,13 +78,13 @@ CEdit::~CEdit (void)
 {
 };
 
-void
+int
 CEdit::Create (CControl * control)
 {
   if (!ColorSet)
     SetColor ("white");
-  CControl::Create (control);
-};
+  return CControl::Create (control);
+}
 
 void
 CEdit::Draw ()

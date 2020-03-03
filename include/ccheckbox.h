@@ -40,7 +40,7 @@ private:
 public:
     CCheckBox (void);
    ~CCheckBox (void);
-  void Create (CControl * control);
+  int Create (CControl * control);
   CStringList GetContext (void);
   void SetContext (CStringList context);
   void Draw (void);

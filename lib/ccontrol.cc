@@ -100,7 +100,7 @@ CControl::~CControl ()
   };
 };
 
-void
+int
 CControl::Create (CControl * control)
 {
  //printf("Created :(%s)\t%s - %s\n",control->GetName().c_str(),Class.c_str(),Name.c_str());	
@@ -154,7 +154,9 @@ CControl::Create (CControl * control)
    Enable = true;
    SetEnable (false);
   };
-};
+
+  return 1; 
+}
 
 void
 CControl::Destroy (void)

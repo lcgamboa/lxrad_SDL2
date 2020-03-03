@@ -38,7 +38,7 @@ public:
     CCbox (void);
    ~CCbox (void);
   void Draw (void);
-  void Create (CControl * control);
+  int Create (CControl * control);
   void Event (SDL_Event event);
   CStringList GetContext (void);
   void SetContext (CStringList context);

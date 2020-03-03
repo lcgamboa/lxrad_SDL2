@@ -73,7 +73,7 @@ public:
   CWindow *GetWin (void);
   void SetWin (CWindow * win);
   virtual void Event (SDL_Event event);
-  virtual void Create (CControl * control);
+  virtual int Create (CControl * control);
   virtual void Destroy (void);
   virtual void Eraser (void);
   virtual void Draw (void);

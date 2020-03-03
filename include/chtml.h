@@ -50,7 +50,7 @@ protected:
 public:
   CHtml (void);
    ~CHtml (void);
-  void Create (CControl * control);
+  int Create (CControl * control);
   CStringList GetContext (void);
   void SetContext (CStringList context);
   //void Event (wxEvent & event);

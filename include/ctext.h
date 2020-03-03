@@ -43,7 +43,7 @@ public:
   void Draw (void);
   void DrawCursor (void);
   void DrawLine (void);
-  void Create (CControl * control);
+  int Create (CControl * control);
   void Clear ();
   void AddLine (char *line);
   void AddLine (String line);

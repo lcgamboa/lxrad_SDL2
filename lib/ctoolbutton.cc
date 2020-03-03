@@ -52,12 +52,13 @@ CToolButton::~CToolButton (void)
 {
 };
 
-void
+int
 CToolButton::Create (CControl * control)
 {
-  CButton::Create (control);
+  int ret=CButton::Create (control);
   Xpm->SetColor (GetColor ());
-};
+  return ret;
+}
 
 void
 CToolButton::Draw (void)

@@ -45,7 +45,7 @@ public:
   String GetPixmapFileName (void);
   void WritePixmapToFile (String filename);
   void WriteImgToFile (String filename);
-  void Create (CControl * control);
+  int Create (CControl * control);
   void Destroy (void);
   void SetWidth (uint Width);
   void SetHeight (uint height);

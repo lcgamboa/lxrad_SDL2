@@ -34,7 +34,7 @@ class CCursor:public CControl
 {
 public:
   CCursor (void);
-  void Create (CControl * control);
+  int  Create (CControl * control);
   void Draw (void);
 };
 
@@ -52,7 +52,7 @@ public:
    ~CEdit (void);
   void Draw (void);
   void DrawCursor (void);
-  void Create (CControl * control);
+  int Create (CControl * control);
   CStringList GetContext (void);
   void SetContext (CStringList context);
   //propiedades

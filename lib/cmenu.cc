@@ -63,11 +63,11 @@ CMenu::Update (void)
     SetWidth (Owner->GetWidth ());
 };
 
-void
+int
 CMenu::Create (CControl * control)
 {
   ((CWindow *) control)->HasMenu=1;
-  CControl::Create (control);
+  return CControl::Create (control);
 };
 
 void

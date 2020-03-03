@@ -61,11 +61,11 @@ CCombo::~CCombo (void)
  dlist1.WDestroy ();
 };
 
-void
+int
 CCombo::Create (CControl * control)
 {
- CControl::Create (control);
-};
+ return CControl::Create (control);
+}
 
 void
 CCombo::SetWidth (unsigned width)
