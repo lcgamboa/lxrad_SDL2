@@ -37,6 +37,7 @@
 #include"cinput.h"
 #include"cdialog.h"
 #include"cfiledialog.h"
+#include"cdirdialog.h"
 #include"cdraw.h"
 #include"ccheckbox.h"
 #include"ctoolbutton.h"
