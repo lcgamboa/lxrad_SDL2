@@ -95,7 +95,7 @@ CStringList CButton::GetContext (void)
 void
 CButton::SetContext (CStringList context)
 {	
-  Eraser ();
+  Erase ();
   String name, type, value;
   CControl::SetContext (context);
   for (uint i = 0; i < context.GetLinesCount (); i++)

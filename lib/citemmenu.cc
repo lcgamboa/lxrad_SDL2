@@ -114,7 +114,7 @@ CItemMenu::GetContext (void)
 void
 CItemMenu::SetContext (CStringList context)
 {
- Eraser ();
+ Erase ();
  CObject::SetContext (context);
  for (uint i = 0; i < context.GetLinesCount (); i++)
   {

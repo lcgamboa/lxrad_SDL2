@@ -75,7 +75,7 @@ public:
   virtual void Event (SDL_Event event);
   virtual int Create (CControl * control);
   virtual void Destroy (void);
-  virtual void Eraser (void);
+  virtual void Erase (void);
   virtual void Draw (void);
   virtual void Update (void);
   CStringList GetContext (void);
@@ -129,6 +129,9 @@ public:
   virtual void CreateChild (CControl * control);
   virtual void DestroyChild (CControl * control);
   virtual void DestroyChilds (void);
+  virtual void WriteXMLContext (String filename, bool first = true);
+  virtual void LoadXMLContext (String filename);
+  
 //operators
   void *operator new (size_t sz);
   void *operator new[] (size_t sz);

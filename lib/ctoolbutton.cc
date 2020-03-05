@@ -92,7 +92,7 @@ CStringList CToolButton::GetContext (void)
 void
 CToolButton::SetContext (CStringList context)
 {
-  Eraser ();
+  Erase ();
   CControl::SetContext (context);
   for (uint i = 0; i < context.GetLinesCount (); i++)
     {
@@ -144,4 +144,12 @@ CToolButton::SetHeight (uint height)
 {
   CControl::SetHeight (height);
   Xpm->SetHeight (height - 4);
-};
+}
+
+
+void
+CToolButton::SetImgData(char const** data)
+{
+ printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
+}
+

@@ -54,7 +54,7 @@ CEdit::CEdit (void)
 {
   Text = new CLabel;
   Text->SetText ("");
-  Text->SetAlign (ca_left);
+  Text->SetAlign (CA_LEFT);
   Text->SetFont (FontName);
   Text->SetX (0);
   Text->SetY (0);
@@ -146,7 +146,7 @@ CStringList CEdit::GetContext (void)
 void
 CEdit::SetContext (CStringList context)
 {
-  Eraser ();
+  Erase ();
   CControl::SetContext (context);
   for (uint i = 0; i < context.GetLinesCount (); i++)
     {

@@ -37,11 +37,12 @@ public:
   CToolButton (void);
    ~CToolButton (void);
   void Draw (void);
-  int  Create (CControl * control);
+  int Create (CControl * control);
   CStringList GetContext (void);
   void SetContext (CStringList context);
   //propiedades
   void SetPixmapFileName (String filename);
+  void SetImgData(const char** data);
   void SetImgFileName(String filename);
   String GetPixmapFileName (void);
   void SetWidth (uint width);

@@ -211,7 +211,7 @@ CStringList CDraw::GetContext (void)
 void
 CDraw::SetContext (CStringList context)
 {
-  Eraser ();
+  Erase ();
   CControl::SetContext (context);
   for (uint i = 0; i < context.GetLinesCount (); i++)
     {

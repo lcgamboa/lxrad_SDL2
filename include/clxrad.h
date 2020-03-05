@@ -86,6 +86,8 @@ using namespace std;
 #define EVONDRAW                 (void(CControl::*)(CControl*))
 #define EVONFOCUSIN             (void(CControl::*)(CControl*))
 #define EVONFOCUSOUT             (void(CControl::*)(CControl*))
+
+#define EVONCHECKBOX            (void(CControl::*)(CControl*))
 #define EVMENUACTIVE            (void(CControl::*)(CControl*))
 #define EVONTIME                (void(CControl::*)(CControl*))
 #define EVONTOGGLEBUTTON        (void(CControl::*)(CControl*))
@@ -96,10 +98,11 @@ using namespace std;
 
 typedef unsigned int uint;
 
-#define  CAlign int
-#define  ca_right  1
-#define  ca_center 2
-#define  ca_left 3
+#define CA_LEFT   1
+#define CA_RIGHT  2
+#define CA_CENTER 3
+#define CA_FILL   4
+typedef int CAlign;
 
 class CApplication;
 extern CApplication *Application;

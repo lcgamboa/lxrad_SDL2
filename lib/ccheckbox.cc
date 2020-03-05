@@ -42,7 +42,7 @@ CCheckBox::CCheckBox (void)
   SetY (10);
   SetWidth (70);
   SetHeight (20);
-  SetAlign (ca_left);
+  SetAlign (CA_LEFT);
   SetCheck (false);
   SetClass ("CCheckBox");
   CreateChild (Text);
@@ -80,7 +80,7 @@ CStringList CCheckBox::GetContext (void)
 void
 CCheckBox::SetContext (CStringList context)
 {
-  Eraser ();
+  Erase ();
   CControl::SetContext (context);
   for (uint i = 0; i < context.GetLinesCount (); i++)
     {
@@ -153,6 +153,8 @@ CCheckBox::button_press (SDL_Event event)
 {
   Update ();
   CControl::button_press (event);
+ if ((FOwner) && (EvOnCheckBox))
+  (FOwner->*EvOnCheckBox) (this);
 };
 
 void
@@ -163,8 +165,11 @@ CCheckBox::key_press (SDL_Event event)
     {
       if (CBox->GetCheck ())
 	CBox->SetCheck (false);
-      else
+      else{
 	CBox->SetCheck (true);
+ if ((FOwner) && (EvOnCheckBox))
+  (FOwner->*EvOnCheckBox) (this);
+      }
       CControl::key_press (event);
     }
   else

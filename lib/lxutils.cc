@@ -48,10 +48,21 @@ lxTextFile::lxTextFile ()
 {
  f = NULL;
 }
+int 
+lxTextFile::Create(String fname)
+{
+  fn=fname;
+  f=fopen(fname.c_str(),"rw");
+  if(f)
+   return 1;
+  else
+   return 0;		  
+}
 
 int
 lxTextFile::Open (String fname)
 {
+ fn=fname;
  f = fopen (fname.c_str (), "rw");
  if (f)
   return 1;
@@ -91,6 +102,21 @@ lxTextFile::GetFd (void)
 lxTextFile::operator FILE*() const
 {
  return f;
+}
+
+void 
+lxTextFile::Clear(void)
+{
+ if(f) fclose(f);
+ f=fopen(fn.c_str(),"w");
+ if(f) fclose(f);
+ f=fopen(fn.c_str(),"rw");
+}
+
+void 
+lxTextFile::AddLine(String line)
+{
+ fprintf(f,"%s\n",line.c_str ());
 }
 
 //-------------------------------------------------------------------------
@@ -166,6 +192,12 @@ lxBitmap::lxBitmap (SDL_Surface* surf, CPWindow * win)
 
  if (!win->GetVisible () && !win->GetOverWin ())SDL_HideWindow (win->GetWWindow ());
 
+}
+
+lxBitmap::lxBitmap (int width, int height) 
+{
+ //Texture = SDL_CreateTexture (win->GetRenderer (), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height);
+ printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
 }
 
 SDL_Texture *
@@ -316,11 +348,11 @@ lxFileExists (String fname)
   return false;
 }
 
-void
-lxExecute (String cmd, unsigned int flags)
+void lxExecute(String cmd,unsigned int flags, void * arg)
 {
- cmd += lxT (" &");
- system (cmd.c_str ());
+ if(flags != lxEXEC_SYNC)
+    cmd+=lxT(" &");	
+  system(cmd.c_str());
 }
 
 String
@@ -331,6 +363,12 @@ lxGetCwd (void)
   return cwd;
  else
   return "";
+}
+
+int 
+lxSetWorkingDirectory(String dir)
+{
+  return chdir(dir.c_str ());
 }
 
     
@@ -485,6 +523,12 @@ bool
 lxRemoveFile (const char * fname)
 {
  return remove (fname);
+}
+
+bool 
+lxRenameFile(String oldfname, String newfname)
+{
+ return rename(oldfname.c_str(),newfname.c_str());
 }
 
 bool

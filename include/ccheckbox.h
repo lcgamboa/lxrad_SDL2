@@ -56,6 +56,7 @@ public:
   //events
   void key_press (SDL_Event event);
   void button_press (SDL_Event event);
+  void (CControl::*EvOnCheckBox) (CControl * control);
 };
 
 #endif
