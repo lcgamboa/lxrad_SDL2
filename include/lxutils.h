@@ -129,6 +129,12 @@ public:
 
 #define lxPoint SDL_Point
 
+typedef struct
+{
+int x,y,width,height;	
+}lxRect;
+
+
 class lxColor
 {
 private:	
@@ -197,6 +203,7 @@ void lxExecute(String cmd,unsigned int flags=0, void * arg = NULL);
 String lxGetCwd(void);
 int lxSetWorkingDirectory(String dir);
 bool lxLaunchDefaultBrowser(String url);
+bool lxLaunchDefaultApplication(String cmd);
 
 String lxGetUserDataDir(String appname="");
 String lxGetTempDir(String appname="");

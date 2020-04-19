@@ -637,8 +637,7 @@ String & String::operator += (const String & str)
 
   if (Str != NULL)
     {
-      delete
-	Str;
+      delete[] Str;
       Str = NULL;
     };
 
@@ -682,9 +681,8 @@ String & String::operator += (const char *str)
     Str;
   if (Str != NULL)
     {
-      delete
-	Str;
-    };
+      delete[] Str;
+    }
 
   if (str != NULL)
     {
@@ -722,8 +720,7 @@ String & String::operator += (const char &str)
 
   if (Str != NULL)
     {
-      delete
-	Str;
+      delete[] Str;
       Str = new char[temp.size () + 2];
       strcpy (Str, temp.c_str ());
       strcat (Str, str2);

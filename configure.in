@@ -48,6 +48,14 @@ LIBS="-lpthread $LIBS"
 CFLAGS="$CFLAGS -D_REENTRANT",
 AC_MSG_WARN([libpthread Not Found!]))
 
+# Checks for libraries.
+AC_CHECK_LIB([openal], [alGenSources],
+cat >>confdefs.h <<_ACEOF
+#define HAVE_OPENAL 1
+_ACEOF
+LIBS="-lopenal $LIBS",
+AC_MSG_WARN([libopenal Not Found!]))
+
 # Checks for header files.
 AC_PATH_X
 AC_HEADER_DIRENT

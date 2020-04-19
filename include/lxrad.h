@@ -55,3 +55,5 @@
 #include"cstatusbar.h"
 #include"cthread.h"
 #include"newcontrolbycname.h"
+#include"lxaudio.h"
+#include"lxutils.h"

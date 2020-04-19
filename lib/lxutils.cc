@@ -405,6 +405,14 @@ return true;
  return system(cmd.c_str ());
 #endif
 }
+
+bool 
+lxLaunchDefaultApplication(String cmd)
+{
+ String cmd_= lxT("xdg-open ")+cmd+lxT("  &");
+ return system(cmd_.c_str ());
+}
+
 //-------------------------------------------------------------------------
 
 bool

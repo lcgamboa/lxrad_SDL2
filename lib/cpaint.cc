@@ -298,6 +298,13 @@ CPaint::Text (String text, int x1, int y1)
   }
 }
 
+void 
+CPaint::TextOnRect (String text,lxRect rect,CAlign align)
+{
+ Text (text, rect.x, rect.y);
+}
+
+
 void
 CPaint::ImgText (int x1, int y1, String text)
 {
