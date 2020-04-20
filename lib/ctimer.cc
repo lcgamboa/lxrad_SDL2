@@ -39,6 +39,7 @@ extern pthread_mutex_t Display_Lock;
 
 CTimer::CTimer (void)
 {
+  CanVisible = false;
   CanFocus = false;
   SetX (10);
   SetY (10);

@@ -38,7 +38,7 @@ CDirDialog::CDirDialog (void)
  CanFocus = false;
  CanExecuteEvent = false;
  SetClass ("CDirDialog");
-
+ CanVisible = false;
  SetVisible (false, false);
  SetCanExecuteEvent (false);
  SetSaveUnder (true);

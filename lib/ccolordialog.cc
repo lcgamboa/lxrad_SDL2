@@ -35,6 +35,7 @@ CColorDialog::CColorDialog (void)
  SetHeight (243);
  SetName ("CColorDialog");
  SetVisible (false,false);
+ CanVisible = false;
  //CanFocus = false;
  //SetCanExecuteEvent (false);
  //SetSaveUnder (true);

@@ -64,6 +64,7 @@ CControl::CControl (void)
  SetClass ("CControl");
  PopupMenu = NULL;
  SetHint ("");
+ CanVisible = true;
 
  EvMouseMove = NULL;
  EvMouseButtonPress = NULL;
@@ -81,7 +82,7 @@ CControl::CControl (void)
  CFont = NULL;
  ColorName = "";
  ColorSet = false;
-};
+}
 
 CControl::~CControl ()
 {
@@ -93,12 +94,12 @@ CControl::~CControl ()
      if (Child[c]->GetDynamic ())
       delete Child[c];
      Child[c] = NULL;
-    };
+    }
    ChildCount = -1;
    delete[]Child;
    Child = NULL;
-  };
-};
+  }
+}
 
 int
 CControl::Create (CControl * control)
@@ -120,14 +121,14 @@ CControl::Create (CControl * control)
      eprint( FontName +" font not found!, Try to use default font.\n");
      FontName = "*6x13";
      CFont = XLoadQueryFont (Win->GetADisplay (), FontName.c_str ());
-   };
+   }
 
  if (!CFont)
    {
      eprint( "Default font not found!\n");
      eprint( "...Application Finished\n");
      exit (-1);
-   };
+   }
   */
  if (ColorSet)
   {
@@ -144,7 +145,7 @@ CControl::Create (CControl * control)
   for (int i = 0; i <= ChildCount; i++)
    {
     Child[i]->Create (this);
-   };
+   }
 
  DisableColor = ColorByName ("dark gray");
 
@@ -153,7 +154,7 @@ CControl::Create (CControl * control)
   {
    Enable = true;
    SetEnable (false);
-  };
+  }
 
   return 1; 
 }
@@ -170,23 +171,23 @@ CControl::Destroy (void)
     {
      //  XFreeFont (Win->GetADisplay (), CFont);
      CFont = NULL;
-    };
+    }
    if (Win->GetLastControl () == this)
     Win->SetLastControl (NULL);
-  };
-};
+  }
+}
 
 CWindow *
 CControl::GetWin (void)
 {
  return Win;
-};
+}
 
 void
 CControl::SetWin (CWindow * win)
 {
  Win = win;
-};
+}
 
 void
 CControl::Draw (void)
@@ -197,9 +198,9 @@ CControl::Draw (void)
   for (int i = 0; i <= ChildCount; i++)
    {
     Child[i]->Draw ();
-   };
+   }
  Update ();
-};
+}
 
 void
 CControl::Update (void)
@@ -220,12 +221,12 @@ CControl::Update (void)
      Paint->InitDraw (this);
      Paint->Pen.SetColor (Win->GetColor ());
      Paint->Frame (-1, -1, Width + 1, Height + 1);
-    };
-  };
+    }
+  }
 
  Paint->DrawControl (this);
 
-};
+}
 
 void
 CControl::Erase (void)
@@ -241,11 +242,11 @@ CControl::Erase (void)
     {
      Paint->Pen.SetColor (Win->GetColor ());
      Paint->Frame (-1, -1, Width + 1, Height + 1);
-    };
+    }
    Paint->DrawControl (this);
-  };
+  }
 
-};
+}
 
 void
 CControl::Event (SDL_Event event)
@@ -268,27 +269,27 @@ CControl::Event (SDL_Event event)
        if (Child[j]->OwnerEvent (Win->GetXMouse (), Win->GetYMouse ())
            && (Child[j]->GetVisible ()))
         control = Child[j];
-      };
+      }
 
      if (control)
       Application->SetHintControl (control, event.motion.x, event.motion.y);
      else
       Application->SetHintControl (NULL, 0, 0);
-    };
-  };
+    }
+  }
 
  if ((event.type == SDL_MOUSEBUTTONDOWN) && (Win != NULL))
   {
    Win->SetXMouse (event.button.x);
    Win->SetYMouse (event.button.y);
-  };
+  }
  //verify Owner of event  
  for (int j = 0; j <= ChildCount; j++)
   {
    if (Child[j]->OwnerEvent (Win->GetXMouse (), Win->GetYMouse ())
        && (Child[j]->GetVisible ()))
     control = Child[j];
-  };
+  }
 
  if (control == NULL)
   {
@@ -304,15 +305,15 @@ CControl::Event (SDL_Event event)
    else
     {
      control = control->GetOwner ();
-    };
-  };
+    }
+  }
  //verify control focus 
  if (control != Win->GetLastControl ())
   {
    control->pointer_in ();
    if (Win->GetLastControl () != NULL)
     Win->GetLastControl ()->pointer_out ();
-  };
+  }
  Win->SetLastControl (control);
  if (control->Win != NULL)
   {
@@ -340,7 +341,7 @@ CControl::Event (SDL_Event event)
      //look status        
      Win->CirculateFocus (true);
      return;
-    };
+    }
    if (Win->GetControlOnFocus ())
     Win->GetControlOnFocus ()->key_press (event);
    else
@@ -399,9 +400,9 @@ CControl::Event (SDL_Event event)
   default:
    //printf("default !!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
    return;
-  };
+  }
 
-};
+}
 
 void
 CControl::DestroyChilds (void)
@@ -413,14 +414,14 @@ CControl::DestroyChilds (void)
    if (Child[c]->GetDynamic ())
     delete Child[c];
    Child[c] = NULL;
-  };
+  }
  ChildCount = -1;
  delete[]Child;
  Child = NULL;
  if (Win)
   if (Win->GetLastControl () == this)
    Win->SetLastControl (NULL);
-};
+}
 
 void
 CControl::CreateChild (CControl * control)
@@ -437,7 +438,7 @@ CControl::CreateChild (CControl * control)
 
  if (Win != NULL)
   control->Create (this);
-};
+}
 
 void
 CControl::DestroyChild (CControl * control)
@@ -451,7 +452,7 @@ CControl::DestroyChild (CControl * control)
    {
     childn = f;
     break;
-   };
+   }
  if (childn != -1)
   {
    Child[childn]->Erase ();
@@ -463,8 +464,8 @@ CControl::DestroyChild (CControl * control)
 
    Child[ChildCount] = NULL;
    ChildCount--;
-  };
-};
+  }
+}
 
 bool
 CControl::OwnerEvent (int x, int y)
@@ -480,7 +481,7 @@ CControl::OwnerEvent (int x, int y)
   }
  else
   return false;
-};
+}
 
 CStringList
 CControl::GetContext (void)
@@ -516,7 +517,7 @@ CControl::GetContext (void)
   Context.AddLine (xml_out (lxT("EvOnFocusOut"), lxT("Event"), btoa (GetEv ())));
  
   return Context;
-};
+}
 
 void
 CControl::SetContext (CStringList context)
@@ -607,11 +608,11 @@ CControl::WriteXMLContext (String filename, bool first)
          list.AddLine("<\\"+Child[i]->GetName()+">");
          list.AppendToFile(filename);    
        */
-    };
+    }
   list.Clear ();
   list.AddLine (lxT("</") + Name + lxT(">"));
   list.AppendToFile (filename);
-};
+}
 
 void
 CControl::LoadXMLContext (String filename)
@@ -663,11 +664,11 @@ CControl::LoadXMLContext (String filename)
 		    }
 		  while ((line.compare (lxT("</") + name + lxT(">")) != 0));
 		  fgetline (fin, line);
-		};
+		}
 
-	    };
+	    }
 
-	};
+	}
 
       fin.Close();
       //printf("<\\XML_%s>\n",Name.c_str());
@@ -676,7 +677,7 @@ CControl::LoadXMLContext (String filename)
     printf ("File not found!\n");
 
 
-};
+}
 
 
 SDL_Rect
@@ -688,7 +689,7 @@ CControl::GetRectangle (void)
  rec.w = Width;
  rec.h = Height;
  return rec;
-};
+}
 
 
 //properties
@@ -702,50 +703,50 @@ CControl::SetFont (const String font)
    //      if (CFont != NULL)
    //	XFreeFont (Win->GetADisplay (), CFont);
    //      CFont = XLoadQueryFont (Win->GetADisplay (), FontName.c_str ());
-  };
-};
+  }
+}
 
 void
 CControl::SetFont (TTF_Font * font)
 {
  CFont = font;
-};
+}
 
 TTF_Font *
 CControl::GetFont (void)
 {
  return CFont;
-};
+}
 
 String
 CControl::GetFontName (void)
 {
  return FontName;
-};
+}
 
 void
 CControl::SetFontSize (uint size)
 {
  FontSize = size;
-};
+}
 
 uint
 CControl::GetFontSize (void)
 {
  return FontSize;
-};
+}
 
 void
 CControl::SetHint (String hint)
 {
  Hint = hint;
-};
+}
 
 String
 CControl::GetHint (void)
 {
  return Hint;
-};
+}
 
 void
 CControl::CalcRXY (void)
@@ -819,13 +820,13 @@ CControl::SetX (int x)
  Erase ();
  X = x;
  Update ();
-};
+}
 
 int
 CControl::GetX (void)
 {
  return X;
-};
+}
 
 void
 CControl::SetY (int y)
@@ -833,25 +834,25 @@ CControl::SetY (int y)
  Erase ();
  Y = y;
  Update ();
-};
+}
 
 int
 CControl::GetY (void)
 {
  return Y;
-};
+}
 
 int
 CControl::GetRX (void)
 {
  return RX;
-};
+}
 
 int
 CControl::GetRY (void)
 {
  return RY;
-};
+}
 
 void
 CControl::SetWidth (uint w)
@@ -860,13 +861,13 @@ CControl::SetWidth (uint w)
  Width = w;
  GChanges = true;
  Draw ();
-};
+}
 
 uint
 CControl::GetWidth (void)
 {
  return Width;
-};
+}
 
 void
 CControl::SetHeight (uint h)
@@ -875,31 +876,31 @@ CControl::SetHeight (uint h)
  Height = h;
  GChanges = true;
  Draw ();
-};
+}
 
 uint
 CControl::GetHeight (void)
 {
  return Height;
-};
+}
 
 void
 CControl::SetBorder (uint b)
 {
  Border = b;
-};
+}
 
 uint
 CControl::GetBorder (void)
 {
  return Border;
-};
+}
 
 void
 CControl::SetColor (SDL_Color c)
 {
  Color = c;
-};
+}
 
 void
 CControl::SetColor (const String name)
@@ -912,7 +913,7 @@ CControl::SetColor (const String name)
   Color = ColorByName (name);
  else
   ColorSet = true;
-};
+}
 
 void
 CControl::SetColor (uint r, uint g, uint b)
@@ -928,27 +929,27 @@ CControl::SetColor (uint r, uint g, uint b)
    Color.b = b;
    ColorSet = true;
    ColorName = "";
-  };
-};
+  }
+}
 
 lxColor
 CControl::GetColor (void)
 {
  return Color;
-};
+}
 
 bool
 CControl::GetCanExecuteEvent (void)
 {
  return CanExecuteEvent;
-};
+}
 
 void
 CControl::SetCanExecuteEvent (bool cee)
 {
  CanExecuteEvent = cee;
  CanExecuteEventOld = cee;
-};
+}
 
 void
 CControl::SetEnable (bool enable)
@@ -966,41 +967,41 @@ CControl::SetEnable (bool enable)
    SetCanFocus (Enable);
 
    Draw ();
-  };
+  }
 
-};
+}
 
 bool
 CControl::GetEnable (void)
 {
  return Enable;
-};
+}
 
 void
 CControl::SetPen (int pen)
 {
  Pen = pen;
  Draw ();
-};
+}
 
 int
 CControl::GetPen (void)
 {
  return Pen;
-};
+}
 
 CControl *
 CControl::GetOwner (void)
 {
  return Owner;
-};
+}
 
 void
 CControl::SetOwner (CControl * control)
 {
  Owner = control;
 
-};
+}
 
 void
 CControl::SetVisible (bool visible, bool update)
@@ -1020,19 +1021,19 @@ CControl::SetVisible (bool visible, bool update)
    }
  else
   Visible = visible;
-};
+}
 
 bool
 CControl::GetVisible (void)
 {
  return Visible;
-};
+}
 
 void
 CControl::SetPopupMenu (CPMenu * poupmenu)
 {
  PopupMenu = poupmenu;
-};
+}
 
 void
 CControl::SetFocus (bool focus)
@@ -1048,9 +1049,9 @@ CControl::SetFocus (bool focus)
     {
      Win->SetControlOnFocus (NULL);
      focus_out ();
-    };
-  };
-};
+    }
+  }
+}
 
 bool
 CControl::GetFocus (void)
@@ -1059,37 +1060,37 @@ CControl::GetFocus (void)
   return true;
  else
   return false;
-};
+}
 
 void
 CControl::SetCanFocus (bool canfocus)
 {
  CanFocus = canfocus;
-};
+}
 
 bool
 CControl::GetCanFocus (void)
 {
  return CanFocus;
-};
+}
 
 bool
 CControl::GetDynamic (void)
 {
  return Dynamic;
-};
+}
 
 int
 CControl::GetChildCount (void)
 {
  return ChildCount;
-};
+}
 
 CControl *
 CControl::GetChild (uint child)
 {
  return Child[child];
-};
+}
 
 CControl *
 CControl::GetChildByName (const String child)
@@ -1098,19 +1099,19 @@ CControl::GetChildByName (const String child)
   if (Child[a]->GetName ().compare (child) == 0)
    return Child[a];
  return NULL;
-};
+}
 
 void
 CControl::SetFOwner (CControl * control)
 {
  FOwner = control;
-};
+}
 
 CControl *
 CControl::GetFOwner (void)
 {
  return FOwner;
-};
+}
 
 //operators
 
@@ -1122,14 +1123,14 @@ CControl::operator new (size_t sz){
   puts ("out of memory");
  m->Dynamic = true;
  return (void *) m;
-};
+}
 
 void *
 CControl::operator new[] (size_t sz)
  {
   //printf ("operator new[]: %ld Bytes\n", sz);
   return::new char[sz];
- };
+ }
 
 void
 CControl::operator delete(void *p)
@@ -1144,7 +1145,7 @@ CControl::mouse_move (SDL_Event event)
 {
  if ((FOwner) && (EvMouseMove))
   (FOwner->*EvMouseMove) (this, 0, event.motion.x -RX, event.motion.y -RY, event.motion.state);
-};
+}
 
 void
 CControl::button_press (SDL_Event event)
@@ -1166,7 +1167,7 @@ CControl::button_press (SDL_Event event)
      //Application.ACreateWindow (SubMenu,Win);
      //Application->ACreateWindow (PopupMenu);
      PopupMenu->WCreate (Win);
-    };
+    }
 
 #ifdef _ONEWIN
    PopupMenu->SetX (x);
@@ -1180,7 +1181,7 @@ CControl::button_press (SDL_Event event)
    PopupMenu->ShowExclusive ();
    
    }
-};
+}
 
 void
 CControl::button_release (SDL_Event event)
@@ -1200,7 +1201,7 @@ CControl::button_release (SDL_Event event)
      (FOwner->*EvMouseButtonDoubleClick) (this, event.button.button,
                                           event.button.x, event.button.y,
                                           event.button.state);
-    };
+    }
   }
  else
   {
@@ -1211,28 +1212,28 @@ CControl::button_release (SDL_Event event)
                                     event.button.state);
     }
    BTimeClick = BTimePress;
-  };
+  }
 
  if ((event.button.button == 3) && (PopupMenu != NULL))
   {
    PopupMenu->SetVisible (false);
    Win->Draw ();
-  };
-};
+  }
+}
 
 void
 CControl::key_press (SDL_Event event)
 {
  if ((FOwner) && (EvKeyboardPress))
   (FOwner->*EvKeyboardPress) (this, event.key.keysym.sym, 0, event.key.state);
-};
+}
 
 void
 CControl::key_release (SDL_Event event)
 {
  if ((FOwner) && (EvKeyboardRelease))
   (FOwner->*EvKeyboardRelease) (this, event.key.keysym.sym, 0, event.key.state);
-};
+}
 
 void
 CControl::focus_in (void)
@@ -1240,7 +1241,7 @@ CControl::focus_in (void)
  Update ();
  if ((FOwner) && (EvOnFocusIn))
   (FOwner->*EvOnFocusIn) (this);
-};
+}
 
 void
 CControl::focus_out (void)
@@ -1248,7 +1249,7 @@ CControl::focus_out (void)
  Update ();
  if ((FOwner) && (EvOnFocusOut))
   (FOwner->*EvOnFocusOut) (this);
-};
+}
 
 void
 CControl::pointer_in (void)
@@ -1256,7 +1257,7 @@ CControl::pointer_in (void)
  PointerOn = true;
  if ((FOwner) && (PointerIn))
   (FOwner->*PointerIn) (this);
-};
+}
 
 void
 CControl::pointer_out (void)
@@ -1264,12 +1265,19 @@ CControl::pointer_out (void)
  PointerOn = false;
  if ((FOwner) && (PointerOut))
   (FOwner->*PointerOut) (this);
-};
+}
 
 void
 CControl::on_draw (void)
 {
  if ((FOwner) && (EvOnDraw))
   (FOwner->*EvOnDraw) (this);
-};
+}
+
+
+bool 
+CControl::GetCanVisible (void)
+{
+  return CanVisible;
+}
 

@@ -39,7 +39,7 @@ CFileDialog::CFileDialog (void)
   CanFocus = false;
   CanExecuteEvent = false;
   SetClass ("CFileDialog");
-
+  CanVisible = false;
   SetVisible (false,false);
   SetCanExecuteEvent (false);
   SetSaveUnder (true);

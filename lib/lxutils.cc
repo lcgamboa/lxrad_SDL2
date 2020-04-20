@@ -210,10 +210,31 @@ lxSize
 lxBitmap::GetSize(void)
 {
  lxSize t;
- SDL_QueryTexture(Texture, NULL, NULL, &t.x, &t.y);
+ int w,h;
+ SDL_QueryTexture(Texture, NULL, NULL, &w, &h);
+
+ t.SetWidth(w);
+ t.SetHeight(h);
  return t;
 }
 
+unsigned int
+lxBitmap::GetWidth(void)
+{
+ int w,h;
+ SDL_QueryTexture(Texture, NULL, NULL, &w, &h);
+
+ return w;
+}
+
+unsigned int
+lxBitmap::GetHeight(void)
+{
+ int w,h;
+ SDL_QueryTexture(Texture, NULL, NULL, &w, &h);
+
+ return h;
+}
 //-------------------------------------------------------------------------
 
 bool

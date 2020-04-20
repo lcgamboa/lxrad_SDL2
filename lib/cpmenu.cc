@@ -43,6 +43,7 @@ CPMenu::CPMenu (void)
   SetVisible (false);
   SetOverrideRedirect (true);
   SetSaveUnder (true);
+  CanVisible = false;
   SetCanExecuteEvent (false);
   #ifdef _ONEWIN
   OverWin=true;

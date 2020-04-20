@@ -32,12 +32,13 @@ CMenu::CMenu (void)
 {
   CanFocus = false;
   NextItemX = 0;
+  CanVisible = false;
   SetClass ("CMenu");
   SetX (0);
   SetY (0);
   SetHeight (25);
   SetWidth (800);
-};
+}
 
 void
 CMenu::Draw (void)
