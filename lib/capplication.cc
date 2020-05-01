@@ -303,7 +303,6 @@ CApplication::ProcessEvents (void)
    }
   }
  
- //usleep (50);
 
 while(1)
 {	
@@ -311,6 +310,9 @@ while(1)
  ec = SDL_PollEvent (&AEvent);
  if (ec == 0)
   {
+#ifndef __EMSCRIPTEN__
+   usleep (1000); //idle
+#endif
    if ((HintControl)&&(time (NULL) - HintTime > 1))
     {
      if (HintControl->GetHint ().size () > 0)
