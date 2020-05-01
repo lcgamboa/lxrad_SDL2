@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
+   Copyright (c) : 2001-2020  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -29,11 +29,6 @@
 #include<time.h>
 #include<unistd.h>
 
-#ifdef HAVE_LIBPTHREAD
-#include<pthread.h>
-pthread_mutex_t Display_Lock;
-#endif
-
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
@@ -57,17 +52,10 @@ CApplication::CApplication (void)
  HintY = 0;
  MWindow = NULL;
  LMWindow = NULL;
-#ifdef HAVE_LIBPTHREAD
- pthread_mutex_init (&Display_Lock, NULL);
- pthread_mutex_lock (&Display_Lock);
-#endif
 }
 
 CApplication::~CApplication (void)
 {
-#ifdef HAVE_LIBPTHREAD
- pthread_mutex_destroy (&Display_Lock);
-#endif
  TTF_Quit ();
  IMG_Quit ();
  SDL_Quit ();
@@ -240,9 +228,6 @@ CApplication::Load (void)
  if (Exit)
   return;
 
-#ifdef HAVE_LIBPTHREAD
- pthread_mutex_unlock (&Display_Lock);
-#endif
  if (AWindowCount == -1)
   {
    eprint ("No Windows!\n");

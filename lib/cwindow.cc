@@ -30,11 +30,6 @@
 #include"../include/capplication.h"
 #include"../include/newcontrolbycname.h"
 
-#ifdef LIBPTHREAD
-#include<pthread.h>
-//extern pthread_mutex_t Display_Lock;
-#endif
-
 
 //CWindow _______________________________________________________________
 
@@ -721,7 +716,6 @@ CWindow::WEvents (SDL_Event WEvent)
          int se=0;
      if(Width != (uint)LEvent.xconfigure.width)se=1;
          if(Height != (uint)LEvent.xconfigure.height)se=1;
-     //pthread_mutex_lock (&Display_Lock);
          XLockDisplay(disp);
          X = LEvent.xconfigure.x;
          Y = LEvent.xconfigure.y;
@@ -735,7 +729,6 @@ CWindow::WEvents (SDL_Event WEvent)
        Draw();
      }
          XUnlockDisplay(disp);
-         //pthread_mutex_unlock (&Display_Lock);
        }
    }
   */
