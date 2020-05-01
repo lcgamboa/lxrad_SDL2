@@ -275,11 +275,9 @@ CApplication::ProcessEvents (void)
 {
  CWindow * wn = NULL;
  int ec; //events in queue
-#ifndef HAVE_LIBPTHREAD
  struct timeval tv;
  long int elapsed;
  static int trun=0;
-#endif
 
 #ifdef _ONEWIN
  ARootWindow->Draw ();
@@ -289,7 +287,6 @@ CApplication::ProcessEvents (void)
 #endif
 
 
-#ifndef HAVE_LIBPTHREAD
  if (!MWindow)
   {
    if(!trun)
@@ -311,16 +308,17 @@ CApplication::ProcessEvents (void)
       }
     }
 
+#ifndef HAVE_LIBPTHREAD
    for (int t = 0; t <= ThreadCount; t++)
     {
      ThreadList[t]->on_run ();
     }
+#endif
     trun =0;
    }
   }
-#else 
- usleep (50);
-#endif
+ 
+ //usleep (50);
 
 while(1)
 {	
@@ -589,7 +587,6 @@ CApplication::GetModalWindow (void)
  return MWindow;
 }
 
-#ifndef HAVE_LIBPTHREAD
 
 void
 CApplication::AddTimer (CTimer * tm)
@@ -626,6 +623,8 @@ CApplication::RemoveTimer (CTimer *tm)
    //printf("Timer %i Removed: %s\n",TimerCount,tm->GetName().c_str()); 
   }
 }
+
+#ifndef HAVE_LIBPTHREAD
 
 void
 CApplication::AddThread (CThread * td)
