@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
+   Copyright (c) : 2001-2020  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -68,9 +68,11 @@ CWindow::CWindow (void)
  EvOnHide = NULL;
  EvOnEnter = NULL;
  EvOnLeave = NULL;
-};
+}
 
-CWindow::~CWindow (void) { };
+CWindow::~CWindow (void) 
+{ 
+}
 
 void
 CWindow::WCreate (CWindow* window)
@@ -142,7 +144,7 @@ CWindow::WCreate (CWindow* window)
   SDL_SetWindowPosition (WWindow, X, Y);
 
  on_create ();
-};
+}
 
 void
 CWindow::Destroy (void)
@@ -156,7 +158,7 @@ CWindow::Destroy (void)
   SDL_DestroyWindow (WWindow);
  WWindow = NULL;
  Renderer = NULL;
-};
+}
 
 void
 CWindow::Draw (void)
@@ -206,9 +208,7 @@ CWindow::Draw (void)
   }
  else
   {
-#ifndef _ONEWIN    
    if (Redraw ==0 )return;
-#endif
    SDL_RenderClear (Renderer);
    Paint->InitDraw (this);
    Paint->Pen.SetColor (Color);
@@ -225,19 +225,19 @@ void
 CWindow::SetPixmapBuffer (bool pbuffer)
 {
  PixmapBuffer = pbuffer;
-};
+}
 
 bool
 CWindow::GetPixmapBuffer (void)
 {
  return PixmapBuffer;
-};
+}
 
 SDL_Texture*
 CWindow::GetPixmap (void)
 {
  return WPixmap;
-};
+}
 
 void
 CWindow::DestroyPixmap (void) {
@@ -247,7 +247,8 @@ CWindow::DestroyPixmap (void) {
    XFreePixmap (ADisplay , WPixmap);
    WPixmap=0;
  };
-  */ };
+  */ 
+}
 
 void
 CWindow::CreatePixmap (bool draw) {
@@ -266,7 +267,8 @@ CWindow::CreatePixmap (bool draw) {
  }
  else
 WPixmap=WWindow;
-  */ };
+  */ 
+}
 
 void
 CWindow::DestroyChild (CControl * control)
@@ -274,14 +276,14 @@ CWindow::DestroyChild (CControl * control)
  if (control == ControlOnFocus)
   ControlOnFocus = NULL;
  CControl::DestroyChild (control);
-};
+}
 
 void
 CWindow::DestroyChilds (void)
 {
  ControlOnFocus = NULL;
  CControl::DestroyChilds ();
-};
+}
 
 void
 CWindow::WDestroy (void)
@@ -331,8 +333,8 @@ CWindow::Show (void)
     }
    //Draw ();
    Update ();
-  };
-};
+  }
+}
 
 void
 CWindow::ShowExclusive (void)
@@ -340,7 +342,7 @@ CWindow::ShowExclusive (void)
  Show ();
  CanExitExclusive = true;
  Application->SetModalWindow (this);
-};
+}
 
 void
 CWindow::Hide (void)
@@ -366,7 +368,7 @@ CWindow::HideExclusive (void)
  CanExitExclusive = false;
  Application->SetModalWindow (NULL);
  Hide ();
-};
+}
 
 void
 CWindow::Update (void)
@@ -380,8 +382,8 @@ CWindow::Update (void)
       Child[i]->Update ();
      else
       Child[i]->Draw ();
-    };
-  };
+    }
+  }
  CControl::Update ();
  
  if (!OverWin)
@@ -395,7 +397,7 @@ CWindow::Update (void)
 #endif   
    SDL_RenderPresent (Renderer);
   }
-};
+}
 
 void
 CWindow::Update (SDL_Rect Reg)
@@ -429,7 +431,7 @@ CWindow::Update (SDL_Rect Reg)
      XDestroyRegion (Reg);
    };
   */
-};
+}
 
 void
 CWindow::SetOverrideRedirect (bool oredirect)
@@ -460,7 +462,7 @@ bool predicate (Display *display,XEvent *event,XPointer arg)
     return 1;
   else
     return 0;
-};
+}
  */
 
 bool
@@ -736,7 +738,7 @@ CWindow::WEvents (SDL_Event WEvent)
  LEvent = WEvent;
 
  return ret;
-};
+}
 
 CStringList
 CWindow::GetContext (void)
@@ -752,7 +754,7 @@ CWindow::GetContext (void)
   Context.AddLine (xml_out (lxT("EvOnEnter"), lxT("Event"), btoa (GetEv ())));
   Context.AddLine (xml_out (lxT("EvOnLeave"), lxT("Event"), btoa (GetEv ())));
   return Context;
-};
+}
 
 void
 CWindow::SetContext (CStringList context)
@@ -802,9 +804,9 @@ CWindow::CirculateFocus (bool asc)
          ControlOnFocus = Child[c + 1];
          CirculateFocus (asc);
          return;
-        };
-      };
-    };
+        }
+      }
+    }
    if (Child[0]->GetCanFocus ())
     {
      Child[0]->SetFocus (true);
@@ -830,15 +832,15 @@ CWindow::CirculateFocus (bool asc)
        }
       else
        ControlOnFocus = Child[c - 1];
-     };
-  };
-};
+     }
+  }
+}
 
 void
 CWindow::SetFocus (void)
 {
  SDL_RaiseWindow (WWindow);
-};
+}
 
 
 
@@ -848,43 +850,43 @@ SDL_Window*
 CWindow::GetWWindow (void)
 {
  return WWindow;
-};
+}
 
 void
 CWindow::SetCanDestroy (bool candestroy)
 {
  CanDestroy = candestroy;
-};
+}
 
 bool
 CWindow::GetCanDestroy (void)
 {
  return CanDestroy;
-};
+}
 
 void
 CWindow::SetXMouse (uint x)
 {
  XMouse = x;
-};
+}
 
 uint
 CWindow::GetXMouse (void)
 {
  return XMouse;
-};
+}
 
 void
 CWindow::SetYMouse (uint y)
 {
  YMouse = y;
-};
+}
 
 uint
 CWindow::GetYMouse (void)
 {
  return YMouse;
-};
+}
 
 void
 CWindow::SetTitle (const String & title)
@@ -894,15 +896,15 @@ CWindow::SetTitle (const String & title)
  if ((WWindow)&&(!OverWin))
   {
    SDL_SetWindowTitle (WWindow, Title.c_str ());
-  };
+  }
 
-};
+}
 
 String
 CWindow::GetTitle (void)
 {
  return Title;
-};
+}
 
 CControl *
 CWindow::GetControlOnFocus (void)
@@ -911,7 +913,7 @@ CWindow::GetControlOnFocus (void)
   return ControlOnFocus;
  else
   return NULL;
-};
+}
 
 void
 CWindow::SetControlOnFocus (CControl * controlonfocus)
@@ -921,9 +923,9 @@ CWindow::SetControlOnFocus (CControl * controlonfocus)
    CControl *last = ControlOnFocus;
    ControlOnFocus = NULL;
    last->focus_out ();
-  };
+  }
  ControlOnFocus = controlonfocus;
-};
+}
 
 CControl *
 CWindow::GetLastControl (void)
@@ -932,13 +934,13 @@ CWindow::GetLastControl (void)
   return LastControl;
  else
   return NULL;
-};
+}
 
 void
 CWindow::SetLastControl (CControl * lastcontrol)
 {
  LastControl = lastcontrol;
-};
+}
 
 void
 CWindow::SetX (int x)
@@ -948,7 +950,7 @@ CWindow::SetX (int x)
   {
    SDL_SetWindowPosition (WWindow, X, Y);
   }
-};
+}
 
 void
 CWindow::SetY (int y)
@@ -958,7 +960,7 @@ CWindow::SetY (int y)
   {
    SDL_SetWindowPosition (WWindow, X, Y);
   }
-};
+}
 
 void
 CWindow::SetWidth (uint width)
@@ -968,7 +970,7 @@ CWindow::SetWidth (uint width)
   {
    SDL_SetWindowSize (WWindow, Width, Height);
   }
-};
+}
 
 void
 CWindow::SetHeight (uint height)
@@ -978,7 +980,7 @@ CWindow::SetHeight (uint height)
   {
    SDL_SetWindowSize (WWindow, Width, Height);
   }
-};
+}
 
 //operators
 
@@ -991,7 +993,7 @@ new (size_t sz){
  m->Dynamic = true;
  m->CanDestroy = true;
  return (void *) m;
-};
+}
 
 //eventos
 
@@ -1000,42 +1002,42 @@ CWindow::on_create (void)
 {
  if ((FOwner) && (EvOnCreate))
   (FOwner->*EvOnCreate) (this);
-};
+}
 
 void
 CWindow::on_destroy (void)
 {
  if ((FOwner) && (EvOnDestroy))
   (FOwner->*EvOnDestroy) (this);
-};
+}
 
 void
 CWindow::on_show (void)
 {
  if ((FOwner) && (EvOnShow))
   (FOwner->*EvOnShow) (this);
-};
+}
 
 void
 CWindow::on_hide (void)
 {
  if ((FOwner) && (EvOnHide))
   (FOwner->*EvOnHide) (this);
-};
+}
 
 void
 CWindow::on_enter (void)
 {
  if ((FOwner) && (EvOnEnter))
   (FOwner->*EvOnEnter) (this);
-};
+}
 
 void
 CWindow::on_leave (void)
 {
  if ((FOwner) && (EvOnLeave))
   (FOwner->*EvOnLeave) (this);
-};
+}
 
 int
 CWindow::LoadXMLContextAndCreateChilds (String filename, CControl* ctrl)
@@ -1162,6 +1164,12 @@ void
 CWindow::SetRedraw (void)
 {
  Redraw++;
+#ifdef _ONEWIN   
+ if(Application->GetARootWindow () != this)
+ {
+   Application->GetARootWindow ()->SetRedraw ();
+ }
+#endif
 }
 
 bool
@@ -1182,4 +1190,4 @@ CWindow::OwnerEvent (int x, int y)
   }
  else
   return false;
-};
+}

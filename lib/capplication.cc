@@ -207,10 +207,10 @@ CApplication::ADestroyWindow (CWindow * AWindow)
         AWindowList[c] = AWindowList[c + 1];
        AWindowList[AWindowCount] = NULL;
        AWindowCount--;
-      };
-    };
-  };
-};
+      }
+    }
+  }
+}
 
 
 #ifdef __EMSCRIPTEN__
@@ -219,7 +219,7 @@ void
 loop_handler (void)
 {
  Application->ProcessEvents ();
-};
+}
 #endif
 
 void
@@ -415,7 +415,7 @@ while(1)
    else
     {
 #ifndef _ONEWIN   
-     MWindow->Draw ();
+    MWindow->Draw ();
 #endif   
      if (((AEvent.type == SDL_WINDOWEVENT) && ((AEvent.window.type == SDL_WINDOWEVENT_ENTER) || (AEvent.window.type == SDL_WINDOWEVENT_EXPOSED)))
          && (AWindowCount >= 0) && (wn != NULL))
