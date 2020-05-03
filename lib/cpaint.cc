@@ -129,11 +129,9 @@ CPaint::InitDraw (CControl * control)
 void
 CPaint::DrawControl (CControl * control)
 {
- //FIXME
  SDL_SetRenderTarget (Win->GetRenderer (), NULL);
- //SDL_RenderPresent (Win->GetRenderer ());
  Win->SetRedraw ();
-};
+}
 
 void
 CPaint::Point (int x, int y)
@@ -323,9 +321,9 @@ CPaint::PutPixmap (int x, int y, int w, int h, SDL_Texture * pixmap)
  DestR.w = w;
  DestR.h = h;
  SDL_RenderCopy (Win->GetRenderer (), pixmap, NULL, &DestR);
- if (SDL_GetRenderTarget (Win->GetRenderer ()))
-  SDL_RenderPresent (Win->GetRenderer ());
-};
+ //if (SDL_GetRenderTarget (Win->GetRenderer ()))
+  //SDL_RenderPresent (Win->GetRenderer ());
+}
 
 void
 CPaint::SetLineWidth (int w)
@@ -454,8 +452,8 @@ CPaint::PutBitmap (lxBitmap* bitmap, int x, int y)
  DestR.w*=Scalex;
  DestR.h*=Scaley;
  SDL_RenderCopy (Win->GetRenderer (), bitmap->GetPixmap (), NULL, &DestR);
- if (SDL_GetRenderTarget (Win->GetRenderer ()))
-  SDL_RenderPresent (Win->GetRenderer ());
+ //if (SDL_GetRenderTarget (Win->GetRenderer ()))
+  //SDL_RenderPresent (Win->GetRenderer ());
 }
 
 void
@@ -472,7 +470,7 @@ CPaint::SetBitmap (lxBitmap* bitmap, double xs, double ys)
  DestR.w *= xs;
  DestR.h *= ys;
  SDL_RenderCopy (Win->GetRenderer (), bitmap->GetPixmap (), NULL, &DestR);
- SDL_RenderPresent (Win->GetRenderer ());
+ //SDL_RenderPresent (Win->GetRenderer ());
 
  SDL_SetRenderTarget (Win->GetRenderer (), back);
 }

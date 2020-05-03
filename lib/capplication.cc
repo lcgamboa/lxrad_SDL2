@@ -218,6 +218,7 @@ CApplication::ADestroyWindow (CWindow * AWindow)
 void
 loop_handler (void)
 {
+ Application->GetARootWindow ()->SetRedraw (); //FIXME force redraw every cicle to avoid flicker
  Application->ProcessEvents ();
 }
 #endif
@@ -310,9 +311,7 @@ while(1)
  ec = SDL_PollEvent (&AEvent);
  if (ec == 0)
   {
-#ifndef __EMSCRIPTEN__
    usleep (1000); //idle
-#endif
    if ((HintControl)&&(time (NULL) - HintTime > 1))
     {
      if (HintControl->GetHint ().size () > 0)

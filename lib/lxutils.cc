@@ -186,7 +186,7 @@ lxBitmap::lxBitmap (SDL_Surface* surf, CPWindow * win)
 
  SDL_RenderCopy (win->GetRenderer (), tim, NULL, NULL);
  SDL_DestroyTexture (tim);
- SDL_RenderPresent (win->GetRenderer ());
+ //SDL_RenderPresent (win->GetRenderer ());
 
  SDL_SetRenderTarget (win->GetRenderer (), NULL);
 
