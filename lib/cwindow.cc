@@ -30,6 +30,9 @@
 #include"../include/capplication.h"
 #include"../include/newcontrolbycname.h"
 
+#ifdef _ONEWIN
+float gscale =1.0;
+#endif
 
 //CWindow _______________________________________________________________
 
@@ -117,9 +120,10 @@ CWindow::WCreate (CWindow* window)
      printf ("Renderer could not be created! SDL Error: %s\n", SDL_GetError ());
      exit (-1);
     }
-   
+#ifdef _ONEWIN   
    //ZOOM
-   //SDL_RenderSetLogicalSize(Renderer,Width*2,Height*2);
+   SDL_RenderSetLogicalSize(Renderer,Width*gscale,Height*gscale);
+#endif
 
    //Initialize renderer color 
    SDL_SetRenderDrawColor (Renderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -209,10 +213,10 @@ CWindow::Draw (void)
  else
   {
    if (Redraw ==0 )return;
+   Paint->Pen.SetColor (Color);
    SDL_RenderClear (Renderer);
    Paint->InitDraw (this);
-   Paint->Pen.SetColor (Color);
-   Paint->Rectangle (0, 0, Width, Height);
+   //Paint->Rectangle (0, 0, Width, Height);
   }
 
  //CControl::Draw ();
@@ -516,6 +520,8 @@ CWindow::WEvents (SDL_Event WEvent)
      Width = WEvent.window.data1;
      Height = WEvent.window.data2;
      Draw ();
+#else 
+     SDL_RenderSetLogicalSize(Renderer,WEvent.window.data1*gscale,WEvent.window.data2*gscale);
 #endif     
      on_show ();
      SetRedraw();
@@ -530,6 +536,8 @@ CWindow::WEvents (SDL_Event WEvent)
      Width = WEvent.window.data1;
      Height = WEvent.window.data2;
      Draw ();
+#else
+     SDL_RenderSetLogicalSize(Renderer,WEvent.window.data1*gscale,WEvent.window.data2*gscale);
 #endif    
      ret = 1;
      break;
@@ -679,6 +687,37 @@ CWindow::WEvents (SDL_Event WEvent)
    ret = 1;
    break;
 #endif   
+   case SDL_KEYDOWN:
+     if(this == Application->GetAWindow (0))
+     {
+     if(WEvent.key.keysym.sym == SDLK_x)
+     {
+        gscale+=0.1;  
+        if(gscale > 4.0)
+	{
+	  gscale=4.0;
+	}
+	else
+	{
+          SDL_RenderSetLogicalSize(Renderer, Application->GetARootWindow()->GetWidth()*gscale, Application->GetARootWindow()->GetHeight()*gscale);
+        }
+     }
+     else if(WEvent.key.keysym.sym == SDLK_z)
+     {
+        gscale-=0.1;
+        if(gscale < 0.2)
+	{
+	  gscale = 0.2;
+	}
+        else
+	{	
+        SDL_RenderSetLogicalSize(Renderer, Application->GetARootWindow()->GetWidth()*gscale, Application->GetARootWindow()->GetHeight()*gscale);
+        }
+      }
+     }
+     CControl::Event (WEvent);
+   ret = 1;
+   break;
   default:
    CControl::Event (WEvent);
    ret = 1;

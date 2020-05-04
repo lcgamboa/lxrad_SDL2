@@ -32,7 +32,7 @@ LIBVER := ${VERSION}
 
 # The static lib name, the shared lib name, and the internal ('so') name of
 # the shared lib.
-LIBNAME = liblxrad_SDL2
+LIBNAME = liblxrad_SDL2_js
 LIBSHBASENAME = $(LIBNAME).so
 LIBSHLIBNAME = $(LIBNAME).so.$(LIBVER)
 LIBSTLIBNAME = $(LIBNAME).a

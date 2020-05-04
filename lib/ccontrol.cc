@@ -299,8 +299,7 @@ CControl::Event (SDL_Event event)
   {
    if (control->GetCanExecuteEvent ())
     {
-     control->Event (event);
-     return;
+     return control->Event (event);
     }
    else
     {
