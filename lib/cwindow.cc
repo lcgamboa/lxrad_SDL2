@@ -30,8 +30,58 @@
 #include"../include/capplication.h"
 #include"../include/newcontrolbycname.h"
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#include <emscripten/html5.h>
+#endif
+
 #ifdef _ONEWIN
+extern "C" {
 float gscale =1.0;
+
+
+void lxrad_scale_update(void)
+{
+#ifdef __EMSCRIPTEN__
+         double width, height;
+         emscripten_get_element_css_size("#canvas", &width, &height);
+         emscripten_set_canvas_element_size("#canvas",int(width), int(height));
+         SDL_RenderSetLogicalSize(Application->GetARootWindow()->GetRenderer(), 
+			  (int)(width*gscale), (int)(height*gscale));
+#else
+         SDL_RenderSetLogicalSize(Application->GetARootWindow()->GetRenderer(), 
+			  Application->GetARootWindow()->GetWidth()*gscale, Application->GetARootWindow()->GetHeight()*gscale);
+#endif
+
+}
+
+void lxrad_scale_down(void)
+{
+        gscale+=0.1;  
+        if(gscale > 4.0)
+	{
+	  gscale=4.0;
+	}
+	else
+	{
+          lxrad_scale_update();	
+     	}
+}
+
+void lxrad_scale_up(void)
+{
+        gscale-=0.1;
+        if(gscale < 0.2)
+	{
+	  gscale = 0.2;
+	}
+        else
+	{	
+          lxrad_scale_update();	
+	}
+      }
+}
+
 #endif
 
 //CWindow _______________________________________________________________
@@ -122,7 +172,7 @@ CWindow::WCreate (CWindow* window)
     }
 #ifdef _ONEWIN   
    //ZOOM
-   SDL_RenderSetLogicalSize(Renderer,Width*gscale,Height*gscale);
+   lxrad_scale_update();	
 #endif
 
    //Initialize renderer color 
@@ -473,7 +523,9 @@ bool
 CWindow::WEvents (SDL_Event WEvent)
 {
  int ret = 0;
-
+#ifdef __EMSCRIPTEN__
+ double width, height;
+#endif
  switch (WEvent.type)
   {
   case SDL_WINDOWEVENT:
@@ -521,7 +573,14 @@ CWindow::WEvents (SDL_Event WEvent)
      Height = WEvent.window.data2;
      Draw ();
 #else 
+#ifdef __EMSCRIPTEN__
+         emscripten_get_element_css_size("#canvas", &width, &height);
+         emscripten_set_canvas_element_size("#canvas",int(width), int(height));
+         SDL_RenderSetLogicalSize(Application->GetARootWindow()->GetRenderer(), 
+			  (int)(width*gscale), (int)(height*gscale));
+#else
      SDL_RenderSetLogicalSize(Renderer,WEvent.window.data1*gscale,WEvent.window.data2*gscale);
+#endif
 #endif     
      on_show ();
      SetRedraw();
@@ -537,7 +596,14 @@ CWindow::WEvents (SDL_Event WEvent)
      Height = WEvent.window.data2;
      Draw ();
 #else
+#ifdef __EMSCRIPTEN__
+         emscripten_get_element_css_size("#canvas", &width, &height);
+         emscripten_set_canvas_element_size("#canvas",int(width), int(height));
+         SDL_RenderSetLogicalSize(Application->GetARootWindow()->GetRenderer(), 
+			  (int)(width*gscale), (int)(height*gscale));
+#else
      SDL_RenderSetLogicalSize(Renderer,WEvent.window.data1*gscale,WEvent.window.data2*gscale);
+#endif
 #endif    
      ret = 1;
      break;
@@ -690,29 +756,13 @@ CWindow::WEvents (SDL_Event WEvent)
    case SDL_KEYDOWN:
      if(this == Application->GetAWindow (0))
      {
-     if(WEvent.key.keysym.sym == SDLK_x)
-     {
-        gscale+=0.1;  
-        if(gscale > 4.0)
-	{
-	  gscale=4.0;
-	}
-	else
-	{
-          SDL_RenderSetLogicalSize(Renderer, Application->GetARootWindow()->GetWidth()*gscale, Application->GetARootWindow()->GetHeight()*gscale);
-        }
-     }
-     else if(WEvent.key.keysym.sym == SDLK_z)
-     {
-        gscale-=0.1;
-        if(gscale < 0.2)
-	{
-	  gscale = 0.2;
-	}
-        else
-	{	
-        SDL_RenderSetLogicalSize(Renderer, Application->GetARootWindow()->GetWidth()*gscale, Application->GetARootWindow()->GetHeight()*gscale);
-        }
+      if(WEvent.key.keysym.sym == SDLK_x)
+      {
+	lxrad_scale_up();     
+      }
+      else if(WEvent.key.keysym.sym == SDLK_z)
+      {
+	lxrad_scale_down();     
       }
      }
      CControl::Event (WEvent);
