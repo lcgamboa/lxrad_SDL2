@@ -45,7 +45,7 @@ CMessage::CMessage (void)
   //button1
   button1.SetText ("OK");
   button1.SetX (110);
-  button1.SetY (75);
+  button1.SetY (70);
   button1.SetFOwner (this);
   button1.EvMouseButtonRelease = EVMOUSEBUTTONRELEASE & CMessage::ButtonRelease1;
   CreateChild (&button1);
@@ -56,7 +56,7 @@ CMessage::CMessage (void)
   string1.SetWidth (285);
   string1.SetHeight (75);
   CreateChild (&string1);
-};
+}
 
 
 void
@@ -64,7 +64,7 @@ CMessage::ButtonRelease1 (CControl * control, uint button, uint x, uint y,
 			  uint state)
 {
   HideExclusive ();
-};
+}
 
 CMessage wmessage;
  
@@ -85,4 +85,30 @@ Message (String str)
   wmessage.Draw ();
   wmessage.ShowExclusive ();
   //wmessage.SetCanDestroy (true);
-};
+}
+
+void
+Message_sz (String str, int Width, int Height)
+{
+  wmessage.string1.SetText (str);
+  
+  wmessage.SetWidth (Width);
+  wmessage.SetHeight (Height);
+  wmessage.button1.SetX ((Width- wmessage.button1.GetWidth())/2);
+  wmessage.button1.SetY (Height-65);
+  wmessage.string1.SetWidth (Width-5);
+  wmessage.string1.SetHeight (Height-80);
+
+#ifdef _ONEWIN  
+  wmessage.SetX((Application->GetARootWindow()->GetWidth ()- wmessage.GetWidth())/2);
+  wmessage.SetY((Application->GetARootWindow()->GetHeight ()- wmessage.GetHeight())/2);
+#else
+  wmessage.SetX(((Application->GetARootWindow()->GetWidth ()- wmessage.GetWidth())/2)+Application->GetARootWindow()->GetX ());
+  wmessage.SetY(((Application->GetARootWindow()->GetHeight ()- wmessage.GetHeight())/2)+Application->GetARootWindow()->GetY ());
+#endif  
+  if(!wmessage.GetWWindow ())
+    wmessage.WCreate ();
+  wmessage.Draw ();
+  wmessage.ShowExclusive ();
+  //wmessage.SetCanDestroy (true);
+}
