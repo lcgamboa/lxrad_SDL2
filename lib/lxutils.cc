@@ -294,7 +294,7 @@ lxColor::lxColor (const char * name)
 }
 
 lxString
-lxColor::GetAslxString (int flags)
+lxColor::GetAsString (int flags)
 {
   char cname[10];
  

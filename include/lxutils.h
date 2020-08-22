@@ -149,7 +149,7 @@ public:
   lxColor();
   lxColor(SDL_Color color);
   lxColor(const char * name);
-  lxString GetAslxString(int flags =0);
+  lxString GetAsString(int flags =0);
   unsigned char GetR(void){return Color.r;};
   unsigned char GetG(void){return Color.g;};
   unsigned char GetB(void){return Color.b;};

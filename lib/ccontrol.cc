@@ -495,7 +495,7 @@ CControl::GetContext (void)
   Context.AddLine (xml_out (lxT("Hint"), lxT("lxString"), GetHint ()));
   Context.AddLine (xml_out (lxT("Enable"), lxT("bool"), itoa (GetEnable ())));
   Context.AddLine (xml_out (lxT("Visible"), lxT("bool"), itoa (GetVisible ())));
-  Context.AddLine (xml_out (lxT("Color"), lxT("lxString"), GetColor ().GetAslxString (lxC2S_HTML_SYNTAX) ));
+  Context.AddLine (xml_out (lxT("Color"), lxT("lxString"), GetColor ().GetAsString (lxC2S_HTML_SYNTAX) ));
 
   if (PopupMenu)
     Context.AddLine (xml_out (lxT("PopupMenu"), lxT("PopupMenu"), PopupMenu->GetName ()));

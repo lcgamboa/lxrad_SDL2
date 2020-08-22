@@ -271,7 +271,7 @@ CColorDialog::Run (void)
 lxString
 CColorDialog::GetColorName (void)
 {
- return Color.GetAslxString();
+ return Color.GetAsString();
 }
 
 void
