@@ -84,19 +84,19 @@ CButton::Draw (void)
     };
 };
 
-CStringList CButton::GetContext (void)
+lxStringList CButton::GetContext (void)
 {
   CControl::GetContext ();
-  Context.AddLine (xml_out (lxT("Text"), lxT("String"), GetText ()));
+  Context.AddLine (xml_out (lxT("Text"), lxT("lxString"), GetText ()));
 
   return Context;
 };
 
 void
-CButton::SetContext (CStringList context)
+CButton::SetContext (lxStringList context)
 {	
   Erase ();
-  String name, type, value;
+  lxString name, type, value;
   CControl::SetContext (context);
   for (uint i = 0; i < context.GetLinesCount (); i++)
     {
@@ -123,13 +123,13 @@ CButton::GetPress (void)
 };
 
 void
-CButton::SetText (String t)
+CButton::SetText (lxString t)
 {
   Text->SetText (t);
   Draw ();
 };
 
-String CButton::GetText (void)
+lxString CButton::GetText (void)
 {
   return Text->GetText ();
 };

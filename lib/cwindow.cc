@@ -829,11 +829,11 @@ CWindow::WEvents (SDL_Event WEvent)
  return ret;
 }
 
-CStringList
+lxStringList
 CWindow::GetContext (void)
 {
   CControl::GetContext ();
-  Context.AddLine (xml_out (lxT("Title"), lxT("String"), GetTitle ()));
+  Context.AddLine (xml_out (lxT("Title"), lxT("lxString"), GetTitle ()));
   Context.AddLine (xml_out (lxT("OverrideRedirect"), lxT("bool"), itoa (GetOverrideRedirect ())));
   //events 
   Context.AddLine (xml_out (lxT("EvOnCreate"), lxT("Event"), btoa (GetEv ())));
@@ -846,9 +846,9 @@ CWindow::GetContext (void)
 }
 
 void
-CWindow::SetContext (CStringList context)
+CWindow::SetContext (lxStringList context)
 {
-  String name, type, value;
+  lxString name, type, value;
   CControl::SetContext (context);
   for (uint i = 0; i < context.GetLinesCount (); i++)
     {
@@ -978,7 +978,7 @@ CWindow::GetYMouse (void)
 }
 
 void
-CWindow::SetTitle (const String & title)
+CWindow::SetTitle (const lxString & title)
 {
  Title = title;
 
@@ -989,7 +989,7 @@ CWindow::SetTitle (const String & title)
 
 }
 
-String
+lxString
 CWindow::GetTitle (void)
 {
  return Title;
@@ -1129,11 +1129,11 @@ CWindow::on_leave (void)
 }
 
 int
-CWindow::LoadXMLContextAndCreateChilds (String filename, CControl* ctrl)
+CWindow::LoadXMLContextAndCreateChilds (lxString filename, CControl* ctrl)
 {
   FILE* file2;
-  CStringList list;
-  String line;
+  lxStringList list;
+  lxString line;
 
   file2 = fopen (filename.c_str(),"r");
   rewind(file2);
@@ -1168,7 +1168,7 @@ CWindow::LoadXMLContextAndCreateChilds (String filename, CControl* ctrl)
 
               while (line.compare (lxT ("</") + ctrl->GetName () + lxT (">")) != 0)
                 {
-                  String controlclass, ctype, name, cname;
+                  lxString controlclass, ctype, name, cname;
 
                   cname = line.substr (1, line.size () - 2);
                   fgetline (file2, line);

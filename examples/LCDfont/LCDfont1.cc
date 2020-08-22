@@ -96,7 +96,7 @@ CPWindow1::draw1_EvOnDraw(CControl * control)
   
   
   //limpa tela
-  draw1.Canvas.SetBgColor(String(lxT("green")));
+  draw1.Canvas.SetBgColor(lxString(lxT("green")));
   draw1.Canvas.Rectangle(1,0,0,w,h);
   
   //desenha linhas
@@ -113,7 +113,7 @@ CPWindow1::draw1_EvOnDraw(CControl * control)
 
   
   //Draw box
-  draw1.Canvas.SetBgColor(String(lxT("black")));
+  draw1.Canvas.SetBgColor(lxString(lxT("black")));
   for(int i=0;i<5;i++)
   {
     for(int j=0;j<8;j++)
@@ -125,7 +125,7 @@ CPWindow1::draw1_EvOnDraw(CControl * control)
   
   
   draw1.Canvas.End();
-  String t=lxT("{");
+  lxString t=lxT("{");
   
   unsigned char x[6];
   
@@ -137,9 +137,9 @@ CPWindow1::draw1_EvOnDraw(CControl * control)
       x[i]|=font[i][j]<<j;  
     }  
     if(i< 4)
-      t+=String().Format(lxT("0x%02X"),x[i])+lxT(" ,");
+      t+=lxString().Format(lxT("0x%02X"),x[i])+lxT(" ,");
     else
-      t+=String().Format(lxT("0x%02X"),x[i])+lxT("},\n");     
+      t+=lxString().Format(lxT("0x%02X"),x[i])+lxT("},\n");     
   }
   
   edit1.SetText(t);

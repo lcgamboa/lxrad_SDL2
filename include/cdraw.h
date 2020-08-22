@@ -32,7 +32,7 @@
 class CDraw:public CControl
 {
 private:
-  String FileName;
+  lxString FileName;
   bool Transparent;
   SDL_Texture* CPixmap;
   SDL_Color BColor;
@@ -41,20 +41,20 @@ public:
     CDraw (void);
    ~CDraw (void);
   void Draw (void);
-  bool SetPixmapFileName (String filename);
-  String GetPixmapFileName (void);
-  void WritePixmapToFile (String filename);
-  void WriteImgToFile (String filename);
+  bool SetPixmapFileName (lxString filename);
+  lxString GetPixmapFileName (void);
+  void WritePixmapToFile (lxString filename);
+  void WriteImgToFile (lxString filename);
   int Create (CControl * control);
   void Destroy (void);
   void SetWidth (uint Width);
   void SetHeight (uint height);
   bool GetTransparent (void);
   void SetTransparent (bool);
-  CStringList GetContext (void);
-  void SetContext (CStringList context);
-  bool SetImgFileName(String iname);
-  bool SetImgFileName(String iname, float sx, float sy);
+  lxStringList GetContext (void);
+  void SetContext (lxStringList context);
+  bool SetImgFileName(lxString iname);
+  bool SetImgFileName(lxString iname, float sx, float sy);
 };
 
 #endif

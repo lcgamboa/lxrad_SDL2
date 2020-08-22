@@ -192,7 +192,7 @@ CScroll::Draw (void)
  CControl::Draw ();
 };
 
-CStringList
+lxStringList
 CScroll::GetContext (void)
 {
  CControl::GetContext ();
@@ -201,7 +201,7 @@ CScroll::GetContext (void)
 };
 
 void
-CScroll::SetContext (CStringList context)
+CScroll::SetContext (lxStringList context)
 {
  Erase ();
  CControl::SetContext (context);

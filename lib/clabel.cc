@@ -286,18 +286,18 @@ CLabel::Create (CControl * control)
 
 
 
-CStringList CLabel::GetContext (void)
+lxStringList CLabel::GetContext (void)
 {
   CControl::GetContext ();
-  Context.AddLine (xml_out (lxT("Text"), lxT("String"), GetText ()));
+  Context.AddLine (xml_out (lxT("Text"), lxT("lxString"), GetText ()));
   Context.AddLine (xml_out (lxT("Align"), lxT("CAlign"), itoa (GetAlign ())));
   return Context;
 }
 
 void
-CLabel::SetContext (CStringList context)
+CLabel::SetContext (lxStringList context)
 {
-  String name, type, value;
+  lxString name, type, value;
 
   CControl::SetContext (context);
   for (uint i = 0; i < context.GetLinesCount (); i++)
@@ -312,14 +312,14 @@ CLabel::SetContext (CStringList context)
 
 //propierties
 void
-CLabel::SetText (String text)
+CLabel::SetText (lxString text)
 {
   Erase ();
   Text = text;
   Draw ();
 };
 
-String CLabel::GetText (void)
+lxString CLabel::GetText (void)
 {
   return Text;
 };

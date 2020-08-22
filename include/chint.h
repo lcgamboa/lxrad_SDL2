@@ -39,6 +39,6 @@ public:
   CHint (void);
 };
 
-void WHint (String str,int x,int y);
+void WHint (lxString str,int x,int y);
 
 #endif

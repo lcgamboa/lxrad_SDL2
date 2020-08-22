@@ -33,7 +33,7 @@
 class CText:public CEdit
 {
 private:
-  CStringList Lines;
+  lxStringList Lines;
   uint PLine;
   uint PChar;
   uint CursorLin;
@@ -46,15 +46,15 @@ public:
   int Create (CControl * control);
   void Clear ();
   void AddLine (char *line);
-  void AddLine (String line);
+  void AddLine (lxString line);
   void InsertLine (char *line);
   void DelLine (void);
   void LoadFromFile (char *fname);
   void SaveToFile (char *fname);
-  void SaveToFile (String fname);
+  void SaveToFile (lxString fname);
   //propiedades
-  void SetText (String t);
-  String GetText (void);
+  void SetText (lxString t);
+  lxString GetText (void);
   void SetCursorPos (uint cursorpos);
   //void SetReadOnly(bool r);
   //bool GetReadOnly(void);

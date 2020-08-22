@@ -69,7 +69,7 @@ CMessage::ButtonRelease1 (CControl * control, uint button, uint x, uint y,
 CMessage wmessage;
  
 void
-Message (String str)
+Message (lxString str)
 {
   wmessage.string1.SetText (str);
 
@@ -88,7 +88,7 @@ Message (String str)
 }
 
 void
-Message_sz (String str, int Width, int Height)
+Message_sz (lxString str, int Width, int Height)
 {
   wmessage.string1.SetText (str);
   

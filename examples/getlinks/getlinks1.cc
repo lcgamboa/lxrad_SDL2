@@ -14,7 +14,7 @@ CPWindow1::button1_EvMouseButtonClick(CControl * control, uint button, uint x, u
   if(filedialog1.Run())
   {
   lxTextFile fin;
-  String line1,line2,line3,line4;
+  lxString line1,line2,line3,line4;
   int i,f,s;
 
   fin.Open (filedialog1.GetFileName());
@@ -76,8 +76,8 @@ CPWindow1::button2_EvMouseButtonClick(CControl * control, uint button, uint x, u
 void
 CPWindow1::button3_EvMouseButtonClick(CControl * control, uint button, uint x, uint y,uint state)
 {
-    String cmd;	
-    String file;
+    lxString cmd;	
+    lxString file;
     struct stat statf;
     
     int g,d=0;

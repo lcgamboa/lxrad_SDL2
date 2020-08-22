@@ -38,11 +38,11 @@ public:
    ~CXpmButton (void);
   void Draw (void);
   int Create (CControl * control);
-  CStringList GetContext (void);
-  void SetContext (CStringList context);
+  lxStringList GetContext (void);
+  void SetContext (lxStringList context);
   //propiedades
-  void SetPixmapFileName (String filename);
-  String GetPixmapFileName (void);
+  void SetPixmapFileName (lxString filename);
+  lxString GetPixmapFileName (void);
   void SetWidth (uint width);
   void SetHeight (uint height);
 };

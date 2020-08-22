@@ -49,7 +49,7 @@ lxTextFile::lxTextFile ()
  f = NULL;
 }
 int 
-lxTextFile::Create(String fname)
+lxTextFile::Create(lxString fname)
 {
   fn=fname;
   f=fopen(fname.c_str(),"rw");
@@ -60,7 +60,7 @@ lxTextFile::Create(String fname)
 }
 
 int
-lxTextFile::Open (String fname)
+lxTextFile::Open (lxString fname)
 {
  fn=fname;
  f = fopen (fname.c_str (), "rw");
@@ -114,7 +114,7 @@ lxTextFile::Clear(void)
 }
 
 void 
-lxTextFile::AddLine(String line)
+lxTextFile::AddLine(lxString line)
 {
  fprintf(f,"%s\n",line.c_str ());
 }
@@ -134,7 +134,7 @@ lxImage::~lxImage ()
 }
 
 bool
-lxImage::LoadFile (String fname)
+lxImage::LoadFile (lxString fname)
 {
  Surface = IMG_Load (fname.c_str ());
  if (Surface)
@@ -238,7 +238,7 @@ lxBitmap::GetHeight(void)
 //-------------------------------------------------------------------------
 
 bool
-lxSound::Create (String fname)
+lxSound::Create (lxString fname)
 {
  //FIXME	
  printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
@@ -260,7 +260,7 @@ lxSound::Play (int flags)
 //-------------------------------------------------------------------------
 
 void
-lxFileName::Assign (String fname)
+lxFileName::Assign (lxString fname)
 {
  FName = fname;
 }
@@ -273,7 +273,7 @@ lxFileName::MakeAbsolute (void)
  FName = resolved_path;
 }
 
-String
+lxString
 lxFileName::GetFullPath (void)
 {
  return FName;
@@ -293,8 +293,8 @@ lxColor::lxColor (const char * name)
  Color = ColorByName (name);
 }
 
-String
-lxColor::GetAsString (int flags)
+lxString
+lxColor::GetAslxString (int flags)
 {
   char cname[10];
  
@@ -355,7 +355,7 @@ lxSetCursor (lxCursor cursor)
 }
 
 bool
-lxFileExists (String fname)
+lxFileExists (lxString fname)
 {
  struct stat sb;
 
@@ -369,14 +369,14 @@ lxFileExists (String fname)
   return false;
 }
 
-void lxExecute(String cmd,unsigned int flags, void * arg)
+void lxExecute(lxString cmd,unsigned int flags, void * arg)
 {
  if(flags != lxEXEC_SYNC)
     cmd+=lxT(" &");	
   system(cmd.c_str());
 }
 
-String
+lxString
 lxGetCwd (void)
 {
  char cwd[1024];
@@ -387,14 +387,14 @@ lxGetCwd (void)
 }
 
 int 
-lxSetWorkingDirectory(String dir)
+lxSetWorkingDirectory(lxString dir)
 {
   return chdir(dir.c_str ());
 }
 
     
 bool 
-lxLaunchDefaultBrowser(String url)
+lxLaunchDefaultBrowser(lxString url)
 {
 #ifdef __EMSCRIPTEN__
 
@@ -406,7 +406,7 @@ if(isf)
 {
   printf("Opening file: %s \n",url.c_str()+7);
   EM_ASM_({
-    var url=UTF8ToString($0);
+    var url=UTF8TolxString($0);
     var contents = FS.readFile(url, { encoding: 'utf8' });
     var winex=window.open("example.html","examples");
     winex.document.write(contents);
@@ -416,28 +416,28 @@ if(isf)
 else
 {
   EM_ASM_({
-    var link=UTF8ToString($0);
+    var link=UTF8TolxString($0);
     window.open(link);
   }, url.c_str());
 }
 return true;
 #else	
- String cmd= lxT("xdg-open ")+url+lxT("  &");
+ lxString cmd= lxT("xdg-open ")+url+lxT("  &");
  return system(cmd.c_str ());
 #endif
 }
 
 bool 
-lxLaunchDefaultApplication(String cmd)
+lxLaunchDefaultApplication(lxString cmd)
 {
- String cmd_= lxT("xdg-open ")+cmd+lxT("  &");
+ lxString cmd_= lxT("xdg-open ")+cmd+lxT("  &");
  return system(cmd_.c_str ());
 }
 
 //-------------------------------------------------------------------------
 
 bool
-lxUnzipDir (const String &in_filename, const String &out_dirname) {
+lxUnzipDir (const lxString &in_filename, const lxString &out_dirname) {
  
  char fname[1024];
  unzFile uzf =unzOpen (in_filename.c_str ());
@@ -456,7 +456,7 @@ lxUnzipDir (const String &in_filename, const String &out_dirname) {
       unzReadCurrentFile(uzf,buff,finfo.uncompressed_size);
       unzCloseCurrentFile(uzf);
       
-      String dname=out_dirname;
+      lxString dname=out_dirname;
       dname+=dirname(fname);
       
       if(dname.length () > 0)
@@ -464,7 +464,7 @@ lxUnzipDir (const String &in_filename, const String &out_dirname) {
         lxCreateDir(dname);
        }
       
-      String name=out_dirname;
+      lxString name=out_dirname;
       name+=fname;
       
       FILE * fout=fopen(name.c_str(),"w");
@@ -485,11 +485,11 @@ lxUnzipDir (const String &in_filename, const String &out_dirname) {
  }
 
 bool
-lxZipDir (const String &in_dirname, const String &out_filename)
+lxZipDir (const lxString &in_dirname, const lxString &out_filename)
 {
-CStringList paths =lxListDirRec(in_dirname);
+lxStringList paths =lxListDirRec(in_dirname);
    
-String dname= basename(in_dirname.substr(0,in_dirname.length ()-1));
+lxString dname= basename(in_dirname.substr(0,in_dirname.length ()-1));
 
  if (paths.GetLinesCount () == 0)
   {
@@ -519,7 +519,7 @@ String dname= basename(in_dirname.substr(0,in_dirname.length ()-1));
      if (size == 0 || fread (buffer, size,1,file))
       {
        zip_fileinfo zfi = {0};
-       String fileName = dname+paths.GetLine (i).substr(in_dirname.length (),paths.GetLine (i).length ()-in_dirname.length ());
+       lxString fileName = dname+paths.GetLine (i).substr(in_dirname.length (),paths.GetLine (i).length ()-in_dirname.length ());
 
        if (0 == zipOpenNewFileInZip (zf, fileName.c_str (), &zfi, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION))
         {
@@ -555,7 +555,7 @@ lxRemoveFile (const char * fname)
 }
 
 bool 
-lxRenameFile(String oldfname, String newfname)
+lxRenameFile(lxString oldfname, lxString newfname)
 {
  return rename(oldfname.c_str(),newfname.c_str());
 }
@@ -616,15 +616,15 @@ lxCreateDir(const char * dirname)
    return 0;
 }
 
-CStringList
-lxListDirRec (const String & dirname)
+lxStringList
+lxListDirRec (const lxString & dirname)
 {
  DIR *dp;
  struct dirent *dent;
  struct stat sb;
  char fname[1024];
 
- CStringList list;
+ lxStringList list;
 
  list.Clear ();
 
@@ -645,7 +645,7 @@ lxListDirRec (const String & dirname)
       {
        if (!(!strcmp (dent->d_name, ".") || !strcmp (dent->d_name, "..")))
         {
-          CStringList list2=lxListDirRec (fname);
+          lxStringList list2=lxListDirRec (fname);
           for(unsigned int i=0;i<list2.GetLinesCount ();i++)
            {
             list.AddLine (list2.GetLine (i));
@@ -659,20 +659,20 @@ lxListDirRec (const String & dirname)
 
 }
 
-String
-lxGetUserDataDir (String appname)
+lxString
+lxGetUserDataDir (lxString appname)
 {
- return String ("/home/") + getlogin () + "/." + appname;
+ return lxString ("/home/") + getlogin () + "/." + appname;
 }
 
-String
-lxGetTempDir (String appname)
+lxString
+lxGetTempDir (lxString appname)
 {
  return "/tmp/";
 }
 
-String
-lxGetExecutablePath (String appname)
+lxString
+lxGetExecutablePath (lxString appname)
 {
  return "/usr/bin/";
 }
@@ -682,13 +682,13 @@ lxGetExecutablePath (String appname)
 // Useful functions_______________________________________________________
 
 void
-mprint (String message)
+mprint (lxString message)
 {
  fprintf (stdout, "%s", message.c_str ());
 };
 
 void
-eprint (String error)
+eprint (lxString error)
 {
  fprintf (stderr, "%s", error.c_str ());
 };
@@ -707,7 +707,7 @@ ColorByRGB (unsigned short r, unsigned short g, unsigned short b)
 };
 
 SDL_Color
-ColorByName (String name)
+ColorByName (lxString name)
 {
  char cname[10];
  strncpy (cname, name.c_str (), 9);

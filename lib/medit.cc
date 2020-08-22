@@ -75,7 +75,7 @@ MEdit (CEdit * control, SDL_Event event)
 	    {
 	      uint cursorpos;
 	      cursorpos = control->GetCursorPos ();
-	      String nstr = strndel (control->GetText ().c_str (), cursorpos);
+	      lxString nstr = strndel (control->GetText ().c_str (), cursorpos);
 	      control->SetText (nstr);
 	      if (cursorpos > 0)
 		control->SetCursorPos (cursorpos - 1);
@@ -88,7 +88,7 @@ MEdit (CEdit * control, SDL_Event event)
 	  if (control->GetText ().size () > 0)
 	    {
 	      cursorpos = control->GetCursorPos ();
-	      String nstr =
+	      lxString nstr =
 		strndel (control->GetText ().c_str (), cursorpos + 1);
 	      control->SetText (nstr);
 	      control->SetCursorPos (cursorpos);
@@ -100,7 +100,7 @@ MEdit (CEdit * control, SDL_Event event)
 		  (uint) (control->GetMaxLenght ()))
 		return key;
 	      cursorpos = control->GetCursorPos ();
-	      String nstr = strnadd (control->GetText (), SDL_GetKeyName(key.sym)[0], cursorpos);
+	      lxString nstr = strnadd (control->GetText (), SDL_GetKeyName(key.sym)[0], cursorpos);
 	      control->SetText (nstr);
 	      control->SetCursorPos (cursorpos + 1);
 	      control->CControl::key_press (event);

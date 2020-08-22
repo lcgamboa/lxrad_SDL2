@@ -155,7 +155,7 @@ void
 CFileDialog::ButtonRelease3 (CControl * control, const uint button, const uint x, const uint y,
 			     const uint state)
 {
-  String texto = "untitled";
+  lxString texto = "untitled";
   if (Input ("Dir Name:", texto))
     if (mkdir (texto.c_str (), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != 0)
       {
@@ -181,7 +181,7 @@ CFileDialog::ListOnFileSelected (CControl * flist)
 {
   CFileDialog *dialog;
   dialog = dynamic_cast < CFileDialog * >(flist->GetOwner ());
-  String selected = ((CFileList*)flist)->GetSelectedItem ();
+  lxString selected = ((CFileList*)flist)->GetSelectedItem ();
   int pos = selected.find ("/");
   if (pos < 0)
     dialog->edit1.SetText (selected);
@@ -189,26 +189,26 @@ CFileDialog::ListOnFileSelected (CControl * flist)
     dialog->edit1.SetText (selected.substr (1, selected.size ()));
 };
 
-String
+lxString
 CFileDialog::GetFileName (void)
 {
   return GetDir()+"/"+FileName;
 };
 
-String
+lxString
 CFileDialog::GetDir (void)
 {
   return filelist1.GetSelectedDir ();
 };
 
 void
-CFileDialog::SetFileName (String filename)
+CFileDialog::SetFileName (lxString filename)
 {
   FileName = filename;
 };
 
 void
-CFileDialog::SetDir (String dir)
+CFileDialog::SetDir (lxString dir)
 {
   filelist1.SetDir (dir);
 };
@@ -235,7 +235,7 @@ CFileDialog::Run (void)
 
 
 
-CStringList 
+lxStringList 
 CFileDialog::GetContext (void)
 {
   CControl::GetContext ();
@@ -243,15 +243,15 @@ CFileDialog::GetContext (void)
 };
 
 void
-CFileDialog::SetContext (CStringList context)
+CFileDialog::SetContext (lxStringList context)
 {
   Erase ();
   CControl::SetContext (context);
   /*
   for (uint i = 0; i < context.GetLinesCount (); i++)
     {
-      String line = Context.GetLine (i);
-      String arg;
+      lxString line = Context.GetLine (i);
+      lxString arg;
       eqparse (line, arg);
     };
   */
@@ -259,7 +259,7 @@ CFileDialog::SetContext (CStringList context)
 };
   
 void 
-CFileDialog::SetFilter(String filter)
+CFileDialog::SetFilter(lxString filter)
 {
   Filter=filter;
   //TODO

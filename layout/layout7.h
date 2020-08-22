@@ -21,7 +21,7 @@ class CWindow7:public CWindow
   CList *cl;
   CCombo *cc;
   CWindow7(void);
-  void  StringListMouseButtonRelease(CControl * control, uint button, uint x, uint y,uint state);
+  void  lxStringListMouseButtonRelease(CControl * control, uint button, uint x, uint y,uint state);
 };
 
 extern CWindow7 Window7;

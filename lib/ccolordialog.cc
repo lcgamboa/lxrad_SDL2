@@ -268,14 +268,14 @@ CColorDialog::Run (void)
  
 }
 
-String
+lxString
 CColorDialog::GetColorName (void)
 {
- return Color.GetAsString();
+ return Color.GetAslxString();
 }
 
 void
-CColorDialog::SetColorName (String cname)
+CColorDialog::SetColorName (lxString cname)
 {
  Color = ColorByName(cname);
 }
@@ -298,7 +298,7 @@ CColorDialog::SetColor (uint r, uint g, uint b)
  Color = ColorByRGB (r, g, b);
 }
 
-CStringList
+lxStringList
 CColorDialog::GetContext (void)
 {
  CControl::GetContext ();
@@ -306,15 +306,15 @@ CColorDialog::GetContext (void)
 }
 
 void
-CColorDialog::SetContext (CStringList context)
+CColorDialog::SetContext (lxStringList context)
 {
  Erase ();
  CControl::SetContext (context);
  /*
  for (uint i = 0; i < context.GetLinesCount (); i++)
    {
-     String line = Context.GetLine (i);
-     String arg;
+     lxString line = Context.GetLine (i);
+     lxString arg;
      eqparse (line, arg);
    };
   */

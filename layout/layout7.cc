@@ -11,7 +11,7 @@ CWindow7 Window7;
 #include"layout2.h"
 
 void  
-CWindow7::StringListMouseButtonRelease(CControl * control, uint button, uint x, uint y,uint state)
+CWindow7::lxStringListMouseButtonRelease(CControl * control, uint button, uint x, uint y,uint state)
 {
   Window7.cl = dynamic_cast<CList*>(Window2.GetControlOnFocus ());
   Window7.cc = dynamic_cast<CCombo*>(Window2.GetControlOnFocus ());
@@ -32,8 +32,8 @@ CWindow7::StringListMouseButtonRelease(CControl * control, uint button, uint x, 
 void
 CWindow7::button1_MouseButtonRelease(CControl * control, uint button, uint x, uint y,uint state)
 {
-  String item;
-  if(Input("Add String: ",item))
+  lxString item;
+  if(Input("Add lxString: ",item))
   {
   list1.AddItem(item);
   };

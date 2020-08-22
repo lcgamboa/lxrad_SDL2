@@ -41,8 +41,8 @@ public:
   int Create (CControl * control);
   void SetWidth(unsigned width);
   void SetHeight(unsigned height );
-  void SetItems (String litens);
-  String GetItems (void);
+  void SetItems (lxString litens);
+  lxString GetItems (void);
   CComboDialog (void);
   //events
   void listchange1 (CList * list);

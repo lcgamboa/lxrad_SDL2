@@ -185,7 +185,7 @@ CDraw::SetTransparent (bool transparent)
   Transparent = transparent;
 };
 
-CStringList CDraw::GetContext (void)
+lxStringList CDraw::GetContext (void)
 {
   CControl::GetContext ();
   Context.AddLine ("PixmapFileName=" + GetPixmapFileName () + ";File");
@@ -193,14 +193,14 @@ CStringList CDraw::GetContext (void)
 };
 
 void
-CDraw::SetContext (CStringList context)
+CDraw::SetContext (lxStringList context)
 {
   Erase ();
   CControl::SetContext (context);
   for (uint i = 0; i < context.GetLinesCount (); i++)
     {
-      String line = Context.GetLine (i);
-      String arg;
+      lxString line = Context.GetLine (i);
+      lxString arg;
       eqparse (line, arg);
       if (line.compare ("PixmapFileName") == 0)
       {
@@ -213,7 +213,7 @@ CDraw::SetContext (CStringList context)
   Draw ();
 };
 
-String
+lxString
 CDraw::GetPixmapFileName (void)
 {
   return FileName;
@@ -221,27 +221,27 @@ CDraw::GetPixmapFileName (void)
 
 
 bool
-CDraw::SetPixmapFileName (String filename)
+CDraw::SetPixmapFileName (lxString filename)
 {
     return SetImgFileName(filename,1.0,1.0);
 }
 
 
 void
-CDraw::WritePixmapToFile (String filename)
+CDraw::WritePixmapToFile (lxString filename)
 {
   printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
 };
 
 
 bool 
-CDraw::SetImgFileName(String iname)
+CDraw::SetImgFileName(lxString iname)
 {
   return SetPixmapFileName (iname);
 }
   
 bool 
-CDraw::SetImgFileName(String filename, float sx, float sy)
+CDraw::SetImgFileName(lxString filename, float sx, float sy)
 {
   FileName = filename;
   
@@ -302,7 +302,7 @@ CDraw::SetImgFileName(String filename, float sx, float sy)
 }
 
 void 
-CDraw::WriteImgToFile (String filename)
+CDraw::WriteImgToFile (lxString filename)
 {
 //FIXME
   printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);

@@ -53,7 +53,7 @@ private:
   long int HintTime;
   int HintX,HintY;
   int Tag;
-  String Title;
+  lxString Title;
   CWindow * MWindow; //Modal Window
   CWindow * LMWindow; //Last Modal Window
 public:
@@ -81,7 +81,7 @@ public:
   CWindow * GetModalWindow (void);
   void SetTag (int x);
   int GetTag ();
-  String GetTitle ();
+  lxString GetTitle ();
   void SetHintControl(CControl* hcontrol,int x,int y);
 };
 

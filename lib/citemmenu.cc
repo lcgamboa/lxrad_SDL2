@@ -88,12 +88,12 @@ CItemMenu::GetSubMenu (void)
  return SubMenu;
 }
 
-CStringList
+lxStringList
 CItemMenu::GetContext (void)
 {
  CObject::GetContext ();
 
- Context.AddLine ("Text=" + GetText () + ";String");
+ Context.AddLine ("Text=" + GetText () + ";lxString");
 
  if (SubMenu)
   Context.AddLine ("SubMenu=" + SubMenu->GetName () + ";SubMenu");
@@ -113,14 +113,14 @@ CItemMenu::GetContext (void)
 };
 
 void
-CItemMenu::SetContext (CStringList context)
+CItemMenu::SetContext (lxStringList context)
 {
  Erase ();
  CObject::SetContext (context);
  for (uint i = 0; i < context.GetLinesCount (); i++)
   {
-   String line = Context.GetLine (i);
-   String arg;
+   lxString line = Context.GetLine (i);
+   lxString arg;
    eqparse (line, arg);
    if (line.compare ("Text") == 0)
     SetText (arg);

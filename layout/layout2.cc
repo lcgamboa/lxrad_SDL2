@@ -30,10 +30,10 @@ CWindow2::~CWindow2 (void)
 
 extern Bool predicate(Display* display,XEvent *event,XPointer arg);
 
-String
-space2underline(String str)
+lxString
+space2underline(lxString str)
 {
-  String out=str;	
+  lxString out=str;	
   
   for(uint i=0; i<str.size();i++)
     if(str[i] == ' ') out[i]='_';
@@ -205,7 +205,7 @@ CWindow2::WEvents (SDL_Event WEvent)
 	    return 1;
 	    break;
 	  case KeyPress:
-	    XXLookupString (NULL, &WEvent.xkey, text, 10, &key, &status);
+	    XXLookuplxString (NULL, &WEvent.xkey, text, 10, &key, &status);
 	    if (key == XK_Tab)
 	      {
 		Win->CirculateFocus (true);
@@ -303,10 +303,10 @@ CWindow2::Reset (void)
   resetcontrolscount ();
 };
 
-String
+lxString
 CWindow2::getalign (CAlign align)
 {
-  String a;
+  lxString a;
   switch (align)
     {
     case ca_right:
@@ -323,7 +323,7 @@ CWindow2::getalign (CAlign align)
 };
 
 bool
-CWindow2::testline(String line)
+CWindow2::testline(lxString line)
 {
 int pos;
 for(uint a =0 ; a < linesbak.GetLinesCount();a++)
@@ -339,13 +339,13 @@ void
 CWindow2::MakeList (bool prompt)
 {
   FILE * fbak;
-  String lbak;
+  lxString lbak;
   FILE * file;
-  String filename, filec = "", filec2 = "";
+  lxString filename, filec = "", filec2 = "";
   CControl *controle;
-  String ctname;
-  CStringList List;
-  String line, arg, ctype;
+  lxString ctname;
+  lxStringList List;
+  lxString line, arg, ctype;
      
   
      if(prompt)
@@ -357,8 +357,8 @@ CWindow2::MakeList (bool prompt)
 	 };
 
   
-      String dirname = PDir;
-      String basename = PName;
+      lxString dirname = PDir;
+      lxString basename = PName;
 
       //dirname += "/" + basename;
       //PName = basename;
@@ -673,7 +673,7 @@ CWindow2::MakeList (bool prompt)
 	  ctype = eqparse (line, arg);
 	  if (ctype.compare ("event") != 0)
 	    {
-	      if ((ctype.compare ("String") == 0)||(ctype.compare ("StringList") == 0)||(ctype.compare ("File")==0))
+	      if ((ctype.compare ("lxString") == 0)||(ctype.compare ("lxStringList") == 0)||(ctype.compare ("File")==0))
 	      {
 		fprintf(file,"  Set%s(\"%s\");\n",line.c_str(),arg.c_str());
 	      }
@@ -709,7 +709,7 @@ CWindow2::MakeList (bool prompt)
 	      ctype = eqparse (line, arg);
 	      if (ctype.compare ("event") != 0)
 		{
-	      if ((ctype.compare ("String") == 0)||(ctype.compare ("StringList") == 0)||(ctype.compare ("File")==0)||(ctype.compare ("MenuItens") == 0))
+	      if ((ctype.compare ("lxString") == 0)||(ctype.compare ("lxStringList") == 0)||(ctype.compare ("File")==0)||(ctype.compare ("MenuItens") == 0))
 	      {
 		    if (arg.size () > 0)
 		      fprintf(file,"  %s.Set%s(\"%s\");\n",ctname.c_str(),line.c_str(),arg.c_str());
@@ -747,19 +747,19 @@ CWindow2::MakeList (bool prompt)
 };
 
 void
-CWindow2::MakeProject (String basename)
+CWindow2::MakeProject (lxString basename)
 {
-  String filename, ctname;
+  lxString filename, ctname;
   FILE* file;
-  CStringList List;
+  lxStringList List;
   CControl *controle;
 
 
   filename = basename + ".prj_lxrad";
   file=fopen (filename.c_str (),"w");
-  fprintf(file,"Version=%s;String\n",Version.c_str());
-  fprintf(file,"PName=%s;String\n",PName.c_str());
-  fprintf(file,"POptions=%s;String\n",POptions.c_str());
+  fprintf(file,"Version=%s;lxString\n",Version.c_str());
+  fprintf(file,"PName=%s;lxString\n",PName.c_str());
+  fprintf(file,"POptions=%s;lxString\n",POptions.c_str());
   fprintf(file,"PNW=%i;int\n",PNW);
   fclose (file);
 
@@ -791,17 +791,17 @@ CWindow2::MakeProject (String basename)
 
 
 bool
-CWindow2::LoadProject (String dirname, String filename)
+CWindow2::LoadProject (lxString dirname, lxString filename)
 {
 /*
-  String dirname ="./"+filename.substr(0,filename.find(".lxrad"));
+  lxString dirname ="./"+filename.substr(0,filename.find(".lxrad"));
   cout<<"file= "<<filename<<endl;
   cout<<"dir = "<<dirname<<endl;
 */
-  String basename, name;
+  lxString basename, name;
   FILE* file1,*file2;
-  String line, arg;
-  CStringList list;
+  lxString line, arg;
+  lxStringList list;
   int pos;
 /*
   int pos = dirname.rfind ("/");
@@ -886,7 +886,7 @@ CWindow2::LoadProject (String dirname, String filename)
 	  };
 	  while (line.size () > 0)
 	    {
-	      String controlclass;
+	      lxString controlclass;
 	      list.Clear ();
 	      controlclass = line.substr (3, line.size ());
 	      CControl *ncontrol = newcontrol (controlclass, this);
@@ -980,8 +980,8 @@ CWindow2::Window2MouseButtonClick (CControl * control, uint button, uint x,
 void
 CWindow2::ListPropierties (CControl * control)
 {
-  String line, arg, ctype;
-  CStringList cList;
+  lxString line, arg, ctype;
+  lxStringList cList;
   cList.Clear ();
   cList = control->GetContext ();
   Window3.DestroyChilds ();
@@ -1052,7 +1052,7 @@ CWindow2::ListPropierties (CControl * control)
 	  control3->CFocusOut = EVCFOCUSOUT & CWindow3::editfocusout;
 	  Window3.CreateChild (control3);
 	  };
-	  if(ctype.compare("StringList") ==0)
+	  if(ctype.compare("lxStringList") ==0)
 	  {
 	  control2->SetText ("CList");
 	  control2->SetReadOnly (true);
@@ -1065,7 +1065,7 @@ CWindow2::ListPropierties (CControl * control)
 	  control3->SetHeight(20);
 	  control3->SetTag(c+1);
 	  control3->SetFOwner (&Window3);
-	  control3->EvMouseButtonRelease= EVMOUSEBUTTONRELEASE & CWindow7::StringListMouseButtonRelease;
+	  control3->EvMouseButtonRelease= EVMOUSEBUTTONRELEASE & CWindow7::lxStringListMouseButtonRelease;
 	  control3->CFocusOut = EVCFOCUSOUT & CWindow3::editfocusout;
 	  Window3.CreateChild (control3);
 	  };
@@ -1266,11 +1266,11 @@ CWindow2::GMouseMove (CControl * control, uint x, uint y)
     };
 };
 
-String
-CWindow2::WriteEvents (String name, String event)
+lxString
+CWindow2::WriteEvents (lxString name, lxString event)
 {
   int pos = 0;
-  String out = name + "_" + event;
+  lxString out = name + "_" + event;
 
   pos = event.find ("Mouse");
   if (pos >= 0)
@@ -1291,11 +1291,11 @@ CWindow2::WriteEvents (String name, String event)
 
 
 
-String
-CWindow2::WriteControlEvents (String name, String event)
+lxString
+CWindow2::WriteControlEvents (lxString name, lxString event)
 {
-  String SWN = itoa (WN);
-  String
+  lxString SWN = itoa (WN);
+  lxString
     out =
     event + "=" + uppercase (event) + " & CWindow" + SWN + "::" + name + "_" +
     event + ";\n";

@@ -84,10 +84,10 @@ extern string PDir;
 extern string POptions;
 extern bool Save;
 extern bool Move;
-extern String operation;
-extern String Browser;
-extern String Editor;
-extern String Debuger;
-extern String Home;
+extern lxString operation;
+extern lxString Browser;
+extern lxString Editor;
+extern lxString Debuger;
+extern lxString Home;
 
 #endif

@@ -501,7 +501,7 @@ CApplication::SetTag (int x)
  Tag = x;
 };
 
-String
+lxString
 CApplication::GetTitle (void)
 {
  return Title;

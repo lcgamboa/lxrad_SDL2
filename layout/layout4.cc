@@ -12,7 +12,7 @@ void
 CWindow4::checkboxclick (CControl * control, uint button, uint x, uint y,
 			 uint state)
 {
-  CStringList List;
+  lxStringList List;
   CCheckBox *cb;
   if (Window2.GetControlOnFocus () == NULL)
     return;

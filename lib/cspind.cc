@@ -135,17 +135,17 @@ CSpind::Draw ()
   CControl::Draw ();
 };
 
-CStringList 
+lxStringList 
 CSpind::GetContext (void)
 {
   //FIXME	
-  CStringList sl;
+  lxStringList sl;
   printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
   return sl;
 }
 
 void 
-CSpind::SetContext (CStringList context)
+CSpind::SetContext (lxStringList context)
 {
  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
 }
@@ -154,7 +154,7 @@ void
 CSpind::SetValue(double v)
 {	
   Value=v;
-  edit1.SetText(String().Printf("%.*lf",Digits,Value));  
+  edit1.SetText(lxString().Printf("%.*lf",Digits,Value));  
 }
 
 double 

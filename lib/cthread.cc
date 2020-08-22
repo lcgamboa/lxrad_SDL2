@@ -100,7 +100,7 @@ CThread::TestDestroy (void)
 return tdestroy;
 }
 
-CStringList 
+lxStringList 
 CThread::GetContext (void)
 {
   printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
@@ -111,9 +111,9 @@ CThread::GetContext (void)
 }
 
 void 
-CThread::SetContext (CStringList context)
+CThread::SetContext (lxStringList context)
 {
-  String name, type, value;
+  lxString name, type, value;
 
 //  CControl::SetContext (context);
   CObject::SetContext (context);
@@ -183,7 +183,7 @@ CThread::SetRunState (bool rs)
 }
 
 void 
-CThread::SetName (const String name)
+CThread::SetName (const lxString name)
 {
   Name = name;
 }

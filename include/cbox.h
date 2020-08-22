@@ -40,8 +40,8 @@ public:
   void Draw (void);
   int Create (CControl * control);
   void Event (SDL_Event event);
-  CStringList GetContext (void);
-  void SetContext (CStringList context);
+  lxStringList GetContext (void);
+  void SetContext (lxStringList context);
   //propiedades
   void SetCheck (bool check);
   bool GetCheck (void);

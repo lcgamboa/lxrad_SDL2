@@ -109,7 +109,7 @@ CControl::Create (CControl * control)
  Win = control->Win;
  Paint = control->Paint;
  if (!CFont)
-  CFont = TTF_OpenFont ((String (_SHARE) + "fonts/" + FontName).c_str (), FontSize);
+  CFont = TTF_OpenFont ((lxString (_SHARE) + "fonts/" + FontName).c_str (), FontSize);
  if (CFont == NULL)
   {
    printf ("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError ());
@@ -482,7 +482,7 @@ CControl::OwnerEvent (int x, int y)
   return false;
 }
 
-CStringList
+lxStringList
 CControl::GetContext (void)
 {
  CObject::GetContext ();
@@ -492,10 +492,10 @@ CControl::GetContext (void)
   Context.AddLine (xml_out (lxT("Y"), lxT("int"), itoa (GetY ())));
   Context.AddLine (xml_out (lxT("Width"), lxT("uint"), itoa (GetWidth ())));
   Context.AddLine (xml_out (lxT("Height"), lxT("uint"), itoa (GetHeight ())));
-  Context.AddLine (xml_out (lxT("Hint"), lxT("String"), GetHint ()));
+  Context.AddLine (xml_out (lxT("Hint"), lxT("lxString"), GetHint ()));
   Context.AddLine (xml_out (lxT("Enable"), lxT("bool"), itoa (GetEnable ())));
   Context.AddLine (xml_out (lxT("Visible"), lxT("bool"), itoa (GetVisible ())));
-  Context.AddLine (xml_out (lxT("Color"), lxT("String"), GetColor ().GetAsString (lxC2S_HTML_SYNTAX) ));
+  Context.AddLine (xml_out (lxT("Color"), lxT("lxString"), GetColor ().GetAslxString (lxC2S_HTML_SYNTAX) ));
 
   if (PopupMenu)
     Context.AddLine (xml_out (lxT("PopupMenu"), lxT("PopupMenu"), PopupMenu->GetName ()));
@@ -519,9 +519,9 @@ CControl::GetContext (void)
 }
 
 void
-CControl::SetContext (CStringList context)
+CControl::SetContext (lxStringList context)
 {
-  String name, type, value;
+  lxString name, type, value;
 
 #ifdef _DEBUG
 #ifdef __UNICODE__
@@ -588,9 +588,9 @@ CControl::SetContext (CStringList context)
 
 
 void
-CControl::WriteXMLContext (String filename, bool first)
+CControl::WriteXMLContext (lxString filename, bool first)
 {
-  CStringList list;
+  lxStringList list;
   list = GetContext ();
   list.InsertLine (lxT("<") + Name + lxT(">"), 0);
   if (first)
@@ -614,11 +614,11 @@ CControl::WriteXMLContext (String filename, bool first)
 }
 
 void
-CControl::LoadXMLContext (String filename)
+CControl::LoadXMLContext (lxString filename)
 {
   lxTextFile fin;
-  CStringList list;
-  String line, name;
+  lxStringList list;
+  lxString line, name;
 
   fin.Open(filename);
   fin.GoToLine(0);
@@ -694,7 +694,7 @@ CControl::GetRectangle (void)
 //properties
 
 void
-CControl::SetFont (const String font)
+CControl::SetFont (const lxString font)
 {
  FontName = font;
  if (Win)
@@ -717,7 +717,7 @@ CControl::GetFont (void)
  return CFont;
 }
 
-String
+lxString
 CControl::GetFontName (void)
 {
  return FontName;
@@ -736,12 +736,12 @@ CControl::GetFontSize (void)
 }
 
 void
-CControl::SetHint (String hint)
+CControl::SetHint (lxString hint)
 {
  Hint = hint;
 }
 
-String
+lxString
 CControl::GetHint (void)
 {
  return Hint;
@@ -902,7 +902,7 @@ CControl::SetColor (SDL_Color c)
 }
 
 void
-CControl::SetColor (const String name)
+CControl::SetColor (const lxString name)
 {
  ColorName = name;
 
@@ -1092,7 +1092,7 @@ CControl::GetChild (uint child)
 }
 
 CControl *
-CControl::GetChildByName (const String child)
+CControl::GetChildByName (const lxString child)
 {
  for (int a = 0; a <= ChildCount; a++)
   if (Child[a]->GetName ().compare (child) == 0)

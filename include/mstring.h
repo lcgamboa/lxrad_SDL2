@@ -36,72 +36,72 @@
 
 #ifdef NO_STL
 
-#define string String
+#define string lxString
 
-class String
+class lxString
 {
 private:
   char *Str;
 public:
-    String (void);
-    String (const String & str);
-    String (const char &str);
-    String (const char *str);
-    String (const char *str, int size);
-   ~String (void);
+    lxString (void);
+    lxString (const lxString & str);
+    lxString (const char &str);
+    lxString (const char *str);
+    lxString (const char *str, int size);
+   ~lxString (void);
   const char *c_str (void) const;
   const char *char_str (void) const;
   int Cmp (const char *str) const;
   int compare (const char *str) const;
-  int compare (const String & str) const;
-  String Format(const char *fmt, ...) __attribute__((format (printf, 2, 3)));
-  String Printf(const char *fmt, ...) __attribute__((format (printf, 2, 3)));
+  int compare (const lxString & str) const;
+  lxString Format(const char *fmt, ...) __attribute__((format (printf, 2, 3)));
+  lxString Printf(const char *fmt, ...) __attribute__((format (printf, 2, 3)));
   unsigned int size (void) const;
   unsigned int length (void) const;
-  String substr (unsigned int start, unsigned int len) const;
-  int find (const String & str) const;
-  int Contains(const String & str) const;
-  int rfind (const String & str) const;
+  lxString substr (unsigned int start, unsigned int len) const;
+  int find (const lxString & str) const;
+  int Contains(const lxString & str) const;
+  int rfind (const lxString & str) const;
   int erase (unsigned int start, int num);
-  static String FromAscii(char * str);
+  static lxString FromAscii(char * str);
   int copy (char *str, unsigned int sz) const;
-  bool  operator == (const String & str);
-  String & operator = (const String & str);
-  String & operator = (const char *str);
-  String operator + (const String & str);
-  String operator + (const char *str);
-  String operator + (const char &str);
-  String & operator += (const String & str);
-  String & operator += (const char *str);
-  String & operator += (const char &str);
+  bool  operator == (const lxString & str);
+  lxString & operator = (const lxString & str);
+  lxString & operator = (const char *str);
+  lxString operator + (const lxString & str);
+  lxString operator + (const char *str);
+  lxString operator + (const char &str);
+  lxString & operator += (const lxString & str);
+  lxString & operator += (const char *str);
+  lxString & operator += (const char &str);
   char &operator[] (const unsigned int & index);
   operator const char*() const;
-  friend String operator + (const char *str1, const String & str2);
-  friend String operator + (const char &str1, const String & str2);
-//  friend ostream & operator << (ostream & os, const String & str);
+  friend lxString operator + (const char *str1, const lxString & str2);
+  friend lxString operator + (const char &str1, const lxString & str2);
+//  friend ostream & operator << (ostream & os, const lxString & str);
 };
 
-class CStringList
+class lxStringList
 {
 private:
-  String * Lines;
+  lxString * Lines;
   int LinesCount;
 public:
-    CStringList (void);
-    CStringList (const CStringList & list);
-   ~CStringList (void);
+    lxStringList (void);
+    lxStringList (const lxStringList & list);
+   ~lxStringList (void);
   void Create ();
   void Clear ();
-  void AddLine (const String line);
-  void InsertLine (String line, unsigned int linen);
+  void AddLine (const lxString line);
+  void InsertLine (lxString line, unsigned int linen);
   void DelLine (unsigned int linen);
-  bool LoadFromFile (String fname);
-  bool SaveToFile (String fname);
-  bool AppendToFile (String fname);
-    CStringList & operator = (const CStringList & list);
+  bool LoadFromFile (lxString fname);
+  bool SaveToFile (lxString fname);
+  bool AppendToFile (lxString fname);
+    lxStringList & operator = (const lxStringList & list);
   //propiedades
-  String GetLine (unsigned int linen) const;
-  void SetLine (String line, unsigned int linen);
+  lxString GetLine (unsigned int linen) const;
+  void SetLine (lxString line, unsigned int linen);
   unsigned int GetLinesCount (void) const;
 };
 
@@ -114,17 +114,17 @@ using namespace std;
 #include<fstream>
 #include<list>
 
-#define String string
+#define lxString string
 
-class CStringList
+class lxStringList
 {
 private:
   list < string > List;
   list < string >::iterator itList;
 public:
-  CStringList (void);
-    CStringList (const CStringList & list);
-   ~CStringList (void);
+  lxStringList (void);
+    lxStringList (const lxStringList & list);
+   ~lxStringList (void);
   void Create ();
   void Clear ();
   void AddLine (string line);
@@ -139,26 +139,26 @@ public:
 };
 #endif
 
-String xml_out (String name, String type, String value);
-void xml_in (String data, String & name, String & type, String & value);
+lxString xml_out (lxString name, lxString type, lxString value);
+void xml_in (lxString data, lxString & name, lxString & type, lxString & value);
 
-String eqparse (String & str, String & arg);
-String strndel (const String & str, unsigned int n);
-String strnadd (const String & str, char c, unsigned int n);
-int atoi (const String & str);
-float atof (const String & str);
-bool atob (const String & str);
-String itoa (int n, const String & format = "%i");
-String itoa (unsigned int n, const String & format = "%u");
-String ftoa (float f, const String & format = "%f");
-String btoa (bool b);
+lxString eqparse (lxString & str, lxString & arg);
+lxString strndel (const lxString & str, unsigned int n);
+lxString strnadd (const lxString & str, char c, unsigned int n);
+int atoi (const lxString & str);
+float atof (const lxString & str);
+bool atob (const lxString & str);
+lxString itoa (int n, const lxString & format = "%i");
+lxString itoa (unsigned int n, const lxString & format = "%u");
+lxString ftoa (float f, const lxString & format = "%f");
+lxString btoa (bool b);
 
-String uppercase (const String & str);
-String lowercase (const String & str);
+lxString uppercase (const lxString & str);
+lxString lowercase (const lxString & str);
 
-String basename (const String & str);
-String dirname (const String & str);
+lxString basename (const lxString & str);
+lxString dirname (const lxString & str);
 
-bool fgetline (FILE* file, String & str);
+bool fgetline (FILE* file, lxString & str);
 
 #endif

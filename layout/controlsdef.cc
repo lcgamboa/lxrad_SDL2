@@ -41,7 +41,7 @@ resetcontrolscount (void)
 };
 
 CControl *
-newcontrol (String controltype, CControl * owner)
+newcontrol (lxString controltype, CControl * owner)
 {
   CControl *ncontrol;
   if (controltype.compare ("Button") == 0)
@@ -172,17 +172,17 @@ getbuttons (CControl * owner)
   button->SetX (0);
   button->SetY (26);
   button->SetHint(button->GetName());
-  button->SetPixmapFileName ( String(_SHARE) + "/button.xpm");
+  button->SetPixmapFileName ( lxString(_SHARE) + "/button.xpm");
   button->SetFOwner (&Window1);
   button->EvMouseButtonClick = EVMOUSEBUTTONCLICK & CWindow1::MouseButtonClick;
   owner->CreateChild (button);
 //button2  
   button = new CToolButton;
-  button->SetName ("String");
+  button->SetName ("lxString");
   button->SetX (26);
   button->SetY (26);
   button->SetHint(button->GetName());
-  button->SetPixmapFileName ( String(_SHARE)+"/string.xpm");
+  button->SetPixmapFileName ( lxString(_SHARE)+"/string.xpm");
   button->SetFOwner (&Window1);
   button->EvMouseButtonClick = EVMOUSEBUTTONCLICK & CWindow1::MouseButtonClick;
   owner->CreateChild (button);
@@ -192,7 +192,7 @@ getbuttons (CControl * owner)
   button->SetX (52);
   button->SetY (26);
   button->SetHint(button->GetName());
-  button->SetPixmapFileName ( String(_SHARE)+"/edit.xpm");
+  button->SetPixmapFileName ( lxString(_SHARE)+"/edit.xpm");
   button->SetFOwner (&Window1);
   button->EvMouseButtonClick = EVMOUSEBUTTONCLICK & CWindow1::MouseButtonClick;
   owner->CreateChild (button);
@@ -202,7 +202,7 @@ getbuttons (CControl * owner)
   button->SetX (78);
   button->SetY (26);
   button->SetHint(button->GetName());
-  button->SetPixmapFileName ( String(_SHARE)+"/checkbox.xpm");
+  button->SetPixmapFileName ( lxString(_SHARE)+"/checkbox.xpm");
   button->SetFOwner (&Window1);
   button->EvMouseButtonClick = EVMOUSEBUTTONCLICK & CWindow1::MouseButtonClick;
   owner->CreateChild (button);
@@ -212,7 +212,7 @@ getbuttons (CControl * owner)
   button->SetX (104);
   button->SetY (26);
   button->SetHint(button->GetName());
-  button->SetPixmapFileName ( String(_SHARE)+"/draw.xpm");
+  button->SetPixmapFileName ( lxString(_SHARE)+"/draw.xpm");
   button->SetFOwner (&Window1);
   button->EvMouseButtonClick = EVMOUSEBUTTONCLICK & CWindow1::MouseButtonClick;
   owner->CreateChild (button);
@@ -222,7 +222,7 @@ getbuttons (CControl * owner)
   button->SetX (130);
   button->SetY (26);
   button->SetHint(button->GetName());
-  button->SetPixmapFileName ( String(_SHARE)+"/toolbutton.xpm");
+  button->SetPixmapFileName ( lxString(_SHARE)+"/toolbutton.xpm");
   button->SetFOwner (&Window1);
   button->EvMouseButtonClick = EVMOUSEBUTTONCLICK & CWindow1::MouseButtonClick;
   owner->CreateChild (button);
@@ -232,7 +232,7 @@ getbuttons (CControl * owner)
   button->SetX (156);
   button->SetY (26);
   button->SetHint(button->GetName());
-  button->SetPixmapFileName ( String(_SHARE)+"/xpmbutton.xpm");
+  button->SetPixmapFileName ( lxString(_SHARE)+"/xpmbutton.xpm");
   button->SetFOwner (&Window1);
   button->EvMouseButtonClick = EVMOUSEBUTTONCLICK & CWindow1::MouseButtonClick;
   owner->CreateChild (button);
@@ -242,7 +242,7 @@ getbuttons (CControl * owner)
   button->SetX (182);
   button->SetY (26);
   button->SetHint(button->GetName());
-  button->SetPixmapFileName ( String(_SHARE)+"/list.xpm");
+  button->SetPixmapFileName ( lxString(_SHARE)+"/list.xpm");
   button->SetFOwner (&Window1);
   button->EvMouseButtonClick = EVMOUSEBUTTONCLICK & CWindow1::MouseButtonClick;
   owner->CreateChild (button);
@@ -252,7 +252,7 @@ getbuttons (CControl * owner)
   button->SetX (208);
   button->SetY (26);
   button->SetHint(button->GetName());
-  button->SetPixmapFileName ( String(_SHARE)+"/filelist.xpm");
+  button->SetPixmapFileName ( lxString(_SHARE)+"/filelist.xpm");
   button->SetFOwner (&Window1);
   button->EvMouseButtonClick = EVMOUSEBUTTONCLICK & CWindow1::MouseButtonClick;
   owner->CreateChild (button);
@@ -262,7 +262,7 @@ getbuttons (CControl * owner)
   button->SetX (234);
   button->SetY (26);
   button->SetHint(button->GetName());
-  button->SetPixmapFileName ( String(_SHARE)+"/menu.xpm");
+  button->SetPixmapFileName ( lxString(_SHARE)+"/menu.xpm");
   button->SetFOwner (&Window1);
   button->EvMouseButtonClick = EVMOUSEBUTTONCLICK & CWindow1::MouseButtonClick;
   owner->CreateChild (button);
@@ -272,7 +272,7 @@ getbuttons (CControl * owner)
   button->SetX (260);
   button->SetY (26);
   button->SetHint(button->GetName());
-  button->SetPixmapFileName ( String(_SHARE)+"/pmenu.xpm");
+  button->SetPixmapFileName ( lxString(_SHARE)+"/pmenu.xpm");
   button->SetFOwner (&Window1);
   button->EvMouseButtonClick = EVMOUSEBUTTONCLICK & CWindow1::MouseButtonClick;
   owner->CreateChild (button);
@@ -282,7 +282,7 @@ getbuttons (CControl * owner)
   button->SetX (286);
   button->SetY (26);
   button->SetHint(button->GetName());
-  button->SetPixmapFileName ( String(_SHARE)+"/scroll.xpm");
+  button->SetPixmapFileName ( lxString(_SHARE)+"/scroll.xpm");
   button->SetFOwner (&Window1);
   button->EvMouseButtonClick = EVMOUSEBUTTONCLICK & CWindow1::MouseButtonClick;
   owner->CreateChild (button);
@@ -292,7 +292,7 @@ getbuttons (CControl * owner)
   button->SetX (312);
   button->SetY (26);
   button->SetHint(button->GetName());
-  button->SetPixmapFileName ( String(_SHARE)+"/combo.xpm");
+  button->SetPixmapFileName ( lxString(_SHARE)+"/combo.xpm");
   button->SetFOwner (&Window1);
   button->EvMouseButtonClick = EVMOUSEBUTTONCLICK & CWindow1::MouseButtonClick;
   owner->CreateChild (button);
@@ -302,7 +302,7 @@ getbuttons (CControl * owner)
   button->SetX (338);
   button->SetY (26);
   button->SetHint(button->GetName());
-  button->SetPixmapFileName ( String(_SHARE)+"/filedialog.xpm");
+  button->SetPixmapFileName ( lxString(_SHARE)+"/filedialog.xpm");
   button->SetFOwner (&Window1);
   button->EvMouseButtonClick = EVMOUSEBUTTONCLICK & CWindow1::MouseButtonClick;
   owner->CreateChild (button);
@@ -312,7 +312,7 @@ getbuttons (CControl * owner)
   button->SetX (364);
   button->SetY (26);
   button->SetHint(button->GetName());
-  button->SetPixmapFileName ( String(_SHARE)+"/timer.xpm");
+  button->SetPixmapFileName ( lxString(_SHARE)+"/timer.xpm");
   button->SetFOwner (&Window1);
   button->EvMouseButtonClick = EVMOUSEBUTTONCLICK & CWindow1::MouseButtonClick;
   owner->CreateChild (button);

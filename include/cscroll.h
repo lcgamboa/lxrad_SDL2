@@ -52,8 +52,8 @@ public:
    ~CScroll (void);
   void Draw (void);
   int Create (CControl * control);
-  CStringList GetContext (void);
-  void SetContext (CStringList context);
+  lxStringList GetContext (void);
+  void SetContext (lxStringList context);
   //propiedades
   void SetPosition (int position);
   int GetPosition (void);

@@ -44,7 +44,7 @@ protected:
   bool ORedirect;  
   SDL_Texture* WPixmap;
   uint PWidth,PHeight;
-  String Title;
+  lxString Title;
   unsigned int XMouse, YMouse;
   CControl *ControlOnFocus;
   CControl *LastControl;
@@ -78,12 +78,12 @@ public:
   void Update (void);
   void Update (SDL_Rect Reg);
   virtual bool WEvents (SDL_Event WEvent);
-  CStringList GetContext (void);
-  void SetContext (CStringList context);
+  lxStringList GetContext (void);
+  void SetContext (lxStringList context);
   void SetFocus (void);
   void SetPixmapBuffer(bool pbuffer);
   bool GetPixmapBuffer(void);
-  int LoadXMLContextAndCreateChilds (String filename, CControl* ctrl = NULL);
+  int LoadXMLContextAndCreateChilds (lxString filename, CControl* ctrl = NULL);
   bool GetCanExitExclusive(void);
   bool OwnerEvent (int x, int y);
 //propiedades
@@ -103,8 +103,8 @@ public:
   uint GetXMouse (void);
   void SetYMouse (uint y);
   uint GetYMouse (void);
-  void SetTitle (const String & title);
-  String GetTitle (void);
+  void SetTitle (const lxString & title);
+  lxString GetTitle (void);
   CControl *GetControlOnFocus (void);
   void SetControlOnFocus (CControl * controlonfocus);
   CControl *GetLastControl (void);

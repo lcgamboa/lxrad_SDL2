@@ -10,7 +10,7 @@ CPWindow1 Window1;
 void
 CPWindow1::filelist1_EvFileListSelectFile(CControl * control)
 { 
-  String file=filelist1.GetSelectedFile();
+  lxString file=filelist1.GetSelectedFile();
 	
   if((file.find(lxT(".gif")) >0)||
      (file.find(lxT(".jpg")) >0)||
