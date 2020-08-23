@@ -754,6 +754,7 @@ CWindow::WEvents (SDL_Event WEvent)
    break;
 #endif   
    case SDL_KEYDOWN:
+#ifdef _ONEWIN
      if(this == Application->GetAWindow (0))
      {
       if(WEvent.key.keysym.sym == SDLK_x)
@@ -765,6 +766,7 @@ CWindow::WEvents (SDL_Event WEvent)
 	lxrad_scale_down();     
       }
      }
+#endif     
      CControl::Event (WEvent);
    ret = 1;
    break;
