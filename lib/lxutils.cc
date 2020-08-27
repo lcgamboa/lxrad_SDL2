@@ -406,7 +406,7 @@ if(isf)
 {
   printf("Opening file: %s \n",url.c_str()+7);
   EM_ASM_({
-    var url=UTF8TolxString($0);
+    var url=UTF8ToString($0);
     var contents = FS.readFile(url, { encoding: 'utf8' });
     var winex=window.open("example.html","examples");
     winex.document.write(contents);
@@ -416,7 +416,7 @@ if(isf)
 else
 {
   EM_ASM_({
-    var link=UTF8TolxString($0);
+    var link=UTF8ToString($0);
     window.open(link);
   }, url.c_str());
 }
