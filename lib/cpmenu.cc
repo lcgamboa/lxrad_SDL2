@@ -80,16 +80,30 @@ CPMenu::Draw (void)
   unsigned int w_old=Width;
   unsigned int h_old=Height;
 #endif
-
-  NextItemY = 0;
-  if (ChildCount >= 0)
-    Height = ((ChildCount + 1) * (((CItemMenu *) Child[0])->GetTextHeight () + 4)) + 8;
-  else
-    Height = 1;
-  
+NextItemX = 0;
+ NextItemY = 0;
+ if (ChildCount >= 0)
+  {
+   if (ChildCount < 30)
+    {
+     Height = ((ChildCount + 1) * (((CItemMenu *) Child[0])->GetTextHeight () + 4)) + 8;
+    }
+   else
+    {
+     Height = (30 * (((CItemMenu *) Child[0])->GetTextHeight () + 4)) + 8;
+    }
+  }
+ else
+  {
+   Height = 1;
+  }
+ Width = 1;
   for (int a = 0; a <= ChildCount; a++)
     if (((CItemMenu *) Child[a])->GetTextWidth () + 4 > Width)
       Width = ((CItemMenu *) Child[a])->GetTextWidth () + 8;
+
+ Width *= ((ChildCount / 30) + 1);
+
   if (WWindow != NULL)
     {
       Paint->InitDraw (this);

@@ -37,6 +37,7 @@ private:
   lxString MenuItems;	  
   CItemMenu IMenu;
 public:
+  uint NextItemX;
   uint NextItemY;
   CPMenu(void);
 //   ~CPMenu (void);
