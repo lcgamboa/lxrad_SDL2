@@ -80,6 +80,7 @@ public:
   void ChangeScale(float sx, float sy);
   void End(void);
   void SetColor(unsigned char r,unsigned char g, unsigned char b); 
+  void SetColor(lxColor c); 
   void SetFgColor(unsigned char r,unsigned char g, unsigned char b); 
   void SetBgColor(unsigned char r,unsigned char g, unsigned char b); 
   void SetFgColor(lxString cname); 

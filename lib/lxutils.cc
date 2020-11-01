@@ -292,6 +292,11 @@ lxColor::lxColor (const char * name)
 {
  Color = ColorByName (name);
 }
+  
+lxColor::lxColor(unsigned char r, unsigned char g, unsigned char b)
+{
+ Color = ColorByRGB(r,g,b);
+}
 
 lxString
 lxColor::GetAsString (int flags)

@@ -683,3 +683,8 @@ CPaint::SetBgColor (lxColor c)
  SDL_SetRenderDrawColor (Win->GetRenderer (), c.GetR (), c.GetG (), c.GetB (), 0xFF);
 }
 
+void
+CPaint::SetColor (lxColor c)
+{
+ SDL_SetRenderDrawColor (Win->GetRenderer (), c.GetR (), c.GetG (), c.GetB (), 0xFF);
+}
