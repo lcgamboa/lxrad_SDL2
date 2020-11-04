@@ -159,6 +159,8 @@ CPaint::FillPolygon (SDL_Point * points, int npoints)
 void
 CPaint::Line (int x1, int y1, int x2, int y2)
 {
+ Rotate(&x1,&y1);
+ Rotate(&x2,&y2);
  if (LineWidth == 1)
   {
    SDL_RenderDrawLine (Win->GetRenderer (), RX + x1, RY + y1, RX + x2, RY + y2);
@@ -521,6 +523,8 @@ CPaint::ChangeScale (float sx, float sy)
 void
 CPaint::Circle (bool filled, int cx, int cy, int radius)
 {
+ Rotate(&cx,&cy);
+ 
  cx=(RX + cx) * Scalex;
  cy=(RY + cy) * Scaley;
  radius=radius * Scalex;
