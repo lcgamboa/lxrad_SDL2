@@ -44,6 +44,10 @@ private:
   float Scalex;
   float Scaley;
   int LineWidth;
+  int orientation;
+  void Rotate(int *x, int *y);
+  int Width;
+  int Height;
 public:
     CPen Pen;
     CPaint (void);
@@ -76,7 +80,7 @@ public:
   void TextOnRect (lxString text,lxRect rect,CAlign align);
   void SetLineWidth(int w);
   void Init(void);
-  void Init(float sx, float sy);
+  void Init(float sx, float sy, int angle=0);
   void ChangeScale(float sx, float sy);
   void End(void);
   void SetColor(unsigned char r,unsigned char g, unsigned char b); 

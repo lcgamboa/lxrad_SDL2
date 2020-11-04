@@ -44,25 +44,26 @@
 
 //-------------------------------------------------------------------------
 
-lxTextFile::lxTextFile ()
+lxTextFile::lxTextFile()
 {
  f = NULL;
 }
-int 
+
+int
 lxTextFile::Create(lxString fname)
 {
-  fn=fname;
-  f=fopen(fname.c_str(),"rw");
-  if(f)
-   return 1;
-  else
-   return 0;		  
+ fn = fname;
+ f = fopen (fname.c_str (), "rw");
+ if (f)
+  return 1;
+ else
+  return 0;
 }
 
 int
-lxTextFile::Open (lxString fname)
+lxTextFile::Open(lxString fname)
 {
- fn=fname;
+ fn = fname;
  f = fopen (fname.c_str (), "rw");
  if (f)
   return 1;
@@ -71,7 +72,7 @@ lxTextFile::Open (lxString fname)
 }
 
 bool
-lxTextFile::IsOpened (void)
+lxTextFile::IsOpened(void)
 {
  if (f)
   return 1;
@@ -80,21 +81,21 @@ lxTextFile::IsOpened (void)
 }
 
 void
-lxTextFile::Close (void)
+lxTextFile::Close(void)
 {
  fclose (f);
  f = NULL;
 }
 
 void
-lxTextFile::GoToLine (int l)
+lxTextFile::GoToLine(int l)
 {
  //FIXME	
  fseek (f, l, SEEK_SET);
 }
 
 FILE *
-lxTextFile::GetFd (void)
+lxTextFile::GetFd(void)
 {
  return f;
 }
@@ -104,29 +105,29 @@ lxTextFile::operator FILE*() const
  return f;
 }
 
-void 
+void
 lxTextFile::Clear(void)
 {
- if(f) fclose(f);
- f=fopen(fn.c_str(),"w");
- if(f) fclose(f);
- f=fopen(fn.c_str(),"rw");
+ if (f) fclose (f);
+ f = fopen (fn.c_str (), "w");
+ if (f) fclose (f);
+ f = fopen (fn.c_str (), "rw");
 }
 
-void 
+void
 lxTextFile::AddLine(lxString line)
 {
- fprintf(f,"%s\n",line.c_str ());
+ fprintf (f, "%s\n", line.c_str ());
 }
 
 //-------------------------------------------------------------------------
 
-lxImage::lxImage ()
+lxImage::lxImage()
 {
  Surface = NULL;
 }
 
-lxImage::~lxImage ()
+lxImage::~lxImage()
 {
  if (Surface)
   SDL_FreeSurface (Surface);
@@ -134,7 +135,7 @@ lxImage::~lxImage ()
 }
 
 bool
-lxImage::LoadFile (lxString fname)
+lxImage::LoadFile(lxString fname)
 {
  Surface = IMG_Load (fname.c_str ());
  if (Surface)
@@ -144,7 +145,7 @@ lxImage::LoadFile (lxString fname)
 }
 
 void
-lxImage::Destroy (void)
+lxImage::Destroy(void)
 {
  if (Surface)
   SDL_FreeSurface (Surface);
@@ -152,7 +153,7 @@ lxImage::Destroy (void)
 }
 
 SDL_Surface*
-lxImage::GetImage (void)
+lxImage::GetImage(void)
 {
  return Surface;
 }
@@ -164,14 +165,14 @@ lxImage::operator SDL_Surface*() const
 
 //-------------------------------------------------------------------------
 
-lxBitmap::~lxBitmap ()
+lxBitmap::~lxBitmap()
 {
  if (Texture)
   SDL_DestroyTexture (Texture);
  Texture = NULL;
 }
 
-lxBitmap::lxBitmap (SDL_Surface* surf, CPWindow * win)
+lxBitmap::lxBitmap(SDL_Surface* surf, CPWindow * win)
 {
  if (!win->GetVisible () && !win->GetOverWin ())SDL_ShowWindow (win->GetWWindow ());
 
@@ -194,35 +195,40 @@ lxBitmap::lxBitmap (SDL_Surface* surf, CPWindow * win)
 
 }
 
-lxBitmap::lxBitmap (int width, int height) 
+lxBitmap::lxBitmap(SDL_Texture* _Texture)
+{
+ Texture = _Texture;
+}
+
+lxBitmap::lxBitmap(int width, int height)
 {
  //Texture = SDL_CreateTexture (win->GetRenderer (), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height);
  printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
 }
 
 SDL_Texture *
-lxBitmap::GetPixmap (void)
+lxBitmap::GetPixmap(void)
 {
  return Texture;
 }
 
-lxSize 
+lxSize
 lxBitmap::GetSize(void)
 {
  lxSize t;
- int w,h;
- SDL_QueryTexture(Texture, NULL, NULL, &w, &h);
+ int w, h;
+ SDL_QueryTexture (Texture, NULL, NULL, &w, &h);
 
- t.SetWidth(w);
- t.SetHeight(h);
+ t.SetWidth (w);
+ t.SetHeight (h);
  return t;
 }
 
 unsigned int
 lxBitmap::GetWidth(void)
 {
- int w,h;
- SDL_QueryTexture(Texture, NULL, NULL, &w, &h);
+ int w, h;
+ SDL_QueryTexture (Texture, NULL, NULL, &w, &h);
 
  return w;
 }
@@ -230,15 +236,15 @@ lxBitmap::GetWidth(void)
 unsigned int
 lxBitmap::GetHeight(void)
 {
- int w,h;
- SDL_QueryTexture(Texture, NULL, NULL, &w, &h);
+ int w, h;
+ SDL_QueryTexture (Texture, NULL, NULL, &w, &h);
 
  return h;
 }
 //-------------------------------------------------------------------------
 
 bool
-lxSound::Create (lxString fname)
+lxSound::Create(lxString fname)
 {
  //FIXME	
  printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
@@ -246,27 +252,26 @@ lxSound::Create (lxString fname)
 }
 
 void
-lxSound::Stop (void)
-{
+lxSound::Stop(void) {
  //FIXME: sound stop incomplete
  //printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
 }
 
 void
-lxSound::Play (int flags)
+lxSound::Play(int flags)
 {
  printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
 }
 //-------------------------------------------------------------------------
 
 void
-lxFileName::Assign (lxString fname)
+lxFileName::Assign(lxString fname)
 {
  FName = fname;
 }
 
 void
-lxFileName::MakeAbsolute (void)
+lxFileName::MakeAbsolute(void)
 {
  char resolved_path[PATH_MAX];
  realpath (FName, resolved_path);
@@ -274,93 +279,92 @@ lxFileName::MakeAbsolute (void)
 }
 
 lxString
-lxFileName::GetFullPath (void)
+lxFileName::GetFullPath(void)
 {
  return FName;
 }
 
 //-------------------------------------------------------------------------
 
-lxColor::lxColor () { }
+lxColor::lxColor() { }
 
-lxColor::lxColor (SDL_Color color)
+lxColor::lxColor(SDL_Color color)
 {
  Color = color;
 }
 
-lxColor::lxColor (const char * name)
+lxColor::lxColor(const char * name)
 {
  Color = ColorByName (name);
 }
-  
+
 lxColor::lxColor(unsigned char r, unsigned char g, unsigned char b)
 {
- Color = ColorByRGB(r,g,b);
+ Color = ColorByRGB (r, g, b);
 }
 
 lxString
-lxColor::GetAsString (int flags)
+lxColor::GetAsString(int flags)
 {
-  char cname[10];
- 
-  if(flags ==  lxC2S_HTML_SYNTAX )
+ char cname[10];
+
+ if (flags == lxC2S_HTML_SYNTAX)
   {
-    sprintf(cname,"#%02X%02X%02X",Color.r,Color.g,Color.b);
+   sprintf (cname, "#%02X%02X%02X", Color.r, Color.g, Color.b);
   }
-  else
+ else
   {
-    cname[0]=0;
+   cname[0] = 0;
   }
 
-  return cname;	
+ return cname;
 }
 
 lxColor::operator
-SDL_Color () const
+SDL_Color() const
 {
  return Color;
 }
 //-------------------------------------------------------------------------
 
-lxCursor::lxCursor ()
+lxCursor::lxCursor()
 {
  printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
 }
 
-lxCursor::lxCursor (int type)
+lxCursor::lxCursor(int type)
 {
  printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
 }
 
 //-------------------------------------------------------------------------
 
-lxFont::lxFont ()
+lxFont::lxFont()
 {
  printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
 }
 
-lxFont::lxFont (int size, int family, int style, int weight)
-{
-//#ifdef _DEBUG 
-// printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
-//#endif
+lxFont::lxFont(int size, int family, int style, int weight) {
+ //#ifdef _DEBUG 
+ // printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
+ //#endif
 }
 //-------------------------------------------------------------------------
 
 void
-lxMilliSleep (unsigned int time)
+lxMilliSleep(unsigned int time)
 {
  usleep (time * 1000);
 }
 
 void
-lxSetCursor (lxCursor cursor)
+lxSetCursor(lxCursor cursor)
 {
  printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
 }
 
 bool
-lxFileExists (lxString fname)
+lxFileExists(lxString fname)
 {
  struct stat sb;
 
@@ -374,15 +378,16 @@ lxFileExists (lxString fname)
   return false;
 }
 
-void lxExecute(lxString cmd,unsigned int flags, void * arg)
+void
+lxExecute(lxString cmd, unsigned int flags, void * arg)
 {
- if(flags != lxEXEC_SYNC)
-    cmd+=lxT(" &");	
-  system(cmd.c_str());
+ if (flags != lxEXEC_SYNC)
+  cmd += lxT (" &");
+ system (cmd.c_str ());
 }
 
 lxString
-lxGetCwd (void)
+lxGetCwd(void)
 {
  char cwd[1024];
  if (getcwd (cwd, sizeof (cwd)) != NULL)
@@ -391,110 +396,111 @@ lxGetCwd (void)
   return "";
 }
 
-int 
+int
 lxSetWorkingDirectory(lxString dir)
 {
-  return chdir(dir.c_str ());
+ return chdir (dir.c_str ());
 }
 
-    
-bool 
+bool
 lxLaunchDefaultBrowser(lxString url)
 {
 #ifdef __EMSCRIPTEN__
 
-const char * isf=strstr(url.c_str(),"file://");
+ const char * isf = strstr (url.c_str (), "file://");
 
-printf("Opening url: %s \n",url.c_str());
+ printf ("Opening url: %s \n", url.c_str ());
 
-if(isf)
-{
-  printf("Opening file: %s \n",url.c_str()+7);
-  EM_ASM_({
-    var url=UTF8ToString($0);
-    var contents = FS.readFile(url, { encoding: 'utf8' });
-    var winex=window.open("example.html","examples");
-    winex.document.write(contents);
-    winex.document.close();
-  }, url.c_str()+7);
-}
-else
-{
-  EM_ASM_({
-    var link=UTF8ToString($0);
-    window.open(link);
-  }, url.c_str());
-}
-return true;
-#else	
- lxString cmd= lxT("xdg-open ")+url+lxT("  &");
- return system(cmd.c_str ());
+ if (isf)
+  {
+   printf ("Opening file: %s \n", url.c_str () + 7);
+   EM_ASM_ ({
+            var url = UTF8ToString ($0);
+            var contents = FS.readFile (url,
+    { encoding : 'utf8'});
+            var winex = window.open ("example.html", "examples");
+            winex.document.write (contents);
+            winex.document.close ();
+   }, url.c_str () + 7);
+  }
+ else
+  {
+   EM_ASM_ ({
+            var link = UTF8ToString ($0);
+            window.open (link);
+   }, url.c_str ());
+  }
+ return true;
+#else 
+ lxString cmd = lxT ("xdg-open ") + url + lxT ("  &");
+ return system (cmd.c_str ());
 #endif
 }
 
-bool 
+bool
 lxLaunchDefaultApplication(lxString cmd)
 {
- lxString cmd_= lxT("xdg-open ")+cmd+lxT("  &");
- return system(cmd_.c_str ());
+ lxString cmd_ = lxT ("xdg-open ") + cmd + lxT ("  &");
+ return system (cmd_.c_str ());
 }
 
 //-------------------------------------------------------------------------
 
 bool
-lxUnzipDir (const lxString &in_filename, const lxString &out_dirname) {
- 
+lxUnzipDir(const lxString &in_filename, const lxString &out_dirname)
+{
+
  char fname[1024];
- unzFile uzf =unzOpen (in_filename.c_str ());
- 
- if(uzf != NULL)
- {
-   if(unzGoToFirstFile(uzf) == UNZ_OK)
+ unzFile uzf = unzOpen (in_filename.c_str ());
+
+ if (uzf != NULL)
+  {
+   if (unzGoToFirstFile (uzf) == UNZ_OK)
     {
      do
       {
-      unz_file_info finfo; 
-      unzGetCurrentFileInfo(uzf,&finfo,fname,1024,NULL,0,NULL,0);
-      
-      char *buff= (char *)malloc(finfo.uncompressed_size);
-      unzOpenCurrentFile(uzf);
-      unzReadCurrentFile(uzf,buff,finfo.uncompressed_size);
-      unzCloseCurrentFile(uzf);
-      
-      lxString dname=out_dirname;
-      dname+=dirname(fname);
-      
-      if(dname.length () > 0)
-       {
-        lxCreateDir(dname);
-       }
-      
-      lxString name=out_dirname;
-      name+=fname;
-      
-      FILE * fout=fopen(name.c_str(),"w");
-      if(fout)
-       {
-        fwrite(buff,finfo.uncompressed_size,1, fout);
-        fclose(fout);
-       }
-      free(buff);
+       unz_file_info finfo;
+       unzGetCurrentFileInfo (uzf, &finfo, fname, 1024, NULL, 0, NULL, 0);
+
+       char *buff = (char *) malloc (finfo.uncompressed_size);
+       unzOpenCurrentFile (uzf);
+       unzReadCurrentFile (uzf, buff, finfo.uncompressed_size);
+       unzCloseCurrentFile (uzf);
+
+       lxString dname = out_dirname;
+       dname += dirname (fname);
+
+       if (dname.length () > 0)
+        {
+         lxCreateDir (dname);
+        }
+
+       lxString name = out_dirname;
+       name += fname;
+
+       FILE * fout = fopen (name.c_str (), "w");
+       if (fout)
+        {
+         fwrite (buff, finfo.uncompressed_size, 1, fout);
+         fclose (fout);
+        }
+       free (buff);
       }
-      while(unzGoToNextFile(uzf) == UNZ_OK);
+     while (unzGoToNextFile (uzf) == UNZ_OK);
     }
-   
-   unzClose(uzf);
- }
- 
+
+   unzClose (uzf);
+  }
+
  return 0;
- }
+}
 
 bool
-lxZipDir (const lxString &in_dirname, const lxString &out_filename)
+lxZipDir(const lxString &in_dirname, const lxString &out_filename)
 {
-lxStringList paths =lxListDirRec(in_dirname);
-   
-lxString dname= basename(in_dirname.substr(0,in_dirname.length ()-1));
+ lxStringList paths = lxListDirRec (in_dirname);
+
+ lxString dname = basename (in_dirname.substr (0, in_dirname.length () - 1));
 
  if (paths.GetLinesCount () == 0)
   {
@@ -513,18 +519,18 @@ lxString dname= basename(in_dirname.substr(0,in_dirname.length ()-1));
 
  for (size_t i = 0; i < paths.GetLinesCount (); i++)
   {
-   FILE * file =fopen(paths.GetLine (i).c_str (), "r");
+   FILE * file = fopen (paths.GetLine (i).c_str (), "r");
    if (file)
     {
-     fseek (file,0,SEEK_END);
+     fseek (file, 0, SEEK_END);
      long size = ftell (file);
      fseek (file, 0, SEEK_SET);
 
-     char * buffer= (char*)malloc(size);
-     if (size == 0 || fread (buffer, size,1,file))
+     char * buffer = (char*) malloc (size);
+     if (size == 0 || fread (buffer, size, 1, file))
       {
        zip_fileinfo zfi = {0};
-       lxString fileName = dname+paths.GetLine (i).substr(in_dirname.length (),paths.GetLine (i).length ()-in_dirname.length ());
+       lxString fileName = dname + paths.GetLine (i).substr (in_dirname.length (), paths.GetLine (i).length () - in_dirname.length ());
 
        if (0 == zipOpenNewFileInZip (zf, fileName.c_str (), &zfi, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION))
         {
@@ -535,7 +541,7 @@ lxString dname= basename(in_dirname.substr(0,in_dirname.length ()-1));
           _return = false;
 
          fclose (file);
-         free(buffer);
+         free (buffer);
          continue;
         }
       }
@@ -550,23 +556,23 @@ lxString dname= basename(in_dirname.substr(0,in_dirname.length ()-1));
  if (!_return)
   return 4;
  return 0;
- 
+
 }
 
 bool
-lxRemoveFile (const char * fname)
+lxRemoveFile(const char * fname)
 {
  return remove (fname);
 }
 
-bool 
+bool
 lxRenameFile(lxString oldfname, lxString newfname)
 {
- return rename(oldfname.c_str(),newfname.c_str());
+ return rename (oldfname.c_str (), newfname.c_str ());
 }
 
 bool
-lxRemoveDir (const char* dirname)
+lxRemoveDir(const char* dirname)
 {
  DIR *dp;
  struct dirent *dent;
@@ -600,29 +606,29 @@ lxRemoveDir (const char* dirname)
  return 0;
 }
 
-bool 
+bool
 lxCreateDir(const char * dirname)
 {
-   DIR  *dp; 
-   dp = opendir (dirname);
+ DIR *dp;
+ dp = opendir (dirname);
 
-   if(dp)
-   {
-     return closedir(dp);
-   }
-   else
-   {
+ if (dp)
+  {
+   return closedir (dp);
+  }
+ else
+  {
 #ifndef _WIN_
-     return mkdir(dirname, S_IWUSR| S_IRUSR | S_IXUSR | S_IRGRP | S_IROTH ); 
+   return mkdir (dirname, S_IWUSR | S_IRUSR | S_IXUSR | S_IRGRP | S_IROTH);
 #else     
-     return mkdir(dirname);
+   return mkdir (dirname);
 #endif
-   }
-   return 0;
+  }
+ return 0;
 }
 
 lxStringList
-lxListDirRec (const lxString & dirname)
+lxListDirRec(const lxString & dirname)
 {
  DIR *dp;
  struct dirent *dent;
@@ -639,7 +645,7 @@ lxListDirRec (const lxString & dirname)
   {
    while ((dent = readdir (dp)) != NULL)
     {
-     snprintf (fname, 1024, "%s/%s", dirname.c_str(), dent->d_name);
+     snprintf (fname, 1024, "%s/%s", dirname.c_str (), dent->d_name);
      stat (fname, &sb);
 
      if (S_ISREG (sb.st_mode))
@@ -650,11 +656,11 @@ lxListDirRec (const lxString & dirname)
       {
        if (!(!strcmp (dent->d_name, ".") || !strcmp (dent->d_name, "..")))
         {
-          lxStringList list2=lxListDirRec (fname);
-          for(unsigned int i=0;i<list2.GetLinesCount ();i++)
-           {
-            list.AddLine (list2.GetLine (i));
-           }
+         lxStringList list2 = lxListDirRec (fname);
+         for (unsigned int i = 0; i < list2.GetLinesCount (); i++)
+          {
+           list.AddLine (list2.GetLine (i));
+          }
         }
       }
     }
@@ -665,19 +671,19 @@ lxListDirRec (const lxString & dirname)
 }
 
 lxString
-lxGetUserDataDir (lxString appname)
+lxGetUserDataDir(lxString appname)
 {
  return lxString ("/home/") + getlogin () + "/." + appname;
 }
 
 lxString
-lxGetTempDir (lxString appname)
+lxGetTempDir(lxString appname)
 {
  return "/tmp/";
 }
 
 lxString
-lxGetExecutablePath (lxString appname)
+lxGetExecutablePath(lxString appname)
 {
  return "/usr/bin/";
 }
@@ -687,19 +693,19 @@ lxGetExecutablePath (lxString appname)
 // Useful functions_______________________________________________________
 
 void
-mprint (lxString message)
+mprint(lxString message)
 {
  fprintf (stdout, "%s", message.c_str ());
 };
 
 void
-eprint (lxString error)
+eprint(lxString error)
 {
  fprintf (stderr, "%s", error.c_str ());
 };
 
 SDL_Color
-ColorByRGB (unsigned short r, unsigned short g, unsigned short b)
+ColorByRGB(unsigned short r, unsigned short g, unsigned short b)
 {
 
  SDL_Color colorA;
@@ -712,7 +718,7 @@ ColorByRGB (unsigned short r, unsigned short g, unsigned short b)
 };
 
 SDL_Color
-ColorByName (lxString name)
+ColorByName(lxString name)
 {
  char cname[10];
  strncpy (cname, name.c_str (), 9);
@@ -842,6 +848,66 @@ ColorByName (lxString name)
    printf ("Color %s not found\n", name.c_str ());
   }
  return colorA;
-};
+}
 
+lxBitmap *
+lxGetBitmapRotated(lxImage *image, CWindow * win, int _orientation)
+{
+ SDL_Texture* Texture;
+ SDL_Texture* mTexture = SDL_CreateTextureFromSurface (win->GetRenderer (), *image);
+
+ if (mTexture == NULL)
+  {
+   printf ("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError ());
+  }
+ else
+  {
+   SDL_Rect DestR;
+   int sw, sh;
+   SDL_QueryTexture (mTexture, NULL, NULL, &DestR.w, &DestR.h);
+
+
+   switch (_orientation)
+    {
+    case 0:
+    case 2:
+     sw = DestR.w;
+     sh = DestR.h;
+     DestR.x = 0;
+     DestR.y = 0;
+     break;
+    case 1:
+    case 3:
+     sw = DestR.h;
+     sh = DestR.w;
+     DestR.y = (DestR.w - DestR.h) / 2;
+     DestR.x = (DestR.h - DestR.w) / 2;
+     break;
+    }
+
+
+   Texture = SDL_CreateTexture (win->GetRenderer (), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, sw, sh);
+
+   SDL_SetRenderTarget (win->GetRenderer (), Texture);
+
+
+   SDL_SetRenderDrawColor (win->GetRenderer (), 0xFF, 0xFF, 0x00, 0xFF);
+   SDL_RenderClear (win->GetRenderer ());
+
+   SDL_RenderCopyEx (win->GetRenderer (), mTexture, NULL, &DestR, _orientation*90, NULL, SDL_FLIP_NONE);
+
+   SDL_DestroyTexture (mTexture);
+
+   SDL_RenderPresent (win->GetRenderer ());
+
+   SDL_SetRenderTarget (win->GetRenderer (), NULL);
+
+   return new lxBitmap (Texture);
+
+  }
+
+
+ return NULL;
+
+}
 

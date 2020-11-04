@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
+   Copyright (c) : 2001-2020  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -40,7 +40,8 @@ CPaint::CPaint (void)
  Scalex = 1.0;
  Scaley = 1.0;
  LineWidth = 1.0;
-};
+ orientation=0;
+}
 
 void
 CPaint::SetDoCalcRXY (bool docalcrxy)
@@ -81,6 +82,8 @@ CPaint::Create (CControl * control, lxBitmap *bitmap)
  DrawIn = bitmap->GetPixmap ();
  //DrawOut = bitmap->GetPixmap();
  Pen.Create (control);
+ Width = bitmap->GetWidth();
+ Height = bitmap->GetHeight();	 
 }
 
 void
@@ -136,8 +139,9 @@ CPaint::DrawControl (CControl * control)
 void
 CPaint::Point (int x, int y)
 {
+ Rotate(&x,&y);
  SDL_RenderDrawPoint (Win->GetRenderer (), RX + x, RY + y);
-};
+}
 
 void
 CPaint::FillPolygon (SDL_Point * points, int npoints)
@@ -201,8 +205,13 @@ CPaint::Lines (SDL_Point * points, int npoints)
 void
 CPaint::Rectangle (int x, int y, int w, int h)
 {
- SDL_Rect fillRect = {(int) ((RX + x) * Scalex), (int) ((RY + y) * Scaley), (int) (w * Scalex), (int) (h * Scaley)};
- SDL_RenderFillRect (Win->GetRenderer (), &fillRect);
+    int x2,y2; 
+    x2=x+w;
+    y2=y+h;
+    Rotate(&x,&y);
+    Rotate(&x2,&y2);
+    SDL_Rect fillRect = {(int) ((RX + x) * Scalex), (int) ((RY + y) * Scaley), (int) ((x2-x) * Scalex), (int) ((y2-y) * Scaley)};
+    SDL_RenderFillRect (Win->GetRenderer (), &fillRect);
 }
 
 void
@@ -339,15 +348,19 @@ CPaint::Init (void)
  Scaley = 1.0;
  DrawOut = SDL_GetRenderTarget (Win->GetRenderer ());
  SDL_SetRenderTarget (Win->GetRenderer (), DrawIn);
+ 
+ orientation=0;
 }
 
 void
-CPaint::Init (float sx, float sy)
+CPaint::Init (float sx, float sy, int _orientation)
 {
  Scalex = sx;
  Scaley = sy;
  DrawOut = SDL_GetRenderTarget (Win->GetRenderer ());
  SDL_SetRenderTarget (Win->GetRenderer (), DrawIn);
+
+ orientation = _orientation;
 }
 
 void
@@ -402,8 +415,23 @@ CPaint::Rectangle (bool filled, int x, int y, int w, int h)
 //FIXME
 
 void
-CPaint::RotatedText (lxString text, int x, int y, int angle)
+CPaint::RotatedText (lxString text, int x, int y, int _angle)
 {
+     Rotate(&x,&y);
+     switch(orientation)
+     {
+        case 1:
+          _angle+= -90;
+	  break;
+        case 2:
+          _angle+= 180;
+	  break;
+        case 3:
+          _angle+= 90;
+	  break;
+        default:
+	  break;
+     }
  if (text.size () == 0)return;
  //Render text surface
  //SDL_Color textColor = { 0, 0, 0 };
@@ -432,7 +460,7 @@ CPaint::RotatedText (lxString text, int x, int y, int angle)
      center.x = 0;
      center.y = 0;
 
-     SDL_RenderCopyEx (Win->GetRenderer (), mTexture, NULL, &DestR, -angle, &center, SDL_FLIP_NONE);
+     SDL_RenderCopyEx (Win->GetRenderer (), mTexture, NULL, &DestR, -_angle, &center, SDL_FLIP_NONE);
      SDL_DestroyTexture (mTexture);
     }
 
@@ -688,3 +716,31 @@ CPaint::SetColor (lxColor c)
 {
  SDL_SetRenderDrawColor (Win->GetRenderer (), c.GetR (), c.GetG (), c.GetB (), 0xFF);
 }
+
+
+void 
+CPaint::Rotate(int *x, int *y)
+{
+  int ox=*x;
+  int oy=*y;
+
+  switch(orientation)
+  {
+    case 1:
+    *x= Width -oy;
+    *y= ox;
+    break;
+    case 2:
+    *x= Width -ox;
+    *y= Height -oy;
+    break;
+    case 3:
+    *x= oy;
+    *y= Height - ox;
+    break;
+    default:
+    break;
+  } 
+
+}
+

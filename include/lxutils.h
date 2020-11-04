@@ -106,6 +106,7 @@ private:
 SDL_Texture* Texture;
 public:
 ~lxBitmap();
+lxBitmap (SDL_Texture* Texture); 
 lxBitmap(SDL_Surface* surf, CPWindow * win);
 lxBitmap (int width, int height); 
 SDL_Texture* GetPixmap(void);
@@ -219,6 +220,7 @@ public:
 #define LXK_UP    SDLK_UP
 #define LXK_CONTROL  SDLK_LCTRL
 
+lxBitmap * lxGetBitmapRotated(lxImage *image, CWindow * win, int orientation); 
 
 void lxMilliSleep(unsigned int time);
 void lxSetCursor(lxCursor cursor); 
