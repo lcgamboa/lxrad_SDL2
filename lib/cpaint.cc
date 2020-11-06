@@ -475,6 +475,21 @@ void
 CPaint::PutBitmap (lxBitmap* bitmap, int x, int y)
 {
  SDL_Rect DestR;
+     
+ Rotate(&x,&y);
+ switch(orientation)
+ {
+    case 1:
+      x-=bitmap->GetWidth();
+      break;	 
+    case 2:
+     x-=bitmap->GetWidth();
+     y-=bitmap->GetHeight();
+     break;	 
+   case 3:	       
+     y-=bitmap->GetHeight();
+     break;
+ }
 
  DestR.x = (RX + x)*Scalex;
  DestR.y = (RY + y)*Scaley;
