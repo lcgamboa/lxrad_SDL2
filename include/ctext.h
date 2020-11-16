@@ -47,6 +47,7 @@ public:
   void Clear ();
   void AddLine (char *line);
   void AddLine (lxString line);
+  void Append (lxString line);
   void InsertLine (char *line);
   void DelLine (void);
   void LoadFromFile (char *fname);

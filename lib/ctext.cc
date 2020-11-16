@@ -53,7 +53,7 @@ CText::Draw (void)
   Paint->Pen.SetColor (Color);
   Paint->Rectangle ( 2, 2, Width - 3, Height - 3);
   Paint->Pen.SetColor (ColorByName ("black"));
-  for (unsigned int q = 1; q < Lines.GetLinesCount (); q++)
+  for (unsigned int q = 0; q < Lines.GetLinesCount (); q++)
     Paint->Text (Lines.GetLine(q), 5, 15 + (13 * (q - 1)));
   Paint->LowerFrame ( 0, 0, Width, Height);
   int x;// = XTextWidth (CFont, Lines.GetLine (CursorLin).c_str (), GetCursorPos ());
@@ -137,6 +137,13 @@ void
 CText::AddLine (lxString line)
 {
   Lines.AddLine (line.c_str());
+  Draw ();
+}
+
+void
+CText::Append (lxString line)
+{
+  Lines.Append (line.c_str());
   Draw ();
 }
 

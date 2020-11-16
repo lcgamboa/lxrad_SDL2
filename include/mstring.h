@@ -93,6 +93,7 @@ public:
   void Create ();
   void Clear ();
   void AddLine (const lxString line);
+  void Append (const lxString line);
   void InsertLine (lxString line, unsigned int linen);
   void DelLine (unsigned int linen);
   bool LoadFromFile (lxString fname);
