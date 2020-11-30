@@ -352,7 +352,6 @@ CWindow::WDestroy (void)
  //  SetVisible (false);
  // else
  Hide ();
- on_hide ();
 
  on_destroy ();
  if (((!OverWin)&&(CanDestroy)) || (this == Application->GetAWindow (0)))
@@ -401,6 +400,8 @@ CWindow::ShowExclusive (void)
 void
 CWindow::Hide (void)
 {
+ if(!Visible) return;
+
  SetVisible (false);
  if (Win != NULL)
   {
@@ -414,6 +415,7 @@ CWindow::Hide (void)
      SDL_HideWindow (WWindow);
     }
   }
+  on_hide ();
 }
 
 void
