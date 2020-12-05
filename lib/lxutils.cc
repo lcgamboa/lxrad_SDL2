@@ -180,6 +180,7 @@ lxBitmap::lxBitmap(SDL_Surface* surf, CPWindow * win)
 
  Texture = SDL_CreateTexture (win->GetRenderer (), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, surf->w, surf->h);
 
+ SDL_Texture* last = SDL_GetRenderTarget (win->GetRenderer ());
  SDL_SetRenderTarget (win->GetRenderer (), Texture);
 
  SDL_SetRenderDrawColor (win->GetRenderer (), 0xFF, 0xFF, 0x00, 0xFF);
@@ -189,7 +190,7 @@ lxBitmap::lxBitmap(SDL_Surface* surf, CPWindow * win)
  SDL_DestroyTexture (tim);
  //SDL_RenderPresent (win->GetRenderer ());
 
- SDL_SetRenderTarget (win->GetRenderer (), NULL);
+ SDL_SetRenderTarget (win->GetRenderer (), last);
 
  if (!win->GetVisible () && !win->GetOverWin ())SDL_HideWindow (win->GetWWindow ());
 
@@ -888,6 +889,7 @@ lxGetBitmapRotated(lxImage *image, CWindow * win, int _orientation)
 
    Texture = SDL_CreateTexture (win->GetRenderer (), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, sw, sh);
 
+   SDL_Texture* last = SDL_GetRenderTarget (win->GetRenderer ());
    SDL_SetRenderTarget (win->GetRenderer (), Texture);
 
 
@@ -900,8 +902,8 @@ lxGetBitmapRotated(lxImage *image, CWindow * win, int _orientation)
 
    SDL_RenderPresent (win->GetRenderer ());
 
-   SDL_SetRenderTarget (win->GetRenderer (), NULL);
-
+   SDL_SetRenderTarget (win->GetRenderer (), last);
+   
    return new lxBitmap (Texture);
 
   }

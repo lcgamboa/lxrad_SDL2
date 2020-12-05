@@ -871,30 +871,59 @@ lxStringList::AddLine (const lxString line)
 }
 
 void
-lxStringList::Append (const lxString line)
+lxStringList::Append(const lxString line)
 {
-  if (line.c_str () != NULL)
+ char buff[1024];
+ char * line_;
+ char * ptr = NULL;
+
+ strncpy (buff, line.c_str (), 1023);
+ line_ = buff;
+
+ if (line_ != NULL)
+  {
+   if ((ptr = strchr (line_, '\n')))
     {
-      if(LinesCount >= 0)
-      {	      
-	if(strchr(line.c_str(),'\n'))
-	{
-          AddLine(line);
-	}	
-	else if(strchr(line.c_str(),'\r'))
-	{
-          AddLine(line);
-	}	
-	else
-	{
-          Lines[LinesCount]+=line;
-	}
-      }
-      else
+
+     do
       {
-        AddLine(line);
-      }      
+       int pos = ptr - line_;
+       line_[pos] = 0;
+       if ((pos > 0) &&(line_[pos - 1] == '\r'))
+        {
+         line_[pos - 1] = 0;
+        }
+       if (LinesCount >= 0)
+        {
+         Lines[LinesCount] += line_;
+         AddLine ("");
+        }
+       else
+        {
+         AddLine (line_);
+         AddLine ("");
+        }
+       line_ += pos + 1;
+      }
+     while ((ptr = strchr (line_, '\n')));
+
+     if (strlen (line_))
+      {
+       Lines[LinesCount] += line_;
+      }
     }
+   else
+    {
+     if (LinesCount >= 0)
+      {
+       Lines[LinesCount] += line_;
+      }
+     else
+      {
+       AddLine (line_);
+      }
+    }
+  }
 }
 
 void

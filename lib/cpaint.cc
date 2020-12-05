@@ -47,21 +47,21 @@ void
 CPaint::SetDoCalcRXY (bool docalcrxy)
 {
  DoCalcRXY = docalcrxy;
-};
+}
 
 void
 CPaint::SetDrawIn (SDL_Texture* drawin)
 {
  DrawIn = drawin;
-};
+}
 
 void
 CPaint::SetDrawOut (SDL_Texture* drawout)
 {
  DrawOut = drawout;
-};
+}
 
-CPaint::~CPaint (void) { };
+CPaint::~CPaint (void) { }
 
 void
 CPaint::Create (CControl * control)
@@ -71,7 +71,7 @@ CPaint::Create (CControl * control)
  DrawIn = NULL;
  //DrawOut = NULL;
  Pen.Create (control);
-};
+}
 
 void
 CPaint::Create (CControl * control, lxBitmap *bitmap)
@@ -90,7 +90,7 @@ void
 CPaint::Destroy (void) {
  //if (Agc != 0)
  //   XFreeGC (Disp, Agc);
-};
+}
 
 void
 CPaint::SetFont (CControl * control) {
@@ -102,11 +102,12 @@ CPaint::SetFont (CControl * control) {
    XChangeGC (Disp, Agc, GCFont, Gcv);
    delete Gcv;
 
-  */ };
+  */ }
 
 void
 CPaint::InitDraw (CControl * control)
 {
+ Init ();
 #ifdef _ONEWIN   
  SDL_Rect wrec;
  wrec.x = Win->GetX ();
@@ -125,15 +126,17 @@ CPaint::InitDraw (CControl * control)
   {
    RX = 0;
    RY = 0;
-  };
+  }
  SetFont (control);
-};
+}
 
 void
 CPaint::DrawControl (CControl * control)
 {
+ SDL_Texture* last = SDL_GetRenderTarget (Win->GetRenderer ());
  SDL_SetRenderTarget (Win->GetRenderer (), NULL);
  Win->SetRedraw ();
+ SDL_SetRenderTarget (Win->GetRenderer (), last);
 }
 
 void
@@ -154,7 +157,7 @@ CPaint::FillPolygon (SDL_Point * points, int npoints)
  //  XFillPolygon (Disp, DrawIn, Agc, points,
  //		npoints, Nonconvex, CoordModeOrigin);
  printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
-};
+}
 
 void
 CPaint::Line (int x1, int y1, int x2, int y2)
@@ -202,7 +205,7 @@ CPaint::Lines (SDL_Point * points, int npoints)
    points[c].y += RY;
   }
  SDL_RenderDrawLines (Win->GetRenderer (), points, npoints);
-};
+}
 
 void
 CPaint::Rectangle (int x, int y, int w, int h)
@@ -224,7 +227,7 @@ CPaint::Frame (int x, int y, int w, int h, uint wb)
    SDL_Rect fillRect = {(int) ((RX + x + c) * Scalex), (int) ((RY + y + c) * Scaley), (int) ((w - (c * 2)) * Scalex), (int) ((h - (c * 2)) * Scaley)};
    SDL_RenderDrawRect (Win->GetRenderer (), &fillRect);
   }
-};
+}
 
 void
 CPaint::LowerFrame (int x, int y, int w, int h, uint wb)
@@ -246,8 +249,8 @@ CPaint::LowerFrame (int x, int y, int w, int h, uint wb)
    Line (x + 1 + c, h - 2 - c, w - 2 - c, h - 2 - c);
    Line (w - 2 - c, y + 2 + c, w - 2 - c, h - 2 - c);
    Pen.SetColor (OldPen);
-  };
-};
+  }
+}
 
 void
 CPaint::RaiserFrame (int x, int y, int w, int h, uint wb)
@@ -269,15 +272,15 @@ CPaint::RaiserFrame (int x, int y, int w, int h, uint wb)
    Line (x + 1 + c, h - 2 - c, w - 2 - c, h - 2 - c);
    Line (w - 2 - c, y + 2 + c, w - 2 - c, h - 2 - c);
    Pen.SetColor (OldPen);
-  };
-};
+  }
+}
 
 void
 CPaint::Text (lxString text, int x1, int y1)
 {
  if (text.size () == 0)return;
  //Render text surface
- //SDL_Color textColor = { 0, 0, 0 };
+ //SDL_Color textColor = { 0, 0, 0 }
  SDL_Surface* textSurface = TTF_RenderText_Blended (Win->GetFont (), text.c_str (), Pen.GetColor ()/*, Pen.GetBGColor ()*/);
  if (textSurface == NULL)
   {
@@ -320,7 +323,7 @@ CPaint::ImgText (int x1, int y1, lxString text)
  Text (text, x1, y1);
  //  XDrawImagelxString (Disp, DrawIn, Agc, RX+x1, RY+y1,
  //	       text.c_str (), text.size ());
-};
+}
 
 void
 CPaint::PutPixmap (int x, int y, int w, int h, SDL_Texture * pixmap)
@@ -352,6 +355,7 @@ CPaint::Init (void)
  SDL_SetRenderTarget (Win->GetRenderer (), DrawIn);
  
  orientation=0;
+ //printf("%s Init render=%p last=%p\n", Win->GetName ().c_str (), DrawIn, DrawOut);
 }
 
 void
@@ -363,6 +367,7 @@ CPaint::Init (float sx, float sy, int _orientation)
  SDL_SetRenderTarget (Win->GetRenderer (), DrawIn);
 
  orientation = _orientation;
+ //printf("%s Init render=%p last=%p\n",Win->GetName ().c_str () ,  DrawIn, DrawOut);
 }
 
 void
@@ -375,8 +380,11 @@ CPaint::End (void)
   if (Owner)
    Owner->Draw ();
   */
+ //SDL_Texture* last = SDL_GetRenderTarget (Win->GetRenderer ());
  SDL_SetRenderTarget (Win->GetRenderer (), DrawOut);
 
+ //printf("%s End  render=%p last=%p\n", Win->GetName ().c_str (), DrawIn, last);
+ 
  Win->SetRedraw ();
 }
 
@@ -436,7 +444,7 @@ CPaint::RotatedText (lxString text, int x, int y, int _angle)
      }
  if (text.size () == 0)return;
  //Render text surface
- //SDL_Color textColor = { 0, 0, 0 };
+ //SDL_Color textColor = { 0, 0, 0 }
  SDL_Surface* textSurface = TTF_RenderText_Blended (Win->GetFont (), text.c_str (), Pen.GetColor ());
  if (textSurface == NULL)
   {

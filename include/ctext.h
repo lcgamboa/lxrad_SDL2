@@ -28,6 +28,7 @@
 
 #include"clxrad.h"
 #include"cwindow.h"
+#include"cscroll.h"
 #include"cedit.h"
 
 class CText:public CEdit
@@ -37,6 +38,8 @@ private:
   uint PLine;
   uint PChar;
   uint CursorLin;
+  CScroll * Scroll;
+  uint nlines;
 public:
     CText (void);
    ~CText (void);
@@ -45,25 +48,31 @@ public:
   void DrawLine (void);
   int Create (CControl * control);
   void Clear ();
-  void AddLine (char *line);
-  void AddLine (lxString line);
-  void Append (lxString line);
-  void InsertLine (char *line);
+  void AddLine (const char *line);
+  void AddLine (const lxString line);
+  void Append (const lxString line);
+  void InsertLine (const char *line);
   void DelLine (void);
-  void LoadFromFile (char *fname);
-  void SaveToFile (char *fname);
-  void SaveToFile (lxString fname);
+  void LoadFromFile (const char *fname);
+  void SaveToFile (const char *fname);
+  void SaveToFile (const lxString fname);
   //propiedades
-  void SetText (lxString t);
+  void SetText (const lxString t);
   lxString GetText (void);
   void SetCursorPos (uint cursorpos);
   //void SetReadOnly(bool r);
   //bool GetReadOnly(void);
   //void SetAlign(CAlign align);
   //CAlign GetAlign(void);
+  void SetX (int x);
+  void SetY (int y);
+  void SetWidth (uint width);
+  void SetHeight (uint height);
   unsigned int GetCountLines (void);
   //eventos
   void key_press (SDL_Event event);
+  void ScrollOnChangePosition (CControl * scroll);
+  void ScrollOnButtonPress (CControl * control, const uint button, const uint x, const uint y,const uint state);
 };
 
 #endif

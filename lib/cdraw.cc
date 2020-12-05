@@ -264,6 +264,7 @@ CDraw::SetImgFileName(lxString filename, float sx, float sy)
 	}
         SDL_FreeSurface(simg);
        
+        SDL_Texture* last = SDL_GetRenderTarget (Win->GetRenderer ());
         SDL_SetRenderTarget(Win->GetRenderer(),CPixmap); 
         
         
@@ -278,7 +279,7 @@ CDraw::SetImgFileName(lxString filename, float sx, float sy)
 
         
         SDL_RenderCopy(Win->GetRenderer(), text, NULL, &DestR);
-        SDL_SetRenderTarget(Win->GetRenderer(),NULL);
+        SDL_SetRenderTarget (Win->GetRenderer (), last);
         SDL_DestroyTexture(text);
 
         rc=0;

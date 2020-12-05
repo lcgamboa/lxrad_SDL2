@@ -219,7 +219,7 @@ CWindow::Draw (void)
 {
  if ((Paint == NULL) || (Visible == false))return;
  
- SDL_SetRenderTarget (Win->GetRenderer (), NULL);
+ //SDL_SetRenderTarget (Win->GetRenderer (), NULL);
  
  if (OverWin)
   {
@@ -268,7 +268,7 @@ CWindow::Draw (void)
    Paint->InitDraw (this);
    //Paint->Rectangle (0, 0, Width, Height);
   }
-
+ Paint->End ();
  //CControl::Draw ();
 
  Update();
@@ -300,7 +300,7 @@ CWindow::DestroyPixmap (void) {
  {
    XFreePixmap (ADisplay , WPixmap);
    WPixmap=0;
- };
+ }
   */ 
 }
 
@@ -317,7 +317,7 @@ CWindow::CreatePixmap (bool draw) {
  if(Width > PWidth)PWidth=Width;
  if(Height > PHeight)PHeight=Height;
  if(draw) Draw();
- };
+ }
  }
  else
 WPixmap=WWindow;
@@ -361,7 +361,7 @@ CWindow::WDestroy (void)
    if (WParent != NULL)
     {
      //        XDestroyWindow (ADisplay, GetWWindow ());
-    };
+    }
    Win = NULL;
    Application->ADestroyWindow (this);
    WWindow = 0;
@@ -479,13 +479,13 @@ CWindow::Update (SDL_Rect Reg)
            Child[i]->Update ();
          else
            Child[i]->Draw ();
-       };
-       };
-   };
+       }
+       }
+   }
 
      XSetClipMask (GetADisplay (), WPaint.Agc, None);
      XDestroyRegion (Reg);
-   };
+   }
   */
 }
 
@@ -509,7 +509,7 @@ CWindow::GetOverrideRedirect (void)
 }
 
 void
-CWindow::SetSaveUnder (bool saveunder) { };
+CWindow::SetSaveUnder (bool saveunder) { }
 
 /*
 bool predicate (Display *display,XEvent *event,XPointer arg)
@@ -742,8 +742,17 @@ CWindow::WEvents (SDL_Event WEvent)
     }
    else if (move_on == 2)
     {
-     SetWidth (WEvent.motion.x-X+5);
-     SetHeight (WEvent.motion.y-Y-15);
+     int w= WEvent.motion.x-X+5;
+     int h= WEvent.motion.y-Y-15;
+     if(w > 64)
+     {
+       SetWidth (w);
+     }
+     if(h > 64)
+     {
+       SetHeight (h);
+     }
+     
      on_show();
      Application->GetARootWindow ()->Draw ();
      Draw ();
@@ -794,12 +803,12 @@ CWindow::WEvents (SDL_Event WEvent)
      rec.width =WEvent.xexpose.width;
      rec.height =WEvent.xexpose.height;
      XUnionRectWithRegion(&rec,Reg,Reg);
-     };
+     }
      Update (Reg);
      ret= 1;
      break;
     */
-  };
+  }
 
  /*
    if ((LEvent.type != WEvent.type)&&(LEvent.type == ConfigureNotify))
@@ -911,7 +920,7 @@ CWindow::CirculateFocus (bool asc)
      ControlOnFocus = Child[0];
      CirculateFocus (asc);
      return;
-    };
+    }
   }
  else
   {
@@ -1152,6 +1161,7 @@ CWindow::LoadXMLContextAndCreateChilds (lxString filename, CControl* ctrl)
         {
           ctrl = this;
           ctrl->SetName(line.substr (1, line.size () - 2));//Get Window name
+          ctrl->SetFOwner (this);
           rewind(file2);
         }
       }
@@ -1186,7 +1196,7 @@ CWindow::LoadXMLContextAndCreateChilds (lxString filename, CControl* ctrl)
 		  if (ch->GetClass ().compare (lxT ("CItemMenu")) == 0)
                     {
                       ch->SetVisible (false, false);
-                    };
+                    }
                   */
                   ctrl->CreateChild (ch);
 

@@ -215,12 +215,14 @@ CControl::Update (void)
      Paint->InitDraw (this);
      Paint->Pen.SetColor (ColorByName ("black"));
      Paint->Frame (-1, -1, Width + 1, Height + 1);
+     Paint->End ();
     }
    else
     {
      Paint->InitDraw (this);
      Paint->Pen.SetColor (Win->GetColor ());
      Paint->Frame (-1, -1, Width + 1, Height + 1);
+     Paint->End ();
     }
   }
 
@@ -243,6 +245,7 @@ CControl::Erase (void)
      Paint->Pen.SetColor (Win->GetColor ());
      Paint->Frame (-1, -1, Width + 1, Height + 1);
     }
+   Paint->End ();
    Paint->DrawControl (this);
   }
 
@@ -1224,14 +1227,14 @@ void
 CControl::key_press (SDL_Event event)
 {
  if ((FOwner) && (EvKeyboardPress))
-  (FOwner->*EvKeyboardPress) (this, event.key.keysym.sym, 0, event.key.state);
+  (FOwner->*EvKeyboardPress) (this, event.key.keysym.sym, event.key.keysym.sym, event.key.state);
 }
 
 void
 CControl::key_release (SDL_Event event)
 {
  if ((FOwner) && (EvKeyboardRelease))
-  (FOwner->*EvKeyboardRelease) (this, event.key.keysym.sym, 0, event.key.state);
+  (FOwner->*EvKeyboardRelease) (this, event.key.keysym.sym, event.key.keysym.sym, event.key.state);
 }
 
 void
