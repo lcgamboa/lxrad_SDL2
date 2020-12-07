@@ -111,6 +111,8 @@ CLabel::~CLabel (void)
 void
 CLabel::Draw (void)
 {
+  lxStringList tlist;
+
   if((!Visible)||(Paint == NULL))return;
   CalcVirtual ();
   SwapVirtual ();
@@ -127,7 +129,19 @@ CLabel::Draw (void)
   
   Paint->Pen.SetColor (Color);
   Paint->Pen.SetBGColor (Owner->GetColor ());
-  Paint->ImgText ( 0, 0 /*Height - GetTextDes ()*/, VText);
+  if ((Text.length () > 0)&&(strchr (Text.c_str (), '\n')))
+  {
+   tlist.Append (Text);
+   printf ("VText %s\n", VText.c_str ());
+   for (unsigned int l = 0; l < tlist.GetLinesCount (); l++)
+    {
+     Paint->ImgText (0, (l * 15), tlist.GetLine (l));
+    }
+  }
+  else
+  {
+   Paint->ImgText (0, 0, VText);
+  }
   SwapVirtual ();
 /*
   Pixmap mask=XCreateFontMask (Win->GetADisplay (), Win->GetWWindow (), ColorByName("yellow").pixel,CPixmap,50,50);
