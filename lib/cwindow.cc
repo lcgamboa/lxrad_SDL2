@@ -36,64 +36,67 @@
 #endif
 
 #ifdef _ONEWIN
-extern "C" {
-float gscale =1.0;
-
-
-void lxrad_scale_update(void)
+extern "C"
 {
+ float gscale = 1.0;
+
+ void
+ lxrad_scale_update(void)
+ {
 #ifdef __EMSCRIPTEN__
-         double width, height;
-         emscripten_get_element_css_size("#canvas", &width, &height);
-         emscripten_set_canvas_element_size("#canvas",int(width), int(height));
-         SDL_RenderSetLogicalSize(Application->GetARootWindow()->GetRenderer(), 
-			  (int)(width*gscale), (int)(height*gscale));
+  double width, height;
+  emscripten_get_element_css_size ("#canvas", &width, &height);
+  emscripten_set_canvas_element_size ("#canvas", int(width), int(height));
+  SDL_RenderSetLogicalSize (Application->GetARootWindow ()->GetRenderer (),
+                            (int) (width * gscale), (int) (height * gscale));
 #else
-         SDL_RenderSetLogicalSize(Application->GetARootWindow()->GetRenderer(), 
-			  Application->GetARootWindow()->GetWidth()*gscale, Application->GetARootWindow()->GetHeight()*gscale);
+  SDL_RenderSetLogicalSize (Application->GetARootWindow ()->GetRenderer (),
+                            Application->GetARootWindow ()->GetWidth () * gscale, Application->GetARootWindow ()->GetHeight () * gscale);
 #endif
 
-}
+ }
 
-void lxrad_scale_down(void)
-{
-        gscale+=0.1;  
-        if(gscale > 4.0)
-	{
-	  gscale=4.0;
-	}
-	else
-	{
-          lxrad_scale_update();	
-     	}
-}
+ void
+ lxrad_scale_down(void)
+ {
+  gscale += 0.1;
+  if (gscale > 4.0)
+   {
+    gscale = 4.0;
+   }
+  else
+   {
+    lxrad_scale_update ();
+   }
+ }
 
-void lxrad_scale_up(void)
-{
-        gscale-=0.1;
-        if(gscale < 0.2)
-	{
-	  gscale = 0.2;
-	}
-        else
-	{	
-          lxrad_scale_update();	
-	}
-      }
+ void
+ lxrad_scale_up(void)
+ {
+  gscale -= 0.1;
+  if (gscale < 0.2)
+   {
+    gscale = 0.2;
+   }
+  else
+   {
+    lxrad_scale_update ();
+   }
+ }
 }
 
 #endif
 
 //CWindow _______________________________________________________________
 
-CWindow::CWindow (void)
+CWindow::CWindow(void)
 {
  WWindow = NULL;
  Renderer = NULL;
  SetClass ("CWindow");
  Win = NULL;
  //PixmapBuffer = true;
- PixmapBuffer=false;
+ PixmapBuffer = false;
  HasMenu = false;
  XMouse = 0;
  YMouse = 0;
@@ -113,7 +116,7 @@ CWindow::CWindow (void)
  ORedirect = false;
  OverWin = false;
  move_on = 0;
- Redraw=1;
+ Redraw = 1;
  //events
  EvOnCreate = NULL;
  EvOnDestroy = NULL;
@@ -123,12 +126,10 @@ CWindow::CWindow (void)
  EvOnLeave = NULL;
 }
 
-CWindow::~CWindow (void) 
-{ 
-}
+CWindow::~CWindow(void) { }
 
 void
-CWindow::WCreate (CWindow* window)
+CWindow::WCreate(CWindow* window)
 {
 
  if (window != NULL)
@@ -158,7 +159,7 @@ CWindow::WCreate (CWindow* window)
      printf ("Window could not be created! SDL Error: %s\n", SDL_GetError ());
      exit (-1);
     }
-   Renderer = SDL_CreateRenderer( WWindow, -1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_TARGETTEXTURE ); 
+   Renderer = SDL_CreateRenderer (WWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
    if (Renderer == NULL)
     {
      //    printf( "Hardware renderer could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -172,7 +173,7 @@ CWindow::WCreate (CWindow* window)
     }
 #ifdef _ONEWIN   
    //ZOOM
-   lxrad_scale_update();	
+   lxrad_scale_update ();
 #endif
 
    //Initialize renderer color 
@@ -188,20 +189,21 @@ CWindow::WCreate (CWindow* window)
  Paint = &WPaint;
 
  Create (this);
- 
 
- if (Visible) Show ();
+
+ on_create ();
  
+ if (Visible) Show ();
+
  Draw ();
 
  if (!OverWin)
   SDL_SetWindowPosition (WWindow, X, Y);
 
- on_create ();
 }
 
 void
-CWindow::Destroy (void)
+CWindow::Destroy(void)
 {
  CControl::Destroy ();
  DestroyPixmap ();
@@ -215,12 +217,12 @@ CWindow::Destroy (void)
 }
 
 void
-CWindow::Draw (void)
+CWindow::Draw(void)
 {
  if ((Paint == NULL) || (Visible == false))return;
- 
+
  //SDL_SetRenderTarget (Win->GetRenderer (), NULL);
- 
+
  if (OverWin)
   {
    Paint->InitDraw (this);
@@ -262,7 +264,7 @@ CWindow::Draw (void)
   }
  else
   {
-   if (Redraw ==0 )return;
+   if (Redraw == 0)return;
    Paint->Pen.SetColor (Color);
    SDL_RenderClear (Renderer);
    Paint->InitDraw (this);
@@ -271,41 +273,40 @@ CWindow::Draw (void)
  Paint->End ();
  //CControl::Draw ();
 
- Update();
- Redraw=0;
+ Update ();
+ Redraw = 0;
 }
 
 void
-CWindow::SetPixmapBuffer (bool pbuffer)
+CWindow::SetPixmapBuffer(bool pbuffer)
 {
  PixmapBuffer = pbuffer;
 }
 
 bool
-CWindow::GetPixmapBuffer (void)
+CWindow::GetPixmapBuffer(void)
 {
  return PixmapBuffer;
 }
 
 SDL_Texture*
-CWindow::GetPixmap (void)
+CWindow::GetPixmap(void)
 {
  return WPixmap;
 }
 
 void
-CWindow::DestroyPixmap (void) {
+CWindow::DestroyPixmap(void) {
  /*
  if ((WPixmap != 0)&&(WPixmap != WWindow))
  {
    XFreePixmap (ADisplay , WPixmap);
    WPixmap=0;
  }
-  */ 
-}
+  */ }
 
 void
-CWindow::CreatePixmap (bool draw) {
+CWindow::CreatePixmap(bool draw) {
  /*
  if(PixmapBuffer)
  {
@@ -321,11 +322,10 @@ CWindow::CreatePixmap (bool draw) {
  }
  else
 WPixmap=WWindow;
-  */ 
-}
+  */ }
 
 void
-CWindow::DestroyChild (CControl * control)
+CWindow::DestroyChild(CControl * control)
 {
  if (control == ControlOnFocus)
   ControlOnFocus = NULL;
@@ -333,14 +333,14 @@ CWindow::DestroyChild (CControl * control)
 }
 
 void
-CWindow::DestroyChilds (void)
+CWindow::DestroyChilds(void)
 {
  ControlOnFocus = NULL;
  CControl::DestroyChilds ();
 }
 
 void
-CWindow::WDestroy (void)
+CWindow::WDestroy(void)
 {
  if (CanExitExclusive)
   {
@@ -369,9 +369,9 @@ CWindow::WDestroy (void)
 }
 
 void
-CWindow::Show (void)
+CWindow::Show(void)
 {
- SetVisible (true,false);
+ SetVisible (true, false);
  if (Win != NULL)
   {
    if (!OverWin)
@@ -390,7 +390,7 @@ CWindow::Show (void)
 }
 
 void
-CWindow::ShowExclusive (void)
+CWindow::ShowExclusive(void)
 {
  Show ();
  CanExitExclusive = true;
@@ -398,28 +398,28 @@ CWindow::ShowExclusive (void)
 }
 
 void
-CWindow::Hide (void)
+CWindow::Hide(void)
 {
- if(!Visible) return;
+ if (!Visible) return;
 
  SetVisible (false);
  if (Win != NULL)
   {
    if (OverWin)
     {
-     if(WParent) 	    
-       WParent->Draw ();
+     if (WParent)
+      WParent->Draw ();
     }
    else
     {
      SDL_HideWindow (WWindow);
     }
   }
-  on_hide ();
+ on_hide ();
 }
 
 void
-CWindow::HideExclusive (void)
+CWindow::HideExclusive(void)
 {
  CanExitExclusive = false;
  Application->SetModalWindow (NULL);
@@ -427,7 +427,7 @@ CWindow::HideExclusive (void)
 }
 
 void
-CWindow::Update (void)
+CWindow::Update(void)
 {
  if ((Paint == NULL) || (Visible == false))return;
  for (int i = 0; i <= ChildCount; i++)
@@ -441,14 +441,14 @@ CWindow::Update (void)
     }
   }
  CControl::Update ();
- 
+
  if (!OverWin)
   {
 #ifdef _ONEWIN   
-   CWindow * mw=Application->GetModalWindow();
-   if(mw)
+   CWindow * mw = Application->GetModalWindow ();
+   if (mw)
     {
-     mw->Draw();
+     mw->Draw ();
     }
 #endif   
    SDL_RenderPresent (Renderer);
@@ -456,7 +456,7 @@ CWindow::Update (void)
 }
 
 void
-CWindow::Update (SDL_Rect Reg)
+CWindow::Update(SDL_Rect Reg)
 {
  if (ChildCount == -1)
   return;
@@ -490,7 +490,7 @@ CWindow::Update (SDL_Rect Reg)
 }
 
 void
-CWindow::SetOverrideRedirect (bool oredirect)
+CWindow::SetOverrideRedirect(bool oredirect)
 {
  ORedirect = oredirect;
  if (WWindow)
@@ -503,13 +503,13 @@ CWindow::SetOverrideRedirect (bool oredirect)
 }
 
 bool
-CWindow::GetOverrideRedirect (void)
+CWindow::GetOverrideRedirect(void)
 {
  return ORedirect;
 }
 
 void
-CWindow::SetSaveUnder (bool saveunder) { }
+CWindow::SetSaveUnder(bool saveunder) { }
 
 /*
 bool predicate (Display *display,XEvent *event,XPointer arg)
@@ -522,7 +522,7 @@ bool predicate (Display *display,XEvent *event,XPointer arg)
  */
 
 bool
-CWindow::WEvents (SDL_Event WEvent)
+CWindow::WEvents(SDL_Event WEvent)
 {
  int ret = 0;
 #ifdef __EMSCRIPTEN__
@@ -535,30 +535,30 @@ CWindow::WEvents (SDL_Event WEvent)
     {
     case SDL_WINDOWEVENT_SHOWN:
 #ifdef _DEBUG
-     SDL_Log("Window %d shown", WEvent.window.windowID);
+     SDL_Log ("Window %d shown", WEvent.window.windowID);
 #endif
      on_show ();
-     SetRedraw();
-     Draw();
+     SetRedraw ();
+     Draw ();
      ret = 1;
      break;
     case SDL_WINDOWEVENT_HIDDEN:
 #ifdef _DEBUG
-     SDL_Log("Window %d hidden", WEvent.window.windowID);
+     SDL_Log ("Window %d hidden", WEvent.window.windowID);
 #endif
      ret = 1;
      break;
     case SDL_WINDOWEVENT_EXPOSED:
 #ifdef _DEBUG
-     SDL_Log("Window %d exposed", WEvent.window.windowID);
+     SDL_Log ("Window %d exposed", WEvent.window.windowID);
 #endif
-     SetRedraw();
-     Draw();
+     SetRedraw ();
+     Draw ();
      ret = 1;
      break;
     case SDL_WINDOWEVENT_MOVED:
 #ifdef _DEBUG
-     SDL_Log("Window %d moved to %d,%d", WEvent.window.windowID, WEvent.window.data1, WEvent.window.data2);
+     SDL_Log ("Window %d moved to %d,%d", WEvent.window.windowID, WEvent.window.data1, WEvent.window.data2);
 #endif
 #ifndef _ONEWIN
      X = WEvent.window.data1;
@@ -568,7 +568,7 @@ CWindow::WEvents (SDL_Event WEvent)
      break;
     case SDL_WINDOWEVENT_RESIZED:
 #ifdef _DEBUG
-     SDL_Log("Window %d resized to %dx%d", WEvent.window.windowID, WEvent.window.data1,WEvent.window.data2);    
+     SDL_Log ("Window %d resized to %dx%d", WEvent.window.windowID, WEvent.window.data1, WEvent.window.data2);
 #endif     
 #ifndef _ONEWIN
      Width = WEvent.window.data1;
@@ -576,22 +576,22 @@ CWindow::WEvents (SDL_Event WEvent)
      Draw ();
 #else 
 #ifdef __EMSCRIPTEN__
-         emscripten_get_element_css_size("#canvas", &width, &height);
-         emscripten_set_canvas_element_size("#canvas",int(width), int(height));
-         SDL_RenderSetLogicalSize(Application->GetARootWindow()->GetRenderer(), 
-			  (int)(width*gscale), (int)(height*gscale));
+     emscripten_get_element_css_size ("#canvas", &width, &height);
+     emscripten_set_canvas_element_size ("#canvas", int(width), int(height));
+     SDL_RenderSetLogicalSize (Application->GetARootWindow ()->GetRenderer (),
+                               (int) (width * gscale), (int) (height * gscale));
 #else
-     SDL_RenderSetLogicalSize(Renderer,WEvent.window.data1*gscale,WEvent.window.data2*gscale);
+     SDL_RenderSetLogicalSize (Renderer, WEvent.window.data1*gscale, WEvent.window.data2 * gscale);
 #endif
 #endif     
      on_show ();
-     SetRedraw();
-     Draw();
+     SetRedraw ();
+     Draw ();
      ret = 1;
      break;
     case SDL_WINDOWEVENT_SIZE_CHANGED:
 #ifdef _DEBUG
-     SDL_Log("Window %d size changed to %dx%d", WEvent.window.windowID, WEvent.window.data1,WEvent.window.data2);
+     SDL_Log ("Window %d size changed to %dx%d", WEvent.window.windowID, WEvent.window.data1, WEvent.window.data2);
 #endif     
 #ifndef _ONEWIN
      Width = WEvent.window.data1;
@@ -599,65 +599,65 @@ CWindow::WEvents (SDL_Event WEvent)
      Draw ();
 #else
 #ifdef __EMSCRIPTEN__
-         emscripten_get_element_css_size("#canvas", &width, &height);
-         emscripten_set_canvas_element_size("#canvas",int(width), int(height));
-         SDL_RenderSetLogicalSize(Application->GetARootWindow()->GetRenderer(), 
-			  (int)(width*gscale), (int)(height*gscale));
+     emscripten_get_element_css_size ("#canvas", &width, &height);
+     emscripten_set_canvas_element_size ("#canvas", int(width), int(height));
+     SDL_RenderSetLogicalSize (Application->GetARootWindow ()->GetRenderer (),
+                               (int) (width * gscale), (int) (height * gscale));
 #else
-     SDL_RenderSetLogicalSize(Renderer,WEvent.window.data1*gscale,WEvent.window.data2*gscale);
+     SDL_RenderSetLogicalSize (Renderer, WEvent.window.data1*gscale, WEvent.window.data2 * gscale);
 #endif
 #endif    
      ret = 1;
      break;
     case SDL_WINDOWEVENT_MINIMIZED:
 #ifdef _DEBUG
-     SDL_Log("Window %d minimized", WEvent.window.windowID);
+     SDL_Log ("Window %d minimized", WEvent.window.windowID);
 #endif     
      ret = 1;
      break;
     case SDL_WINDOWEVENT_MAXIMIZED:
 #ifdef _DEBUG
-     SDL_Log("Window %d maximized", WEvent.window.windowID);
+     SDL_Log ("Window %d maximized", WEvent.window.windowID);
 #endif     
-     SetRedraw();
-     Draw();
+     SetRedraw ();
+     Draw ();
      ret = 1;
      break;
     case SDL_WINDOWEVENT_RESTORED:
 #ifdef _DEBUG
-     SDL_Log("Window %d restored", WEvent.window.windowID);
+     SDL_Log ("Window %d restored", WEvent.window.windowID);
 #endif    
-     SetRedraw();
-     Draw();
+     SetRedraw ();
+     Draw ();
      ret = 1;
      break;
     case SDL_WINDOWEVENT_ENTER:
 #ifdef _DEBUG
-     SDL_Log("Mouse entered window %d", WEvent.window.windowID);
+     SDL_Log ("Mouse entered window %d", WEvent.window.windowID);
 #endif    
      on_enter ();
      ret = 1;
      break;
     case SDL_WINDOWEVENT_LEAVE:
 #ifdef _DEBUG
-     SDL_Log("Mouse left window %d", WEvent.window.windowID);
+     SDL_Log ("Mouse left window %d", WEvent.window.windowID);
 #endif    
      on_leave ();
      ret = 1;
      break;
     case SDL_WINDOWEVENT_FOCUS_GAINED:
 #ifdef _DEBUG
-     SDL_Log("Window %d gained keyboard focus", WEvent.window.windowID);
+     SDL_Log ("Window %d gained keyboard focus", WEvent.window.windowID);
 #endif    
      break;
     case SDL_WINDOWEVENT_FOCUS_LOST:
 #ifdef _DEBUG
-     SDL_Log("Window %d lost keyboard focus", WEvent.window.windowID);
+     SDL_Log ("Window %d lost keyboard focus", WEvent.window.windowID);
 #endif    
      break;
     case SDL_WINDOWEVENT_CLOSE:
 #ifdef _DEBUG
-     SDL_Log("Window %d closed", WEvent.window.windowID);
+     SDL_Log ("Window %d closed", WEvent.window.windowID);
 #endif    
      WDestroy ();
      ret = 1;
@@ -665,12 +665,12 @@ CWindow::WEvents (SDL_Event WEvent)
 #if SDL_VERSION_ATLEAST(2, 0, 5)
     case SDL_WINDOWEVENT_TAKE_FOCUS:
 #ifdef _DEBUG
-     SDL_Log("Window %d is offered a focus", WEvent.window.windowID);
+     SDL_Log ("Window %d is offered a focus", WEvent.window.windowID);
 #endif    
      break;
     case SDL_WINDOWEVENT_HIT_TEST:
 #ifdef _DEBUG
-     SDL_Log("Window %d has a special hit test", WEvent.window.windowID);
+     SDL_Log ("Window %d has a special hit test", WEvent.window.windowID);
 #endif    
      break;
 #endif
@@ -718,12 +718,12 @@ CWindow::WEvents (SDL_Event WEvent)
           {
            if (WEvent.type == SDL_MOUSEBUTTONDOWN)
             {
-              move_on = 2;
+             move_on = 2;
             }
            else
             {
-              move_on = 0;
-            } 
+             move_on = 0;
+            }
            break;
           }
         }
@@ -742,18 +742,18 @@ CWindow::WEvents (SDL_Event WEvent)
     }
    else if (move_on == 2)
     {
-     int w= WEvent.motion.x-X+5;
-     int h= WEvent.motion.y-Y-15;
-     if(w > 64)
-     {
+     int w = WEvent.motion.x - X + 5;
+     int h = WEvent.motion.y - Y - 15;
+     if (w > 64)
+      {
        SetWidth (w);
-     }
-     if(h > 64)
-     {
+      }
+     if (h > 64)
+      {
        SetHeight (h);
-     }
-     
-     on_show();
+      }
+
+     on_show ();
      Application->GetARootWindow ()->Draw ();
      Draw ();
     }
@@ -764,22 +764,39 @@ CWindow::WEvents (SDL_Event WEvent)
    ret = 1;
    break;
 #endif   
-   case SDL_KEYDOWN:
+  case SDL_KEYDOWN:
 #ifdef _ONEWIN
-     if(this == Application->GetAWindow (0))
-     {
-      if(WEvent.key.keysym.sym == SDLK_x)
+   if (this == Application->GetAWindow (0))
+    {
+     if (WEvent.key.keysym.sym == SDLK_x)
       {
-	lxrad_scale_up();     
+       lxrad_scale_up ();
       }
-      else if(WEvent.key.keysym.sym == SDLK_z)
+     else if (WEvent.key.keysym.sym == SDLK_z)
       {
-	lxrad_scale_down();     
+       lxrad_scale_down ();
       }
-     }
+    }
 #endif     
-     CControl::Event (WEvent);
+   CControl::Event (WEvent);
    ret = 1;
+   break;
+  case SDL_MULTIGESTURE:
+#ifdef _ONEWIN
+   if (fabs (WEvent.mgesture.dDist) > 0.002)
+    {
+     //Pinch open
+     if (WEvent.mgesture.dDist > 0)
+      {
+       lxrad_scale_up ();
+      }
+      //Pinch close
+     else
+      {
+       lxrad_scale_down ();
+      }
+    }
+#endif   
    break;
   default:
    CControl::Event (WEvent);
@@ -843,51 +860,51 @@ CWindow::WEvents (SDL_Event WEvent)
 }
 
 lxStringList
-CWindow::GetContext (void)
+CWindow::GetContext(void)
 {
-  CControl::GetContext ();
-  Context.AddLine (xml_out (lxT("Title"), lxT("lxString"), GetTitle ()));
-  Context.AddLine (xml_out (lxT("OverrideRedirect"), lxT("bool"), itoa (GetOverrideRedirect ())));
-  //events 
-  Context.AddLine (xml_out (lxT("EvOnCreate"), lxT("Event"), btoa (GetEv ())));
-  Context.AddLine (xml_out (lxT("EvOnDestroy"), lxT("Event"), btoa (GetEv ())));
-  Context.AddLine (xml_out (lxT("EvOnShow"), lxT("Event"), btoa (GetEv ())));
-  Context.AddLine (xml_out (lxT("EvOnHide"), lxT("Event"), btoa (GetEv ())));
-  Context.AddLine (xml_out (lxT("EvOnEnter"), lxT("Event"), btoa (GetEv ())));
-  Context.AddLine (xml_out (lxT("EvOnLeave"), lxT("Event"), btoa (GetEv ())));
-  return Context;
+ CControl::GetContext ();
+ Context.AddLine (xml_out (lxT ("Title"), lxT ("lxString"), GetTitle ()));
+ Context.AddLine (xml_out (lxT ("OverrideRedirect"), lxT ("bool"), itoa (GetOverrideRedirect ())));
+ //events 
+ Context.AddLine (xml_out (lxT ("EvOnCreate"), lxT ("Event"), btoa (GetEv ())));
+ Context.AddLine (xml_out (lxT ("EvOnDestroy"), lxT ("Event"), btoa (GetEv ())));
+ Context.AddLine (xml_out (lxT ("EvOnShow"), lxT ("Event"), btoa (GetEv ())));
+ Context.AddLine (xml_out (lxT ("EvOnHide"), lxT ("Event"), btoa (GetEv ())));
+ Context.AddLine (xml_out (lxT ("EvOnEnter"), lxT ("Event"), btoa (GetEv ())));
+ Context.AddLine (xml_out (lxT ("EvOnLeave"), lxT ("Event"), btoa (GetEv ())));
+ return Context;
 }
 
 void
-CWindow::SetContext (lxStringList context)
+CWindow::SetContext(lxStringList context)
 {
-  lxString name, type, value;
-  CControl::SetContext (context);
-  for (uint i = 0; i < context.GetLinesCount (); i++)
-    {
-      xml_in (Context.GetLine (i), name, type, value);
-      if (name.compare (lxT("Title")) == 0)
-	SetTitle (value);
-      if (name.compare (lxT("OverrideRedirect")) == 0)
-	SetOverrideRedirect (atoi (value));
-      if (name.compare (lxT("EvOnCreate")) == 0)
-	SetEv (atob (value));
-      if (name.compare (lxT("EvOnDestroy")) == 0)
-	SetEv (atob (value));
-      if (name.compare (lxT("EvOnShow")) == 0)
-	SetEv (atob (value));
-      if (name.compare (lxT("EvOnHide")) == 0)
-	SetEv (atob (value));
-      if (name.compare (lxT("EvOnEnter")) == 0)
-	SetEv (atob (value));
-      if (name.compare (lxT("EvOnLeave")) == 0)
-	SetEv (atob (value));
-    }
-  Draw();
+ lxString name, type, value;
+ CControl::SetContext (context);
+ for (uint i = 0; i < context.GetLinesCount (); i++)
+  {
+   xml_in (Context.GetLine (i), name, type, value);
+   if (name.compare (lxT ("Title")) == 0)
+    SetTitle (value);
+   if (name.compare (lxT ("OverrideRedirect")) == 0)
+    SetOverrideRedirect (atoi (value));
+   if (name.compare (lxT ("EvOnCreate")) == 0)
+    SetEv (atob (value));
+   if (name.compare (lxT ("EvOnDestroy")) == 0)
+    SetEv (atob (value));
+   if (name.compare (lxT ("EvOnShow")) == 0)
+    SetEv (atob (value));
+   if (name.compare (lxT ("EvOnHide")) == 0)
+    SetEv (atob (value));
+   if (name.compare (lxT ("EvOnEnter")) == 0)
+    SetEv (atob (value));
+   if (name.compare (lxT ("EvOnLeave")) == 0)
+    SetEv (atob (value));
+  }
+ Draw ();
 }
 
 void
-CWindow::CirculateFocus (bool asc)
+CWindow::CirculateFocus(bool asc)
 {
  if (asc)
   {
@@ -939,7 +956,7 @@ CWindow::CirculateFocus (bool asc)
 }
 
 void
-CWindow::SetFocus (void)
+CWindow::SetFocus(void)
 {
  SDL_RaiseWindow (WWindow);
 }
@@ -949,49 +966,49 @@ CWindow::SetFocus (void)
 //propiedades
 
 SDL_Window*
-CWindow::GetWWindow (void)
+CWindow::GetWWindow(void)
 {
  return WWindow;
 }
 
 void
-CWindow::SetCanDestroy (bool candestroy)
+CWindow::SetCanDestroy(bool candestroy)
 {
  CanDestroy = candestroy;
 }
 
 bool
-CWindow::GetCanDestroy (void)
+CWindow::GetCanDestroy(void)
 {
  return CanDestroy;
 }
 
 void
-CWindow::SetXMouse (uint x)
+CWindow::SetXMouse(uint x)
 {
  XMouse = x;
 }
 
 uint
-CWindow::GetXMouse (void)
+CWindow::GetXMouse(void)
 {
  return XMouse;
 }
 
 void
-CWindow::SetYMouse (uint y)
+CWindow::SetYMouse(uint y)
 {
  YMouse = y;
 }
 
 uint
-CWindow::GetYMouse (void)
+CWindow::GetYMouse(void)
 {
  return YMouse;
 }
 
 void
-CWindow::SetTitle (const lxString & title)
+CWindow::SetTitle(const lxString & title)
 {
  Title = title;
 
@@ -1003,13 +1020,13 @@ CWindow::SetTitle (const lxString & title)
 }
 
 lxString
-CWindow::GetTitle (void)
+CWindow::GetTitle(void)
 {
  return Title;
 }
 
 CControl *
-CWindow::GetControlOnFocus (void)
+CWindow::GetControlOnFocus(void)
 {
  if (ControlOnFocus)
   return ControlOnFocus;
@@ -1018,7 +1035,7 @@ CWindow::GetControlOnFocus (void)
 }
 
 void
-CWindow::SetControlOnFocus (CControl * controlonfocus)
+CWindow::SetControlOnFocus(CControl * controlonfocus)
 {
  if ((ControlOnFocus != NULL) && (ControlOnFocus->GetCanFocus ()))
   {
@@ -1030,7 +1047,7 @@ CWindow::SetControlOnFocus (CControl * controlonfocus)
 }
 
 CControl *
-CWindow::GetLastControl (void)
+CWindow::GetLastControl(void)
 {
  if (LastControl)
   return LastControl;
@@ -1039,13 +1056,13 @@ CWindow::GetLastControl (void)
 }
 
 void
-CWindow::SetLastControl (CControl * lastcontrol)
+CWindow::SetLastControl(CControl * lastcontrol)
 {
  LastControl = lastcontrol;
 }
 
 void
-CWindow::SetX (int x)
+CWindow::SetX(int x)
 {
  CControl::SetX (x);
  if ((WWindow)&&(!OverWin))
@@ -1055,7 +1072,7 @@ CWindow::SetX (int x)
 }
 
 void
-CWindow::SetY (int y)
+CWindow::SetY(int y)
 {
  CControl::SetY (y);
  if ((WWindow)&&(!OverWin))
@@ -1065,7 +1082,7 @@ CWindow::SetY (int y)
 }
 
 void
-CWindow::SetWidth (uint width)
+CWindow::SetWidth(uint width)
 {
  CControl::SetWidth (width);
  if ((WWindow)&&(!OverWin))
@@ -1075,7 +1092,7 @@ CWindow::SetWidth (uint width)
 }
 
 void
-CWindow::SetHeight (uint height)
+CWindow::SetHeight(uint height)
 {
  CControl::SetHeight (height);
  if ((WWindow)&&(!OverWin))
@@ -1100,190 +1117,189 @@ new (size_t sz){
 //eventos
 
 void
-CWindow::on_create (void)
+CWindow::on_create(void)
 {
  if ((FOwner) && (EvOnCreate))
   (FOwner->*EvOnCreate) (this);
 }
 
 void
-CWindow::on_destroy (void)
+CWindow::on_destroy(void)
 {
  if ((FOwner) && (EvOnDestroy))
   (FOwner->*EvOnDestroy) (this);
 }
 
 void
-CWindow::on_show (void)
+CWindow::on_show(void)
 {
  if ((FOwner) && (EvOnShow))
   (FOwner->*EvOnShow) (this);
 }
 
 void
-CWindow::on_hide (void)
+CWindow::on_hide(void)
 {
  if ((FOwner) && (EvOnHide))
   (FOwner->*EvOnHide) (this);
 }
 
 void
-CWindow::on_enter (void)
+CWindow::on_enter(void)
 {
  if ((FOwner) && (EvOnEnter))
   (FOwner->*EvOnEnter) (this);
 }
 
 void
-CWindow::on_leave (void)
+CWindow::on_leave(void)
 {
  if ((FOwner) && (EvOnLeave))
   (FOwner->*EvOnLeave) (this);
 }
 
 int
-CWindow::LoadXMLContextAndCreateChilds (lxString filename, CControl* ctrl)
+CWindow::LoadXMLContextAndCreateChilds(lxString filename, CControl* ctrl)
 {
-  FILE* file2;
-  lxStringList list;
-  lxString line;
+ FILE* file2;
+ lxStringList list;
+ lxString line;
 
-  file2 = fopen (filename.c_str(),"r");
-  rewind(file2);
-  
+ file2 = fopen (filename.c_str (), "r");
+ rewind (file2);
 
-  if (file2)
+
+ if (file2)
+  {
+
+   if (ctrl == NULL)//for owner window
     {
-
-      if(ctrl == NULL)//for owner window
+     if (fgetline (file2, line))
       {
-        if(fgetline (file2, line))
+       ctrl = this;
+       ctrl->SetName (line.substr (1, line.size () - 2)); //Get Window name
+       ctrl->SetFOwner (this);
+       rewind (file2);
+      }
+    }
+
+   list.Clear ();
+   while (fgetline (file2, line))
+    {
+     if (line.compare (lxT ("<") + ctrl->GetName () + lxT (">")) == 0)
+      {
+       fgetline (file2, line);
+       do
         {
-          ctrl = this;
-          ctrl->SetName(line.substr (1, line.size () - 2));//Get Window name
-          ctrl->SetFOwner (this);
-          rewind(file2);
+         list.AddLine (line);
+         fgetline (file2, line);
         }
+       while (line.c_str ()[0] == ' ');
+       ctrl->SetContext (list);
+
+       while (line.compare (lxT ("</") + ctrl->GetName () + lxT (">")) != 0)
+        {
+         lxString controlclass, ctype, name, cname;
+
+         cname = line.substr (1, line.size () - 2);
+         fgetline (file2, line);
+         xml_in (line, name, ctype, controlclass);
+
+         CControl *ch = newcontrolbycname (controlclass);
+         ch->SetName (cname);
+         ch->SetFOwner (ctrl);
+
+         /* 
+         if (ch->GetClass ().compare (lxT ("CItemMenu")) == 0)
+                   {
+                     ch->SetVisible (false, false);
+                   }
+          */
+         ctrl->CreateChild (ch);
+
+         if (ch != NULL)
+          LoadXMLContextAndCreateChilds (filename, ch);
+         else
+          printf ("Child Not Found! %s \n", (char*) name.char_str ());
+
+         do
+          {
+           fgetline (file2, line);
+          }
+         while ((line.compare (lxT ("</") + cname + lxT (">")) != 0));
+         fgetline (file2, line);
+        }
+
       }
 
-      list.Clear ();
-      while (fgetline (file2, line))
-        {
-          if (line.compare (lxT ("<") + ctrl->GetName () + lxT (">")) == 0)
-            {
-              fgetline (file2, line);
-              do
-                {
-                  list.AddLine (line);
-                  fgetline (file2, line);
-                }
-              while (line.c_str()[0] == ' ');
-              ctrl->SetContext (list);
-
-              while (line.compare (lxT ("</") + ctrl->GetName () + lxT (">")) != 0)
-                {
-                  lxString controlclass, ctype, name, cname;
-
-                  cname = line.substr (1, line.size () - 2);
-                  fgetline (file2, line);
-                  xml_in (line, name, ctype, controlclass);
-
-                  CControl *ch = newcontrolbycname (controlclass);
-                  ch->SetName (cname);
-                  ch->SetFOwner (ctrl);
-                 
-		  /* 
-		  if (ch->GetClass ().compare (lxT ("CItemMenu")) == 0)
-                    {
-                      ch->SetVisible (false, false);
-                    }
-                  */
-                  ctrl->CreateChild (ch);
-
-                  if (ch != NULL)
-                    LoadXMLContextAndCreateChilds (filename, ch);
-                  else
-                    printf ("Child Not Found! %s \n", (char*) name.char_str ());
-
-                  do
-                    {
-                      fgetline (file2, line);
-                    }
-                  while ((line.compare (lxT ("</") + cname + lxT (">")) != 0));
-                  fgetline (file2, line);
-                }
-
-            }
-
-        }
-
-      fclose(file2);
-      return 1;
     }
-  else
-    printf ("File (%s) not found!\n",(char *)filename.char_str());
 
-  return 0;
+   fclose (file2);
+   return 1;
+  }
+ else
+  printf ("File (%s) not found!\n", (char *) filename.char_str ());
+
+ return 0;
 }
 
 bool
-CWindow::GetCanExitExclusive (void)
+CWindow::GetCanExitExclusive(void)
 {
  return CanExitExclusive;
 }
 
 CWindow*
-CWindow::GetWWidget (void)
+CWindow::GetWWidget(void)
 {
  return this;
 }
 
 SDL_Renderer *
-CWindow::GetRenderer (void)
+CWindow::GetRenderer(void)
 {
  return Renderer;
 }
 
 bool
-CWindow::GetOverWin (void)
+CWindow::GetOverWin(void)
 {
  return OverWin;
 }
 
 void
-CWindow::SetOverWin (bool ow)
+CWindow::SetOverWin(bool ow)
 {
  OverWin = ow;
 }
 
 int
-CWindow::GetRedraw (void)
+CWindow::GetRedraw(void)
 {
  return Redraw;
 }
 
-	
 void
-CWindow::SetRedraw (void)
+CWindow::SetRedraw(void)
 {
  Redraw++;
 #ifdef _ONEWIN   
- if(Application->GetARootWindow () != this)
- {
+ if (Application->GetARootWindow () != this)
+  {
    Application->GetARootWindow ()->SetRedraw ();
- }
+  }
 #endif
 }
 
 bool
-CWindow::OwnerEvent (int x, int y)
+CWindow::OwnerEvent(int x, int y)
 {
  CalcRXY ();
 
  if ((x > RX) && (x < (int) (Width + RX)))
   {
 #ifdef _ONEWIN   
-   if ((y > RY) && (y < (int) (Height + RY+20)))
+   if ((y > RY) && (y < (int) (Height + RY + 20)))
 #else   
    if ((y > RY) && (y < (int) (Height + RY)))
 #endif
