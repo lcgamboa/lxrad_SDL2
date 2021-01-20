@@ -192,7 +192,6 @@ CApplication::ADestroyWindow (CWindow * AWindow)
 #endif  
 
      Exit = true;
-     exit(0); //avoid thread and timers crash
      return;
     }
    else
