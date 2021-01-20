@@ -192,6 +192,7 @@ CApplication::ADestroyWindow (CWindow * AWindow)
 #endif  
 
      Exit = true;
+     exit(0); //avoid thread and timers crash
      return;
     }
    else
@@ -275,7 +276,7 @@ CApplication::ProcessEvents (void)
 
  if (!MWindow)
   {
-   if(!trun)
+   if((!trun)&&(!Exit))
    {
    trun = 1;	   
    gettimeofday (&tv, NULL);
@@ -288,9 +289,9 @@ CApplication::ProcessEvents (void)
      if (elapsed >= TimerList[t]->GetTime ())
       {
        //printf("===>>Timer %i reseted\n",t);	       
-       TimerList[t]->on_time ();
        TimerList[t]->tv = tv;
        TimerList[t]->SetOverTime (elapsed - TimerList[t]->GetTime ());
+       TimerList[t]->on_time ();
       }
     }
 
@@ -605,6 +606,11 @@ CApplication::RemoveTimer (CTimer *tm)
       TimerList[c] = TimerList[c + 1];
      TimerList[TimerCount] = NULL;
      TimerCount--;
+     if(TimerCount == -1)
+     {
+       if (TimerList)
+         delete[]TimerList;
+     }
     }
    //printf("Timer %i Removed: %s\n",TimerCount,tm->GetName().c_str()); 
   }
@@ -641,6 +647,11 @@ CApplication::RemoveThread (CThread *td)
       ThreadList[c] = ThreadList[c + 1];
      ThreadList[ThreadCount] = NULL;
      ThreadCount--;
+     if(ThreadCount == -1)
+     {
+       if (ThreadList)
+         delete[]ThreadList;
+     }
     }
   }
 }
