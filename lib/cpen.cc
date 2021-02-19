@@ -33,45 +33,61 @@
 void
 CPen::Create (CControl * control)
 {
+    Width=1;	
     Owner=control;
-};
+}
 
 void
 CPen::SetColor (SDL_Color color)
 {
-  Color = color;
+  FgColor = color;
+  BgColor = color;
   if((Owner)&&(Owner->GetWin()))
     SDL_SetRenderDrawColor(Owner->GetWin()->GetRenderer(),color.r,color.g,color.b,0xFF);
-};
+}
 
 void
-CPen::SetBGColor (SDL_Color color)
+CPen::SetFgColor (SDL_Color color)
 {
-  BGColor = color;
+  FgColor = color;
   if((Owner)&&(Owner->GetWin()))
     SDL_SetRenderDrawColor(Owner->GetWin()->GetRenderer(),color.r,color.g,color.b,0xFF);
-};
+}
 
-SDL_Color CPen::GetColor ()
+void
+CPen::SetBgColor (SDL_Color color)
 {
-  return Color;
-};
+  BgColor = color;
+  if((Owner)&&(Owner->GetWin()))
+    SDL_SetRenderDrawColor(Owner->GetWin()->GetRenderer(),color.r,color.g,color.b,0xFF);
+}
 
-SDL_Color CPen::GetBGColor ()
+SDL_Color CPen::GetFgColor ()
 {
-  return BGColor;
-};
+  return FgColor;
+}
+
+SDL_Color CPen::GetBgColor ()
+{
+  return BgColor;
+}
 
 
 void
 CPen::SetWidth (unsigned long width)
 {
-//  XSetLineAttributes(Disp, *Agc, width, LineSolid, CapNotLast,JoinMiter);
-};
+  Width = width;
+}
+
+unsigned int
+CPen::GetWidth (void)
+{
+  return Width ;
+}
 
 void
 CPen::SetPen (int function)
 {
 //  XSetFunction (Disp, *Agc, function);
-};
+}
 

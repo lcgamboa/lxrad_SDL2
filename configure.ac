@@ -8,7 +8,7 @@ AC_CONFIG_HEADER([config.h])
 # Checks for programs.
 AC_PROG_CC()
 AC_PROG_CXX()
-CFLAGS="-Wall -O2 -D_LX_SDL2 `sdl2-config --cflags`"
+CFLAGS="-Wall -D_LX_SDL2 `sdl2-config --cflags`"
 LIBS=""
 
 # Checks for libraries.
@@ -25,6 +25,14 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 LIBS=" -lSDL2_image $LIBS",
 AC_MSG_ERROR([SDL2 image Not Found!]))
+
+AC_CHECK_LIB([SDL2_gfx], [thickLineRGBA],
+cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBSDL2_GFX 1
+_ACEOF
+LIBS=" -lSDL2_gfx $LIBS",
+AC_MSG_ERROR([SDL2 gfx Not Found!]))
+
 
 AC_CHECK_LIB([SDL2_ttf], [TTF_Init],
 cat >>confdefs.h <<_ACEOF
