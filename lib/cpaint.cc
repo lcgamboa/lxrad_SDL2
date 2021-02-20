@@ -169,15 +169,43 @@ CPaint::Line(int x1, int y1, int x2, int y2)
  Rotate (&x2, &y2);
  if (LineWidth == 1)
   {
-   SDL_RenderDrawLine (Win->GetRenderer (), RX + x1, RY + y1, RX + x2, RY + y2);
+   SDL_Color color = Pen.GetFgColor ();
+   aalineRGBA (Win->GetRenderer (), RX + x1, RY + y1, RX + x2, RY + y2, color.r, color.g, color.b, 0xFF);
   }
  else
   {
-     SDL_Color color = Pen.GetFgColor ();
-     
-     thickLineRGBA (Win->GetRenderer (),RX+x1, RY+y1, RX+x2, RY+y2, Pen.GetWidth (), color.r, color.g, color.b, 0xFF);
-     filledCircleRGBA (Win->GetRenderer (), RX+x1, RY+y1, Pen.GetWidth()/2.0, color.r, color.g, color.b, 0xFF);
-     filledCircleRGBA (Win->GetRenderer (), RX+x2, RY+y2, Pen.GetWidth()/2.0, color.r, color.g, color.b, 0xFF);
+   SDL_Color color = Pen.GetFgColor ();
+   double PWidth = Pen.GetWidth () / 2.0;
+
+   double vx[4];
+   double vy[4];
+
+   double angle= atan2(y1-y2,x2-x1);
+   
+   printf("angle %f\n",angle*180.0/M_PI);
+   
+   
+   double dx = PWidth*-sin(angle); 
+   double dy = PWidth*cos(angle); 
+   
+   vx[0]=RX + x1 + dx;
+   vy[0]=RY + y1 - dy;
+   
+   vx[1]=RX + x2 + dx;
+   vy[1]=RY + y2 - dy;
+   
+   vx[2]=RX + x2 - dx;
+   vy[2]=RY + y2 + dy;
+   
+   vx[3]=RX + x1 - dx;
+   vy[3]=RY + y1 + dy;
+   
+   aaFilledPolygonRGBA (Win->GetRenderer (), vx, vy, 4 , color.r, color.g, color.b, 0xFF);
+   
+   //line ending
+   aaFilledEllipseRGBA (Win->GetRenderer (), RX + x1, RY + y1, PWidth , PWidth , color.r, color.g, color.b, 0xFF);
+   aaFilledEllipseRGBA (Win->GetRenderer (), RX + x2, RY + y2, PWidth , PWidth , color.r, color.g, color.b, 0xFF);
+   
    /*
    SDL_Rect DestR;
    SDL_Point center;
@@ -202,7 +230,7 @@ CPaint::Line(int x1, int y1, int x2, int y2)
 
    SDL_RenderCopyEx (Win->GetRenderer (), line, NULL, &DestR, a, &center, SDL_FLIP_NONE);
    SDL_DestroyTexture (line);
-   */
+    */
   }
 }
 
@@ -214,20 +242,10 @@ CPaint::Lines(SDL_Point * points, int npoints)
    points[c].x += RX;
    points[c].y += RY;
   }
- if (Pen.GetWidth() == 1)
-  {
-   SDL_RenderDrawLines (Win->GetRenderer (), points, npoints);
-  }
- else
-  {
-   SDL_Color color = Pen.GetFgColor ();
 
-   for (int i = 0; i < npoints - 1; i++)
-    {
-     thickLineRGBA (Win->GetRenderer (),points[i].x, points[i].y, points[i+1].x, points[i+1].y, Pen.GetWidth (), color.r, color.g, color.b, 0xFF);
-     filledCircleRGBA (Win->GetRenderer (), points[i].x, points[i].y, Pen.GetWidth()/2.0, color.r, color.g, color.b, 0xFF);
-     filledCircleRGBA (Win->GetRenderer (), points[i+1].x, points[i+1].y, Pen.GetWidth()/2.0, color.r, color.g, color.b, 0xFF);
-    }
+ for (int i = 0; i < npoints - 1; i++)
+  {
+   Line (points[i].x, points[i].y, points[i + 1].x, points[i + 1].y);
   }
 }
 
@@ -582,16 +600,16 @@ CPaint::Circle(bool filled, int cx, int cy, int radius)
  if (filled)
   {
    SDL_Color color = Pen.GetBgColor ();
-   filledCircleRGBA (Win->GetRenderer (), cx, cy, radius, color.r, color.g, color.b, 0xFF);
+   aaFilledEllipseRGBA (Win->GetRenderer (), cx, cy, radius, radius, color.r, color.g, color.b, 0xFF);
   }
  SDL_Color color = Pen.GetFgColor ();
  if (Pen.GetWidth () <= 1)
   {
-   circleRGBA (Win->GetRenderer (), cx, cy, radius, color.r, color.g, color.b, 0xFF);
+   aacircleRGBA (Win->GetRenderer (), cx, cy, radius, color.r, color.g, color.b, 0xFF);
   }
  else
   {
-   thickCircleRGBA(Win->GetRenderer (), cx, cy, radius , color.r, color.g, color.b, 0xFF, Pen.GetWidth ());
+   thickCircleRGBA (Win->GetRenderer (), cx, cy, radius, color.r, color.g, color.b, 0xFF, Pen.GetWidth ());
   }
 
  /*
@@ -774,15 +792,13 @@ CPaint::Polygon(bool filled, lxPoint * points, int npoints)
  SDL_Color color = Pen.GetFgColor ();
  if (Pen.GetWidth () <= 1)
   {
-   polygonRGBA (Win->GetRenderer (), vx, vy, npoints, color.r, color.g, color.b, 0xFF);
+   aapolygonRGBA (Win->GetRenderer (), vx, vy, npoints, color.r, color.g, color.b, 0xFF);
   }
  else
   {
    for (int i = 0; i < npoints - 1; i++)
     {
-     thickLineRGBA (Win->GetRenderer (), vx[i], vy[i], vx[i + 1], vy[i + 1], Pen.GetWidth (), color.r, color.g, color.b, 0xFF);
-     
-     filledCircleRGBA (Win->GetRenderer (), vx[i+1], vy[i+1], Pen.GetWidth()/2.0, color.r, color.g, color.b, 0xFF);
+     Line (vx[i], vy[i], vx[i + 1], vy[i + 1]);
     }
   }
  //SDL_RenderDrawLines (Win->GetRenderer (), points, npoints);
