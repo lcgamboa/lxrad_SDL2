@@ -79,14 +79,17 @@ class lxTextFile
 class lxImage
 {
 private:
-SDL_Surface* Surface;
+CPWindow * Win;
+SDL_Texture* Texture;
 public:
-lxImage();
+lxImage(CPWindow * win);
 ~lxImage();
-bool LoadFile(lxString fname);
+bool LoadFile(const lxString fname, int orientation = 0, float scalex = 1.0, float scaley = 1.0);
 void Destroy();
-SDL_Surface* GetImage(void);
-operator SDL_Surface*() const;
+SDL_Texture * GetImage(void);
+operator SDL_Texture*() const;
+unsigned int GetWidth(void);
+unsigned int GetHeight(void);
 };
 
 class lxSize
@@ -107,7 +110,7 @@ SDL_Texture* Texture;
 public:
 ~lxBitmap();
 lxBitmap (SDL_Texture* Texture); 
-lxBitmap(SDL_Surface* surf, CPWindow * win);
+lxBitmap(lxImage * surf, CPWindow * win);
 lxBitmap (int width, int height); 
 SDL_Texture* GetPixmap(void);
 lxSize GetSize(void);

@@ -182,7 +182,7 @@ CPaint::Line(int x1, int y1, int x2, int y2)
 
    double angle= atan2(y1-y2,x2-x1);
    
-   printf("angle %f\n",angle*180.0/M_PI);
+   //printf("angle %f\n",angle*180.0/M_PI);
    
    
    double dx = PWidth*-sin(angle); 

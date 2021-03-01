@@ -34,6 +34,10 @@
 #include <minizip/zip.h>
 #include <minizip/unzip.h>
 
+#include"../../lunasvg/include/svgdocument.h"
+
+using namespace lunasvg;
+
 #ifdef __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
 #endif
@@ -122,45 +126,189 @@ lxTextFile::AddLine(lxString line)
 
 //-------------------------------------------------------------------------
 
-lxImage::lxImage()
+lxImage::lxImage(CPWindow * win)
 {
- Surface = NULL;
+ Win = win;
+ Texture = NULL;
 }
 
 lxImage::~lxImage()
 {
- if (Surface)
-  SDL_FreeSurface (Surface);
- Surface = NULL;
+ if (Texture)
+  SDL_DestroyTexture (Texture);
+ Texture = NULL;
+}
+
+unsigned int
+lxImage::GetWidth(void)
+{
+ int w, h;
+ SDL_QueryTexture (Texture, NULL, NULL, &w, &h);
+
+ return w;
+}
+
+unsigned int
+lxImage::GetHeight(void)
+{
+ int w, h;
+ SDL_QueryTexture (Texture, NULL, NULL, &w, &h);
+
+ return h;
 }
 
 bool
-lxImage::LoadFile(lxString fname)
+lxImage::LoadFile(const lxString fname, int orientation, float scalex, float scaley)
 {
- Surface = IMG_Load (fname.c_str ());
- if (Surface)
-  return 1;
- else
-  return 0;
+ Destroy ();
+
+ if (fname.Contains (".svg"))
+  {
+   int width;
+   int height;
+
+   SVGDocument document;
+   if (document.loadFromFile ((const char *) fname.c_str ()))
+    {
+     width = document.documentWidth (96.0) * scalex;
+     height = document.documentHeight (96.0) * scaley;
+
+     Bitmap bitmap = document.renderToBitmap (width, height, 96.0, 0);
+
+     SDL_Surface * Surface = SDL_CreateRGBSurfaceFrom ((void *) bitmap.data (),
+                                                       bitmap.width (),
+                                                       bitmap.height (),
+                                                       32,
+                                                       4 * bitmap.width (),
+                                                       0x000000FF,
+                                                       0x0000FF00,
+                                                       0x00FF0000,
+                                                       0xFF000000);
+
+     SDL_Texture * mTexture = SDL_CreateTextureFromSurface (Win->GetRenderer (), Surface);
+
+     SDL_Rect DestR;
+     int sw, sh;
+     SDL_QueryTexture (mTexture, NULL, NULL, &DestR.w, &DestR.h);
+
+     switch (orientation)
+      {
+      case 0:
+      case 2:
+       sw = DestR.w;
+       sh = DestR.h;
+       DestR.x = 0;
+       DestR.y = 0;
+       break;
+      case 1:
+      case 3:
+       sw = DestR.h;
+       sh = DestR.w;
+       DestR.y = (DestR.w - DestR.h) / 2;
+       DestR.x = (DestR.h - DestR.w) / 2;
+       break;
+      }
+
+     Texture = SDL_CreateTexture (Win->GetRenderer (), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, sw, sh);
+
+     SDL_Texture* last = SDL_GetRenderTarget (Win->GetRenderer ());
+     SDL_SetRenderTarget (Win->GetRenderer (), Texture);
+
+     SDL_SetRenderDrawColor (Win->GetRenderer (), 0xFF, 0xFF, 0x00, 0xFF);
+     SDL_RenderClear (Win->GetRenderer ());
+
+     SDL_RenderCopyEx (Win->GetRenderer (), mTexture, NULL, &DestR, orientation * 90, NULL, SDL_FLIP_NONE);
+
+     SDL_DestroyTexture (mTexture);
+
+     SDL_RenderPresent (Win->GetRenderer ());
+
+     SDL_SetRenderTarget (Win->GetRenderer (), last);
+
+     SDL_FreeSurface (Surface);
+
+     return 1;
+    }
+
+  }
+ else //png
+  {
+   SDL_Surface * Surface = IMG_Load (fname.c_str ());
+
+   if (Surface)
+    {
+     SDL_Texture * mTexture = SDL_CreateTextureFromSurface (Win->GetRenderer (), Surface);
+
+
+     SDL_Rect DestR;
+     int sw, sh;
+     SDL_QueryTexture (mTexture, NULL, NULL, &DestR.w, &DestR.h);
+
+     DestR.w *= scalex;
+     DestR.h *= scaley;
+
+     switch (orientation)
+      {
+      case 0:
+      case 2:
+       sw = DestR.w;
+       sh = DestR.h;
+       DestR.x = 0;
+       DestR.y = 0;
+       break;
+      case 1:
+      case 3:
+       sw = DestR.h;
+       sh = DestR.w;
+       DestR.y = (DestR.w - DestR.h) / 2;
+       DestR.x = (DestR.h - DestR.w) / 2;
+       break;
+      }
+
+     Texture = SDL_CreateTexture (Win->GetRenderer (), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, sw, sh);
+
+     SDL_Texture* last = SDL_GetRenderTarget (Win->GetRenderer ());
+     SDL_SetRenderTarget (Win->GetRenderer (), Texture);
+
+
+     SDL_SetRenderDrawColor (Win->GetRenderer (), 0xFF, 0xFF, 0x00, 0xFF);
+     SDL_RenderClear (Win->GetRenderer ());
+
+     SDL_RenderCopyEx (Win->GetRenderer (), mTexture, NULL, &DestR, orientation * 90, NULL, SDL_FLIP_NONE);
+
+     SDL_DestroyTexture (mTexture);
+
+     SDL_RenderPresent (Win->GetRenderer ());
+
+     SDL_SetRenderTarget (Win->GetRenderer (), last);
+
+     SDL_FreeSurface (Surface);
+
+     return 1;
+    }
+  }
+
+ return 0;
+
 }
 
 void
 lxImage::Destroy(void)
 {
- if (Surface)
-  SDL_FreeSurface (Surface);
- Surface = NULL;
+ if (Texture)
+  SDL_DestroyTexture (Texture);
+ Texture = NULL;
 }
 
-SDL_Surface*
+SDL_Texture*
 lxImage::GetImage(void)
 {
- return Surface;
+ return Texture;
 }
 
-lxImage::operator SDL_Surface*() const
+lxImage::operator SDL_Texture*() const
 {
- return Surface;
+ return Texture;
 }
 
 //-------------------------------------------------------------------------
@@ -172,13 +320,13 @@ lxBitmap::~lxBitmap()
  Texture = NULL;
 }
 
-lxBitmap::lxBitmap(SDL_Surface* surf, CPWindow * win)
+lxBitmap::lxBitmap(lxImage * surf, CPWindow * win)
 {
  if (!win->GetVisible () && !win->GetOverWin ())SDL_ShowWindow (win->GetWWindow ());
 
- SDL_Texture *tim = SDL_CreateTextureFromSurface (win->GetRenderer (), surf);
+ SDL_Texture *tim = *surf;
 
- Texture = SDL_CreateTexture (win->GetRenderer (), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, surf->w, surf->h);
+ Texture = SDL_CreateTexture (win->GetRenderer (), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, surf->GetWidth (), surf->GetHeight ());
 
  SDL_Texture* last = SDL_GetRenderTarget (win->GetRenderer ());
  SDL_SetRenderTarget (win->GetRenderer (), Texture);
@@ -686,13 +834,13 @@ lxGetTempDir(lxString appname)
 lxString
 lxGetExecutablePath(lxString appname)
 {
- char buff[1024];	
- int size = readlink("/proc/self/exe",buff,1023);
- if(size == -1)
- {
+ char buff[1024];
+ int size = readlink ("/proc/self/exe", buff, 1023);
+ if (size == -1)
+  {
    return "";
- }
- buff[size]=0;
+  }
+ buff[size] = 0;
  return buff;
 }
 
@@ -862,11 +1010,11 @@ lxBitmap *
 lxGetBitmapRotated(lxImage *image, CWindow * win, int _orientation)
 {
  SDL_Texture* Texture;
- SDL_Texture* mTexture = SDL_CreateTextureFromSurface (win->GetRenderer (), *image);
+ SDL_Texture* mTexture = *image;
 
  if (mTexture == NULL)
   {
-   printf ("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError ());
+   printf ("Unable to get rotated bitmap! SDL Error: %s\n", SDL_GetError ());
   }
  else
   {
@@ -903,14 +1051,14 @@ lxGetBitmapRotated(lxImage *image, CWindow * win, int _orientation)
    SDL_SetRenderDrawColor (win->GetRenderer (), 0xFF, 0xFF, 0x00, 0xFF);
    SDL_RenderClear (win->GetRenderer ());
 
-   SDL_RenderCopyEx (win->GetRenderer (), mTexture, NULL, &DestR, _orientation*90, NULL, SDL_FLIP_NONE);
+   SDL_RenderCopyEx (win->GetRenderer (), mTexture, NULL, &DestR, _orientation * 90, NULL, SDL_FLIP_NONE);
 
    SDL_DestroyTexture (mTexture);
 
    SDL_RenderPresent (win->GetRenderer ());
 
    SDL_SetRenderTarget (win->GetRenderer (), last);
-   
+
    return new lxBitmap (Texture);
 
   }
