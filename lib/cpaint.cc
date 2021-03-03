@@ -180,32 +180,32 @@ CPaint::Line(int x1, int y1, int x2, int y2)
    double vx[4];
    double vy[4];
 
-   double angle= atan2(y1-y2,x2-x1);
-   
+   double angle = atan2 (y1 - y2, x2 - x1);
+
    //printf("angle %f\n",angle*180.0/M_PI);
-   
-   
-   double dx = PWidth*-sin(angle); 
-   double dy = PWidth*cos(angle); 
-   
-   vx[0]=RX + x1 + dx;
-   vy[0]=RY + y1 - dy;
-   
-   vx[1]=RX + x2 + dx;
-   vy[1]=RY + y2 - dy;
-   
-   vx[2]=RX + x2 - dx;
-   vy[2]=RY + y2 + dy;
-   
-   vx[3]=RX + x1 - dx;
-   vy[3]=RY + y1 + dy;
-   
-   aaFilledPolygonRGBA (Win->GetRenderer (), vx, vy, 4 , color.r, color.g, color.b, 0xFF);
-   
+
+
+   double dx = PWidth*-sin (angle);
+   double dy = PWidth * cos (angle);
+
+   vx[0] = RX + x1 + dx;
+   vy[0] = RY + y1 - dy;
+
+   vx[1] = RX + x2 + dx;
+   vy[1] = RY + y2 - dy;
+
+   vx[2] = RX + x2 - dx;
+   vy[2] = RY + y2 + dy;
+
+   vx[3] = RX + x1 - dx;
+   vy[3] = RY + y1 + dy;
+
+   aaFilledPolygonRGBA (Win->GetRenderer (), vx, vy, 4, color.r, color.g, color.b, 0xFF);
+
    //line ending
-   aaFilledEllipseRGBA (Win->GetRenderer (), RX + x1, RY + y1, PWidth , PWidth , color.r, color.g, color.b, 0xFF);
-   aaFilledEllipseRGBA (Win->GetRenderer (), RX + x2, RY + y2, PWidth , PWidth , color.r, color.g, color.b, 0xFF);
-   
+   aaFilledEllipseRGBA (Win->GetRenderer (), RX + x1, RY + y1, PWidth, PWidth, color.r, color.g, color.b, 0xFF);
+   aaFilledEllipseRGBA (Win->GetRenderer (), RX + x2, RY + y2, PWidth, PWidth, color.r, color.g, color.b, 0xFF);
+
    /*
    SDL_Rect DestR;
    SDL_Point center;
@@ -836,6 +836,18 @@ CPaint::SetColor(lxColor c)
 
  Pen.SetFgColor (c);
  Pen.SetBgColor (c);
+}
+
+lxColor
+CPaint::GetFgColor(void)
+{
+ return Pen.GetFgColor ();
+}
+
+lxColor
+CPaint::GetBgColor(void)
+{
+ return Pen.GetBgColor ();
 }
 
 void

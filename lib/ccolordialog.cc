@@ -256,13 +256,13 @@ CColorDialog::Run (void)
   WCreate ();
  CControl::SetColor (Color);
  
- scroll1.SetPosition (Color.GetR ());
- scroll2.SetPosition (Color.GetG ());
- scroll3.SetPosition (Color.GetB ());
+ scroll1.SetPosition (Color.Red ());
+ scroll2.SetPosition (Color.Green ());
+ scroll3.SetPosition (Color.Blue ());
   
- edit1.SetText (itoa(Color.GetR ()));
- edit2.SetText (itoa(Color.GetG ()));
- edit3.SetText (itoa(Color.GetB ()));
+ edit1.SetText (itoa(Color.Red ()));
+ edit2.SetText (itoa(Color.Green ()));
+ edit3.SetText (itoa(Color.Blue ()));
  
  ShowExclusive ();
  
@@ -328,9 +328,9 @@ CColorDialog::scroll_EvOnChangePosition (CControl * control)
  lxColor color = ColorByRGB(scroll1.GetPosition (),scroll2.GetPosition (),scroll3.GetPosition ());
  CControl::SetColor(color);
  
- edit1.SetText (itoa(color.GetR ()));
- edit2.SetText (itoa(color.GetG ()));
- edit3.SetText (itoa(color.GetB ()));
+ edit1.SetText (itoa(color.Red ()));
+ edit2.SetText (itoa(color.Green ()));
+ edit3.SetText (itoa(color.Blue ()));
 }
 
 void
