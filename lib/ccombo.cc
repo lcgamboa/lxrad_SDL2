@@ -110,7 +110,6 @@ CCombo::Draw ()
  if ((!Visible) || (Paint == NULL))
   return;
  
-  
  SDL_Point points[3];
  points[0].x = 6;
  points[0].y = 6;
@@ -120,7 +119,7 @@ CCombo::Draw ()
  points[2].y = tbutton1.GetHeight () - 12;
 
  tbutton1.Xpm->Canvas.Init ();
- tbutton1.Xpm->Canvas.SetFgColor (Color);
+ tbutton1.Xpm->Canvas.SetColor (Color);
  tbutton1.Xpm->Canvas.Rectangle (1, 0, 0, tbutton1.GetWidth (), tbutton1.GetHeight ());
  tbutton1.Xpm->Canvas.SetColor (0, 0, 0);
  tbutton1.Xpm->Canvas.Polygon (1, points, 3);

@@ -89,7 +89,7 @@ CScroll::Draw (void)
    points[2].y = 4;
 
    button1->Xpm->Canvas.Init ();
-   button1->Xpm->Canvas.SetFgColor (Color);
+   button1->Xpm->Canvas.SetColor (Color);
    button1->Xpm->Canvas.Rectangle (1, 0, 0, button1->GetWidth (), button1->GetHeight ());
    button1->Xpm->Canvas.SetColor (0, 0, 0);
    button1->Xpm->Canvas.Polygon (1, points, 3);
@@ -103,7 +103,7 @@ CScroll::Draw (void)
    points[2].y = button2->GetHeight () - 8;
 
    button2->Xpm->Canvas.Init ();
-   button2->Xpm->Canvas.SetFgColor (Color);
+   button2->Xpm->Canvas.SetColor (Color);
    button2->Xpm->Canvas.Rectangle (1, 0, 0, button2->GetWidth (), button2->GetHeight ());
    button2->Xpm->Canvas.SetColor (0, 0, 0);
    button2->Xpm->Canvas.Polygon (1, points, 3);
@@ -119,7 +119,7 @@ CScroll::Draw (void)
    points[2].y = ((button1->GetHeight () - 4) / 2.0);
 
    button1->Xpm->Canvas.Init ();
-   button1->Xpm->Canvas.SetFgColor (Color);
+   button1->Xpm->Canvas.SetColor (Color);
    button1->Xpm->Canvas.Rectangle (1, 0, 0, button1->GetWidth (), button1->GetHeight ());
    button1->Xpm->Canvas.SetColor (0, 0, 0);
    button1->Xpm->Canvas.Polygon (1, points, 3);
@@ -133,7 +133,7 @@ CScroll::Draw (void)
    points[2].y = ((button2->GetHeight () - 4) / 2.0);
 
    button2->Xpm->Canvas.Init ();
-   button2->Xpm->Canvas.SetFgColor (Color);
+   button2->Xpm->Canvas.SetColor (Color);
    button2->Xpm->Canvas.Rectangle (1, 0, 0, button2->GetWidth (), button2->GetHeight ());
    button2->Xpm->Canvas.SetColor (0, 0, 0);
    button2->Xpm->Canvas.Polygon (1, points, 3);

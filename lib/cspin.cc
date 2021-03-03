@@ -108,7 +108,7 @@ CSpin::Draw ()
   points[2].y=3;
   
   tbutton1.Xpm->Canvas.Init();
-  tbutton1.Xpm->Canvas.SetFgColor(Color);
+  tbutton1.Xpm->Canvas.SetColor(Color);
   tbutton1.Xpm->Canvas.Rectangle (1,0,0,tbutton1.GetWidth (),tbutton1.GetHeight ());
   tbutton1.Xpm->Canvas.SetColor(0,0,0);
   tbutton1.Xpm->Canvas.Polygon (1,points,3);
@@ -122,7 +122,7 @@ CSpin::Draw ()
   points[2].y=tbutton2.GetHeight ()-6;
   
   tbutton2.Xpm->Canvas.Init();
-  tbutton2.Xpm->Canvas.SetFgColor(Color);
+  tbutton2.Xpm->Canvas.SetColor(Color);
   tbutton2.Xpm->Canvas.Rectangle (1,0,0,tbutton2.GetWidth (),tbutton2.GetHeight ());
   tbutton2.Xpm->Canvas.SetColor(0,0,0);
   tbutton2.Xpm->Canvas.Polygon (1,points,3);
