@@ -269,7 +269,7 @@ CPaint::Rectangle(int x, int y, int w, int h)
    y = y2;
    y2 = temp;
   }
- 
+
  SDL_Rect fillRect = {(int) ((RX + x) * Scalex), (int) ((RY + y) * Scaley), (int) ((x2 - x) * Scalex), (int) ((y2 - y) * Scaley)};
  SDL_RenderFillRect (Win->GetRenderer (), &fillRect);
 }
@@ -295,7 +295,7 @@ CPaint::Frame(int x, int y, int w, int h, uint wb)
    y2 = temp;
   }
  w = x2 - x;
- h = y2 - y;	 
+ h = y2 - y;
  for (uint c = 0; c < wb; c++)
   {
    SDL_Rect fillRect = {(int) ((RX + x + c) * Scalex), (int) ((RY + y + c) * Scaley), (int) ((w - (c * 2)) * Scalex), (int) ((h - (c * 2)) * Scaley)};
@@ -352,6 +352,7 @@ CPaint::RaiserFrame(int x, int y, int w, int h, uint wb)
 void
 CPaint::Text(lxString text, int x1, int y1)
 {
+ Rotate (&x1, &y1);
  if (text.size () == 0)return;
  //Render text surface
  //SDL_Color textColor = { 0, 0, 0 }
@@ -506,6 +507,8 @@ void
 CPaint::RotatedText(lxString text, int x, int y, int _angle)
 {
  Rotate (&x, &y);
+ x *= Scalex;
+ y *= Scaley;
  switch (orientation)
   {
   case 1:
@@ -891,16 +894,16 @@ CPaint::Rotate(int *x, int *y)
  switch (orientation)
   {
   case 1:
-   *x = Width/Scalex - oy;
+   *x = Width / Scalex - oy;
    *y = ox;
    break;
   case 2:
-   *x = Width/Scalex - ox;
-   *y = Height/Scaley - oy;
+   *x = Width / Scalex - ox;
+   *y = Height / Scaley - oy;
    break;
   case 3:
    *x = oy;
-   *y = Height/Scaley - ox;
+   *y = Height / Scaley - ox;
    break;
   default:
    break;

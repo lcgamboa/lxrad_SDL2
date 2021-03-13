@@ -84,8 +84,9 @@ using namespace std;
 #define EVPOINTERIN              (void(CControl::*)(CControl*))
 #define EVPOINTEROUT             (void(CControl::*)(CControl*))
 #define EVONDRAW                 (void(CControl::*)(CControl*))
-#define EVONFOCUSIN             (void(CControl::*)(CControl*))
+#define EVONFOCUSIN              (void(CControl::*)(CControl*))
 #define EVONFOCUSOUT             (void(CControl::*)(CControl*))
+#define EVMOUSEWHEEL        	 (void(CControl::*)(CControl*, const int))
 
 #define EVONCHECKBOX            (void(CControl::*)(CControl*))
 #define EVMENUACTIVE            (void(CControl::*)(CControl*))

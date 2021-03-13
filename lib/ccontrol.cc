@@ -35,7 +35,7 @@ extern CApplication *Application;
 
 // CControl______________________________________________________________
 
-CControl::CControl (void)
+CControl::CControl(void)
 {
  //Dynamic = false;
  Owner = NULL;
@@ -78,13 +78,14 @@ CControl::CControl (void)
  EvOnDraw = NULL;
  EvOnFocusIn = NULL;
  EvOnFocusOut = NULL;
+ EvMouseWheel = NULL;
 
  CFont = NULL;
  ColorName = "";
  ColorSet = false;
 }
 
-CControl::~CControl ()
+CControl::~CControl()
 {
  //  eprint("~"+GetClass()+"\n");
  if (Child)
@@ -102,7 +103,7 @@ CControl::~CControl ()
 }
 
 int
-CControl::Create (CControl * control)
+CControl::Create(CControl * control)
 {
  //printf("Created :(%s)\t%s - %s\n",control->GetName().c_str(),Class.c_str(),Name.c_str());	
  SetOwner (control);
@@ -156,11 +157,11 @@ CControl::Create (CControl * control)
    SetEnable (false);
   }
 
-  return 1; 
+ return 1;
 }
 
 void
-CControl::Destroy (void)
+CControl::Destroy(void)
 {
  //  eprint("Destroy "+GetClass()+"\n");
  DestroyChilds ();
@@ -178,19 +179,19 @@ CControl::Destroy (void)
 }
 
 CWindow *
-CControl::GetWin (void)
+CControl::GetWin(void)
 {
  return Win;
 }
 
 void
-CControl::SetWin (CWindow * win)
+CControl::SetWin(CWindow * win)
 {
  Win = win;
 }
 
 void
-CControl::Draw (void)
+CControl::Draw(void)
 {
  if ((!Visible) || (Paint == NULL)) return;
  on_draw ();
@@ -203,7 +204,7 @@ CControl::Draw (void)
 }
 
 void
-CControl::Update (void)
+CControl::Update(void)
 {
  if ((!Visible) || (Paint == NULL) || (Win->GetWWindow () == 0))
   return;
@@ -231,7 +232,7 @@ CControl::Update (void)
 }
 
 void
-CControl::Erase (void)
+CControl::Erase(void)
 {
  if ((Paint == NULL) || (!Visible)) return;
 
@@ -252,7 +253,7 @@ CControl::Erase (void)
 }
 
 void
-CControl::Event (SDL_Event event)
+CControl::Event(SDL_Event event)
 {
  CControl *control = 0;
 
@@ -338,7 +339,7 @@ CControl::Event (SDL_Event event)
    return;
    break;
   case SDL_KEYDOWN:
-    if (event.key.keysym.sym == SDLK_TAB)
+   if (event.key.keysym.sym == SDLK_TAB)
     {
      //look status        
      Win->CirculateFocus (true);
@@ -363,6 +364,10 @@ CControl::Event (SDL_Event event)
    break;
   case SDL_MOUSEBUTTONUP:
    control->button_release (event);
+   return;
+   break;
+  case SDL_MOUSEWHEEL:
+   control->mouse_wheel (event);
    return;
    break;
    //  case EnterNotify:           
@@ -407,7 +412,7 @@ CControl::Event (SDL_Event event)
 }
 
 void
-CControl::DestroyChilds (void)
+CControl::DestroyChilds(void)
 {
  for (int c = 0; c <= ChildCount; c++)
   {
@@ -426,7 +431,7 @@ CControl::DestroyChilds (void)
 }
 
 void
-CControl::CreateChild (CControl * control)
+CControl::CreateChild(CControl * control)
 {
  ChildCount++;
  CControl **Child1;
@@ -443,7 +448,7 @@ CControl::CreateChild (CControl * control)
 }
 
 void
-CControl::DestroyChild (CControl * control)
+CControl::DestroyChild(CControl * control)
 {
  int childn = -1;
  if (Win)
@@ -470,7 +475,7 @@ CControl::DestroyChild (CControl * control)
 }
 
 bool
-CControl::OwnerEvent (int x, int y)
+CControl::OwnerEvent(int x, int y)
 {
  CalcRXY ();
 
@@ -486,204 +491,201 @@ CControl::OwnerEvent (int x, int y)
 }
 
 lxStringList
-CControl::GetContext (void)
+CControl::GetContext(void)
 {
  CObject::GetContext ();
 
  //propierties
-  Context.AddLine (xml_out (lxT("X"), lxT("int"), itoa (GetX ())));
-  Context.AddLine (xml_out (lxT("Y"), lxT("int"), itoa (GetY ())));
-  Context.AddLine (xml_out (lxT("Width"), lxT("uint"), itoa (GetWidth ())));
-  Context.AddLine (xml_out (lxT("Height"), lxT("uint"), itoa (GetHeight ())));
-  Context.AddLine (xml_out (lxT("Hint"), lxT("lxString"), GetHint ()));
-  Context.AddLine (xml_out (lxT("Enable"), lxT("bool"), itoa (GetEnable ())));
-  Context.AddLine (xml_out (lxT("Visible"), lxT("bool"), itoa (GetVisible ())));
-  Context.AddLine (xml_out (lxT("Color"), lxT("lxString"), GetColor ().GetAsString (lxC2S_HTML_SYNTAX) ));
+ Context.AddLine (xml_out (lxT ("X"), lxT ("int"), itoa (GetX ())));
+ Context.AddLine (xml_out (lxT ("Y"), lxT ("int"), itoa (GetY ())));
+ Context.AddLine (xml_out (lxT ("Width"), lxT ("uint"), itoa (GetWidth ())));
+ Context.AddLine (xml_out (lxT ("Height"), lxT ("uint"), itoa (GetHeight ())));
+ Context.AddLine (xml_out (lxT ("Hint"), lxT ("lxString"), GetHint ()));
+ Context.AddLine (xml_out (lxT ("Enable"), lxT ("bool"), itoa (GetEnable ())));
+ Context.AddLine (xml_out (lxT ("Visible"), lxT ("bool"), itoa (GetVisible ())));
+ Context.AddLine (xml_out (lxT ("Color"), lxT ("lxString"), GetColor ().GetAsString (lxC2S_HTML_SYNTAX)));
 
-  if (PopupMenu)
-    Context.AddLine (xml_out (lxT("PopupMenu"), lxT("PopupMenu"), PopupMenu->GetName ()));
-  else
-    Context.AddLine (xml_out (lxT("PopupMenu"), lxT("PopupMenu"), lxT("NULL")));
+ if (PopupMenu)
+  Context.AddLine (xml_out (lxT ("PopupMenu"), lxT ("PopupMenu"), PopupMenu->GetName ()));
+ else
+  Context.AddLine (xml_out (lxT ("PopupMenu"), lxT ("PopupMenu"), lxT ("NULL")));
 
-//events  
-  Context.AddLine (xml_out (lxT("EvMouseMove"), lxT("Event"), btoa (GetEv (true))));
-  Context.AddLine (xml_out (lxT("EvMouseButtonPress"), lxT("Event"), btoa (GetEv ())));
-  Context.AddLine (xml_out (lxT("EvMouseButtonRelease"), lxT("Event"), btoa (GetEv ())));
-  Context.AddLine (xml_out (lxT("EvMouseButtonClick"), lxT("Event"), btoa (GetEv ())));
-  Context.AddLine (xml_out (lxT("EvMouseButtonDoubleClick"), lxT("Event"), btoa (GetEv ())));
-  Context.AddLine (xml_out (lxT("EvKeyboardPress"), lxT("Event"), btoa (GetEv ())));
-  Context.AddLine (xml_out (lxT("EvKeyboardRelease"), lxT("Event"), btoa (GetEv ())));
-  Context.AddLine (xml_out (lxT("EvKeyboardKey"), lxT("Event"), btoa (GetEv ())));
-  Context.AddLine (xml_out (lxT("EvOnDraw"), lxT("Event"), btoa (GetEv ())));
-  Context.AddLine (xml_out (lxT("EvOnFocusIn"), lxT("Event"), btoa (GetEv ())));
-  Context.AddLine (xml_out (lxT("EvOnFocusOut"), lxT("Event"), btoa (GetEv ())));
- 
-  return Context;
+ //events  
+ Context.AddLine (xml_out (lxT ("EvMouseMove"), lxT ("Event"), btoa (GetEv (true))));
+ Context.AddLine (xml_out (lxT ("EvMouseButtonPress"), lxT ("Event"), btoa (GetEv ())));
+ Context.AddLine (xml_out (lxT ("EvMouseButtonRelease"), lxT ("Event"), btoa (GetEv ())));
+ Context.AddLine (xml_out (lxT ("EvMouseButtonClick"), lxT ("Event"), btoa (GetEv ())));
+ Context.AddLine (xml_out (lxT ("EvMouseButtonDoubleClick"), lxT ("Event"), btoa (GetEv ())));
+ Context.AddLine (xml_out (lxT ("EvKeyboardPress"), lxT ("Event"), btoa (GetEv ())));
+ Context.AddLine (xml_out (lxT ("EvKeyboardRelease"), lxT ("Event"), btoa (GetEv ())));
+ Context.AddLine (xml_out (lxT ("EvKeyboardKey"), lxT ("Event"), btoa (GetEv ())));
+ Context.AddLine (xml_out (lxT ("EvOnDraw"), lxT ("Event"), btoa (GetEv ())));
+ Context.AddLine (xml_out (lxT ("EvOnFocusIn"), lxT ("Event"), btoa (GetEv ())));
+ Context.AddLine (xml_out (lxT ("EvOnFocusOut"), lxT ("Event"), btoa (GetEv ())));
+
+ return Context;
 }
 
 void
-CControl::SetContext (lxStringList context)
+CControl::SetContext(lxStringList context)
 {
-  lxString name, type, value;
+ lxString name, type, value;
 
 #ifdef _DEBUG
 #ifdef __UNICODE__
-  printf("##########SetContext(%ls)\n",(const wchar_t*)GetName().c_str());	
+ printf ("##########SetContext(%ls)\n", (const wchar_t*)GetName ().c_str ());
 #else
-  printf("##########SetContext(%s)\n",(const char *)GetName().c_str());	
+ printf ("##########SetContext(%s)\n", (const char *) GetName ().c_str ());
 #endif
 #endif
-  CObject::SetContext (context);
-  for (uint i = 0; i < context.GetLinesCount (); i++)
+ CObject::SetContext (context);
+ for (uint i = 0; i < context.GetLinesCount (); i++)
+  {
+   xml_in (Context.GetLine (i), name, type, value);
+
+   //printf("Set%ls\n",name.c_str()); 
+
+   if (name.compare (lxT ("X")) == 0)
+    SetX (atoi (value));
+   if (name.compare (lxT ("Y")) == 0)
+    SetY (atoi (value));
+   if (name.compare (lxT ("Width")) == 0)
+    SetWidth (atoi (value));
+   if (name.compare (lxT ("Height")) == 0)
+    SetHeight (atoi (value));
+   if (name.compare (lxT ("Hint")) == 0)
+    SetHint (value);
+   if (name.compare (lxT ("Enable")) == 0)
+    SetEnable (atoi (value));
+   if (name.compare (lxT ("Visible")) == 0)
     {
-      xml_in (Context.GetLine (i), name, type, value);
-     
-      //printf("Set%ls\n",name.c_str()); 
- 
-      if (name.compare (lxT("X")) == 0)
-	SetX (atoi (value));
-      if (name.compare (lxT("Y")) == 0)
-	SetY (atoi (value));
-      if (name.compare (lxT("Width")) == 0)
-	SetWidth (atoi (value));
-      if (name.compare (lxT("Height")) == 0)
-	SetHeight (atoi (value));
-      if (name.compare (lxT("Hint")) == 0)
-	SetHint (value);
-      if (name.compare (lxT("Enable")) == 0)
-	SetEnable (atoi (value));
-      if (name.compare (lxT("Visible")) == 0)
-      {
-	SetVisible (!(atoi (value)),false);
-	SetVisible (atoi (value));
-      }
-      if (name.compare (lxT("Color")) == 0)
-	if(value.compare(lxT("#000001")) != 0 )//color not defined      
-	   SetColor (lxColor(value));
-      if (name.compare ("PopupMenu") == 0)
-	if (value.compare ("NULL") != 0)
-	  SetPopupMenu (dynamic_cast < CPMenu * >(Win->GetChildByName (value)));
-      if (name.compare (lxT("EvMouseMove")) == 0)
-	SetEv (atob (value), true);
-      if (name.compare (lxT("EvMouseButtonPress")) == 0)
-	SetEv (atob (value));
-      if (name.compare (lxT("EvMouseButtonRelease")) == 0)
-	SetEv (atob (value));
-      if (name.compare (lxT("EvMouseButtonClick")) == 0)
-	SetEv (atob (value));
-      if (name.compare (lxT("EvMouseButtonDoubleClick")) == 0)
-	SetEv (atob (value));
-      if (name.compare (lxT("EvKeyboardPress")) == 0)
-	SetEv (atob (value));
-      if (name.compare (lxT("EvKeyboardRelease")) == 0)
-	SetEv (atob (value));
-      if (name.compare (lxT("EvKeyboardKey")) == 0)
-	SetEv (atob (value));
-      if (name.compare (lxT("EvOnDraw")) == 0)
-	SetEv (atob (value));
-      if (name.compare (lxT("EvOnFocusIn")) == 0)
-	SetEv (atob (value));
-      if (name.compare (lxT("EvOnFocusOut")) == 0)
-	SetEv (atob (value));
+     SetVisible (!(atoi (value)), false);
+     SetVisible (atoi (value));
     }
+   if (name.compare (lxT ("Color")) == 0)
+    if (value.compare (lxT ("#000001")) != 0)//color not defined      
+     SetColor (lxColor (value));
+   if (name.compare ("PopupMenu") == 0)
+    if (value.compare ("NULL") != 0)
+     SetPopupMenu (dynamic_cast<CPMenu *> (Win->GetChildByName (value)));
+   if (name.compare (lxT ("EvMouseMove")) == 0)
+    SetEv (atob (value), true);
+   if (name.compare (lxT ("EvMouseButtonPress")) == 0)
+    SetEv (atob (value));
+   if (name.compare (lxT ("EvMouseButtonRelease")) == 0)
+    SetEv (atob (value));
+   if (name.compare (lxT ("EvMouseButtonClick")) == 0)
+    SetEv (atob (value));
+   if (name.compare (lxT ("EvMouseButtonDoubleClick")) == 0)
+    SetEv (atob (value));
+   if (name.compare (lxT ("EvKeyboardPress")) == 0)
+    SetEv (atob (value));
+   if (name.compare (lxT ("EvKeyboardRelease")) == 0)
+    SetEv (atob (value));
+   if (name.compare (lxT ("EvKeyboardKey")) == 0)
+    SetEv (atob (value));
+   if (name.compare (lxT ("EvOnDraw")) == 0)
+    SetEv (atob (value));
+   if (name.compare (lxT ("EvOnFocusIn")) == 0)
+    SetEv (atob (value));
+   if (name.compare (lxT ("EvOnFocusOut")) == 0)
+    SetEv (atob (value));
+  }
 }
 
-
-
 void
-CControl::WriteXMLContext (lxString filename, bool first)
+CControl::WriteXMLContext(lxString filename, bool first)
 {
-  lxStringList list;
-  list = GetContext ();
-  list.InsertLine (lxT("<") + Name + lxT(">"), 0);
-  if (first)
-    list.SaveToFile (filename);
-  else
-    list.AppendToFile (filename);
-
-  for (int i = 0; i <= ChildCount; i++)
-    {
-      Child[i]->WriteXMLContext (filename, false);
-      /*    
-         list=Child[i]->GetContext();
-         list.InsertLine("<"+Child[i]->GetName()+">",0);
-         list.AddLine("<\\"+Child[i]->GetName()+">");
-         list.AppendToFile(filename);    
-       */
-    }
-  list.Clear ();
-  list.AddLine (lxT("</") + Name + lxT(">"));
+ lxStringList list;
+ list = GetContext ();
+ list.InsertLine (lxT ("<") + Name + lxT (">"), 0);
+ if (first)
+  list.SaveToFile (filename);
+ else
   list.AppendToFile (filename);
+
+ for (int i = 0; i <= ChildCount; i++)
+  {
+   Child[i]->WriteXMLContext (filename, false);
+   /*    
+      list=Child[i]->GetContext();
+      list.InsertLine("<"+Child[i]->GetName()+">",0);
+      list.AddLine("<\\"+Child[i]->GetName()+">");
+      list.AppendToFile(filename);    
+    */
+  }
+ list.Clear ();
+ list.AddLine (lxT ("</") + Name + lxT (">"));
+ list.AppendToFile (filename);
 }
 
 void
-CControl::LoadXMLContext (lxString filename)
+CControl::LoadXMLContext(lxString filename)
 {
-  lxTextFile fin;
-  lxStringList list;
-  lxString line, name;
+ lxTextFile fin;
+ lxStringList list;
+ lxString line, name;
 
-  fin.Open(filename);
-  fin.GoToLine(0);
-  
-  //printf("<XML_%ls>\n",Name.c_str());
- 
-  if (fin.IsOpened())
+ fin.Open (filename);
+ fin.GoToLine (0);
+
+ //printf("<XML_%ls>\n",Name.c_str());
+
+ if (fin.IsOpened ())
+  {
+   list.Clear ();
+   while (fgetline (fin, line))
     {
-      list.Clear ();
-      while (fgetline (fin, line))
-	{
 #ifdef _DEBUG_
 #ifdef __UNICODE__
-          printf("%ls == %ls ???\n",(const wchar_t*)line.c_str(),(const wchar_t*) (lxT("<") + Name + lxT(">")).c_str());
+     printf ("%ls == %ls ???\n", (const wchar_t*)line.c_str (), (const wchar_t*) (lxT ("<") + Name + lxT (">")).c_str ());
 #else
-          printf("%s == %s ???\n",(const char*)line.c_str(), (const char *)(lxT("<") + Name + lxT(">")).c_str());
+     printf ("%s == %s ???\n", (const char*) line.c_str (), (const char *) (lxT ("<") + Name + lxT (">")).c_str ());
 #endif
 #endif
 
-	  if (line.compare (lxT("<") + Name + lxT(">")) == 0)
-	    {
-	      fgetline (fin, line);
-	      do
-		{
-		  list.AddLine (line);
-		  fgetline (fin, line);
-		}
-	      while (line[0] == ' ');
-	      SetContext (list);
+     if (line.compare (lxT ("<") + Name + lxT (">")) == 0)
+      {
+       fgetline (fin, line);
+       do
+        {
+         list.AddLine (line);
+         fgetline (fin, line);
+        }
+       while (line[0] == ' ');
+       SetContext (list);
 
-	      while (line.compare (lxT("</") + Name + lxT(">")) != 0)
-		{
-		  name = line.substr (1, line.size () - 2);
-		  CControl *ch = GetChildByName (name);
-		  if (ch != NULL)
-		    ch->LoadXMLContext (filename);
-		  else
-		    printf ("Child Not Found! %s \n", (char *)name.char_str ());
-		  do
-		    {
-		      fgetline (fin, line);
-		    }
-		  while ((line.compare (lxT("</") + name + lxT(">")) != 0));
-		  fgetline (fin, line);
-		}
+       while (line.compare (lxT ("</") + Name + lxT (">")) != 0)
+        {
+         name = line.substr (1, line.size () - 2);
+         CControl *ch = GetChildByName (name);
+         if (ch != NULL)
+          ch->LoadXMLContext (filename);
+         else
+          printf ("Child Not Found! %s \n", (char *) name.char_str ());
+         do
+          {
+           fgetline (fin, line);
+          }
+         while ((line.compare (lxT ("</") + name + lxT (">")) != 0));
+         fgetline (fin, line);
+        }
 
-	    }
+      }
 
-	}
-
-      fin.Close();
-      //printf("<\\XML_%s>\n",Name.c_str());
     }
-  else
-    printf ("File not found!\n");
+
+   fin.Close ();
+   //printf("<\\XML_%s>\n",Name.c_str());
+  }
+ else
+  printf ("File not found!\n");
 
 
 }
 
-
 SDL_Rect
-CControl::GetRectangle (void)
+CControl::GetRectangle(void)
 {
  SDL_Rect rec;
  rec.x = X;
@@ -697,7 +699,7 @@ CControl::GetRectangle (void)
 //properties
 
 void
-CControl::SetFont (const lxString font)
+CControl::SetFont(const lxString font)
 {
  FontName = font;
  if (Win)
@@ -709,55 +711,55 @@ CControl::SetFont (const lxString font)
 }
 
 void
-CControl::SetFont (TTF_Font * font)
+CControl::SetFont(TTF_Font * font)
 {
  CFont = font;
 }
 
 TTF_Font *
-CControl::GetFont (void)
+CControl::GetFont(void)
 {
  return CFont;
 }
 
 lxString
-CControl::GetFontName (void)
+CControl::GetFontName(void)
 {
  return FontName;
 }
 
 void
-CControl::SetFontSize (uint size)
+CControl::SetFontSize(uint size)
 {
  FontSize = size;
 }
 
 uint
-CControl::GetFontSize (void)
+CControl::GetFontSize(void)
 {
  return FontSize;
 }
 
 void
-CControl::SetHint (lxString hint)
+CControl::SetHint(lxString hint)
 {
  Hint = hint;
 }
 
 lxString
-CControl::GetHint (void)
+CControl::GetHint(void)
 {
  return Hint;
 }
 
 void
-CControl::CalcRXY (void)
+CControl::CalcRXY(void)
 {
  CWindow *o, *t;
 
  o = dynamic_cast<CWindow *> (Owner);
  t = dynamic_cast<CWindow *> (this);
- 
+
  /*
  if((o)&&(o->GetOverWin()))
   {
@@ -771,7 +773,7 @@ CControl::CalcRXY (void)
     RY = 0;
    #endif
   }
-  */ 
+  */
 
  //printf ("ctrl=%s  owner=%s\n", GetClass ().c_str (), Owner->GetClass ().c_str ());
 
@@ -779,13 +781,13 @@ CControl::CalcRXY (void)
   {
    if (t) //this == CWindow 
     {
-   #ifdef _ONEWIN
-    RX = X;
-    RY = Y;
-    #else
-    RX = 0;
-    RY = 0;
-   #endif
+#ifdef _ONEWIN
+     RX = X;
+     RY = Y;
+#else
+     RX = 0;
+     RY = 0;
+#endif
     }
    else //this != CWindow
     {
@@ -797,12 +799,12 @@ CControl::CalcRXY (void)
 
      RX = X;
 #ifdef _ONEWIN    
-    RX += Owner->GetRX ();
-    RY += Owner->GetRY ();
-    if(!o->GetOverrideRedirect ())
-    {
-      RY +=20; 
-    }
+     RX += Owner->GetRX ();
+     RY += Owner->GetRY ();
+     if (!o->GetOverrideRedirect ())
+      {
+       RY += 20;
+      }
 #endif     
     }
   }
@@ -817,7 +819,7 @@ CControl::CalcRXY (void)
 }
 
 void
-CControl::SetX (int x)
+CControl::SetX(int x)
 {
  Erase ();
  X = x;
@@ -825,13 +827,13 @@ CControl::SetX (int x)
 }
 
 int
-CControl::GetX (void)
+CControl::GetX(void)
 {
  return X;
 }
 
 void
-CControl::SetY (int y)
+CControl::SetY(int y)
 {
  Erase ();
  Y = y;
@@ -839,25 +841,25 @@ CControl::SetY (int y)
 }
 
 int
-CControl::GetY (void)
+CControl::GetY(void)
 {
  return Y;
 }
 
 int
-CControl::GetRX (void)
+CControl::GetRX(void)
 {
  return RX;
 }
 
 int
-CControl::GetRY (void)
+CControl::GetRY(void)
 {
  return RY;
 }
 
 void
-CControl::SetWidth (uint w)
+CControl::SetWidth(uint w)
 {
  Erase ();
  Width = w;
@@ -866,13 +868,13 @@ CControl::SetWidth (uint w)
 }
 
 uint
-CControl::GetWidth (void)
+CControl::GetWidth(void)
 {
  return Width;
 }
 
 void
-CControl::SetHeight (uint h)
+CControl::SetHeight(uint h)
 {
  Erase ();
  Height = h;
@@ -881,31 +883,31 @@ CControl::SetHeight (uint h)
 }
 
 uint
-CControl::GetHeight (void)
+CControl::GetHeight(void)
 {
  return Height;
 }
 
 void
-CControl::SetBorder (uint b)
+CControl::SetBorder(uint b)
 {
  Border = b;
 }
 
 uint
-CControl::GetBorder (void)
+CControl::GetBorder(void)
 {
  return Border;
 }
 
 void
-CControl::SetColor (SDL_Color c)
+CControl::SetColor(SDL_Color c)
 {
  Color = c;
 }
 
 void
-CControl::SetColor (const lxString name)
+CControl::SetColor(const lxString name)
 {
  ColorName = name;
 
@@ -918,7 +920,7 @@ CControl::SetColor (const lxString name)
 }
 
 void
-CControl::SetColor (uint r, uint g, uint b)
+CControl::SetColor(uint r, uint g, uint b)
 {
  if (Win != NULL)
   {
@@ -935,26 +937,26 @@ CControl::SetColor (uint r, uint g, uint b)
 }
 
 lxColor
-CControl::GetColor (void)
+CControl::GetColor(void)
 {
  return Color;
 }
 
 bool
-CControl::GetCanExecuteEvent (void)
+CControl::GetCanExecuteEvent(void)
 {
  return CanExecuteEvent;
 }
 
 void
-CControl::SetCanExecuteEvent (bool cee)
+CControl::SetCanExecuteEvent(bool cee)
 {
  CanExecuteEvent = cee;
  CanExecuteEventOld = cee;
 }
 
 void
-CControl::SetEnable (bool enable)
+CControl::SetEnable(bool enable)
 {
  SDL_Color temp;
 
@@ -974,39 +976,39 @@ CControl::SetEnable (bool enable)
 }
 
 bool
-CControl::GetEnable (void)
+CControl::GetEnable(void)
 {
  return Enable;
 }
 
 void
-CControl::SetPen (int pen)
+CControl::SetPen(int pen)
 {
  Pen = pen;
  Draw ();
 }
 
 int
-CControl::GetPen (void)
+CControl::GetPen(void)
 {
  return Pen;
 }
 
 CControl *
-CControl::GetOwner (void)
+CControl::GetOwner(void)
 {
  return Owner;
 }
 
 void
-CControl::SetOwner (CControl * control)
+CControl::SetOwner(CControl * control)
 {
  Owner = control;
 
 }
 
 void
-CControl::SetVisible (bool visible, bool update)
+CControl::SetVisible(bool visible, bool update)
 {
  if (update)
   if (visible)
@@ -1026,19 +1028,19 @@ CControl::SetVisible (bool visible, bool update)
 }
 
 bool
-CControl::GetVisible (void)
+CControl::GetVisible(void)
 {
  return Visible;
 }
 
 void
-CControl::SetPopupMenu (CPMenu * poupmenu)
+CControl::SetPopupMenu(CPMenu * poupmenu)
 {
  PopupMenu = poupmenu;
 }
 
 void
-CControl::SetFocus (bool focus)
+CControl::SetFocus(bool focus)
 {
  if (CanFocus)
   {
@@ -1056,7 +1058,7 @@ CControl::SetFocus (bool focus)
 }
 
 bool
-CControl::GetFocus (void)
+CControl::GetFocus(void)
 {
  if (Win->GetControlOnFocus () == this)
   return true;
@@ -1065,37 +1067,37 @@ CControl::GetFocus (void)
 }
 
 void
-CControl::SetCanFocus (bool canfocus)
+CControl::SetCanFocus(bool canfocus)
 {
  CanFocus = canfocus;
 }
 
 bool
-CControl::GetCanFocus (void)
+CControl::GetCanFocus(void)
 {
  return CanFocus;
 }
 
 bool
-CControl::GetDynamic (void)
+CControl::GetDynamic(void)
 {
  return Dynamic;
 }
 
 int
-CControl::GetChildCount (void)
+CControl::GetChildCount(void)
 {
  return ChildCount;
 }
 
 CControl *
-CControl::GetChild (uint child)
+CControl::GetChild(uint child)
 {
  return Child[child];
 }
 
 CControl *
-CControl::GetChildByName (const lxString child)
+CControl::GetChildByName(const lxString child)
 {
  for (int a = 0; a <= ChildCount; a++)
   if (Child[a]->GetName ().compare (child) == 0)
@@ -1104,13 +1106,13 @@ CControl::GetChildByName (const lxString child)
 }
 
 void
-CControl::SetFOwner (CControl * control)
+CControl::SetFOwner(CControl * control)
 {
  FOwner = control;
 }
 
 CControl *
-CControl::GetFOwner (void)
+CControl::GetFOwner(void)
 {
  return FOwner;
 }
@@ -1143,14 +1145,21 @@ CControl::operator delete(void *p)
 //events
 
 void
-CControl::mouse_move (SDL_Event event)
+CControl::mouse_move(SDL_Event event)
 {
  if ((FOwner) && (EvMouseMove))
-  (FOwner->*EvMouseMove) (this, 0, event.motion.x -RX, event.motion.y -RY, event.motion.state);
+  (FOwner->*EvMouseMove) (this, 0, event.motion.x - RX, event.motion.y - RY, event.motion.state);
 }
 
 void
-CControl::button_press (SDL_Event event)
+CControl::mouse_wheel(SDL_Event event)
+{
+ if ((FOwner) && (EvMouseWheel))
+  (FOwner->*EvMouseWheel) (this, event.wheel.y);
+}
+
+void
+CControl::button_press(SDL_Event event)
 {
  BTimePress = event.button.timestamp;
 
@@ -1178,15 +1187,15 @@ CControl::button_press (SDL_Event event)
    PopupMenu->SetX (Win->GetX () + x);
    PopupMenu->SetY (Win->GetY () + y);
 #endif
-   
+
    PopupMenu->Draw ();
    PopupMenu->ShowExclusive ();
-   
-   }
+
+  }
 }
 
 void
-CControl::button_release (SDL_Event event)
+CControl::button_release(SDL_Event event)
 {
  BTimeRelease = event.button.timestamp;
 
@@ -1224,21 +1233,21 @@ CControl::button_release (SDL_Event event)
 }
 
 void
-CControl::key_press (SDL_Event event)
+CControl::key_press(SDL_Event event)
 {
  if ((FOwner) && (EvKeyboardPress))
   (FOwner->*EvKeyboardPress) (this, event.key.keysym.sym, event.key.keysym.sym, event.key.state);
 }
 
 void
-CControl::key_release (SDL_Event event)
+CControl::key_release(SDL_Event event)
 {
  if ((FOwner) && (EvKeyboardRelease))
   (FOwner->*EvKeyboardRelease) (this, event.key.keysym.sym, event.key.keysym.sym, event.key.state);
 }
 
 void
-CControl::focus_in (void)
+CControl::focus_in(void)
 {
  Update ();
  if ((FOwner) && (EvOnFocusIn))
@@ -1246,7 +1255,7 @@ CControl::focus_in (void)
 }
 
 void
-CControl::focus_out (void)
+CControl::focus_out(void)
 {
  Update ();
  if ((FOwner) && (EvOnFocusOut))
@@ -1254,7 +1263,7 @@ CControl::focus_out (void)
 }
 
 void
-CControl::pointer_in (void)
+CControl::pointer_in(void)
 {
  PointerOn = true;
  if ((FOwner) && (PointerIn))
@@ -1262,7 +1271,7 @@ CControl::pointer_in (void)
 }
 
 void
-CControl::pointer_out (void)
+CControl::pointer_out(void)
 {
  PointerOn = false;
  if ((FOwner) && (PointerOut))
@@ -1270,16 +1279,15 @@ CControl::pointer_out (void)
 }
 
 void
-CControl::on_draw (void)
+CControl::on_draw(void)
 {
  if ((FOwner) && (EvOnDraw))
   (FOwner->*EvOnDraw) (this);
 }
 
-
-bool 
-CControl::GetCanVisible (void)
+bool
+CControl::GetCanVisible(void)
 {
-  return CanVisible;
+ return CanVisible;
 }
 

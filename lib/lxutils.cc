@@ -214,8 +214,8 @@ lxImage::LoadFile(const lxString fname, int orientation, float scalex, float sca
      SDL_Texture* last = SDL_GetRenderTarget (Win->GetRenderer ());
      SDL_SetRenderTarget (Win->GetRenderer (), Texture);
 
-     SDL_SetRenderDrawColor (Win->GetRenderer (), 0xFF, 0xFF, 0x00, 0xFF);
-     SDL_RenderClear (Win->GetRenderer ());
+     //SDL_SetRenderDrawColor (Win->GetRenderer (), 0xFF, 0xFF, 0xFF, 0x00);
+     //SDL_RenderClear (Win->GetRenderer ());
 
      SDL_RenderCopyEx (Win->GetRenderer (), mTexture, NULL, &DestR, orientation * 90, NULL, SDL_FLIP_NONE);
 
@@ -271,8 +271,8 @@ lxImage::LoadFile(const lxString fname, int orientation, float scalex, float sca
      SDL_SetRenderTarget (Win->GetRenderer (), Texture);
 
 
-     SDL_SetRenderDrawColor (Win->GetRenderer (), 0xFF, 0xFF, 0x00, 0xFF);
-     SDL_RenderClear (Win->GetRenderer ());
+     //SDL_SetRenderDrawColor (Win->GetRenderer (), 0xFF, 0xFF, 0xFF, 0x00);
+     //SDL_RenderClear (Win->GetRenderer ());
 
      SDL_RenderCopyEx (Win->GetRenderer (), mTexture, NULL, &DestR, orientation * 90, NULL, SDL_FLIP_NONE);
 
@@ -331,8 +331,8 @@ lxBitmap::lxBitmap(lxImage * surf, CPWindow * win)
  SDL_Texture* last = SDL_GetRenderTarget (win->GetRenderer ());
  SDL_SetRenderTarget (win->GetRenderer (), Texture);
 
- SDL_SetRenderDrawColor (win->GetRenderer (), 0xFF, 0xFF, 0x00, 0xFF);
- SDL_RenderClear (win->GetRenderer ());
+ //SDL_SetRenderDrawColor (win->GetRenderer (), 0xFF, 0xFF, 0xFF, 0x00);
+ //SDL_RenderClear (win->GetRenderer ());
 
  SDL_RenderCopy (win->GetRenderer (), tim, NULL, NULL);
  SDL_DestroyTexture (tim);
@@ -1048,8 +1048,8 @@ lxGetBitmapRotated(lxImage *image, CWindow * win, int _orientation)
    SDL_SetRenderTarget (win->GetRenderer (), Texture);
 
 
-   SDL_SetRenderDrawColor (win->GetRenderer (), 0xFF, 0xFF, 0x00, 0xFF);
-   SDL_RenderClear (win->GetRenderer ());
+   //SDL_SetRenderDrawColor (win->GetRenderer (), 0xFF, 0xFF, 0xFF, 0x00);
+   //SDL_RenderClear (win->GetRenderer ());
 
    SDL_RenderCopyEx (win->GetRenderer (), mTexture, NULL, &DestR, _orientation * 90, NULL, SDL_FLIP_NONE);
 

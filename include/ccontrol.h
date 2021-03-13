@@ -151,6 +151,7 @@ public:
   virtual void pointer_in (void);
   virtual void pointer_out (void);
   virtual void on_draw (void);
+  virtual void mouse_wheel (SDL_Event event);
 
   void (CControl::*EvMouseMove) (CControl * control, const uint button, const uint x, const uint y, const uint mask);
   void (CControl::*EvMouseButtonPress) (CControl * control, const uint button, const uint x, const uint y, const uint mask);
@@ -164,5 +165,6 @@ public:
   void (CControl::*EvOnDraw) (CControl * control);
   void (CControl::*EvOnFocusIn) (CControl * control);
   void (CControl::*EvOnFocusOut) (CControl * control);
+  void (CControl::*EvMouseWheel) (CControl * control, const int rotation);
 };
 #endif
