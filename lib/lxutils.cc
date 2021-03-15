@@ -158,7 +158,7 @@ lxImage::GetHeight(void)
 }
 
 bool
-lxImage::LoadFile(const lxString fname, int orientation, float scalex, float scaley)
+lxImage::LoadFile(const lxString fname, int orientation, float scalex, float scaley, int useAlpha)
 {
  Destroy ();
 

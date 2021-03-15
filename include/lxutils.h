@@ -84,7 +84,7 @@ SDL_Texture* Texture;
 public:
 lxImage(CPWindow * win);
 ~lxImage();
-bool LoadFile(const lxString fname, int orientation = 0, float scalex = 1.0, float scaley = 1.0);
+bool LoadFile(const lxString fname, int orientation = 0, float scalex = 1.0, float scaley = 1.0, int useAlpha = 1);
 void Destroy();
 SDL_Texture * GetImage(void);
 operator SDL_Texture*() const;
