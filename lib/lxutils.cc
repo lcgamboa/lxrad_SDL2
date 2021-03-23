@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
+   Copyright (c) : 2001-2021  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -1066,5 +1066,17 @@ lxGetBitmapRotated(lxImage *image, CWindow * win, int _orientation)
 
  return NULL;
 
+}
+
+unsigned int
+lxGetDisplayWidth(int disp)
+{
+ return Application->GetARootWindow ()->GetWidth ();
+}
+
+unsigned int
+lxGetDisplayHeight(int disp)
+{
+ return Application->GetARootWindow ()->GetHeight ();
 }
 
