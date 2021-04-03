@@ -170,7 +170,7 @@ CPaint::Line(int x1, int y1, int x2, int y2)
  if (LineWidth == 1)
   {
    SDL_Color color = Pen.GetFgColor ();
-   aalineRGBA (Win->GetRenderer (), RX + x1, RY + y1, RX + x2, RY + y2, color.r, color.g, color.b, 0xFF);
+   aalineRGBA (Win->GetRenderer (), (RX + x1)*Scalex, (RY + y1)*Scaley, (RX + x2)*Scalex, (RY + y2)*Scaley, color.r, color.g, color.b, 0xFF);
   }
  else
   {
@@ -185,26 +185,26 @@ CPaint::Line(int x1, int y1, int x2, int y2)
    //printf("angle %f\n",angle*180.0/M_PI);
 
 
-   double dx = PWidth*-sin (angle);
+   double dx = PWidth *-sin (angle);
    double dy = PWidth * cos (angle);
 
-   vx[0] = RX + x1 + dx;
-   vy[0] = RY + y1 - dy;
+   vx[0] = (RX + x1 + dx)*Scalex;
+   vy[0] = (RY + y1 - dy)*Scaley;
 
-   vx[1] = RX + x2 + dx;
-   vy[1] = RY + y2 - dy;
+   vx[1] = (RX + x2 + dx)*Scalex;
+   vy[1] = (RY + y2 - dy)*Scaley;
 
-   vx[2] = RX + x2 - dx;
-   vy[2] = RY + y2 + dy;
+   vx[2] = (RX + x2 - dx)*Scalex;
+   vy[2] = (RY + y2 + dy)*Scaley;
 
-   vx[3] = RX + x1 - dx;
-   vy[3] = RY + y1 + dy;
+   vx[3] = (RX + x1 - dx)*Scalex;
+   vy[3] = (RY + y1 + dy)*Scaley;
 
    aaFilledPolygonRGBA (Win->GetRenderer (), vx, vy, 4, color.r, color.g, color.b, 0xFF);
 
    //line ending
-   aaFilledEllipseRGBA (Win->GetRenderer (), RX + x1, RY + y1, PWidth, PWidth, color.r, color.g, color.b, 0xFF);
-   aaFilledEllipseRGBA (Win->GetRenderer (), RX + x2, RY + y2, PWidth, PWidth, color.r, color.g, color.b, 0xFF);
+   aaFilledEllipseRGBA (Win->GetRenderer (), (RX + x1)*Scalex, (RY + y1)*Scaley, PWidth*Scalex, PWidth*Scaley, color.r, color.g, color.b, 0xFF);
+   aaFilledEllipseRGBA (Win->GetRenderer (), (RX + x2)*Scalex, (RY + y2)*Scaley, PWidth*Scalex, PWidth*Scaley, color.r, color.g, color.b, 0xFF);
 
    /*
    SDL_Rect DestR;
