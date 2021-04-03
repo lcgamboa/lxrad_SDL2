@@ -158,7 +158,7 @@ lxImage::GetHeight(void)
 }
 
 bool
-lxImage::LoadFile(const lxString fname, int orientation, float scalex, float scaley, int useAlpha)
+lxImage::LoadFile(const lxString fname, int orientation, float scalex, float scaley, int useAlpha, double * ret_sx, double * ret_sy)
 {
  Destroy ();
 
@@ -172,6 +172,12 @@ lxImage::LoadFile(const lxString fname, int orientation, float scalex, float sca
     {
      width = document.documentWidth (96.0) * scalex;
      height = document.documentHeight (96.0) * scaley;
+
+     if (ret_sx)
+      *ret_sx = ((double) width) / document.documentWidth (96.0);
+
+     if (ret_sy)
+      *ret_sy = ((double) height) / document.documentHeight (96.0);
 
      Bitmap bitmap = document.renderToBitmap (width, height, 96.0, 0);
 
