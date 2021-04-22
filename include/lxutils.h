@@ -175,6 +175,7 @@ private:
 public:
   lxFont();
   lxFont(int size,int family,int style,int weight);
+  void SetPointSize(int size);  
 };
 
 
