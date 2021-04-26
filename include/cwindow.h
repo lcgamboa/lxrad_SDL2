@@ -61,6 +61,7 @@ protected:
   bool PixmapBuffer;
   bool OverWin;
   int Redraw;
+  CControl * statusbar;
 public:
   bool HasMenu;//FIXME tornar privado
     CWindow (void);
@@ -86,6 +87,7 @@ public:
   int LoadXMLContextAndCreateChilds (lxString filename, CControl* ctrl = NULL);
   bool GetCanExitExclusive(void);
   bool OwnerEvent (int x, int y);
+  void CreateChild (CControl * control);
 //propiedades
   SDL_Window * GetWWindow (void);
   SDL_Renderer * GetRenderer (void);

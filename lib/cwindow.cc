@@ -117,6 +117,7 @@ CWindow::CWindow(void)
  OverWin = false;
  move_on = 0;
  Redraw = 1;
+ statusbar = NULL;
  //events
  EvOnCreate = NULL;
  EvOnDestroy = NULL;
@@ -159,7 +160,12 @@ CWindow::WCreate(CWindow* window)
      printf ("Window could not be created! SDL Error: %s\n", SDL_GetError ());
      exit (-1);
     }
+   //FIXME use software render in EMSCRIPTEN because SDL2 bug 
+#ifndef __EMSCRIPTEN__   
    Renderer = SDL_CreateRenderer (WWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
+#else
+   Renderer = NULL;
+#endif   
    if (Renderer == NULL)
     {
      //    printf( "Hardware renderer could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -192,7 +198,7 @@ CWindow::WCreate(CWindow* window)
 
 
  on_create ();
- 
+
  if (Visible) Show ();
 
  Draw ();
@@ -432,7 +438,7 @@ CWindow::Update(void)
  if ((Paint == NULL) || (Visible == false))return;
  for (int i = 0; i <= ChildCount; i++)
   {
-   if (Child[i]->GetVisible ())
+   if (Child[i]->GetVisible () && (Child[i] != statusbar))
     {
      if (PixmapBuffer)
       Child[i]->Update ();
@@ -440,6 +446,16 @@ CWindow::Update(void)
       Child[i]->Draw ();
     }
   }
+
+ if (statusbar)
+  {
+   if (PixmapBuffer)
+    statusbar->Update ();
+   else
+    statusbar->Draw ();
+  }
+
+
  CControl::Update ();
 
  if (!OverWin)
@@ -1309,4 +1325,14 @@ CWindow::OwnerEvent(int x, int y)
   }
  else
   return false;
+}
+
+void
+CWindow::CreateChild(CControl * control)
+{
+ CControl::CreateChild (control);
+ if (!control->GetClass ().Cmp ("CStatusbar"))
+  {
+   statusbar = control;
+  }
 }

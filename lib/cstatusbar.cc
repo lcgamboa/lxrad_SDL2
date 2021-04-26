@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
+   Copyright (c) : 2001-2021  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@ CStatusbar::SetFields (lxString litems)
       if(f < 0)break;
       AddField (litems.substr (0, f));
       litems = litems.substr (f + 1, litems.size () - f -1);
-    };
+    }
 }
 
 lxString 
@@ -82,7 +82,7 @@ CStatusbar::GetFields (void)
   for (uint c = 0; c < Fields.GetLinesCount (); c++)
     {
       list += Fields.GetLine (c) + lxT(",");
-    };
+    }
   return list;
 }
 
@@ -158,7 +158,7 @@ CStatusbar::Draw (void)
   }
 
   CControl::Draw ();
-};
+}
 
 void
 CStatusbar::Update (void)
@@ -169,4 +169,4 @@ CStatusbar::Update (void)
     CControl::Update ();
   else
     SetWidth (Owner->GetWidth ());
-};
+}
