@@ -169,7 +169,7 @@ lxImage::LoadFile(const lxString fname, int orientation, float scalex, float sca
    int width;
    int height;
 
-   auto document = Document::loadFromFile (std::string (fname.c_str()));
+   auto document = Document::loadFromFile (std::string (fname.c_str ()));
 
    if (document)
     {
@@ -488,9 +488,9 @@ SDL_Color() const
 void
 lxColor::Set(unsigned char r, unsigned char g, unsigned char b, unsigned char alpha)
 {
-  Color = ColorByRGB (r, g, b);
+ Color = ColorByRGB (r, g, b);
 }
-  
+
 //-------------------------------------------------------------------------
 
 lxCursor::lxCursor()
@@ -516,7 +516,7 @@ lxFont::lxFont(int size, int family, int style, int weight) {
  //#endif
 }
 
-void 
+void
 lxFont::SetPointSize(int size)
 {
 #ifdef _DEBUG 
@@ -1105,3 +1105,55 @@ lxGetDisplayHeight(int disp)
  return Application->GetARootWindow ()->GetHeight ();
 }
 
+lxMutex::lxMutex()
+{
+ Mutex = (void *) new pthread_mutex_t;
+ pthread_mutex_init ((pthread_mutex_t*) Mutex, NULL);
+}
+
+lxMutex::~lxMutex()
+{
+ delete (pthread_mutex_t*) Mutex;
+}
+
+void *
+lxMutex::GetMutex(void)
+{
+ return Mutex;
+}
+
+void
+lxMutex::Lock(void)
+{
+ pthread_mutex_lock ((pthread_mutex_t*) Mutex);
+}
+
+void
+lxMutex::Unlock(void)
+{
+ pthread_mutex_unlock ((pthread_mutex_t*) Mutex);
+}
+
+lxCondition::lxCondition(lxMutex & mutex)
+{
+ Mutex = mutex.GetMutex ();
+ Cond = (void *) new pthread_cond_t;
+ pthread_cond_init ((pthread_cond_t *) Cond, NULL);
+}
+
+lxCondition::~lxCondition()
+{
+ delete (pthread_cond_t*) Cond;
+}
+
+void
+lxCondition::Signal(void)
+{
+ pthread_cond_signal ((pthread_cond_t *) Cond);
+}
+
+void
+lxCondition::Wait(void)
+{
+ pthread_cond_wait ((pthread_cond_t *) Cond, (pthread_mutex_t*) Mutex);
+}
