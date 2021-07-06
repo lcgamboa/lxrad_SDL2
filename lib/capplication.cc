@@ -278,10 +278,10 @@ CApplication::ProcessEvents (void)
    if((!trun)&&(!Exit))
    {
    trun = 1;	   
-   gettimeofday (&tv, NULL);
    //printf("---------------------\n");
    for (int t = 0; t <= TimerCount; t++)
     {
+     gettimeofday (&tv, NULL);
      elapsed = (((tv.tv_usec - TimerList[t]->tv.tv_usec) / 1000L) + 1000L * (tv.tv_sec - TimerList[t]->tv.tv_sec));
 
      //printf("Elapsed %i = %lu de %lu\n",t,elapsed,TimerList[t]->GetTime());

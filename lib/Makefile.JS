@@ -3,7 +3,7 @@ include ../Makefile.Conf
 
 datadir=/assets
 
-CFLAGS= -D_ONEWIN  -Werror -s WASM=0 -Os -D_Longlong="long long" -s TOTAL_MEMORY=32MB -s USE_ZLIB=1 -s \
+CFLAGS= -D_ONEWIN  -Werror -Os -D_Longlong="long long" -s USE_ZLIB=1 -s \
 	USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png","bmp"]' -s USE_SDL_TTF=2 --preload-file assets \
 	-I ../teste/zlib-master/contrib/ -s USE_SDL_GFX=2
 #CFLAGS+=-s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=2

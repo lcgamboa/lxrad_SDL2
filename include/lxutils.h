@@ -275,4 +275,6 @@ bool lxRenameFile(lxString oldfname, lxString newfname);
 unsigned int lxGetDisplayWidth(int disp);
 unsigned int lxGetDisplayHeight(int disp);
 
+lxString lxGetLocalFile(lxString file);
+
 #endif	/* LXUTILS_H */

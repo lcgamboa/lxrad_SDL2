@@ -68,7 +68,7 @@ static :: $(LIBSTLIBNAME)
 
 clean-lib:
 	$(RM) *.ld *.ad
-	$(RM) *.lo *.ao *.a third/*.lo third/*.ao
+	$(RM) *.lo *.ao third/*.lo third/*.ao $(LIBSTLIBNAME)
 	$(RM) $(LIBTARGETS) $(LIBEXTRACLEAN)
 clean :: clean-lib
 
