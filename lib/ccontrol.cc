@@ -65,6 +65,7 @@ CControl::CControl(void)
  PopupMenu = NULL;
  SetHint ("");
  CanVisible = true;
+ DragAcceptFiles = false;
 
  EvMouseMove = NULL;
  EvMouseButtonPress = NULL;
@@ -79,6 +80,7 @@ CControl::CControl(void)
  EvOnFocusIn = NULL;
  EvOnFocusOut = NULL;
  EvMouseWheel = NULL;
+ EvOnDropFile = NULL;
 
  CFont = NULL;
  ColorName = "";
@@ -155,6 +157,11 @@ CControl::Create(CControl * control)
   {
    Enable = true;
    SetEnable (false);
+  }
+
+ if(CanExecuteEvent && DragAcceptFiles)
+  {
+    SetDragAcceptFiles(DragAcceptFiles);
   }
 
  return 1;
@@ -404,6 +411,9 @@ CControl::Event(SDL_Event event)
    //  return 1;break;
    //  case Expose:  
    //  return 1;break;
+   case SDL_DROPFILE:
+       on_drop_files (event);
+       break;
   default:
    //printf("default !!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
    return;
@@ -523,6 +533,7 @@ CControl::GetContext(void)
  Context.AddLine (xml_out (lxT ("EvOnFocusIn"), lxT ("Event"), btoa (GetEv ())));
  Context.AddLine (xml_out (lxT ("EvOnFocusOut"), lxT ("Event"), btoa (GetEv ())));
  Context.AddLine (xml_out (lxT("EvMouseWheel"), lxT("Event"), btoa (GetEv ())));
+ Context.AddLine (xml_out (lxT ("EvOnDropFile"), lxT ("Event"), btoa (GetEv ())));
 
  return Context;
 }
@@ -592,6 +603,8 @@ CControl::SetContext(lxStringList context)
    if (name.compare (lxT ("EvOnFocusOut")) == 0)
     SetEv (atob (value));
    if (name.compare (lxT("EvMouseWheel")) == 0)
+    SetEv (atob (value));
+   if (name.compare (lxT ("EvOnDropFile")) == 0)
     SetEv (atob (value));
   }
 }
@@ -1120,6 +1133,23 @@ CControl::GetFOwner(void)
  return FOwner;
 }
 
+void
+CControl::SetDragAcceptFiles(bool accept)
+{
+ DragAcceptFiles = accept;
+ /*
+ if(accept)
+ {
+   SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
+ }
+ else
+ {
+   SDL_EventState(SDL_DROPFILE, SDL_IGNORE);
+ }
+ */
+}
+
+
 //operators
 
 void *
@@ -1292,5 +1322,16 @@ bool
 CControl::GetCanVisible(void)
 {
  return CanVisible;
+}
+
+void
+CControl::on_drop_files(SDL_Event event)
+{
+ if ((FOwner) && (EvOnDropFile))
+  {
+     char * dropped_filedir = event.drop.file;
+     (FOwner->*EvOnDropFile) (this, dropped_filedir);
+     SDL_free(dropped_filedir);    // Free dropped_filedir memory
+  }
 }
 

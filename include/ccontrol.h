@@ -43,6 +43,7 @@ protected:
   bool CanFocus;
   bool PointerOn;
   bool Enable;
+  bool DragAcceptFiles;
   timeval LastDrawTime;
   long int BTimePress, BTimeRelease, BTimeClick;
   int X, Y;
@@ -82,6 +83,7 @@ public:
   virtual void Update (void);
   lxStringList GetContext (void);
   void SetContext (lxStringList context);
+  void SetDragAcceptFiles(bool accept);
   SDL_Rect GetRectangle (void);
 //propiedades
   void SetFont (const lxString font);
@@ -152,6 +154,7 @@ public:
   virtual void pointer_out (void);
   virtual void on_draw (void);
   virtual void mouse_wheel (SDL_Event event);
+  virtual void on_drop_files(SDL_Event event);
 
   void (CControl::*EvMouseMove) (CControl * control, const uint button, const uint x, const uint y, const uint mask);
   void (CControl::*EvMouseButtonPress) (CControl * control, const uint button, const uint x, const uint y, const uint mask);
@@ -166,5 +169,7 @@ public:
   void (CControl::*EvOnFocusIn) (CControl * control);
   void (CControl::*EvOnFocusOut) (CControl * control);
   void (CControl::*EvMouseWheel) (CControl * control, const int rotation);
+  void (CControl::*EvOnDropFile) (CControl * control, const lxString fname);
+
 };
 #endif
