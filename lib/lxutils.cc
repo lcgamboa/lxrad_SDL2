@@ -493,14 +493,20 @@ lxColor::Set(unsigned char r, unsigned char g, unsigned char b, unsigned char al
 
 //-------------------------------------------------------------------------
 
-lxCursor::lxCursor()
-{
- printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
-}
-
 lxCursor::lxCursor(int type)
 {
- printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
+ cursor = SDL_CreateSystemCursor ((SDL_SystemCursor) type);
+}
+
+lxCursor::~lxCursor()
+{
+ free (cursor);
+}
+
+SDL_Cursor*
+lxCursor::GetSDLCursor(void)
+{
+ return cursor;
 }
 
 //-------------------------------------------------------------------------
@@ -534,7 +540,7 @@ lxMilliSleep(unsigned int time)
 void
 lxSetCursor(lxCursor cursor)
 {
- printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
+ SDL_SetCursor (cursor.GetSDLCursor ());
 }
 
 bool
@@ -1158,7 +1164,6 @@ lxCondition::Wait(void)
  pthread_cond_wait ((pthread_cond_t *) Cond, (pthread_mutex_t*) Mutex);
 }
 
-
 lxString
 lxGetLocalFile(lxString file)
 {
@@ -1166,13 +1171,13 @@ lxGetLocalFile(lxString file)
 #ifndef __WXMSW__
  if (file.Contains ("http"))
   {
-   lxString appname = lowercase (basename(Application->Aargv[0]));
+   lxString appname = lowercase (basename (Application->Aargv[0]));
 
    lxString name = file.substr (file.find (".com/") + 4, file.length ());
 
    lxString local;
 
-   local.Printf ("%s/%s_local/%s", (const char *) lxGetTempDir(appname).c_str (),
+   local.Printf ("%s/%s_local/%s", (const char *) lxGetTempDir (appname).c_str (),
                  (const char *) appname.c_str (),
                  (const char *) name.c_str ());
 

@@ -38,7 +38,7 @@
 #ifdef _ONEWIN
 extern "C"
 {
- float gscale = 1.0;
+ static float gscale = 1.0;
 
  void
  lxrad_scale_update(void)
@@ -116,6 +116,7 @@ CWindow::CWindow(void)
  ORedirect = false;
  OverWin = false;
  move_on = 0;
+ onewin_cursor = 0;
  Redraw = 1;
  statusbar = NULL;
  //events
@@ -775,6 +776,56 @@ CWindow::WEvents(SDL_Event WEvent)
     }
    else
     {
+     if ((WEvent.motion.x > RX) && (WEvent.motion.x < (int) (Width + RX)))
+      {
+       if ((WEvent.motion.y > RY) && (WEvent.motion.y < (int) (20 + RY)))
+        {
+         SDL_Cursor* cursor;
+         cursor = SDL_CreateSystemCursor (SDL_SYSTEM_CURSOR_HAND);
+         SDL_SetCursor (cursor);
+         onewin_cursor = 1;
+        }
+       else if ((WEvent.motion.x > (int) (Width + RX - 10)) && (WEvent.motion.x < (int) (Width + RX)))
+        {
+         if ((WEvent.motion.y > (int) (RY + Height + 10)) && (WEvent.motion.y < (int) (RY + Height + 20)))
+          {
+           SDL_Cursor* cursor;
+           cursor = SDL_CreateSystemCursor (SDL_SYSTEM_CURSOR_SIZEALL);
+           SDL_SetCursor (cursor);
+           onewin_cursor = 1;
+          }
+         else
+          {
+           if (onewin_cursor)
+            {
+             onewin_cursor = 0;
+             SDL_Cursor* cursor;
+             cursor = SDL_CreateSystemCursor (SDL_SYSTEM_CURSOR_ARROW);
+             SDL_SetCursor (cursor);
+            }
+          }
+        }
+       else
+        {
+         if (onewin_cursor)
+          {
+           onewin_cursor = 0;
+           SDL_Cursor* cursor;
+           cursor = SDL_CreateSystemCursor (SDL_SYSTEM_CURSOR_ARROW);
+           SDL_SetCursor (cursor);
+          }
+        }
+      }
+     else
+      {
+       if (onewin_cursor)
+        {
+         onewin_cursor = 0;
+         SDL_Cursor* cursor;
+         cursor = SDL_CreateSystemCursor (SDL_SYSTEM_CURSOR_ARROW);
+         SDL_SetCursor (cursor);
+        }
+      }
      CControl::Event (WEvent);
     }
    ret = 1;

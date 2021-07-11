@@ -40,6 +40,7 @@ class CWindow:public CControl
 {
 private:    
   int move_on;
+  int onewin_cursor;
 protected:
   bool ORedirect;  
   SDL_Texture* WPixmap;
@@ -135,6 +136,5 @@ public:
   void (CControl::*EvOnLeave) (CControl * win);
 };
 
-//void XFreeTextProperty (XTextProperty & textp);
 
 #endif

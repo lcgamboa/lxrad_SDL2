@@ -164,9 +164,12 @@ public:
 
 class lxCursor
 {
+private:    
+  SDL_Cursor* cursor;
 public:
-  lxCursor();
+  ~lxCursor();
   lxCursor(int type);
+  SDL_Cursor* GetSDLCursor(void);
 };
 
 class lxFont
@@ -209,12 +212,12 @@ public:
 #define lxFONTWEIGHT_NORMAL 0x00
 
 
-#define lxCURSOR_CROSS 0x01
-#define lxCURSOR_ARROW 0x02
-#define lxCURSOR_SIZENWSE 0x04
-#define lxCURSOR_SIZING  0x08
-#define lxCURSOR_SIZENS  0x10
-#define lxCURSOR_SIZEWE  0x20
+#define lxCURSOR_CROSS SDL_SYSTEM_CURSOR_CROSSHAIR
+#define lxCURSOR_ARROW SDL_SYSTEM_CURSOR_ARROW
+#define lxCURSOR_SIZENWSE SDL_SYSTEM_CURSOR_SIZENWSE
+#define lxCURSOR_SIZING  SDL_SYSTEM_CURSOR_SIZEALL
+#define lxCURSOR_SIZENS  SDL_SYSTEM_CURSOR_SIZENS
+#define lxCURSOR_SIZEWE  SDL_SYSTEM_CURSOR_SIZEWE
 
 #define lxALIGN_LEFT   0x00
 #define lxALIGN_RIGHT  0x01
