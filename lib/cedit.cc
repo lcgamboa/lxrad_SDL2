@@ -107,7 +107,7 @@ CEdit::DrawCursor (void)
 
   //x = TTF_SizeText(CFont, Text->GetText ().c_str (),  GetCursorPos ()) - Text->GetTextPosition ();
 
-  TTF_SizeText(CFont, Text->GetText ().c_str (), &x,NULL); 
+  TTF_SizeText(CFont.GetTTFFont (), Text->GetText ().c_str (), &x,NULL); 
   x-= Text->GetTextPosition ();
 
 /*

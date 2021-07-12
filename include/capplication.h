@@ -33,6 +33,8 @@
 #include"chint.h"
 #include<locale.h>
 
+#define FONT_MAX 100
+
 class CWindow;
 
 class CApplication
@@ -56,6 +58,7 @@ private:
   lxString Title;
   CWindow * MWindow; //Modal Window
   CWindow * LMWindow; //Last Modal Window
+  TTF_Font * fontlist[FONT_MAX];
 public:
     CApplication (void);
    ~CApplication (void);
@@ -70,6 +73,7 @@ public:
   void Draw (void);
   void Update (void);
   void Load (void);
+  TTF_Font * GetFont(int size,int family,int style,int weight);
   int Aargc;
   char **Aargv;
   bool GetExit (void);

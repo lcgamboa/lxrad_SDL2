@@ -513,22 +513,45 @@ lxCursor::GetSDLCursor(void)
 
 lxFont::lxFont()
 {
- printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
+
+ Size = 12;
+ Family = lxFONTFAMILY_DEFAULT;
+ Style = lxFONTSTYLE_NORMAL;
+ Weight = lxFONTWEIGHT_NORMAL;
+
+ font = Application->GetFont (Size, Family, Style, Weight);
+
 }
 
-lxFont::lxFont(int size, int family, int style, int weight) {
- //#ifdef _DEBUG 
- // printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
- //#endif
+lxFont::lxFont(int size, int family, int style, int weight)
+{
+ Size = size;
+ Family = family;
+ Style = style;
+ Weight = weight;
+
+ font = Application->GetFont (Size, Family, Style, Weight);
 }
 
 void
 lxFont::SetPointSize(int size)
 {
-#ifdef _DEBUG 
- printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
-#endif
+ Size = size;
+ font = Application->GetFont (Size, Family, Style, Weight);
 }
+
+TTF_Font *
+lxFont::GetTTFFont(void)
+{
+ return font;
+}
+
+int 
+lxFont::GetPointSize(void)
+{
+ return Size;
+}
+
 //-------------------------------------------------------------------------
 
 void

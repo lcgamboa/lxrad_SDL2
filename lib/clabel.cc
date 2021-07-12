@@ -200,7 +200,7 @@ CLabel::CalcVirtual (void)
   bool mux=false;
 
   VText = Text.substr (TextPointer, Text.size ());
-  TTF_SizeText (CFont, VText.c_str (),&TextWidth2,NULL);
+  TTF_SizeText (CFont.GetTTFFont (), VText.c_str (),&TextWidth2,NULL);
   
   //align
   switch (Align)
@@ -209,7 +209,7 @@ CLabel::CalcVirtual (void)
       while ((unsigned int)TextWidth2 >= Width)
 	{
 	  VText = strndel (VText, 1);
-          TTF_SizeText (CFont, VText.c_str (),&TextWidth2,NULL);
+          TTF_SizeText (CFont.GetTTFFont (), VText.c_str (),&TextWidth2,NULL);
 	  //TextWidth2 = XTextWidth (CFont, VText.c_str (), VText.size ());
           
 	};
@@ -228,8 +228,8 @@ CLabel::CalcVirtual (void)
 	  VText = strndel (VText,1);
 	  mux=true;
 	  };
-	  //TextWidth2 = XTextWidth (CFont, VText.c_str (), VText.size ());
-          TTF_SizeText (CFont, VText.c_str (),&TextWidth2,NULL);
+	  //TextWidth2 = XTextWidth (CFont.GetTTFFont (), VText.c_str (), VText.size ());
+          TTF_SizeText (CFont.GetTTFFont (), VText.c_str (),&TextWidth2,NULL);
 	};
       xo = (((Width - TextWidth2)) / 2);
       break;
@@ -237,11 +237,11 @@ CLabel::CalcVirtual (void)
       while ((unsigned int)TextWidth2 >= Width)
 	{
 	  VText = strndel (VText, VText.size ());
-	  //TextWidth2 = XTextWidth (CFont, VText.c_str (), VText.size ());
+	  //TextWidth2 = XTextWidth (CFont.GetTTFFont (), VText.c_str (), VText.size ());
           if(VText.size() == 0)
               TextWidth2=0;
           else
-             TTF_SizeText (CFont, VText.c_str (),&TextWidth2,NULL);
+             TTF_SizeText (CFont.GetTTFFont (), VText.c_str (),&TextWidth2,NULL);
 	};
       xo = 5 ;
       break;
@@ -255,7 +255,7 @@ CLabel::CalcVirtual (void)
   //TextWidth = GetTextWidth ();
   
   //TextPosition = XTextWidth (CFont, Text.c_str (), TextPointer)-xo+1;
-  TTF_SizeText (CFont, VText.c_str (),(int *)&TextPosition,NULL);
+  TTF_SizeText (CFont.GetTTFFont (), VText.c_str (),(int *)&TextPosition,NULL);
   TextPosition-=xo-1;
   
   VX = X + xo;
@@ -354,27 +354,27 @@ uint
 CLabel::GetTextWidth (void)
 {
   int width;  
-  TTF_SizeText(CFont, Text.c_str(), &width,NULL);
+  TTF_SizeText(CFont.GetTTFFont (), Text.c_str(), &width,NULL);
   return width;
 };
 
 uint
 CLabel::GetTextAsc (void)
 {  
-  return TTF_FontAscent(CFont)+4;
+  return TTF_FontAscent(CFont.GetTTFFont ())+4;
 };
 
 uint
 CLabel::GetTextDes (void)
 {
-  return TTF_FontDescent(CFont)+4;
+  return TTF_FontDescent(CFont.GetTTFFont ())+4;
 };
 
 uint
 CLabel::GetTextHeight (void)
 {
-  //return TTF_FontHeight(CFont);
-  //return TTF_FontLineSkip(CFont);
+  //return TTF_FontHeight(CFont.GetTTFFont ());
+  //return TTF_FontLineSkip(CFont.GetTTFFont ());
   return GetTextAsc () + GetTextDes ();
 };
 

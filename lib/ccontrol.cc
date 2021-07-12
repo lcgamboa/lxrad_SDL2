@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001  Luis Claudio Gamboa Lopes
+   Copyright (c) : 2001-2021  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -60,7 +60,6 @@ CControl::CControl(void)
  FOwner = NULL;
  PointerOn = false;
  FontName = "FreeSans.ttf";
- FontSize = 12;
  SetClass ("CControl");
  PopupMenu = NULL;
  SetHint ("");
@@ -81,8 +80,6 @@ CControl::CControl(void)
  EvOnFocusOut = NULL;
  EvMouseWheel = NULL;
  EvOnDropFile = NULL;
-
- CFont = NULL;
  ColorName = "";
  ColorSet = false;
 }
@@ -111,13 +108,6 @@ CControl::Create(CControl * control)
  SetOwner (control);
  Win = control->Win;
  Paint = control->Paint;
- if (!CFont)
-  CFont = TTF_OpenFont ((lxString (_SHARE) + "fonts/" + FontName).c_str (), FontSize);
- if (CFont == NULL)
-  {
-   printf ("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError ());
-   exit (-1);
-  }
  /*
  if (!CFont)
    {
@@ -175,11 +165,6 @@ CControl::Destroy(void)
  Erase ();
  if (Win != NULL)
   {
-   if (CFont)
-    {
-     //  XFreeFont (Win->GetADisplay (), CFont);
-     CFont = NULL;
-    }
    if (Win->GetLastControl () == this)
     Win->SetLastControl (NULL);
   }
@@ -727,12 +712,12 @@ CControl::SetFont(const lxString font)
 }
 
 void
-CControl::SetFont(TTF_Font * font)
+CControl::SetFont(lxFont * font)
 {
- CFont = font;
+ CFont = *font;
 }
 
-TTF_Font *
+lxFont 
 CControl::GetFont(void)
 {
  return CFont;
@@ -747,13 +732,13 @@ CControl::GetFontName(void)
 void
 CControl::SetFontSize(uint size)
 {
- FontSize = size;
+ CFont.GetPointSize();
 }
 
 uint
 CControl::GetFontSize(void)
 {
- return FontSize;
+ return CFont.GetPointSize ();
 }
 
 void

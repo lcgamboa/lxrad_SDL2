@@ -76,8 +76,8 @@ CText::Draw(void)
    Paint->Text (Lines.GetLine (q + Scroll->GetPosition ()), 5, 15 + (13 * (q - 1)));
   }
  Paint->LowerFrame (0, 0, Width, Height);
- int x; // = XTextWidth (CFont, Lines.GetLine (CursorLin).c_str (), GetCursorPos ());
- TTF_SizeText (CFont, Lines.GetLine (CursorLin).c_str (), &x, NULL);
+ int x; // = XTextWidth (CFont.GetTTFFont (), Lines.GetLine (CursorLin).c_str (), GetCursorPos ());
+ TTF_SizeText (CFont.GetTTFFont (), Lines.GetLine (CursorLin).c_str (), &x, NULL);
  int y = 12;
  Paint->Pen.SetColor (Color);
  Paint->Pen.SetPen (0);
@@ -116,8 +116,8 @@ CText::DrawLine(void)
  if (CursorLin < Lines.GetLinesCount () - 1)
   Paint->Text (Lines.GetLine (CursorLin + 1), 5, 15 + (13 * (CursorLin)));
  //cursor
- int x; // = XTextWidth (CFont, Lines.GetLine (CursorLin).c_str (), GetCursorPos ());
- TTF_SizeText (CFont, Lines.GetLine (CursorLin).c_str (), &x, NULL);
+ int x; // = XTextWidth (CFont.GetTTFFont (), Lines.GetLine (CursorLin).c_str (), GetCursorPos ());
+ TTF_SizeText (CFont.GetTTFFont (), Lines.GetLine (CursorLin).c_str (), &x, NULL);
  int y = 12;
  Paint->Pen.SetColor (Color);
  Paint->Pen.SetPen (0);

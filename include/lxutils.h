@@ -175,10 +175,17 @@ public:
 class lxFont
 {
 private:
+  TTF_Font * font;
+  int Size;
+  int Family;
+  int Style; 
+  int Weight;
 public:
   lxFont();
   lxFont(int size,int family,int style,int weight);
-  void SetPointSize(int size);  
+  void SetPointSize(int size); 
+  TTF_Font * GetTTFFont(void);
+  int GetPointSize(void);
 };
 
 class lxMutex

@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001-2020  Luis Claudio Gamboa Lopes
+   Copyright (c) : 2001-2021  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -254,7 +254,7 @@ CWindow::Draw(void)
      Paint->Rectangle (1, Width - 10, Height + 10, 8, 8);
      //bar text
      int tw;
-     TTF_SizeText (CFont, Title.c_str (), &tw, NULL);
+     TTF_SizeText (CFont.GetTTFFont (), Title.c_str (), &tw, NULL);
      Paint->Pen.SetColor (ColorByRGB (255, 255, 255));
      Paint->Text (Title, (Width - tw) / 2, 2);
     }
@@ -706,21 +706,34 @@ CWindow::WEvents(SDL_Event WEvent)
     {
      CalcRXY ();
      //bar click
-     if ((WEvent.button.x > RX) && (WEvent.button.x < (int) (Width + RX)))
+     if (onewin_cursor == 1)
       {
-       if ((WEvent.button.y > RY) && (WEvent.button.y < (int) (20 + RY)))
+       if (WEvent.type == SDL_MOUSEBUTTONDOWN)
+        {
+         if (WEvent.button.x < (int) (Width + RX - 20))
+          {
+           move_on = 1;
+          }
+         else
+          {
+           WDestroy ();
+           Application->GetARootWindow ()->Draw ();
+          }
+        }
+       else
+        {
+         move_on = 0;
+        }
+       break;
+      }
+      //resize click
+     else if (onewin_cursor == 2)
+      {
+       if ((WEvent.button.y > (int) (RY + Height + 10)) && (WEvent.button.y < (int) (RY + Height + 20)))
         {
          if (WEvent.type == SDL_MOUSEBUTTONDOWN)
           {
-           if (WEvent.button.x < (int) (Width + RX - 20))
-            {
-             move_on = 1;
-            }
-           else
-            {
-             WDestroy ();
-             Application->GetARootWindow ()->Draw ();
-            }
+           move_on = 2;
           }
          else
           {
@@ -728,23 +741,8 @@ CWindow::WEvents(SDL_Event WEvent)
           }
          break;
         }
-        //resize click
-       else if ((WEvent.button.x > (int) (Width + RX - 10)) && (WEvent.button.x < (int) (Width + RX)))
-        {
-         if ((WEvent.button.y > (int) (RY + Height + 10)) && (WEvent.button.y < (int) (RY + Height + 20)))
-          {
-           if (WEvent.type == SDL_MOUSEBUTTONDOWN)
-            {
-             move_on = 2;
-            }
-           else
-            {
-             move_on = 0;
-            }
-           break;
-          }
-        }
       }
+
     }
    CControl::Event (WEvent);
    ret = 1;
@@ -792,7 +790,7 @@ CWindow::WEvents(SDL_Event WEvent)
            SDL_Cursor* cursor;
            cursor = SDL_CreateSystemCursor (SDL_SYSTEM_CURSOR_SIZEALL);
            SDL_SetCursor (cursor);
-           onewin_cursor = 1;
+           onewin_cursor = 2;
           }
          else
           {

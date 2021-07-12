@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001-2018  Luis Claudio Gamboa Lopes
+   Copyright (c) : 2001-2021  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -48,6 +48,7 @@ private:
   void Rotate(int *x, int *y);
   int Width;
   int Height;
+  lxFont Font;
 public:
     CPen Pen;
     CPaint (void);

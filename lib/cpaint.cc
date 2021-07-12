@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001-2020  Luis Claudio Gamboa Lopes
+   Copyright (c) : 2001-2021  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -96,16 +96,10 @@ CPaint::Destroy(void) {
 }
 
 void
-CPaint::SetFont(CControl * control) {
- /*    
-   XGCValues *Gcv;
-   Gcv = new XGCValues;
-   XFontStruct *PFont = control->GetFont ();
-   Gcv->font = PFont->fid;
-   XChangeGC (Disp, Agc, GCFont, Gcv);
-   delete Gcv;
-
-  */ }
+CPaint::SetFont(CControl * control)
+{
+ Font = control->GetFont ();
+}
 
 void
 CPaint::InitDraw(CControl * control)
@@ -170,7 +164,7 @@ CPaint::Line(int x1, int y1, int x2, int y2)
  if (LineWidth == 1)
   {
    SDL_Color color = Pen.GetFgColor ();
-   aalineRGBA (Win->GetRenderer (), (RX + x1)*Scalex, (RY + y1)*Scaley, (RX + x2)*Scalex, (RY + y2)*Scaley, color.r, color.g, color.b, 0xFF);
+   aalineRGBA (Win->GetRenderer (), (RX + x1) * Scalex, (RY + y1) * Scaley, (RX + x2) * Scalex, (RY + y2) * Scaley, color.r, color.g, color.b, 0xFF);
   }
  else
   {
@@ -188,23 +182,23 @@ CPaint::Line(int x1, int y1, int x2, int y2)
    double dx = PWidth *-sin (angle);
    double dy = PWidth * cos (angle);
 
-   vx[0] = (RX + x1 + dx)*Scalex;
-   vy[0] = (RY + y1 - dy)*Scaley;
+   vx[0] = (RX + x1 + dx) * Scalex;
+   vy[0] = (RY + y1 - dy) * Scaley;
 
-   vx[1] = (RX + x2 + dx)*Scalex;
-   vy[1] = (RY + y2 - dy)*Scaley;
+   vx[1] = (RX + x2 + dx) * Scalex;
+   vy[1] = (RY + y2 - dy) * Scaley;
 
-   vx[2] = (RX + x2 - dx)*Scalex;
-   vy[2] = (RY + y2 + dy)*Scaley;
+   vx[2] = (RX + x2 - dx) * Scalex;
+   vy[2] = (RY + y2 + dy) * Scaley;
 
-   vx[3] = (RX + x1 - dx)*Scalex;
-   vy[3] = (RY + y1 + dy)*Scaley;
+   vx[3] = (RX + x1 - dx) * Scalex;
+   vy[3] = (RY + y1 + dy) * Scaley;
 
    aaFilledPolygonRGBA (Win->GetRenderer (), vx, vy, 4, color.r, color.g, color.b, 0xFF);
 
    //line ending
-   aaFilledEllipseRGBA (Win->GetRenderer (), (RX + x1)*Scalex, (RY + y1)*Scaley, PWidth*Scalex, PWidth*Scaley, color.r, color.g, color.b, 0xFF);
-   aaFilledEllipseRGBA (Win->GetRenderer (), (RX + x2)*Scalex, (RY + y2)*Scaley, PWidth*Scalex, PWidth*Scaley, color.r, color.g, color.b, 0xFF);
+   aaFilledEllipseRGBA (Win->GetRenderer (), (RX + x1) * Scalex, (RY + y1) * Scaley, PWidth*Scalex, PWidth*Scaley, color.r, color.g, color.b, 0xFF);
+   aaFilledEllipseRGBA (Win->GetRenderer (), (RX + x2) * Scalex, (RY + y2) * Scaley, PWidth*Scalex, PWidth*Scaley, color.r, color.g, color.b, 0xFF);
 
    /*
    SDL_Rect DestR;
@@ -356,7 +350,16 @@ CPaint::Text(lxString text, int x1, int y1)
  if (text.size () == 0)return;
  //Render text surface
  //SDL_Color textColor = { 0, 0, 0 }
- SDL_Surface* textSurface = TTF_RenderText_Blended (Win->GetFont (), text.c_str (), Pen.GetFgColor ()/*, Pen.GetBGColor ()*/);
+ SDL_Surface* textSurface = NULL;
+ if (Scalex == 1.0)
+  {
+   textSurface = TTF_RenderText_Blended (Font.GetTTFFont (), text.c_str (), Pen.GetFgColor ()/*, Pen.GetBGColor ()*/);
+  }
+ else
+  {
+   //FIXME use all parameters
+   textSurface = TTF_RenderText_Blended (Application->GetFont (Font.GetPointSize () * Scalex, 0, 0, 0), text.c_str (), Pen.GetFgColor ()/*, Pen.GetBGColor ()*/);
+  }
  if (textSurface == NULL)
   {
    printf ("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError ());
@@ -526,7 +529,16 @@ CPaint::RotatedText(lxString text, int x, int y, int _angle)
  if (text.size () == 0)return;
  //Render text surface
  //SDL_Color textColor = { 0, 0, 0 }
- SDL_Surface* textSurface = TTF_RenderText_Blended (Win->GetFont (), text.c_str (), Pen.GetFgColor ());
+ SDL_Surface* textSurface = NULL;
+ if (Scalex == 1.0)
+  {
+   textSurface = TTF_RenderText_Blended (Font.GetTTFFont (), text.c_str (), Pen.GetFgColor ()/*, Pen.GetBGColor ()*/);
+  }
+ else
+  {
+   //FIXME use all parameters
+   textSurface = TTF_RenderText_Blended (Application->GetFont (Font.GetPointSize () * Scalex, 0, 0, 0), text.c_str (), Pen.GetFgColor ()/*, Pen.GetBGColor ()*/);
+  }
  if (textSurface == NULL)
   {
    printf ("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError ());
@@ -610,10 +622,9 @@ CPaint::SetBitmap(lxBitmap* bitmap, double xs, double ys)
 }
 
 void
-CPaint::SetFont(lxFont font) {
- //#ifdef _DEBUG 
- // printf ("Incomplete: %s -> %s :%i\n", __func__, __FILE__, __LINE__);
- //#endif
+CPaint::SetFont(lxFont font)
+{
+ Font = font;
 }
 
 void

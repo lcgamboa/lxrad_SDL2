@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001-2020  Luis Claudio Gamboa Lopes
+   Copyright (c) : 2001-2021  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -58,8 +58,7 @@ protected:
   int ChildCount;
   int Pen;
   lxString FontName;
-  TTF_Font *CFont;
-  uint FontSize;
+  lxFont CFont;
   CControl *Owner;
   bool GChanges;
   bool Visible;
@@ -87,8 +86,8 @@ public:
   SDL_Rect GetRectangle (void);
 //propiedades
   void SetFont (const lxString font);
-  void SetFont (TTF_Font * font);
-  TTF_Font *GetFont (void);
+  void SetFont (lxFont * font);
+  lxFont  GetFont (void);
   lxString GetFontName (void);
   void SetFontSize (uint size);
   uint GetFontSize (void);
