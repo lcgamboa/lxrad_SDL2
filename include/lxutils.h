@@ -186,6 +186,9 @@ public:
   void SetPointSize(int size); 
   TTF_Font * GetTTFFont(void);
   int GetPointSize(void);
+  int GetFamily(void);
+  int GetStyle(void);
+  int GetWeight(void);
 };
 
 class lxMutex
@@ -214,7 +217,7 @@ public:
 
 #define lxFONTFAMILY_DEFAULT  0x00
 #define lxFONTFAMILY_TELETYPE 0x01
-#define lxFONTSTYLE_NORMAL 0x01
+#define lxFONTSTYLE_NORMAL 0x00
 #define lxFONTWEIGHT_BOLD 0x01
 #define lxFONTWEIGHT_NORMAL 0x00
 

@@ -52,7 +52,9 @@ CApplication::CApplication(void)
  HintY = 0;
  MWindow = NULL;
  LMWindow = NULL;
- for (int i = 0; i < FONT_MAX; i++)
+ Gscale = 1.0;
+ 
+ for (int i = 0; i < (FONT_MAX * 2); i++)
   {
    fontlist[i] = NULL;
   }
@@ -69,7 +71,7 @@ CApplication::CApplication(void)
 
 CApplication::~CApplication(void)
 {
- for (int i = 0; i < FONT_MAX; i++)
+ for (int i = 0; i < (FONT_MAX * 2); i++)
   {
    if (fontlist[i])
     {
@@ -80,23 +82,38 @@ CApplication::~CApplication(void)
  TTF_Quit ();
  IMG_Quit ();
  SDL_Quit ();
-};
+}
 
 TTF_Font *
 CApplication::GetFont(int size, int family, int style, int weight)
 {
- //TODO only size font are used 
- if (!fontlist[size])
+
+ if (size < 1)size = 1;
+ if (size >= FONT_MAX) size = FONT_MAX - 1;
+
+ const int fontaddr = size + family * FONT_MAX;
+ 
+ //TODO only size font and size are used 
+ if (fontlist[fontaddr] == NULL)
   {
-   fontlist[size] = TTF_OpenFontIndex ((lxString (_SHARE) + "fonts/FreeSans.ttf").c_str (), size + 2, 0);
-   if (fontlist[size] == NULL)
+   if (!family)
+    {
+     fontlist[fontaddr] = TTF_OpenFontIndex ((lxString (_SHARE) + "fonts/FreeSans.ttf").c_str (), size + 2, 0);
+    }
+   else
+    {
+     fontlist[fontaddr] = TTF_OpenFontIndex ((lxString (_SHARE) + "fonts/FreeMonoBold.ttf").c_str (), size + 5, 0);
+    }
+
+   if (fontlist[fontaddr] == NULL)
     {
      printf ("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError ());
      exit (-1);
     }
+   //printf ("Font Loaded %i %i %i %i\n", size, family, style, weight);
   }
-
- return fontlist[size];
+ 
+ return fontlist[fontaddr];
 }
 
 void
@@ -644,6 +661,18 @@ CApplication::RemoveTimer(CTimer *tm)
     }
    //printf("Timer %i Removed: %s\n",TimerCount,tm->GetName().c_str()); 
   }
+}
+
+double 
+CApplication::GetGlobalScale(void)
+{
+  return Gscale;
+}
+
+void 
+CApplication::SetGlobalScale(double gscale)
+{
+  Gscale = gscale;
 }
 
 #ifndef HAVE_LIBPTHREAD

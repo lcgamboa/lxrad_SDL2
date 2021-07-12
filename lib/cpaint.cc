@@ -358,7 +358,7 @@ CPaint::Text(lxString text, int x1, int y1)
  else
   {
    //FIXME use all parameters
-   textSurface = TTF_RenderText_Blended (Application->GetFont (Font.GetPointSize () * Scalex, 0, 0, 0), text.c_str (), Pen.GetFgColor ()/*, Pen.GetBGColor ()*/);
+   textSurface = TTF_RenderText_Blended (Application->GetFont (Font.GetPointSize () * Scalex, Font.GetFamily (), Font.GetStyle (), Font.GetWeight ()), text.c_str (), Pen.GetFgColor ()/*, Pen.GetBGColor ()*/);
   }
  if (textSurface == NULL)
   {
@@ -377,8 +377,8 @@ CPaint::Text(lxString text, int x1, int y1)
      SDL_Rect DestR;
 
      SDL_QueryTexture (mTexture, NULL, NULL, &DestR.w, &DestR.h);
-     DestR.x = RX + x1;
-     DestR.y = RY + y1;
+     DestR.x = RX + x1*Scalex;
+     DestR.y = RY + y1*Scaley;
      SDL_RenderCopy (Win->GetRenderer (), mTexture, NULL, &DestR);
      SDL_DestroyTexture (mTexture);
     }
@@ -391,6 +391,12 @@ CPaint::Text(lxString text, int x1, int y1)
 void
 CPaint::TextOnRect(lxString text, lxRect rect, CAlign align)
 {
+ int w, h;
+
+ TTF_SizeText (Font.GetTTFFont (), text.c_str (), &w, &h);
+
+ rect.x = rect.x + (rect.width - w) / 2;
+ rect.y = rect.y + (rect.height - h) / 2;
  Text (text, rect.x, rect.y);
 }
 
@@ -537,7 +543,7 @@ CPaint::RotatedText(lxString text, int x, int y, int _angle)
  else
   {
    //FIXME use all parameters
-   textSurface = TTF_RenderText_Blended (Application->GetFont (Font.GetPointSize () * Scalex, 0, 0, 0), text.c_str (), Pen.GetFgColor ()/*, Pen.GetBGColor ()*/);
+   textSurface = TTF_RenderText_Blended (Application->GetFont (Font.GetPointSize () * Scalex, Font.GetFamily (), Font.GetStyle (), Font.GetWeight ()), text.c_str (), Pen.GetFgColor ()/*, Pen.GetBGColor ()*/);
   }
  if (textSurface == NULL)
   {

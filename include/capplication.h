@@ -33,7 +33,7 @@
 #include"chint.h"
 #include<locale.h>
 
-#define FONT_MAX 100
+#define FONT_MAX 64
 
 class CWindow;
 
@@ -58,7 +58,8 @@ private:
   lxString Title;
   CWindow * MWindow; //Modal Window
   CWindow * LMWindow; //Last Modal Window
-  TTF_Font * fontlist[FONT_MAX];
+  TTF_Font * fontlist[FONT_MAX*2];
+  double Gscale;
 public:
     CApplication (void);
    ~CApplication (void);
@@ -87,6 +88,8 @@ public:
   int GetTag ();
   lxString GetTitle ();
   void SetHintControl(CControl* hcontrol,int x,int y);
+  double GetGlobalScale(void);
+  void SetGlobalScale(double gscale);
 };
 
 

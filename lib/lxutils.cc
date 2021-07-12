@@ -546,10 +546,28 @@ lxFont::GetTTFFont(void)
  return font;
 }
 
-int 
+int
 lxFont::GetPointSize(void)
 {
  return Size;
+}
+
+int
+lxFont::GetFamily(void)
+{
+ return Family;
+}
+
+int
+lxFont::GetStyle(void)
+{
+ return Style;
+}
+
+int
+lxFont::GetWeight(void)
+{
+ return Weight;
 }
 
 //-------------------------------------------------------------------------
@@ -933,6 +951,7 @@ ColorByName(lxString name)
  char cname[10];
  strncpy (cname, name.c_str (), 9);
  SDL_Color colorA;
+ colorA.a = 0xFF;
  if (cname[0] == '#')
   {
    char tmp[3];
