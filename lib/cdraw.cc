@@ -63,7 +63,7 @@ CDraw::Create(CControl * control)
  Visible = true;
  if (!CPixmap)
   {
-   CPixmap = SDL_CreateTexture (GetWin ()->GetRenderer (), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Width, Height);
+   CPixmap = SDL_CreateTexture (GetWin ()->GetRenderer (), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Width*Application->GetGlobalScale (), Height*Application->GetGlobalScale ());
 
    Canvas.SetDrawIn (CPixmap);
    Canvas.Pen.SetColor (Color);
@@ -90,7 +90,7 @@ CDraw::SetWidth(uint width)
  if (Paint != NULL)
   {
    if (CPixmap != NULL) SDL_DestroyTexture (CPixmap);
-   CPixmap = SDL_CreateTexture (GetWin ()->GetRenderer (), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, Height);
+   CPixmap = SDL_CreateTexture (GetWin ()->GetRenderer (), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width*Application->GetGlobalScale (), Height*Application->GetGlobalScale ());
 
    if (CPixmap == NULL)
     {
@@ -109,7 +109,7 @@ CDraw::SetHeight(uint height)
  if (Paint != NULL)
   {
    if (CPixmap != NULL) SDL_DestroyTexture (CPixmap);
-   CPixmap = SDL_CreateTexture (GetWin ()->GetRenderer (), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Width, height);
+   CPixmap = SDL_CreateTexture (GetWin ()->GetRenderer (), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Width*Application->GetGlobalScale (), height*Application->GetGlobalScale ());
 
    if (CPixmap == NULL)
     {
@@ -146,7 +146,7 @@ CDraw::Draw()
    Canvas.SetDrawIn (CPixmap);
    if (!CPixmap)
     {
-     CPixmap = SDL_CreateTexture (GetWin ()->GetRenderer (), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Width, Height);
+     CPixmap = SDL_CreateTexture (GetWin ()->GetRenderer (), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Width*Application->GetGlobalScale (), Height*Application->GetGlobalScale ());
      Canvas.SetDrawIn (CPixmap);
      Canvas.Pen.SetColor (Color);
      Canvas.Rectangle (0, 0, Width, Height);

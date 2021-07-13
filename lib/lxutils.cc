@@ -163,6 +163,9 @@ bool
 lxImage::LoadFile(const lxString fname, int orientation, float scalex, float scaley, int useAlpha, double * ret_sx, double * ret_sy)
 {
  Destroy ();
+ 
+ scalex*=Application->GetGlobalScale ();
+ scaley*=Application->GetGlobalScale ();
 
  if (fname.Contains (".svg"))
   {
@@ -178,10 +181,10 @@ lxImage::LoadFile(const lxString fname, int orientation, float scalex, float sca
 
 
      if (ret_sx)
-      *ret_sx = ((double) width) / document->width ();
+      *ret_sx = ((double) width/Application->GetGlobalScale ()) / document->width ();
 
      if (ret_sy)
-      *ret_sy = ((double) height) / document->height ();
+      *ret_sy = ((double) height/Application->GetGlobalScale ()) / document->height ();
 
      auto bitmap = document->renderToBitmap (width, height, 0);
 
@@ -198,7 +201,7 @@ lxImage::LoadFile(const lxString fname, int orientation, float scalex, float sca
      SDL_Texture * mTexture = SDL_CreateTextureFromSurface (Win->GetRenderer (), Surface);
 
      SDL_Rect DestR;
-     int sw, sh;
+     int sw=0, sh=0;
      SDL_QueryTexture (mTexture, NULL, NULL, &DestR.w, &DestR.h);
 
      switch (orientation)
@@ -251,7 +254,7 @@ lxImage::LoadFile(const lxString fname, int orientation, float scalex, float sca
 
 
      SDL_Rect DestR;
-     int sw, sh;
+     int sw=0, sh=0;
      SDL_QueryTexture (mTexture, NULL, NULL, &DestR.w, &DestR.h);
 
      DestR.w *= scalex;
@@ -1092,7 +1095,7 @@ lxGetBitmapRotated(lxImage *image, CWindow * win, int _orientation)
  else
   {
    SDL_Rect DestR;
-   int sw, sh;
+   int sw=0, sh=0;
    SDL_QueryTexture (mTexture, NULL, NULL, &DestR.w, &DestR.h);
 
 

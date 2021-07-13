@@ -449,7 +449,7 @@ CApplication::ProcessEvents(void)
            } 
         }
        
-       if ((AEvent.type == SDL_WINDOWEVENT)&&(AEvent.window.type == SDL_WINDOWEVENT_CLOSE))
+       if (AEvent.window.type == SDL_WINDOWEVENT_CLOSE)
         for (int p = 0; p <= AWindowCount; p++)
          {
           if (AEvent.window.windowID == SDL_GetWindowID (AWindowList[p]->GetWWindow ()))
@@ -468,7 +468,7 @@ CApplication::ProcessEvents(void)
 #ifndef _ONEWIN   
        MWindow->Draw ();
 #endif   
-       if (((AEvent.type == SDL_WINDOWEVENT) && ((AEvent.window.type == SDL_WINDOWEVENT_ENTER) || (AEvent.window.type == SDL_WINDOWEVENT_EXPOSED)))
+       if ((/*(AEvent.type == SDL_WINDOWEVENT) &&*/ ((AEvent.window.type == SDL_WINDOWEVENT_ENTER) || (AEvent.window.type == SDL_WINDOWEVENT_EXPOSED)))
            && (AWindowCount >= 0) && (wn != NULL))
         {
          wn->WEvents (AEvent);
@@ -477,7 +477,7 @@ CApplication::ProcessEvents(void)
         {
          if (AEvent.window.windowID == SDL_GetWindowID (MWindow->GetWWindow ()))
           {
-           if ((AEvent.type == SDL_WINDOWEVENT)&&(AEvent.window.type == SDL_WINDOWEVENT_CLOSE))
+           if (AEvent.window.type == SDL_WINDOWEVENT_CLOSE)
             {
              return false;
             }

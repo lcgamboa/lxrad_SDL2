@@ -57,7 +57,7 @@ extern "C"
 
    */
 #endif
-
+  Application->GetARootWindow ()->Show ();
  }
 
  void
@@ -401,6 +401,22 @@ CWindow::Show(void)
      SDL_ShowWindow (WWindow);
      SDL_RaiseWindow (WWindow);
      SDL_RenderPresent (Renderer);
+#ifdef _ONEWIN    
+     if (Application->GetARootWindow () == this)
+      {
+       for (int i = ChildCount; i >= 0; i--)
+        {
+         if (Child[i]->GetVisible () && (Child[i] != statusbar))
+          {
+           //simulate window resize
+           Child[i]->SetWidth (Child[i]->GetWidth ()+1);
+           Child[i]->SetHeight (Child[i]->GetHeight ()+1);
+ 
+           ((CWindow *) Child[i])->Show ();
+          }
+        }
+      }
+#endif     
     }
    else
     {
