@@ -38,7 +38,6 @@
 #ifdef _ONEWIN
 extern "C"
 {
- static float gscale = 1.0;
 
  void
  lxrad_scale_update(void)
@@ -47,19 +46,28 @@ extern "C"
   double width, height;
   emscripten_get_element_css_size ("#canvas", &width, &height);
   emscripten_set_canvas_element_size ("#canvas", int(width), int(height));
+  /*
   SDL_RenderSetLogicalSize (Application->GetARootWindow ()->GetRenderer (),
                             (int) (width * gscale), (int) (height * gscale));
+   */
 #else
+  /*
   SDL_RenderSetLogicalSize (Application->GetARootWindow ()->GetRenderer (),
                             Application->GetARootWindow ()->GetWidth () * gscale, Application->GetARootWindow ()->GetHeight () * gscale);
+
+   */
 #endif
 
  }
 
  void
- lxrad_scale_down(void)
+ lxrad_scale_up(void)
  {
+  double gscale = Application->GetGlobalScale ();
+
   gscale += 0.1;
+
+
   if (gscale > 4.0)
    {
     gscale = 4.0;
@@ -68,12 +76,17 @@ extern "C"
    {
     lxrad_scale_update ();
    }
+
+  Application->SetGlobalScale (gscale);
  }
 
  void
- lxrad_scale_up(void)
+ lxrad_scale_down(void)
  {
+  double gscale = Application->GetGlobalScale ();
+
   gscale -= 0.1;
+
   if (gscale < 0.2)
    {
     gscale = 0.2;
@@ -82,6 +95,8 @@ extern "C"
    {
     lxrad_scale_update ();
    }
+
+  Application->SetGlobalScale (gscale);
  }
 }
 
@@ -437,6 +452,34 @@ void
 CWindow::Update(void)
 {
  if ((Paint == NULL) || (Visible == false))return;
+#ifdef _ONEWIN  
+ if (Application->GetARootWindow () == this)
+  {
+   for (int i = ChildCount; i >= 0; i--)
+    {
+     if (Child[i]->GetVisible () && (Child[i] != statusbar))
+      {
+       if (PixmapBuffer)
+        Child[i]->Update ();
+       else
+        Child[i]->Draw ();
+      }
+    }
+  }
+ else
+  {
+   for (int i = 0; i <= ChildCount; i++)
+    {
+     if (Child[i]->GetVisible () && (Child[i] != statusbar))
+      {
+       if (PixmapBuffer)
+        Child[i]->Update ();
+       else
+        Child[i]->Draw ();
+      }
+    }
+  }
+#else 
  for (int i = 0; i <= ChildCount; i++)
   {
    if (Child[i]->GetVisible () && (Child[i] != statusbar))
@@ -447,6 +490,7 @@ CWindow::Update(void)
       Child[i]->Draw ();
     }
   }
+#endif
 
  if (statusbar)
   {
@@ -595,10 +639,14 @@ CWindow::WEvents(SDL_Event WEvent)
 #ifdef __EMSCRIPTEN__
      emscripten_get_element_css_size ("#canvas", &width, &height);
      emscripten_set_canvas_element_size ("#canvas", int(width), int(height));
+     /*
      SDL_RenderSetLogicalSize (Application->GetARootWindow ()->GetRenderer (),
                                (int) (width * gscale), (int) (height * gscale));
+      */
 #else
+     /*
      SDL_RenderSetLogicalSize (Renderer, WEvent.window.data1*gscale, WEvent.window.data2 * gscale);
+      */
 #endif
 #endif     
      on_show ();
@@ -618,10 +666,12 @@ CWindow::WEvents(SDL_Event WEvent)
 #ifdef __EMSCRIPTEN__
      emscripten_get_element_css_size ("#canvas", &width, &height);
      emscripten_set_canvas_element_size ("#canvas", int(width), int(height));
+     /*
      SDL_RenderSetLogicalSize (Application->GetARootWindow ()->GetRenderer (),
                                (int) (width * gscale), (int) (height * gscale));
+      */
 #else
-     SDL_RenderSetLogicalSize (Renderer, WEvent.window.data1*gscale, WEvent.window.data2 * gscale);
+     //SDL_RenderSetLogicalSize (Renderer, WEvent.window.data1*gscale, WEvent.window.data2 * gscale);
 #endif
 #endif    
      ret = 1;
@@ -702,6 +752,9 @@ CWindow::WEvents(SDL_Event WEvent)
 #ifdef _ONEWIN   
   case SDL_MOUSEBUTTONDOWN:
   case SDL_MOUSEBUTTONUP:
+   WEvent.button.x /= Application->GetGlobalScale ();
+   WEvent.button.y /= Application->GetGlobalScale ();
+
    if (!ORedirect)
     {
      CalcRXY ();
@@ -748,6 +801,8 @@ CWindow::WEvents(SDL_Event WEvent)
    ret = 1;
    break;
   case SDL_MOUSEMOTION:
+   WEvent.motion.x /= Application->GetGlobalScale ();
+   WEvent.motion.y /= Application->GetGlobalScale ();
    if (move_on == 1)
     {
      SetX (WEvent.motion.x - 10);

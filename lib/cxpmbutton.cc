@@ -45,11 +45,11 @@ CXpmButton::CXpmButton (void)
   SetHeight (20);
   SetClass ("CXpmButton");
   CreateChild (Xpm);
-};
+}
 
 CXpmButton::~CXpmButton (void)
 {
-};
+}
 
 int
 CXpmButton::Create (CControl * control)
@@ -84,8 +84,8 @@ CXpmButton::Draw (void)
       Paint->Rectangle ( 0, 0, Width, Height);
       Paint->RaiserFrame ( 0, 0, Width, Height, Border);
       CControl::Draw ();
-    };
-};
+    }
+}
 
 lxStringList CXpmButton::GetContext (void)
 {
@@ -93,7 +93,7 @@ lxStringList CXpmButton::GetContext (void)
   Context.AddLine ("Text=" + GetText () + ";lxString");
   Context.AddLine ("PixmapFileName=" + GetPixmapFileName () + ";File");
   return Context;
-};
+}
 
 void
 CXpmButton::SetContext (lxStringList context)
@@ -113,10 +113,10 @@ CXpmButton::SetContext (lxStringList context)
 	  SetPixmapFileName (arg);
 	else
 	  SetPixmapFileName ("");
-      };
-    };
+      }
+    }
   Draw ();
-};
+}
 
 //propiedades
 
@@ -124,13 +124,13 @@ void
 CXpmButton::SetPixmapFileName (lxString filename)
 {
   Xpm->SetPixmapFileName (filename);
-};
+}
 
 lxString
 CXpmButton::GetPixmapFileName (void)
 {
   return Xpm->GetPixmapFileName ();
-};
+}
 
 void
 CXpmButton::SetWidth (uint width)
@@ -138,7 +138,7 @@ CXpmButton::SetWidth (uint width)
   CControl::SetWidth (width);
   Xpm->SetWidth (16);
   Text->SetWidth (width - 22);
-};
+}
 
 void
 CXpmButton::SetHeight (uint height)
@@ -146,4 +146,4 @@ CXpmButton::SetHeight (uint height)
   CControl::SetHeight (height);
   Xpm->SetHeight (16);
   Text->SetHeight (height);
-};
+}

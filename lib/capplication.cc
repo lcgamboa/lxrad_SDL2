@@ -51,7 +51,6 @@ CApplication::CApplication(void)
  HintX = 0;
  HintY = 0;
  MWindow = NULL;
- LMWindow = NULL;
  Gscale = 1.0;
  
  for (int i = 0; i < (FONT_MAX * 2); i++)
@@ -102,7 +101,7 @@ CApplication::GetFont(int size, int family, int style, int weight)
     }
    else
     {
-     fontlist[fontaddr] = TTF_OpenFontIndex ((lxString (_SHARE) + "fonts/FreeMonoBold.ttf").c_str (), size + 5, 0);
+     fontlist[fontaddr] = TTF_OpenFontIndex ((lxString (_SHARE) + "fonts/FreeMonoBold.ttf").c_str (), size + 4, 0);
     }
 
    if (fontlist[fontaddr] == NULL)
@@ -175,7 +174,7 @@ CApplication::ACreateWindow(CWindow * AWindow, CWindow *window)
   {
    AWindow->CControl::Destroy ();
    return;
-  };
+  }
  if (AWindowCount == -1)
   AWindow->SetVisible (true, false);
  AWindowCount++;
@@ -189,7 +188,7 @@ CApplication::ACreateWindow(CWindow * AWindow, CWindow *window)
  AWindowList = WindowList;
  AWindow->WCreate (window);
  AWindow->Draw ();
-};
+}
 
 void
 CApplication::Draw(void)
@@ -199,7 +198,7 @@ CApplication::Draw(void)
  else
   for (int i = 0; i <= AWindowCount; i++)
    AWindowList[i]->Draw ();
-};
+}
 
 void
 CApplication::Update(void)
@@ -209,7 +208,7 @@ CApplication::Update(void)
  else
   for (int i = 0; i <= AWindowCount; i++)
    AWindowList[i]->Update ();
-};
+}
 
 void
 CApplication::ADestroyWindow(CWindow * AWindow)
@@ -280,7 +279,7 @@ CApplication::Load(void)
    eprint ("No Windows!\n");
    eprint ("...Application Finished\n");
    return;
-  };
+  }
 
  int wn = 0;
  FWindow = SDL_GetWindowID (AWindowList[wn]->GetWWindow ());
@@ -319,8 +318,9 @@ CApplication::ProcessEvents(void)
 #endif
 
 
- if (!MWindow)
+ if (!MWindow)//Not modal window
   {
+   //timer an thread process
    if ((!trun)&&(!Exit))
     {
      trun = 1;
@@ -365,7 +365,7 @@ CApplication::ProcessEvents(void)
          WHint (HintControl->GetHint (),
                 HintX + HintControl->GetWin ()->GetX (),
                 HintY + HintControl->GetWin ()->GetY ());
-        };
+        }
        HintControl = NULL;
       }
 
@@ -416,7 +416,7 @@ CApplication::ProcessEvents(void)
         {
         case SDL_MOUSEBUTTONDOWN:
         case SDL_MOUSEBUTTONUP:
-         if (AWindowList[e]->OwnerEvent (AEvent.button.x, AEvent.button.y))
+         if (AWindowList[e]->OwnerEvent (AEvent.button.x/Gscale, AEvent.button.y/Gscale))
           {
            wn = AWindowList[e];
           }
@@ -438,11 +438,17 @@ CApplication::ProcessEvents(void)
     }
 #endif
 
-     if (!MWindow)
+     if (!MWindow)//Not modal window
       {
        if (wn)
-        wn->WEvents (AEvent);
-
+        {
+          wn->WEvents (AEvent);
+          if((AEvent.type == SDL_MOUSEBUTTONDOWN)||(AEvent.type == SDL_MOUSEBUTTONUP))
+           {
+            return 1;
+           } 
+        }
+       
        if ((AEvent.type == SDL_WINDOWEVENT)&&(AEvent.window.type == SDL_WINDOWEVENT_CLOSE))
         for (int p = 0; p <= AWindowCount; p++)
          {
@@ -457,7 +463,7 @@ CApplication::ProcessEvents(void)
            }
          }
       }
-     else
+     else // modal window
       {
 #ifndef _ONEWIN   
        MWindow->Draw ();
@@ -477,9 +483,10 @@ CApplication::ProcessEvents(void)
             }
            else if ((AEvent.type == SDL_MOUSEBUTTONDOWN) || (AEvent.type == SDL_MOUSEBUTTONUP))
             {
-             if (MWindow->OwnerEvent (AEvent.button.x, AEvent.button.y))
+             if (MWindow->OwnerEvent (AEvent.button.x/Gscale, AEvent.button.y/Gscale))
               {
                MWindow->WEvents (AEvent);
+               return true;
               }
             }
            else
@@ -527,31 +534,31 @@ CApplication::GetAWindow(uint window)
   return AWindowList[window];
  else
   return NULL;
-};
+}
 
 CWindow *
 CApplication::GetARootWindow(void)
 {
  return ARootWindow;
-};
+}
 
 int
 CApplication::GetTag()
 {
  return Tag;
-};
+}
 
 void
 CApplication::SetTag(int x)
 {
  Tag = x;
-};
+}
 
 lxString
 CApplication::GetTitle(void)
 {
  return Title;
-};
+}
 
 /*
 void
@@ -578,14 +585,14 @@ CApplication::OnHintTime(CControl* control)
     printf("%s\n",HintControl->GetHint().c_str());	  
     HTimer.SetTag(0);   
     HintControl=NULL;
-  };
+  }
 
   if( HTimer.GetTag() == 1 )
     HTimer.SetTag(2);   
   else  
     HTimer.SetTag(0);   
   
-};
+}
  */
 
 
@@ -596,7 +603,7 @@ CApplication::SetHintControl(CControl* hcontrol, int x, int y)
  HintTime = time (NULL);
  HintX = x;
  HintY = y;
-};
+}
 
 void
 CApplication::SetModalWindow(CWindow * mwindow)

@@ -107,10 +107,10 @@ CPaint::InitDraw(CControl * control)
  Init ();
 #ifdef _ONEWIN   
  SDL_Rect wrec;
- wrec.x = Win->GetX ();
- wrec.y = Win->GetY ();
- wrec.w = Win->GetWidth ();
- wrec.h = Win->GetHeight () + 20;
+ wrec.x = Win->GetX ()*Scalex;
+ wrec.y = Win->GetY ()*Scaley;
+ wrec.w = Win->GetWidth ()*Scalex;
+ wrec.h = (Win->GetHeight () + 20)*Scaley;
  SDL_RenderSetClipRect (Win->GetRenderer (), &wrec);
 #endif  
  if (DoCalcRXY)
@@ -377,8 +377,8 @@ CPaint::Text(lxString text, int x1, int y1)
      SDL_Rect DestR;
 
      SDL_QueryTexture (mTexture, NULL, NULL, &DestR.w, &DestR.h);
-     DestR.x = RX + x1*Scalex;
-     DestR.y = RY + y1*Scaley;
+     DestR.x = (RX + x1)*Scalex;
+     DestR.y = (RY + y1)*Scaley;
      SDL_RenderCopy (Win->GetRenderer (), mTexture, NULL, &DestR);
      SDL_DestroyTexture (mTexture);
     }
@@ -412,11 +412,11 @@ void
 CPaint::PutPixmap(int x, int y, int w, int h, SDL_Texture * pixmap)
 {
  SDL_Rect DestR;
-
- DestR.x = RX + x;
- DestR.y = RY + y;
- DestR.w = w;
- DestR.h = h;
+//FIXME scale on Pixmap to increase quality
+ DestR.x = (RX + x)*Scalex;
+ DestR.y = (RY + y)*Scaley;
+ DestR.w = w*Scalex;
+ DestR.h = h*Scaley;
  SDL_RenderCopy (Win->GetRenderer (), pixmap, NULL, &DestR);
  //if (SDL_GetRenderTarget (Win->GetRenderer ()))
  //SDL_RenderPresent (Win->GetRenderer ());
@@ -432,8 +432,8 @@ CPaint::SetLineWidth(int w)
 void
 CPaint::Init(void)
 {
- Scalex = 1.0;
- Scaley = 1.0;
+ Scalex = Application->GetGlobalScale ();
+ Scaley = Application->GetGlobalScale ();
  DrawOut = SDL_GetRenderTarget (Win->GetRenderer ());
  SDL_SetRenderTarget (Win->GetRenderer (), DrawIn);
 
@@ -444,8 +444,8 @@ CPaint::Init(void)
 void
 CPaint::Init(float sx, float sy, int _orientation)
 {
- Scalex = sx;
- Scaley = sy;
+ Scalex = sx*Application->GetGlobalScale ();
+ Scaley = sy*Application->GetGlobalScale ();
  DrawOut = SDL_GetRenderTarget (Win->GetRenderer ());
  SDL_SetRenderTarget (Win->GetRenderer (), DrawIn);
 
@@ -636,8 +636,8 @@ CPaint::SetFont(lxFont font)
 void
 CPaint::ChangeScale(float sx, float sy)
 {
- Scalex = sx;
- Scaley = sy;
+ Scalex = sx*Application->GetGlobalScale ();
+ Scaley = sy*Application->GetGlobalScale ();
 }
 
 void

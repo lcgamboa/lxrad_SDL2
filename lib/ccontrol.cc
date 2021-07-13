@@ -254,7 +254,7 @@ CControl::Event(SDL_Event event)
 
  //mouse position
  if ((event.type == SDL_MOUSEMOTION) && (Win != NULL))
-  {
+  {    
    if (Owner == this)
     {
      Win->SetXMouse (event.motion.x);
