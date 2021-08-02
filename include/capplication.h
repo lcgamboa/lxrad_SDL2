@@ -60,6 +60,11 @@ private:
   CWindow * LMWindow; //Last Modal Window
   TTF_Font * fontlist[FONT_MAX*2];
   double Gscale;
+  int OffsetX;
+  int OffsetY;
+  int mdx;
+  int mdy;
+  int mouse_scroll;
 public:
     CApplication (void);
    ~CApplication (void);
@@ -90,6 +95,10 @@ public:
   void SetHintControl(CControl* hcontrol,int x,int y);
   double GetGlobalScale(void);
   void SetGlobalScale(double gscale);
+  void SetOffsetX(int xo);
+  void SetOffsetY(int yo);
+  int GetOffsetX(void);
+  int GetOffsetY(void);
 };
 
 

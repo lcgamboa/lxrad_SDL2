@@ -4,7 +4,7 @@
 
    ########################################################################
 
-   Copyright (c) : 2001-2020  Luis Claudio Gamboa Lopes
+   Copyright (c) : 2001-2021  Luis Claudio Gamboa Lopes
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -52,7 +52,12 @@ CApplication::CApplication(void)
  HintY = 0;
  MWindow = NULL;
  Gscale = 1.0;
- 
+ OffsetX = 0;
+ OffsetY = 0;
+ mdx = 0;
+ mdy = 0;
+ mouse_scroll = 0;
+
  for (int i = 0; i < (FONT_MAX * 2); i++)
   {
    fontlist[i] = NULL;
@@ -91,7 +96,7 @@ CApplication::GetFont(int size, int family, int style, int weight)
  if (size >= FONT_MAX) size = FONT_MAX - 1;
 
  const int fontaddr = size + family * FONT_MAX;
- 
+
  //TODO only size font and size are used 
  if (fontlist[fontaddr] == NULL)
   {
@@ -101,7 +106,7 @@ CApplication::GetFont(int size, int family, int style, int weight)
     }
    else
     {
-     fontlist[fontaddr] = TTF_OpenFontIndex ((lxString (_SHARE) + "fonts/FreeMonoBold.ttf").c_str (), size + 4, 0);
+     fontlist[fontaddr] = TTF_OpenFontIndex ((lxString (_SHARE) + "fonts/FreeMonoBold.ttf").c_str (), size + 3, 0);
     }
 
    if (fontlist[fontaddr] == NULL)
@@ -111,7 +116,7 @@ CApplication::GetFont(int size, int family, int style, int weight)
     }
    //printf ("Font Loaded %i %i %i %i\n", size, family, style, weight);
   }
- 
+
  return fontlist[fontaddr];
 }
 
@@ -127,7 +132,10 @@ CApplication::Start(void)
    eprint ("...Application Finished\n");
    Exit = true;
    return;
-  };
+  }
+  
+  //SDL_SetHint(SDL_HINT_MOUSE_TOUCH_EVENTS, "0");
+  //SDL_SetHint(SDL_HINT_TOUCH_MOUSE_EVENTS, "0");
 
  //Initialize PNG loading 
  int imgFlags = IMG_INIT_PNG;
@@ -416,7 +424,7 @@ CApplication::ProcessEvents(void)
         {
         case SDL_MOUSEBUTTONDOWN:
         case SDL_MOUSEBUTTONUP:
-         if (AWindowList[e]->OwnerEvent (AEvent.button.x/Gscale, AEvent.button.y/Gscale))
+         if (AWindowList[e]->OwnerEvent (AEvent.button.x / Gscale, AEvent.button.y / Gscale))
           {
            wn = AWindowList[e];
           }
@@ -438,17 +446,46 @@ CApplication::ProcessEvents(void)
     }
 #endif
 
+     if (AEvent.type == SDL_MOUSEBUTTONUP)
+      {
+       mouse_scroll = 0;
+       mdx = 0;
+       mdy = 0;
+      }
+
      if (!MWindow)//Not modal window
       {
        if (wn)
         {
-          wn->WEvents (AEvent);
-          if((AEvent.type == SDL_MOUSEBUTTONDOWN)||(AEvent.type == SDL_MOUSEBUTTONUP))
-           {
-            return 1;
-           } 
+         wn->WEvents (AEvent);
+         if ((AEvent.type == SDL_MOUSEBUTTONDOWN) || (AEvent.type == SDL_MOUSEBUTTONUP))
+          {
+           mouse_scroll = 0;
+           mdx = 0;
+           mdy = 0;
+           return 1;
+          }
         }
-       
+
+       if (AEvent.type == SDL_MOUSEBUTTONDOWN)
+        {
+         mouse_scroll = 1;
+         mdx = AEvent.button.x;
+         mdy = AEvent.button.y;
+        }
+
+       if (AEvent.type == SDL_MOUSEMOTION)
+        {
+         if (mouse_scroll)
+          {
+           OffsetX -= mdx - AEvent.button.x;
+           OffsetY -= mdy - AEvent.button.y;
+           mdx = AEvent.button.x;
+           mdy = AEvent.button.y;
+           //update_all = 1;
+          }
+        }
+
        if (AEvent.window.type == SDL_WINDOWEVENT_CLOSE)
         for (int p = 0; p <= AWindowCount; p++)
          {
@@ -483,7 +520,7 @@ CApplication::ProcessEvents(void)
             }
            else if ((AEvent.type == SDL_MOUSEBUTTONDOWN) || (AEvent.type == SDL_MOUSEBUTTONUP))
             {
-             if (MWindow->OwnerEvent (AEvent.button.x/Gscale, AEvent.button.y/Gscale))
+             if (MWindow->OwnerEvent (AEvent.button.x / Gscale, AEvent.button.y / Gscale))
               {
                MWindow->WEvents (AEvent);
                return true;
@@ -670,16 +707,40 @@ CApplication::RemoveTimer(CTimer *tm)
   }
 }
 
-double 
+double
 CApplication::GetGlobalScale(void)
 {
-  return Gscale;
+ return Gscale;
 }
 
-void 
+void
 CApplication::SetGlobalScale(double gscale)
 {
-  Gscale = gscale;
+ Gscale = gscale;
+}
+
+void
+CApplication::SetOffsetX(int xo)
+{
+ OffsetX = xo;
+}
+
+void
+CApplication::SetOffsetY(int yo)
+{
+ OffsetY = yo;
+}
+
+int
+CApplication::GetOffsetX(void)
+{
+ return OffsetX;
+}
+
+int
+CApplication::GetOffsetY(void)
+{
+ return OffsetY;
 }
 
 #ifndef HAVE_LIBPTHREAD

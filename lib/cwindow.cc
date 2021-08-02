@@ -74,10 +74,11 @@ extern "C"
    }
   else
    {
+    Application->SetGlobalScale (gscale);
     lxrad_scale_update ();
    }
 
-  Application->SetGlobalScale (gscale);
+ 
  }
 
  void
@@ -93,10 +94,10 @@ extern "C"
    }
   else
    {
+    Application->SetGlobalScale (gscale);
     lxrad_scale_update ();
    }
 
-  Application->SetGlobalScale (gscale);
  }
 }
 
@@ -409,9 +410,9 @@ CWindow::Show(void)
          if (Child[i]->GetVisible () && (Child[i] != statusbar))
           {
            //simulate window resize
-           Child[i]->SetWidth (Child[i]->GetWidth ()+1);
-           Child[i]->SetHeight (Child[i]->GetHeight ()+1);
- 
+           Child[i]->SetWidth (Child[i]->GetWidth () + 1);
+           Child[i]->SetHeight (Child[i]->GetHeight () + 1);
+
            ((CWindow *) Child[i])->Show ();
           }
         }
@@ -819,17 +820,18 @@ CWindow::WEvents(SDL_Event WEvent)
   case SDL_MOUSEMOTION:
    WEvent.motion.x /= Application->GetGlobalScale ();
    WEvent.motion.y /= Application->GetGlobalScale ();
+
    if (move_on == 1)
     {
-     SetX (WEvent.motion.x - 10);
-     SetY (WEvent.motion.y - 10);
+     SetX (WEvent.motion.x - Application->GetOffsetX () - 10);
+     SetY (WEvent.motion.y - Application->GetOffsetY () - 10);
      Application->GetARootWindow ()->Draw ();
      Draw ();
     }
    else if (move_on == 2)
     {
-     int w = WEvent.motion.x - X + 5;
-     int h = WEvent.motion.y - Y - 15;
+     int w = WEvent.motion.x - Application->GetOffsetX () - X + 5;
+     int h = WEvent.motion.y - Application->GetOffsetY () - Y - 15;
      if (w > 64)
       {
        SetWidth (w);

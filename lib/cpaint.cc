@@ -107,8 +107,8 @@ CPaint::InitDraw(CControl * control)
  Init ();
 #ifdef _ONEWIN   
  SDL_Rect wrec;
- wrec.x = Win->GetX () * Scalex;
- wrec.y = Win->GetY () * Scaley;
+ wrec.x = (Win->GetX () + Application->GetOffsetX ()) * Scalex;
+ wrec.y = (Win->GetY () + Application->GetOffsetY ()) * Scaley;
  wrec.w = Win->GetWidth () * Scalex;
  wrec.h = (Win->GetHeight () + 20) * Scaley;
  SDL_RenderSetClipRect (Win->GetRenderer (), &wrec);
@@ -444,8 +444,8 @@ CPaint::PutBitmap(lxBitmap* bitmap, int x, int y)
  DestR.x = (RX + x) * Scalex;
  DestR.y = (RY + y) * Scaley;
  SDL_QueryTexture (bitmap->GetPixmap (), NULL, NULL, &DestR.w, &DestR.h);
- DestR.w *= Scalex;
- DestR.h *= Scaley;
+ //DestR.w *= Scalex;
+ //DestR.h *= Scaley;
  SDL_RenderCopy (Win->GetRenderer (), bitmap->GetPixmap (), NULL, &DestR);
  //if (SDL_GetRenderTarget (Win->GetRenderer ()))
  //SDL_RenderPresent (Win->GetRenderer ());
@@ -462,8 +462,8 @@ void
 CPaint::Init(void)
 {
 
-   Scalex = Application->GetGlobalScale ();
-   Scaley = Application->GetGlobalScale ();
+ Scalex = Application->GetGlobalScale ();
+ Scaley = Application->GetGlobalScale ();
  DrawOut = SDL_GetRenderTarget (Win->GetRenderer ());
  SDL_SetRenderTarget (Win->GetRenderer (), DrawIn);
 
@@ -474,8 +474,8 @@ CPaint::Init(void)
 void
 CPaint::Init(float sx, float sy, int _orientation)
 {
-   Scalex = sx * Application->GetGlobalScale ();
-   Scaley = sy * Application->GetGlobalScale ();
+ Scalex = sx * Application->GetGlobalScale ();
+ Scaley = sy * Application->GetGlobalScale ();
  DrawOut = SDL_GetRenderTarget (Win->GetRenderer ());
  SDL_SetRenderTarget (Win->GetRenderer (), DrawIn);
 
@@ -636,8 +636,8 @@ CPaint::SetFont(lxFont font)
 void
 CPaint::ChangeScale(float sx, float sy)
 {
-   Scalex = sx * Application->GetGlobalScale ();
-   Scaley = sy * Application->GetGlobalScale ();
+ Scalex = sx * Application->GetGlobalScale ();
+ Scaley = sy * Application->GetGlobalScale ();
 }
 
 void

@@ -3,7 +3,7 @@ include ../Makefile.Conf
 
 datadir=/assets
 
-CFLAGS= -D_ONEWIN  -Werror -Os -D_Longlong="long long" -s USE_ZLIB=1 -s \
+CFLAGS= -D_ONEWIN  -Werror -O2 -flto -D_Longlong="long long" -s USE_ZLIB=1 -s \
 	USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png","bmp"]' -s USE_SDL_TTF=2 --preload-file assets \
 	-I ../teste/zlib-master/contrib/ -s USE_SDL_GFX=2
 #CFLAGS+=-s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=2
@@ -47,7 +47,7 @@ LIBSTOBJECTS := lxaudio.ao cspin.lo capplication.ao cbutton.ao cedit.ao cdraw.ao
 
 # How to create the shared library
 $(LIBSHLIBNAME): $(LIBSHOBJECTS)
-	$(CC) -shared -Wl,-soname,$(LIBSHSONAME) -o $@ $^  -lpthread  -lSDL2_ttf  -lSDL2_image  -lSDL2
+	$(CC) -flto -shared -Wl,-soname,$(LIBSHSONAME) -o $@ $^  -lpthread  -lSDL2_ttf  -lSDL2_image  -lSDL2
 
 $(LIBSHSONAME): $(LIBSHLIBNAME)
 	$(RM) $@

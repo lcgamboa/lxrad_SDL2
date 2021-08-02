@@ -783,8 +783,8 @@ CControl::CalcRXY(void)
    if (t) //this == CWindow 
     {
 #ifdef _ONEWIN
-     RX = X;
-     RY = Y;
+     RX = X + Application->GetOffsetX();
+     RY = Y + Application->GetOffsetY();
 #else
      RX = 0;
      RY = 0;
