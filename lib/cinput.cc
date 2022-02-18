@@ -25,7 +25,7 @@
 
 
 #include"../include/cinput.h"
-
+#include"../include/capplication.h"
 
 // CInput__________________________________________________________
 
@@ -76,22 +76,57 @@ CInput::ButtonRelease1 (CControl * control, uint button, uint x, uint y,
   HideExclusive ();
 };
 
+static CInput winput;
+
 bool
 Input (lxString label, lxString & str)
 {
   bool ret;
-  CInput *winput;
-  winput = new CInput;
-  winput->string1.SetText (label);
-  winput->edit1.SetText (str);
-  winput->WCreate ();
-  winput->Draw ();
-  winput->ShowExclusive ();
-  winput->SetCanDestroy (true);
-  ret = winput->Return;
+  winput.string1.SetText (label);
+  winput.edit1.SetText (str);
+  if(!winput.GetWWindow ())
+    winput.WCreate ();
+  winput.Draw (); 
+  winput.ShowExclusive ();
+  //winput->SetCanDestroy (true);
+  ret = winput.Return;
   if (ret)
-    str = winput->edit1.GetText ();
-  winput->WDestroy ();
-  delete winput;
+    str = winput.edit1.GetText ();
   return ret;
-};
+}
+
+
+bool
+Input_sz (lxString label, lxString & str, int Width, int Height)
+{
+  bool ret;
+	  
+  winput.SetWidth (Width);
+  winput.SetHeight (Height);
+  winput.button1.SetX ((Width- 3*winput.button1.GetWidth())/2);
+  winput.button1.SetY (Height-75);
+  winput.button2.SetX (((Width- 3*winput.button1.GetWidth())/2)+(2*winput.button1.GetWidth()));
+  winput.button2.SetY (Height-75);
+  winput.string1.SetWidth (Width-5);
+  winput.string1.SetHeight (Height-95);
+
+#ifdef _ONEWIN  
+  winput.SetX((Application->GetARootWindow()->GetWidth ()- winput.GetWidth())/2);
+  winput.SetY((Application->GetARootWindow()->GetHeight ()- winput.GetHeight())/2);
+#else
+  winput.SetX(((Application->GetARootWindow()->GetWidth ()- winput.GetWidth())/2)+Application->GetARootWindow()->GetX ());
+  winput.SetY(((Application->GetARootWindow()->GetHeight ()- winput.GetHeight())/2)+Application->GetARootWindow()->GetY ());
+#endif 
+
+  winput.string1.SetText (label);
+  winput.edit1.SetText (str);
+  if(!winput.GetWWindow ())
+    winput.WCreate ();
+  winput.Draw ();
+  winput.ShowExclusive ();
+  //winput->SetCanDestroy (true);
+  ret = winput.Return;
+  if (ret)
+    str = winput.edit1.GetText ();
+  return ret;
+}

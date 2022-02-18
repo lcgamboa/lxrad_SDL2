@@ -168,6 +168,7 @@ CApplication::ACreateWindow(CWindow * AWindow, CWindow *window)
    ARootWindow = new CWindow;
    ARootWindow->SetWidth (rect.w);
    ARootWindow->SetHeight (rect.h);
+   ARootWindow->SetColor("dark gray");
    ARootWindow->WCreate ();
   }
  AWindow->SetOverWin (true);

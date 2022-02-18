@@ -72,23 +72,60 @@ CDialog::ButtonRelease1 (CControl * control, uint button, uint x, uint y,
   HideExclusive ();
 };
 
+static CDialog winput;
+
 bool
 Dialog (lxString label)
 {
   bool ret;
-  CDialog *winput;
-  winput = new CDialog;
-  winput->string1.SetText (label);
-  winput->WCreate ();
-  winput->Draw ();
-  winput->ShowExclusive ();
-  winput->SetCanDestroy (true);
-  while(winput->GetCanExitExclusive ())
-  {
-    Application->ProcessEvents ();
-  }
-  ret = winput->Return;
-  winput->WDestroy ();
-  delete winput;
+  winput.string1.SetText (label);
+  if(!winput.GetWWindow ())
+    winput.WCreate ();
+  winput.Draw ();
+  winput.ShowExclusive ();
+  //winput.SetCanDestroy (true);
+  //while(winput.GetCanExitExclusive ())
+  //{
+  //  Application->ProcessEvents ();
+  //}
+  ret = winput.Return;
   return ret;
-};
+}
+
+
+bool
+Dialog_sz (lxString label, int Width, int Height)
+{
+  bool ret;
+	  
+  winput.SetWidth (Width);
+  winput.SetHeight (Height);
+  winput.button1.SetX ((Width- 3*winput.button1.GetWidth())/2);
+  winput.button1.SetY (Height-75);
+  winput.button2.SetX (((Width- 3*winput.button1.GetWidth())/2)+(2*winput.button1.GetWidth()));
+  winput.button2.SetY (Height-75);
+  winput.string1.SetWidth (Width-5);
+  winput.string1.SetHeight (Height-95);
+
+#ifdef _ONEWIN  
+  winput.SetX((Application->GetARootWindow()->GetWidth ()- winput.GetWidth())/2);
+  winput.SetY((Application->GetARootWindow()->GetHeight ()- winput.GetHeight())/2);
+#else
+  winput.SetX(((Application->GetARootWindow()->GetWidth ()- winput.GetWidth())/2)+Application->GetARootWindow()->GetX ());
+  winput.SetY(((Application->GetARootWindow()->GetHeight ()- winput.GetHeight())/2)+Application->GetARootWindow()->GetY ());
+#endif 
+
+  winput.string1.SetText (label);
+  if(!winput.GetWWindow ())
+    winput.WCreate ();
+  winput.Draw ();
+  winput.ShowExclusive ();
+  //winput->SetCanDestroy (true);
+  //while(winput.GetCanExitExclusive ())
+  //{
+  //  Application.ProcessEvents ();
+  //}
+  ret = winput.Return;
+  return ret;
+}
+
