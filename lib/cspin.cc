@@ -71,6 +71,7 @@ CSpin::Create (CControl * control)
 void
 CSpin::SetWidth (unsigned width)
 {
+  if (Width == width) return;
   edit1.SetX (0);
   edit1.SetWidth (width - GetHeight () - 1);
   tbutton1.SetX (width - GetHeight ());
@@ -84,6 +85,7 @@ CSpin::SetWidth (unsigned width)
 void
 CSpin::SetHeight (unsigned height)
 {
+  if (Height == height)return;
   edit1.SetY (0);
   edit1.SetHeight (height);
   tbutton1.SetY (0);
@@ -137,16 +139,32 @@ CSpin::Draw ()
 lxStringList 
 CSpin::GetContext (void)
 {
-  //FIXME	
-  lxStringList sl;
-  printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
-  return sl;
+  CControl::GetContext ();
+  Context.AddLine (xml_out (lxT("Value"), lxT("int"), itoa(GetValue ())));
+  Context.AddLine (xml_out (lxT("Min"), lxT("int"), itoa(GetMin ())));
+  Context.AddLine (xml_out (lxT("Max"), lxT("int"), itoa(GetMax ())));
+  Context.AddLine (xml_out (lxT("EvOnChangeSpin"), lxT("Event"), btoa (GetEv ())));
+  return Context;
 }
 
 void 
 CSpin::SetContext (lxStringList context)
 {
- printf ("Incomplete: %s -> %s :%i\n", __func__,__FILE__, __LINE__);
+  lxString name, type, value;
+
+  CControl::SetContext (context);
+  for (uint i = 0; i < context.GetLinesCount (); i++)
+    {
+      xml_in (Context.GetLine (i), name, type, value);
+      if (name.compare (lxT("Value")) == 0)
+	SetValue (atoi(value));
+      if (name.compare (lxT("Min")) == 0)
+	SetMin (atoi(value));
+      if (name.compare (lxT("Max")) == 0)
+	SetMax (atoi(value));
+      if (name.compare (lxT("EvOnChangeSpin")) == 0)
+	SetEv (atob (value));
+    };
 }
   
 void 

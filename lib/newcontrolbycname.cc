@@ -108,12 +108,12 @@ newcontrolbycname (lxString controltype)
     {
       ncontrol = new CStatusbar;
     };
-/*  
+  
   if (controltype.compare (lxT("CSpin")) == 0)
     {
       ncontrol = new CSpin;
     };
-*/    
+ 
   if (controltype.compare (lxT("CSpind")) == 0)
     {
       ncontrol = new CSpind;
