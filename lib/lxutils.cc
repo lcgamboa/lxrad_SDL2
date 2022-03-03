@@ -187,6 +187,7 @@ lxImage::LoadFile(const lxString fname, int orientation, float scalex, float sca
       *ret_sy = ((double) height/Application->GetGlobalScale ()) / document->height ();
 
      auto bitmap = document->renderToBitmap (width, height, 0);
+     bitmap.convertToRGBA();
 
      SDL_Surface * Surface = SDL_CreateRGBSurfaceFrom ((void *) bitmap.data (),
                                                        bitmap.width (),
