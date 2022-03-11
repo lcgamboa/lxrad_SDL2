@@ -69,6 +69,7 @@ public:
   void SetWidth (uint width);
   void SetHeight (uint height);
   unsigned int GetCountLines (void);
+  lxString GetLine (uint linen);
   //eventos
   void key_press (SDL_Event event);
   void ScrollOnChangePosition (CControl * scroll);

@@ -259,6 +259,12 @@ CText::GetText(void)
  return Lines.GetLine (CursorLin);
 }
 
+lxString
+CText::GetLine (uint linen)
+{
+ return Lines.GetLine (linen);
+}
+
 void
 CText::SetCursorPos(uint cursorpos)
 {
