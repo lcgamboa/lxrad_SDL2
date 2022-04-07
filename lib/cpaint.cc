@@ -139,8 +139,15 @@ CPaint::DrawControl(CControl * control)
 void
 CPaint::Point(int x, int y)
 {
- Rotate (&x, &y);
- SDL_RenderDrawPoint (Win->GetRenderer (), RX + x, RY + y);
+ if(Scalex > 1.0)
+ {
+   Rectangle(x,y,1,1);	 
+ }
+ else
+ { 
+   Rotate (&x, &y);
+   SDL_RenderDrawPoint (Win->GetRenderer (), (RX + x)*Scalex, (RY + y)*Scaley);
+ }
 }
 
 void
