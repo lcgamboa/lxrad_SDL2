@@ -271,7 +271,7 @@ CPaint::Rectangle(int x, int y, int w, int h)
    y2 = temp;
   }
 
- SDL_Rect fillRect = {(int) ((RX + x) * Scalex), (int) ((RY + y) * Scaley), (int) ((x2 - x) * Scalex), (int) ((y2 - y) * Scaley)};
+ SDL_Rect fillRect = {(int) ((RX + x) * Scalex), (int) ((RY + y) * Scaley), (int) ((x2 - x + 0.95) * Scalex), (int) ((y2 - y + 0.95) * Scaley)};
  SDL_RenderFillRect (Win->GetRenderer (), &fillRect);
 }
 
