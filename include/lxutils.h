@@ -160,9 +160,10 @@ public:
   unsigned char Green(void){return Color.g;};
   unsigned char Blue(void){return Color.b;};
   operator SDL_Color() const;
-  static lxColor SystemColor(int id);
   void Set(unsigned char r, unsigned char g, unsigned char b, unsigned char alpha = 0xFF);
 };
+  
+lxColor SystemColor(int id);
 
 class lxCursor
 {
