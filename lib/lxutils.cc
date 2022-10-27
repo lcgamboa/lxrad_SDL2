@@ -186,7 +186,8 @@ lxImage::LoadFile(const lxString fname, int orientation, float scalex, float sca
      if (ret_sy)
       *ret_sy = ((double) height/Application->GetGlobalScale ()) / document->height ();
 
-     auto bitmap = document->renderToBitmap (width, height, 0);
+     lxColor backgrd =  SystemColor(lxCOLOR_BTNFACE);
+     auto bitmap = document->renderToBitmap (width, height,  (backgrd.Red()<<24) | (backgrd.Blue()<<16) | (backgrd.Green()<<8)| backgrd.Alpha());
      bitmap.convertToRGBA();
 
      SDL_Surface * Surface = SDL_CreateRGBSurfaceFrom ((void *) bitmap.data (),
@@ -497,6 +498,14 @@ lxColor::Set(unsigned char r, unsigned char g, unsigned char b, unsigned char al
 
 lxColor SystemColor(int id)
 {
+   switch(id){
+     case lxCOLOR_WINDOWTEXT:
+        return lxColor(0, 0, 0);
+        break;
+     case lxCOLOR_BTNFACE:
+        return ColorByName ("light gray");
+        break; 
+   }
    return lxColor(0, 0, 0);
 }
 
