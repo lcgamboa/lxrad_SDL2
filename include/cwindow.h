@@ -89,7 +89,7 @@ public:
   bool GetCanExitExclusive(void);
   bool OwnerEvent (int x, int y);
   void CreateChild (CControl * control);
-//propiedades
+//propriedades
   SDL_Window * GetWWindow (void);
   SDL_Renderer * GetRenderer (void);
   CWindow* GetWWidget (void);
@@ -118,6 +118,8 @@ public:
   void SetOverWin(bool ow);
   void SetRedraw(void);
   int  GetRedraw(void);
+  int GetClientHeight (void);
+  int GetClientWidth (void);
   //operator
   void *operator new (size_t sz);
   //eventos
