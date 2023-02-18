@@ -70,9 +70,7 @@ CThread::Destroy (void)
   {
       usleep(100);
   }      
-#ifndef __EMSCRIPTEN__
   pthread_join (Thread, NULL);
-#endif
 #else
   Application->RemoveThread(this);
   on_end();
@@ -85,9 +83,7 @@ CThread::Kill (void)
 {
 #ifdef HAVE_LIBPTHREAD
    pthread_cancel (Thread);
-#ifndef __EMSCRIPTEN__
    pthread_join (Thread, NULL);
-#endif
 #else
    Application->RemoveThread(this);
    on_end();
@@ -157,6 +153,7 @@ CThread::Run (void)
 #ifdef HAVE_LIBPTHREAD
 	 tdestroy=0;
 	 pthread_create (&Thread, NULL, cthread1, (void *) this);
+	 //pthread_setname_np(Thread, (const char *)Name.c_str());
 #else
 	 tdestroy=1;
 	 Application->AddThread(this);

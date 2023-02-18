@@ -637,7 +637,7 @@ CControl::LoadXMLContext(lxString filename)
    list.Clear ();
    while (fgetline (fin, line))
     {
-#ifdef _DEBUG_
+#ifdef _DEBUG
 #ifdef __UNICODE__
      printf ("%ls == %ls ???\n", (const wchar_t*)line.c_str (), (const wchar_t*) (lxT ("<") + Name + lxT (">")).c_str ());
 #else
