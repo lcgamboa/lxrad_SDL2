@@ -315,6 +315,62 @@ lxImage::LoadFile(const lxString fname, int orientation, float scalex, float sca
 
 }
 
+bool 
+lxImage::CreateBlank(const unsigned int width, const unsigned int height, int orientation, double scalex, double  scaley ){
+     SDL_Surface * Surface = SDL_CreateRGBSurface (    0,
+                                                       width * scalex,
+                                                       height * scaley,
+                                                       32,
+                                                       0x000000FF,
+                                                       0x0000FF00,
+                                                       0x00FF0000,
+                                                       0xFF000000);
+
+     SDL_Texture * mTexture = SDL_CreateTextureFromSurface (Win->GetRenderer (), Surface);
+
+     SDL_Rect DestR;
+     int sw=0, sh=0;
+     SDL_QueryTexture (mTexture, NULL, NULL, &DestR.w, &DestR.h);
+
+     switch (orientation)
+      {
+      case 0:
+      case 2:
+       sw = DestR.w;
+       sh = DestR.h;
+       DestR.x = 0;
+       DestR.y = 0;
+       break;
+      case 1:
+      case 3:
+       sw = DestR.h;
+       sh = DestR.w;
+       DestR.y = (DestR.w - DestR.h) / 2;
+       DestR.x = (DestR.h - DestR.w) / 2;
+       break;
+      }
+
+     Texture = SDL_CreateTexture (Win->GetRenderer (), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, sw, sh);
+
+     SDL_Texture* last = SDL_GetRenderTarget (Win->GetRenderer ());
+     SDL_SetRenderTarget (Win->GetRenderer (), Texture);
+
+     //SDL_SetRenderDrawColor (Win->GetRenderer (), 0xFF, 0xFF, 0xFF, 0x00);
+     //SDL_RenderClear (Win->GetRenderer ());
+
+     SDL_RenderCopyEx (Win->GetRenderer (), mTexture, NULL, &DestR, orientation * 90, NULL, SDL_FLIP_NONE);
+
+     SDL_DestroyTexture (mTexture);
+
+     SDL_RenderPresent (Win->GetRenderer ());
+
+     SDL_SetRenderTarget (Win->GetRenderer (), last);
+
+     SDL_FreeSurface (Surface);
+
+     return 1;	
+}
+
 void
 lxImage::Destroy(void)
 {
