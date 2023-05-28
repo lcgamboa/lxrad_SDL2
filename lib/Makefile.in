@@ -2,7 +2,7 @@ include ../Makefile.Conf
 
 all:: 
 
-CFLAGS+= -I../../lunasvg/build/include/
+CFLAGS+= -I../../lunasvg/include/
 
 LIBCFLAGS := $(CFLAGS) -fpic -D_SHARE=\"${datadir}/lxrad_SDL2/\" 
 ARCFLAGS := $(CFLAGS) -static -D_SHARE=\"${datadir}/lxrad_SDL2/\" 
