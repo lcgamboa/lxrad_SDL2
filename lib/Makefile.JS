@@ -9,7 +9,7 @@ CFLAGS= -D_ONEWIN  -Werror -O2 -flto -D_Longlong="long long" -s USE_ZLIB=1 -s \
 #CFLAGS+=-s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=2
 LIBS =  -lSDL2_ttf  -lSDL2_image  -lSDL2 -lSDL2_gfx
 
-CFLAGS+= -I../../lunasvg/buildjs/include/
+CFLAGS+= -I../../lunasvg/include/
 
 CC=em++
 AR=emar
