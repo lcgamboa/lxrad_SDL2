@@ -397,13 +397,35 @@ CPaint::Text(lxString text, int x1, int y1)
 void
 CPaint::TextOnRect(lxString text, lxRect rect, CAlign align)
 {
- int w, h;
+ int x,y,w, h;
+ char buffer[4096];
+ int linecount=0;
+ int texth = 0;
+ char * line;
+ int ln;
+ 
 
- TTF_SizeText (Font.GetTTFFont (), text.c_str (), &w, &h);
+ strcpy(buffer,(const char *)text.c_str());
+ line =strtok(buffer,"\n");
+ while(line){
+   TTF_SizeText (Font.GetTTFFont (), line, &w, &h);
+   texth += h;
+   linecount++;
+   line =strtok(NULL,"\n");
+ }
+ 
+ strcpy(buffer,(const char *)text.c_str());
+ line =strtok(buffer,"\n");
+ ln=0;
 
- rect.x = rect.x + (rect.width - w * Application->GetGlobalScale ()) / 2;
- rect.y = rect.y + (rect.height - h * Application->GetGlobalScale ()) / 2;
- Text (text, rect.x, rect.y);
+ while(line){
+   TTF_SizeText (Font.GetTTFFont (), line, &w, &h);
+   x = rect.x + (rect.width - w * Application->GetGlobalScale ()) / 2;
+   y = rect.y + ((rect.height - texth * Application->GetGlobalScale ()) / (linecount + 1)) + ( ln * h *Application->GetGlobalScale ());
+   Text (line, x, y);
+   line =strtok(NULL,"\n");
+   ln++;
+ }
 }
 
 void
