@@ -271,8 +271,8 @@ CApplication::ADestroyWindow(CWindow * AWindow)
 
 void
 loop_handler(void)
-{
- //Application->GetARootWindow ()->SetRedraw (); //FIXME force redraw every cicle to avoid flicker. Use software double buffer?
+{  
+ Application->GetARootWindow ()->SetRedraw (); //FIXME force redraw every cicle to avoid flicker. Use software double buffer?
  Application->ProcessEvents ();
 }
 #endif

@@ -615,13 +615,6 @@ lxFont::lxFont(int size, int family, int style, int weight)
  font = Application->GetFont (Size, Family, Style, Weight);
 }
 
-void
-lxFont::SetPointSize(int size)
-{
- Size = size;
- font = Application->GetFont (Size, Family, Style, Weight);
-}
-
 TTF_Font *
 lxFont::GetTTFFont(void)
 {
@@ -634,10 +627,24 @@ lxFont::GetPointSize(void)
  return Size;
 }
 
+void
+lxFont::SetPointSize(int size)
+{
+ Size = size;
+ font = Application->GetFont (Size, Family, Style, Weight);
+}
+
 int
 lxFont::GetFamily(void)
 {
  return Family;
+}
+
+void
+lxFont::SetFamily(int family)
+{
+ Family = family;
+ font = Application->GetFont (Size, Family, Style, Weight);
 }
 
 int
@@ -646,11 +653,26 @@ lxFont::GetStyle(void)
  return Style;
 }
 
+void
+lxFont::SetStyle(int style)
+{
+ Style = style;
+ font = Application->GetFont (Size, Family, Style, Weight);
+}
+
 int
 lxFont::GetWeight(void)
 {
  return Weight;
 }
+
+void
+lxFont::SetWeight(int weight)
+{
+ Weight = weight;
+ font = Application->GetFont (Size, Family, Style, Weight);
+}
+
 
 //-------------------------------------------------------------------------
 

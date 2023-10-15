@@ -177,17 +177,14 @@ CWindow::WCreate(CWindow* window)
      printf ("Window could not be created! SDL Error: %s\n", SDL_GetError ());
      exit (-1);
     }
-   //FIXME use software render in EMSCRIPTEN because SDL2 bug 
-#ifndef __EMSCRIPTEN__   
-   Renderer = SDL_CreateRenderer (WWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
-#else
-   Renderer = NULL;
-#endif   
+ 
+    Renderer = SDL_CreateRenderer (WWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC);
+
    if (Renderer == NULL)
     {
      //    printf( "Hardware renderer could not be created! SDL Error: %s\n", SDL_GetError() );
      printf ("Switching to software renderer...\n");
-     Renderer = SDL_CreateRenderer (WWindow, -1, SDL_RENDERER_SOFTWARE | SDL_RENDERER_TARGETTEXTURE);
+     Renderer = SDL_CreateRenderer (WWindow, -1, SDL_RENDERER_SOFTWARE | SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC);
     }
    if (Renderer == NULL)
     {
@@ -401,7 +398,7 @@ CWindow::Show(void)
     {
      SDL_ShowWindow (WWindow);
      SDL_RaiseWindow (WWindow);
-     SDL_RenderPresent (Renderer);
+     //SDL_RenderPresent (Renderer);
 #ifdef _ONEWIN    
      if (Application->GetARootWindow () == this)
       {
@@ -528,7 +525,7 @@ CWindow::Update(void)
     {
      mw->Draw ();
     }
-#endif   
+#endif  
    SDL_RenderPresent (Renderer);
   }
 }

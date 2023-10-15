@@ -189,12 +189,15 @@ private:
 public:
   lxFont();
   lxFont(int size,int family,int style,int weight);
-  void SetPointSize(int size); 
   TTF_Font * GetTTFFont(void);
   int GetPointSize(void);
+  void SetPointSize(int size); 
   int GetFamily(void);
+  void SetFamily(int family); 
   int GetStyle(void);
+  void SetStyle(int style); 
   int GetWeight(void);
+  void SetWeight(int weight); 
 };
 
 class lxMutex
