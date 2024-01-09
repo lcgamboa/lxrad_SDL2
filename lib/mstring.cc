@@ -233,6 +233,18 @@ lxString::lxString (const char *str, int size)
     Str = NULL;
 }
 
+lxString::lxString(const std::string str)
+{
+ if (str.size())
+  {
+   Str = new char[str.size() + 1];
+   strcpy (Str, str.c_str());
+  }
+ else
+  Str = NULL;
+}
+
+
 
 lxString::~lxString (void)
 {
@@ -746,7 +758,7 @@ operator + (const char *str1, const lxString & str2)
   if (str1)
     {
       if (str2.Str)
-	return string (str1) + str2;
+	return lxString (str1) + str2;
       else
 	return str1;
     }
@@ -766,7 +778,7 @@ operator + (const char &str1, const lxString & str2)
   temp[1] = '\0';
 
   if (str2.Str)
-     return string (temp) + str2;
+     return lxString (temp) + str2;
   else
      return temp;
 

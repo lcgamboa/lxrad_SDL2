@@ -207,8 +207,8 @@ CScroll::SetContext (lxStringList context)
  CControl::SetContext (context);
  for (uint i = 0; i < context.GetLinesCount (); i++)
   {
-   string line = Context.GetLine (i);
-   string arg;
+   lxString line = Context.GetLine (i);
+   lxString arg;
    eqparse (line, arg);
    if (line.compare ("OnChangePosition") == 0)
     SetEv (atob (arg));
