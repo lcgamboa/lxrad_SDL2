@@ -37,6 +37,7 @@
 
 #ifdef NO_STL
 
+
 class lxString
 {
 private:
@@ -51,6 +52,7 @@ public:
    ~lxString (void);
   const char *c_str (void) const;
   const char *char_str (void) const;
+  const char *utf8_str (void) const;
   int Cmp (const char *str) const;
   int compare (const char *str) const;
   int compare (const lxString & str) const;
@@ -63,7 +65,9 @@ public:
   int Contains(const lxString & str) const;
   int rfind (const lxString & str) const;
   int erase (unsigned int start, int num);
-  static lxString FromAscii(char * str);
+  static lxString FromAscii(const char * str);
+  static lxString FromUTF8(const char * str);
+  static lxString FromUTF8(const std::string str);
   int copy (char *str, unsigned int sz) const;
   bool  operator == (const lxString & str);
   lxString & operator = (const lxString & str);
