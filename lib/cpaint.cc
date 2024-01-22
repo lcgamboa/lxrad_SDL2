@@ -662,6 +662,16 @@ CPaint::SetFont(lxFont font)
  Font = font;
 }
 
+void 
+CPaint::SetFontSize (const int pointsize){
+  Font.SetPointSize(pointsize);
+}
+
+void 
+CPaint::SetFontWeight (const int weight){
+  Font.SetWeight(weight);
+}
+
 void
 CPaint::ChangeScale(float sx, float sy)
 {

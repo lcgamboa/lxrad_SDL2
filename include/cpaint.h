@@ -78,6 +78,8 @@ public:
   void PutBitmap (lxBitmap* bitmap,int x,int y);
   void SetBitmap(lxBitmap* bitmap,double xs, double ys);
   void SetFont (lxFont font);
+  void SetFontSize (const int pointsize);
+  void SetFontWeight (const int weight);
   void TextOnRect (lxString text,lxRect rect,CAlign align);
   void SetLineWidth(int w);
   void Init(void);
