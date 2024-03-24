@@ -703,12 +703,12 @@ lxFileExists(lxString fname)
   return false;
 }
 
-void
+int 
 lxExecute(lxString cmd, unsigned int flags, void * arg)
 {
  if (flags != lxEXEC_SYNC)
   cmd += lxT (" &");
- system (cmd.c_str ());
+ return system (cmd.c_str ());
 }
 
 lxString
@@ -1274,16 +1274,16 @@ lxMutex::GetMutex(void)
  return Mutex;
 }
 
-void
+int
 lxMutex::Lock(void)
 {
- pthread_mutex_lock ((pthread_mutex_t*) Mutex);
+ return pthread_mutex_lock ((pthread_mutex_t*) Mutex);
 }
 
-void
+int
 lxMutex::Unlock(void)
 {
- pthread_mutex_unlock ((pthread_mutex_t*) Mutex);
+ return pthread_mutex_unlock ((pthread_mutex_t*) Mutex);
 }
 
 lxCondition::lxCondition(lxMutex & mutex)

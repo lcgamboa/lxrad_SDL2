@@ -208,8 +208,8 @@ public:
   void * GetMutex(void);     
   lxMutex();
   ~lxMutex();  
-  void Lock(void);
-  void Unlock(void);  
+  int Lock(void);
+  int Unlock(void);  
 };
 
 class lxCondition
@@ -275,7 +275,7 @@ lxBitmap * lxGetBitmapRotated(lxImage *image, CWindow * win, int orientation);
 void lxMilliSleep(unsigned int time);
 void lxSetCursor(lxCursor cursor); 
 bool lxFileExists(lxString fname);
-void lxExecute(lxString cmd,unsigned int flags=0, void * arg = NULL);
+int lxExecute(lxString cmd,unsigned int flags=0, void * arg = NULL);
 lxString lxGetCwd(void);
 int lxSetWorkingDirectory(lxString dir);
 bool lxLaunchDefaultBrowser(lxString url);
