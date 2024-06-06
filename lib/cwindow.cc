@@ -987,9 +987,9 @@ CWindow::WEvents(SDL_Event WEvent)
          XUnlockDisplay(disp);
        }
    }
-  */
 
  LEvent = WEvent;
+ */
 
  return ret;
 }

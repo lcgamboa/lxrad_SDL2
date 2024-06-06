@@ -65,12 +65,14 @@ void
 CThread::Destroy (void)
 {
 #ifdef HAVE_LIBPTHREAD
-  tdestroy=1;
-  while(runstate) 
-  {
-      usleep(100);
-  }      
-  pthread_join (Thread, NULL);
+  if(runstate){
+    tdestroy=1;
+    while(runstate) 
+    {
+        usleep(100);
+    }      
+    pthread_join (Thread, NULL);
+  }
 #else
   Application->RemoveThread(this);
   on_end();

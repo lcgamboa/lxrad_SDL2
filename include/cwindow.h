@@ -51,7 +51,7 @@ protected:
   CControl *LastControl;
   SDL_Window* WWindow;
   SDL_Renderer* Renderer;
-  SDL_Event LEvent;//last event
+  //SDL_Event LEvent;//last event
   unsigned long BorderColor;
   CPaint WPaint;
   bool CanDestroy;

@@ -762,6 +762,104 @@ CPaint::Circle(bool filled, int cx, int cy, int radius)
   */
 }
 
+void 
+CPaint::Arc(bool filled, int x1, int y1, int x2, int y2, int xc, int yc)
+{
+   Rotate (&x1, &y1);
+   Rotate (&x2, &y2);
+   Rotate (&xc, &yc);
+
+ x1 = (RX + x1) * Scalex;
+ y1 = (RY + y1) * Scaley;
+ x2 = (RX + x2) * Scalex;
+ y2 = (RY + y2) * Scaley;
+
+
+ int radius = abs(x2-x1)/2;
+
+
+ if (filled)
+  {
+   SDL_Color color = Pen.GetBgColor ();
+   aaFilledEllipseRGBA (Win->GetRenderer (), x1, y1, radius, radius, color.r, color.g, color.b, 0xFF);
+  }
+ SDL_Color color = Pen.GetFgColor ();
+ if (Pen.GetWidth () <= 1)
+  {
+   aacircleRGBA (Win->GetRenderer (), x1, y1, radius, color.r, color.g, color.b, 0xFF);
+  }
+ else
+  {
+   thickCircleRGBA (Win->GetRenderer (), x1, y1, radius, color.r, color.g, color.b, 0xFF, Pen.GetWidth ());
+  }
+}
+
+void 
+CPaint::EllipticArc(bool filled, int x, int y, int width, int height, double start, double end)
+{
+
+   int x2, y2, w, h;
+   x2 = x + width;
+   y2 = y + height;
+   Rotate (&x, &y);
+   Rotate (&x2, &y2);
+   w = x2 - x;
+   h = y2 - y;
+
+   //input counter clockwise output clockwise
+   double start_ = start;
+   start = 360.0 - end;
+   end =  360.0 - start_;
+ 
+   switch (orientation)
+   {
+     case 1:
+       start += 90;
+       end += 90;
+       x += w;
+       w = -w;
+       break; 
+     case 2:
+       start -= 180;
+       end -= 180;
+       x += w;
+       y += h;
+       w = -w;
+       h = -h;
+       break; 
+     case 3:
+       start += 270;
+       end += 270;
+       y += h;
+       h = -h;
+       break; 
+     default:
+      break; 
+   }
+
+ x2 = x + w;
+ y2 = y + h;   
+
+ x = (RX + x) * Scalex;
+ y = (RY + y) * Scaley;
+ x2 = (RX + x2) * Scalex;
+ y2 = (RY + y2) * Scaley;
+ int radiush = abs((x2-x)/2);
+ int radiusv = abs((y2-y)/2);
+
+ x+=radiush;
+ y+=radiusv;
+
+ if (filled)
+  {
+   SDL_Color color = Pen.GetBgColor ();
+   aaFilledPieRGBA (Win->GetRenderer (), x, y, radiush, radiusv, start, end, 0, color.r, color.g, color.b, 0xFF);
+  }
+ 
+  SDL_Color color = Pen.GetFgColor ();
+  aaArcRGBA (Win->GetRenderer (), x, y, radiush, radiusv, start, end, Pen.GetWidth (), color.r, color.g, color.b, 0xFF);
+}
+
 void
 CPaint::Polygon(bool filled, lxPoint * points, int npoints)
 {
@@ -769,8 +867,9 @@ CPaint::Polygon(bool filled, lxPoint * points, int npoints)
 
  for (int c = 0; c < npoints; c++)
   {
-   points[c].x += RX;
-   points[c].y += RY;
+   Rotate (&points[c].x, &points[c].y);
+   points[c].x = (points[c].x+ RX)* Scalex;
+   points[c].y = (points[c].y+ RY)* Scaley;
   }
 
  short vx[2048];

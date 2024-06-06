@@ -58,18 +58,21 @@ CApplication::CApplication(void)
  mdy = 0;
  mouse_scroll = 0;
 
- for (int i = 0; i < (FONT_MAX * 2); i++)
-  {
-   fontlist[i] = NULL;
-  }
+ if(!TTF_WasInit())
+ {
+   for (int i = 0; i < (FONT_MAX * 2); i++)
+   {
+     fontlist[i] = NULL;
+    }
 
- //Initialize SDL_ttf
- if (TTF_Init () == -1)
-  {
-   printf ("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError ());
-   Exit = true;
-   return;
-  }
+   //Initialize SDL_ttf
+   if (TTF_Init () == -1)
+   {
+     printf ("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError ());
+     Exit = true;
+     return;
+   }
+ } 
 
 }
 
@@ -96,6 +99,21 @@ CApplication::GetFont(int size, int family, int style, int weight)
  if (size >= FONT_MAX) size = FONT_MAX - 1;
 
  const int fontaddr = size + family * FONT_MAX;
+
+  if(!TTF_WasInit())
+  {
+   for (int i = 0; i < (FONT_MAX * 2); i++)
+   {
+     fontlist[i] = NULL;
+    }
+
+   //Initialize SDL_ttf
+   if (TTF_Init () == -1)
+   {
+     printf ("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError ());
+     exit(-1);
+   }
+  } 
 
  //TODO only size font and size are used 
  if (fontlist[fontaddr] == NULL)
