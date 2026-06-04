@@ -41,6 +41,7 @@ CThread::CThread (void)
   SetClass (lxT("CThread"));
   runstate=false;
   tdestroy=false;
+  tcreated=false;
   SetVisible (false);
   EvThreadRun=NULL;
   EvThreadEnd=NULL;
@@ -50,13 +51,13 @@ CThread::~CThread (void)
 {
 }
 
-int 
+int
 CThread::Create (CControl * control)
 {
   Win = control->GetWin ();
 
   CanExecuteEvent=false;
-  int ret =CControl::Create (control);
+  int ret= CControl::Create (control);
   CanExecuteEvent=true;
   return ret;
 }
@@ -65,13 +66,14 @@ void
 CThread::Destroy (void)
 {
 #ifdef HAVE_LIBPTHREAD
-  if(runstate){
-    tdestroy=1;
-    while(runstate) 
-    {
-        usleep(100);
-    }      
+  tdestroy=1;
+  while(runstate) 
+  {
+      usleep(100);
+  }      
+  if(tcreated){
     pthread_join (Thread, NULL);
+    tcreated=false;
   }
 #else
   Application->RemoveThread(this);
@@ -84,8 +86,11 @@ void
 CThread::Kill (void)
 {
 #ifdef HAVE_LIBPTHREAD
-   pthread_cancel (Thread);
-   pthread_join (Thread, NULL);
+   if(tcreated){
+     pthread_cancel (Thread);
+     pthread_join (Thread, NULL);
+     tcreated=false;
+   }
 #else
    Application->RemoveThread(this);
    on_end();
@@ -156,6 +161,7 @@ CThread::Run (void)
 	 tdestroy=0;
 	 pthread_create (&Thread, NULL, cthread1, (void *) this);
 	 //pthread_setname_np(Thread, (const char *)Name.c_str());
+         tcreated=1;
 #else
 	 tdestroy=1;
 	 Application->AddThread(this);
