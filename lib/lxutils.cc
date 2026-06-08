@@ -709,7 +709,22 @@ lxFileExists(lxString fname)
   return false;
 }
 
-int 
+bool
+lxDirExists(lxString dirname)
+{
+ struct stat sb;
+
+ sb.st_mode = 0;
+
+ stat (dirname.c_str (), &sb);
+
+ if (S_ISDIR (sb.st_mode))
+  return true;
+ else
+  return false;
+}
+
+int
 lxExecute(lxString cmd, unsigned int flags, void * arg)
 {
  if (flags != lxEXEC_SYNC)

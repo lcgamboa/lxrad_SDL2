@@ -276,6 +276,7 @@ lxBitmap * lxGetBitmapRotated(lxImage *image, CWindow * win, int orientation);
 void lxMilliSleep(unsigned int time);
 void lxSetCursor(lxCursor cursor); 
 bool lxFileExists(lxString fname);
+bool lxDirExists(lxString dirname);
 int lxExecute(lxString cmd,unsigned int flags=0, void * arg = NULL);
 lxString lxGetCwd(void);
 int lxSetWorkingDirectory(lxString dir);
@@ -293,8 +294,8 @@ bool lxUnzipDir(const lxString &in_filename, const lxString &out_dirname);
 bool lxRemoveFile(const char* fname);
 bool lxRemoveDir(const char* dirname);
 bool lxCreateDir(const char * dirname);
-bool lxRenameFile(lxString oldfname, lxString newfname);
 bool lxCopyFile(lxString srcfname, lxString dstfname);
+bool lxRenameFile(lxString oldfname, lxString newfname);
 
 unsigned int lxGetDisplayWidth(int disp);
 unsigned int lxGetDisplayHeight(int disp);
