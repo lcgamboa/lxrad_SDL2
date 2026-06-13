@@ -94,7 +94,7 @@ CDirDialog::CDirDialog (void)
  filelist1.SetFOwner (this);
  filelist1.EvFileListSelectFile = EVFILELISTSELECTFILE & CDirDialog::ListOnFileSelected;
  CreateChild (&filelist1);
-};
+}
 
 CDirDialog::~CDirDialog (void) { };
 
@@ -115,7 +115,7 @@ CDirDialog::DestroyChilds (void)
 {
  if (CanDestroyChilds)
   CControl::DestroyChilds ();
-};
+}
 
 void
 CDirDialog::ButtonRelease1 (CControl * control, uint button, uint x, uint y,
@@ -123,7 +123,7 @@ CDirDialog::ButtonRelease1 (CControl * control, uint button, uint x, uint y,
 {
  HideExclusive ();
  Result = true;
-};
+}
 
 void
 CDirDialog::ButtonRelease2 (CControl * control, uint button, uint x, uint y,
@@ -131,7 +131,7 @@ CDirDialog::ButtonRelease2 (CControl * control, uint button, uint x, uint y,
 {
  HideExclusive ();
  Result = false;
-};
+}
 
 void
 CDirDialog::ButtonRelease3 (CControl * control, uint button, uint x, uint y,
@@ -144,7 +144,7 @@ CDirDialog::ButtonRelease3 (CControl * control, uint button, uint x, uint y,
     Message (strerror (errno));
    };
  filelist1.SetDir (filelist1.GetSelectedDir ());
-};
+}
 
 void
 CDirDialog::ButtonRelease4 (CControl * control, uint button, uint x, uint y,
@@ -156,7 +156,7 @@ CDirDialog::ButtonRelease4 (CControl * control, uint button, uint x, uint y,
     Message (strerror (errno));
    };
  filelist1.SetDir (filelist1.GetSelectedDir ());
-};
+}
 
 void
 CDirDialog::ListOnFileSelected (CFileList * flist)
@@ -169,31 +169,31 @@ CDirDialog::ListOnFileSelected (CFileList * flist)
   dialog->edit1.SetText (selected);
  else
   dialog->edit1.SetText (selected.substr (1, selected.size ()));
-};
+}
 
 lxString
 CDirDialog::GetFileName (void)
 {
  return GetDirName () + "/" + FileName;
-};
+}
 
 lxString
 CDirDialog::GetDirName (void)
 {
  return filelist1.GetSelectedDir ();
-};
+}
 
 void
 CDirDialog::SetFileName (lxString filename)
 {
  FileName = filename;
-};
+}
 
 void
-CDirDialog::SetDir (lxString dir)
+CDirDialog::SetDirName (lxString dir)
 {
  filelist1.SetDir (dir);
-};
+}
 
 void
 CDirDialog::Run (void)
@@ -210,14 +210,14 @@ CDirDialog::Run (void)
 
  if ((FOwner) && (EvOnClose))
   (FOwner->*EvOnClose) (Result);
-};
+}
 
 lxStringList
 CDirDialog::GetContext (void)
 {
  CControl::GetContext ();
  return Context;
-};
+}
 
 void
 CDirDialog::SetContext (lxStringList context)
@@ -233,7 +233,7 @@ CDirDialog::SetContext (lxStringList context)
    };
   */
  Draw ();
-};
+}
 
 void
 CDirDialog::SetFilter (lxString filter)
