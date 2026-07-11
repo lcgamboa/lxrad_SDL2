@@ -120,6 +120,8 @@ public:
   int  GetRedraw(void);
   int GetClientHeight (void);
   int GetClientWidth (void);
+  void SetClientHeight (uint h);
+  void SetClientWidth (uint w);
   //operator
   void *operator new (size_t sz);
   void operator delete(void* p);
