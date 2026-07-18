@@ -37,9 +37,11 @@
 
 #include <iostream>
 #include <cstring>
+#include <filesystem>
 #include"../../lunasvg/include/lunasvg.h"
 
 using namespace lunasvg;
+namespace fs = std::filesystem;
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
@@ -1014,6 +1016,29 @@ lxCreateDir(const char * dirname)
   }
  return 0;
 }
+
+bool 
+lxCreateDirs(const char * dirname){
+  return fs::create_directories(dirname);
+}
+
+bool 
+lxCopyDirs(const char * src, const char * dst){
+
+  if (fs::exists(src) && fs::exists(dst) && fs::equivalent(src, dst)) {
+        return 0 ;
+  }
+
+  try{
+    fs::copy(src, dst,fs::copy_options::recursive |
+                           fs::copy_options::overwrite_existing);
+    return 1;
+  }      
+  catch (const fs::filesystem_error& e) {
+    return 0;
+  }                
+}
+
 
 lxStringList
 lxListDirRec(const lxString & dirname)
