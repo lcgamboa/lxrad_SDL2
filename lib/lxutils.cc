@@ -1039,7 +1039,6 @@ lxCopyDirs(const char * src, const char * dst){
   }                
 }
 
-
 lxStringList
 lxListDirRec(const lxString & dirname)
 {
@@ -1088,6 +1087,13 @@ lxGetDocumentsDir(lxString appname)
 {
  return lxString ("/home/") + getlogin () + "/Documents/";
 }
+
+lxString
+lxGetHomeDir(void)
+{
+ return lxString ("/home/") + getlogin () + "/";
+}
+
 
 lxString
 lxGetUserDataDir(lxString appname)
