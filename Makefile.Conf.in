@@ -13,7 +13,7 @@ AR = ar
 LN = ln -sfn
 CP = cp
 
-CFLAGS = -flto @CFLAGS@ @LDFLAGS@
+CFLAGS =  @CFLAGS@ @LDFLAGS@
 LIBS = @LIBS@
 
 prefix = @prefix@
