@@ -1448,3 +1448,31 @@ lxGetLocalFile(lxString file)
  return file;
 }
 
+#ifdef __EMSCRIPTEN__
+ssize_t copy_file_range(int fd_in, off_t *off_in, int fd_out, off_t *off_out, size_t len, unsigned int flags) {
+    if (off_in && lseek(fd_in, *off_in, SEEK_SET) == -1) return -1;
+    if (off_out && lseek(fd_out, *off_out, SEEK_SET) == -1) return -1;
+
+    char buffer[8192];
+    size_t total_copied = 0;
+
+    while (total_copied < len) {
+        size_t to_read = len - total_copied;
+        if (to_read > sizeof(buffer)) to_read = sizeof(buffer);
+
+        ssize_t bytes_read = read(fd_in, buffer, to_read);
+        if (bytes_read == 0) break; 
+        if (bytes_read < 0) return -1;
+
+        ssize_t bytes_written = write(fd_out, buffer, bytes_read);
+        if (bytes_written < 0) return -1;
+
+        total_copied += bytes_written;
+    }
+
+    if (off_in) *off_in += total_copied;
+    if (off_out) *off_out += total_copied;
+
+    return total_copied;
+}
+#endif 
